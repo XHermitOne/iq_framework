@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Project manager package.
+Project items package.
 """
 
 __version__ = (0, 0, 0, 1)
-
