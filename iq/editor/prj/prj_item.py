@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Abstract project item class.
+Abstract project_name item class.
 """
 
 from  iq.util import id_func
@@ -12,18 +12,18 @@ __version__ = (0, 0, 0, 1)
 
 class iqProjectItem(object):
     """
-    Abstract project item class.
+    Abstract project_name item class.
     """
     def __init__(self, name=None, parent=None, description=u'',
                  img=None, img_extended=None, readonly=False):
         """
         Constructor.
-        @param name: Item name.
-        @param parent: Parent item object.
-        @param description: Item description.
-        @param img: Item image.
-        @param img_extended: Extended item image.
-        @param readonly: Read only state.
+        :param name: Item name.
+        :param parent: Parent item object.
+        :param description: Item description.
+        :param img: Item image.
+        :param img_extended: Extended item image.
+        :param readonly: Read only state.
         """
         self.name = name
         self.parent = parent
@@ -65,15 +65,15 @@ class iqProjectItem(object):
     def rename(self, old_name, new_name):
         """
         Rename item.
-        @param src_name: Old item name.
-        @param new_item: New item name.
+        :param src_name: Old item name.
+        :param new_item: New item name.
         """
         pass
 
     def create(self, new_name=None):
         """
         Create item.
-        @param new_name: New item name.
+        :param new_name: New item name.
         """
         return True
 
@@ -86,7 +86,7 @@ class iqProjectItem(object):
     def load(self, filename):
         """
         Load item from file.
-        @param filename: File name.
+        :param filename: File name.
         """
         pass
 
@@ -111,7 +111,7 @@ class iqProjectItem(object):
     def cut(self):
         """
         Cut item.
-        @return: Returns a pointer to a remote item.
+        :return: Returns a pointer to a remote item.
         """
         # Delete first in the tree
         self.parent.delChild(self)
@@ -120,7 +120,7 @@ class iqProjectItem(object):
     def copy(self):
         """
         Copy item.
-        @return: Returns a pointer to item..
+        :return: Returns a pointer to item..
         """
         new_item = self.__class__(self.parent)
         new_item.name = self.name + id_func.genNewId()
@@ -130,7 +130,7 @@ class iqProjectItem(object):
     def paste(self, item):
         """
         Paste item.
-        @param item: Project item.
+        :param item: Project item.
         """
         if item:
             self.parent.addChild(item)

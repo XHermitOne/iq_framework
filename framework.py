@@ -27,16 +27,17 @@ import sys
 import getopt
 
 from iq import config
-from iq.util.log import log_func
+from iq.util import log_func
+from iq.util import global_func
 import iq
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def main(*argv):
     """
     Main function triggered.
-    @param argv: Command line parameters.
+    :param argv: Command line parameters.
     """
     # Parse command line arguments
     try:
@@ -48,8 +49,11 @@ def main(*argv):
         log_func.print_color_txt(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(2)
 
+    mode=None
+    project = None
     username = None
     password = None
+    # runtime_mode = False
 
     for option, arg in options:
         if option in ('-h', '--help', '-?'):
@@ -60,25 +64,24 @@ def main(*argv):
             log_func.print_color_txt(str_version, color=log_func.GREEN_COLOR_TEXT)
             sys.exit(0)
         elif option in ('-d', '--debug'):
-            config.set_cfg_param('DEBUG_MODE', True)
+            global_func.setDebugMode()
             log_func.init(config)
         elif option in ('-l', '--log'):
-            config.set_cfg_param('LOG_MODE', True)
+            global_func.setLogMode()
             log_func.init(config)
         elif option in ('--mode',):
-            runtime_mode = arg.lower() == 'runtime'
-            editor_mode = arg.lower() == 'editor'
-            config.set_cfg_param('RUNTIME_MODE', runtime_mode)
-            config.set_cfg_param('EDITOR_MODE', editor_mode)
+            mode = arg.lower()
+            runtime_mode = mode == iq.RUNTIME_MODE_STATE
+            global_func.setRuntimeMode(runtime_mode)
         elif option in ('--prj',):
-            config.set_cfg_param('PROJECT_NAME', arg)
+            project = arg
         elif option in ('--username',):
             username = arg
         elif option in ('--password',):
             password = arg
 
     kernel = iq.createKernel()
-    kernel.start(username=username, password=password)
+    kernel.start(mode=mode, project_name=project, username=username, password=password)
 
 
 if __name__ == '__main__':

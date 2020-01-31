@@ -51,7 +51,7 @@ CONFIG = None
 def get_default_encoding():
     """
     Determine the current encoding for text output.
-    @return: Actual text encoding.
+    :return: Actual text encoding.
     """
     global CONFIG
     if CONFIG is not None and hasattr(CONFIG, 'DEFAULT_ENCODING'):
@@ -64,7 +64,7 @@ def get_debug_mode():
     """
     Determine the current debug mode.
     The default mode is off.
-    @return: True - debug mode enabled / False - debug mode off.
+    :return: True - debug mode enabled / False - debug mode off.
     """
     global CONFIG
     if CONFIG is not None and hasattr(CONFIG, 'DEBUG_MODE'):
@@ -78,7 +78,7 @@ def get_log_mode():
     """
     Determine the current logging mode.
     The default mode is off.
-    @return: True - logging mode enabled / False - logging mode is off.
+    :return: True - logging mode enabled / False - logging mode is off.
     """
     global CONFIG
     if CONFIG is not None and hasattr(CONFIG, 'LOG_MODE'):
@@ -91,7 +91,7 @@ def get_log_mode():
 def get_log_filename():
     """
     The name of the log file.
-    @return: The name of the log file.
+    :return: The name of the log file.
     """
     global CONFIG
     return CONFIG.LOG_FILENAME if CONFIG and hasattr(CONFIG, 'LOG_FILENAME') else None
@@ -100,8 +100,8 @@ def get_log_filename():
 def init(config=None, log_filename=None):
     """
     Initializing the log file.
-    @param config: Configuration module.
-    @param log_filename: Log file name.
+    :param config: Configuration module.
+    :param log_filename: Log file name.
     """
     global CONFIG
     CONFIG = config
@@ -137,9 +137,9 @@ def init(config=None, log_filename=None):
 def debug(message=u'', is_force_print=False, is_force_log=False):
     """
     Display debug information.
-    @param message: Text message.
-    @param is_force_print: Forcibly display.
-    @param is_force_log: Forcibly recorded in a journal.
+    :param message: Text message.
+    :param is_force_print: Forcibly display.
+    :param is_force_log: Forcibly recorded in a journal.
     """
     global CONFIG
     
@@ -156,9 +156,9 @@ def debug(message=u'', is_force_print=False, is_force_log=False):
 def info(message=u'', is_force_print=False, is_force_log=False):
     """
     Print information.
-    @param message: Text message.
-    @param is_force_print: Forcibly display.
-    @param is_force_log: Forcibly recorded in a journal.
+    :param message: Text message.
+    :param is_force_print: Forcibly display.
+    :param is_force_log: Forcibly recorded in a journal.
     """
     global CONFIG
     
@@ -175,9 +175,9 @@ def info(message=u'', is_force_print=False, is_force_log=False):
 def error(message=u'', is_force_print=False, is_force_log=False):
     """
     Print error message.
-    @param message: Text message.
-    @param is_force_print: Forcibly display.
-    @param is_force_log: Forcibly recorded in a journal.
+    :param message: Text message.
+    :param is_force_print: Forcibly display.
+    :param is_force_log: Forcibly recorded in a journal.
     """
     global CONFIG
     
@@ -194,9 +194,9 @@ def error(message=u'', is_force_print=False, is_force_log=False):
 def warning(message=u'', is_force_print=False, is_force_log=False):
     """
     Print warning message.
-    @param message: Text message.
-    @param is_force_print: Forcibly display.
-    @param is_force_log: Forcibly recorded in a journal.
+    :param message: Text message.
+    :param is_force_print: Forcibly display.
+    :param is_force_log: Forcibly recorded in a journal.
     """
     global CONFIG
     
@@ -213,9 +213,9 @@ def warning(message=u'', is_force_print=False, is_force_log=False):
 def fatal(message=u'', is_force_print=False, is_force_log=False):
     """
     Print critical error message.
-    @param message: Text message.
-    @param is_force_print: Forcibly display.
-    @param is_force_log: Forcibly recorded in a journal.
+    :param message: Text message.
+    :param is_force_print: Forcibly display.
+    :param is_force_log: Forcibly recorded in a journal.
     """
     global CONFIG
 
@@ -243,9 +243,9 @@ def fatal(message=u'', is_force_print=False, is_force_log=False):
 def service(message=u'', is_force_print=False, is_force_log=False):
     """
     Print service message.
-    @param message: Text message.
-    @param is_force_print: Forcibly display.
-    @param is_force_log: Forcibly recorded in a journal.
+    :param message: Text message.
+    :param is_force_print: Forcibly display.
+    :param is_force_log: Forcibly recorded in a journal.
     """
     global CONFIG
 

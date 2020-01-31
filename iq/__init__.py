@@ -6,9 +6,11 @@ Main engine package.
 """
 
 from .config import *
+from .util.global_func import *
 
-from .engine.kernel.kernel import createKernel
-from .engine.kernel.kernel import getKernel
+from iq.kernel.kernel import createKernel
+from iq.kernel.kernel import RUNTIME_MODE_STATE
+from iq.kernel.kernel import EDITOR_MODE_STATE
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 

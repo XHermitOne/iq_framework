@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Package project item class.
+Package project_name item class.
 """
 
 from . import prj_item
@@ -12,7 +12,7 @@ __version__ = (0, 0, 0, 1)
 
 class iqProjectPackage(prj_item.iqProjectItem):
     """
-    Package project item class.
+    Package project_name item class.
     """
     def __init__(self, *args, **kwargs):
         """
