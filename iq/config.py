@@ -36,6 +36,11 @@ PROFILE_PATH = os.path.join(os.environ.get('HOME', os.path.dirname(__file__)),
 # Kernel object
 KERNEL = None
 
+# Engine type. wx, qt or cui
+ENGINE_TYPE = 'wx'
+# Editor type. wx, qt or cui
+EDITOR_TYPE = 'wx'
+
 
 def get_cfg_param(name):
     """

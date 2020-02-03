@@ -20,6 +20,7 @@ def loadResource(res_filename):
     Load resource file.
 
     :param res_filename: Resource file path.
+    :return: Resource struct data or None if error.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
     struct = loadResourcePickle(res_filename)
@@ -36,6 +37,7 @@ def loadResourcePickle(res_filename):
     Load resource file as Pickle.
 
     :param res_filename: Resource file path.
+    :return: Resource struct data or None if error.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
     if os.path.isfile(res_filename):
@@ -59,6 +61,7 @@ def loadResourceText(res_filename):
     Load resource file as text.
 
     :param res_filename: Resource file path.
+    :return: Resource struct data or None if error.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
     if os.path.isfile(res_filename):
