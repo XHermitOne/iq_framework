@@ -13,6 +13,8 @@ try:
 except:
     import resource_editor_frm
 
+from ....util import log_func
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -36,8 +38,17 @@ def openResourceEditor(parent=None, res_filename=None):
     :param res_filename: Resource file name.
     :return: True/False.
     """
-    frame = iqResourceEditor(parent=parent)
-    frame.Show()
+    frame = None
+    try:
+        frame = iqResourceEditor(parent=parent)
+        frame.Show()
+        frame.Destroy()
+        return True
+    except:
+        if frame:
+            frame.Destroy()
+        log_func.fatal(u'Open reesource editor error')
+    return False
 
 
 def runResourceEditor(res_filename=None):

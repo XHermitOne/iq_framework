@@ -14,7 +14,6 @@ DEBUG_MODE = False
 LOG_MODE = False
 
 RUNTIME_MODE = False
-# CONSOLE_MODE = False
 
 PROJECT_NAME = None
 
@@ -37,9 +36,11 @@ PROFILE_PATH = os.path.join(os.environ.get('HOME', os.path.dirname(__file__)),
 KERNEL = None
 
 # Engine type. wx, qt or cui
-ENGINE_TYPE = 'wx'
-# Editor type. wx, qt or cui
-EDITOR_TYPE = 'wx'
+WX_ENGINE_TYPE = 'wx'
+QT_ENGINE_TYPE = 'qt'
+CUI_ENGINE_TYPE = 'cui'
+DEFAULT_ENGINE_TYPE = WX_ENGINE_TYPE
+ENGINE_TYPE = DEFAULT_ENGINE_TYPE
 
 
 def get_cfg_param(name):

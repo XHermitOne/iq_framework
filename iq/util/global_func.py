@@ -22,31 +22,13 @@ def setRuntimeMode(runtime_mode=True):
     Set GUI runtime mode.
     """
     config.set_cfg_param('RUNTIME_MODE', runtime_mode)
-    if runtime_mode:
-        config.set_cfg_param('CONSOLE_MODE', False)
 
-
-# def isConsoleMode():
-#     """
-#     Is CUI runtime mode?
-#     """
-#     return config.get_cfg_param('CONSOLE_MODE')
-#
-#
-# def setConsoleMode(console_mode=True):
-#     """
-#     Set CUI runtime mode.
-#     """
-#     config.set_cfg_param('CONSOLE_MODE', console_mode)
-#     if console_mode:
-#         config.set_cfg_param('RUNTIME_MODE', False)
-#
 
 def isEditorMode():
     """
     Is editor mode?
     """
-    return not config.get_cfg_param('RUNTIME_MODE') # and not config.get_cfg_param('CONSOLE_MODE')
+    return not config.get_cfg_param('RUNTIME_MODE')
 
 
 def isDebugMode():
@@ -100,3 +82,19 @@ def getProjectName():
     :return: Project name.
     """
     return config.get_cfg_param('PROJECT_NAME')
+
+
+def getEngineType():
+    """
+    Get engine type (wx, qt, cui and etc).
+    """
+    return config.get_cfg_param('ENGINE_TYPE')
+
+
+def setEngineType(engine_type):
+    """
+    Set engine type.
+
+    :param engine_type: Engine type (wx, qt, cui and etc).
+    """
+    return config.set_cfg_param('ENGINE_TYPE', engine_type)

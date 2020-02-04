@@ -18,6 +18,7 @@ Launch parameters:
 
     [Options]
         --mode=             Startup mode (runtime, editor)
+        --engine=           Engine type (wx, qt or cui)
         --prj=              Project name
         --username=         User name
         --password=         User password
@@ -37,19 +38,21 @@ __version__ = (0, 0, 1, 1)
 def main(*argv):
     """
     Main function triggered.
+
     :param argv: Command line parameters.
     """
     # Parse command line arguments
     try:
         options, args = getopt.getopt(argv, 'h?vdl',
                                       ['help', 'version', 'debug', 'log',
-                                       'mode=', 'prj=', 'username=', 'password='])
+                                       'mode=', 'engine=', 'prj=', 'username=', 'password='])
     except getopt.error as msg:
         log_func.error(str(msg), is_force_print=True)
         log_func.print_color_txt(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(2)
 
-    mode=None
+    mode = None
+    engine = config.DEFAULT_ENGINE_TYPE
     project = None
     username = None
     password = None
@@ -73,6 +76,9 @@ def main(*argv):
             mode = arg.lower()
             runtime_mode = mode == iq.RUNTIME_MODE_STATE
             global_func.setRuntimeMode(runtime_mode)
+        elif option in ('--engine',):
+            engine = arg
+            global_func.setEngineType(engine)
         elif option in ('--prj',):
             project = arg
         elif option in ('--username',):
@@ -80,8 +86,14 @@ def main(*argv):
         elif option in ('--password',):
             password = arg
 
-    kernel = iq.createKernel()
-    kernel.start(mode=mode, project_name=project, username=username, password=password)
+    if runtime_mode:
+        kernel = iq.createKernel()
+        kernel.start(mode=mode, project_name=project, username=username, password=password)
+    elif engine == config.WX_ENGINE_TYPE:
+        from iq.editor.wx import start_editor
+        start_editor.startEditor()
+    else:
+        log_func.error(u'Engine type <%s> not support' % engine)
 
 
 if __name__ == '__main__':

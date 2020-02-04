@@ -45,8 +45,10 @@ def getProjectPath():
     Get project path.
     """
     prj_name = global_func.getProjectName()
-    framework_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    return os.path.join(framework_path, prj_name)
+    if prj_name:
+        framework_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        return os.path.join(framework_path, prj_name)
+    return None
 
 
 def getProfilePath():
