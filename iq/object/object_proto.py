@@ -7,26 +7,28 @@ Base object class module.
 
 from . import object_context
 from ..util import global_func
+from ..util import spc_func
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqObjectProto(object):
+class iqObject(object):
     """
     Base object class.
     """
-    def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
+    def __init__(self, parent=None, resource=None, spc=None, context=None, *args, **kwargs):
         """
         Constructor.
 
         :param parent: Parent object.
         :param resource: Object resource dictionary.
+        :param spc: Component specification.
         :param context: Context dictionary.
         :param args:
         :param kwargs:
         """
         self._parent = parent
-        self._resource = resource
+        self._resource = spc_func.fillResourceBySpc(resource=resource, spc=spc)
         self._context = self.createContext(context)
 
     def getParent(self):

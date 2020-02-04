@@ -43,11 +43,29 @@ def getAbsolutePath(path, cur_dir=None):
 def getProjectPath():
     """
     Get project path.
+
+    :return: Full project path or None if error.
     """
     prj_name = global_func.getProjectName()
     if prj_name:
         framework_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         return os.path.join(framework_path, prj_name)
+    else:
+        log_func.warning(u'Get project path error')
+    return None
+
+
+def getFrameworkPath():
+    """
+    Get framework path.
+
+    :return: Full framework path or None if error.
+    """
+    path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    if path and os.path.exists(path):
+        return path
+    else:
+        log_func.warning(u'Get framework path error')
     return None
 
 
