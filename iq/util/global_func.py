@@ -98,3 +98,30 @@ def setEngineType(engine_type):
     :param engine_type: Engine type (wx, qt, cui and etc).
     """
     return config.set_cfg_param('ENGINE_TYPE', engine_type)
+
+
+def isWXEngine():
+    """
+    Set engine as WX.
+
+    :return: True/False.
+    """
+    return config.get_cfg_param('ENGINE_TYPE') == config.WX_ENGINE_TYPE
+
+
+def isQTEngine():
+    """
+    Set engine as QT.
+
+    :return: True/False.
+    """
+    return config.get_cfg_param('ENGINE_TYPE') == config.QT_ENGINE_TYPE
+
+
+def isCUIEngine():
+    """
+    Set engine as CUI.
+
+    :return: True/False.
+    """
+    return config.get_cfg_param('ENGINE_TYPE') == config.CUI_ENGINE_TYPE
