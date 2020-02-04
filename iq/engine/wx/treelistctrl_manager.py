@@ -9,6 +9,7 @@ TreeListCtrl manager.
 # import wx.lib.gizmos
 
 from ...util import log_func
+from ...util import spc_func
 
 from . import base_manager
 
@@ -88,7 +89,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
                 log_func.info(u'Create UNKNOWN root item of wx.TreeListCtrl control')
                 parent_item = ctrl.AddRoot(base_manager.UNKNOWN)
                 result = self.appendBranch(ctrl, parent_item=parent_item,
-                                           node={base_manager.CHILDREN_ATTR_NAME: node},
+                                           node={spc_func.CHILDREN_ATTR_NAME: node},
                                            columns=columns, ext_func=ext_func)
                 return result
             elif (isinstance(node, list) or isinstance(node, tuple)) and len(node) == 1:
@@ -100,7 +101,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
                 log_func.warning(u'Node type <%s> not support in wx.TreeListCtrl manager' % str(type(node)))
                 return False
 
-        for record in node.get(base_manager.CHILDREN_ATTR_NAME, list()):
+        for record in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
             label = str(record.get(columns[0], u''))
             item = ctrl.AppendItem(parent_item, label)
             for i, column in enumerate(columns[1:]):
@@ -115,8 +116,8 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
 
             ctrl.SetItemData(item, record)
 
-            if base_manager.CHILDREN_ATTR_NAME in record and record[base_manager.CHILDREN_ATTR_NAME]:
-                for child in record[base_manager.CHILDREN_ATTR_NAME]:
+            if spc_func.CHILDREN_ATTR_NAME in record and record[spc_func.CHILDREN_ATTR_NAME]:
+                for child in record[spc_func.CHILDREN_ATTR_NAME]:
                     self.appendBranch(ctrl, item, child, columns=columns, ext_func=ext_func)
 
     def appendBranch(self, ctrl=None, parent_item=None, node=None, columns=(), ext_func=None):

@@ -7,8 +7,6 @@ Base manager.
 
 __version__ = (0, 0, 0, 1)
 
-CHILDREN_ATTR_NAME = '_children_'
-
 UNKNOWN = u'Unknown'
 
 

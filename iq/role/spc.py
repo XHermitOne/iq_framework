@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Project specification module.
+Role specification module.
 """
 
 import os.path
@@ -11,19 +11,19 @@ from iq.object import object_spc
 __version__ = (0, 0, 0, 1)
 
 
-PROJECT_SPC = {
+ROLE_SPC = {
     'name': 'default',
-    'type': 'iqProject',
+    'type': 'iqRole',
     'description': '',
     'activate': True,
     'uuid': None,
 
-    'children': [],
+    'permissions': [],
 
-    '__icon__': 'fatcow%sbricks' % os.path.sep,
+    '__icon__': 'fatcow%skey_go' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': ['iqUser', 'iqRole'],
+    '__content__': [],
 }
 
-SPC = PROJECT_SPC
+SPC = ROLE_SPC
