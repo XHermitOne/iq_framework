@@ -6,7 +6,7 @@ Project specification module.
 """
 
 import os.path
-from ...object import object_spc
+from iq.object import object_spc
 
 __version__ = (0, 0, 0, 1)
 
