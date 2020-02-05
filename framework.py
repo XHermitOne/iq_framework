@@ -89,7 +89,7 @@ def main(*argv):
     if runtime_mode:
         kernel = iq.createKernel()
         kernel.start(mode=mode, project_name=project, username=username, password=password)
-    elif engine == config.WX_ENGINE_TYPE:
+    elif global_func.isWXEngine():
         from iq.editor.wx import start_editor
         start_editor.startEditor()
     else:

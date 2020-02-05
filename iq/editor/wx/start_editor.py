@@ -15,6 +15,11 @@ except:
 
 from ...util import log_func
 from ...engine.wx import wxbitmap_func
+from ...dialog import dlg_func
+
+from ...project import prj
+
+from ...project import prj_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -28,6 +33,8 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto):
         Constructor.
         """
         start_editor_dlg.iqStartEditorDialogProto.__init__(self, *args, **kwargs)
+
+        self._project_manager = prj.iqProjectManager()
 
     def init(self):
         """
@@ -62,18 +69,32 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto):
         """
         Button click handler <New project>.
         """
+        self._project_manager.create(parent=self)
         event.Skip()
 
     def onRunPrjButtonClick(self, event):
         """
         Button click handler <Run project>.
         """
+        prj_names = prj_func.getProjectNames()
+        selected_prj_name = dlg_func.getSingleChoiceDlg(parent=self, title='PROJECTS',
+                                                        prompt_text=u'Select a project to run:',
+                                                        choices=prj_names)
+        if selected_prj_name:
+            self._project_manager.run(selected_prj_name)
         event.Skip()
 
     def onDbgPrjButtonClick(self, event):
         """
         Button click handler <Debug project>.
         """
+        prj_names = prj_func.getProjectNames()
+        selected_prj_name = dlg_func.getSingleChoiceDlg(parent=self, title='PROJECTS',
+                                                        prompt_text=u'Select a project to debug:',
+                                                        choices=prj_names)
+        if selected_prj_name:
+            self._project_manager.debug(selected_prj_name)
+
         event.Skip()
 
     def onToolsButtonClick(self, event):

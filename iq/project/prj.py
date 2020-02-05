@@ -10,6 +10,7 @@ import os.path
 
 from ..util import file_func
 from ..util import log_func
+from ..dialog import dlg_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -26,14 +27,35 @@ class iqProjectManager(object):
         """
         self.name = name
 
-    def create(self, name):
+    def setName(self, name):
+        """
+        Set name of actual project.
+
+        :param name: Project name.
+        :return:
+        """
+        self.name = name
+
+    def create(self, name=None, parent=None):
         """
         Create new project.
 
         :param name: New project name.
+            If None then open dialog for input.
+        :param parent: Parent from.
         :return: True/False.
         """
+        if name is None:
+            name = dlg_func.getTextEntryDlg(parent=parent, title=u'PROJECT NAME',
+                                            prompt_text=u'Enter the name of the project:', default_value='new_name')
+        if name:
+            prj_path = self.getPath(name)
+            result = self.createPath(prj_path)
+            if result:
 
+                self.setName(name)
+                return True
+        return False
 
     def createPath(self, prj_path):
         """
@@ -71,3 +93,27 @@ class iqProjectManager(object):
             else:
                 log_func.warning(u'Not define project name')
         return None
+
+    def run(self, name=None):
+        """
+        Run project.
+
+        :param name: Project name. If None run actual.
+        :return: True/False.
+        """
+        if name:
+            self.setName(name)
+
+        pass
+
+    def debug(self, name=None):
+        """
+        Debug project.
+
+        :param name: Project name. If None debug actual.
+        :return: True/False.
+        """
+        if name:
+            self.setName(name)
+
+        pass

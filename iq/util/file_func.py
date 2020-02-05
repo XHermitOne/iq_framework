@@ -14,6 +14,8 @@ from .. import config
 
 __version__ = (0, 0, 0, 1)
 
+HIDDEN_DIRNAME_SIGN = '.'
+
 
 def getAbsolutePath(path, cur_dir=None):
     """
