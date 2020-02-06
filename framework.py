@@ -17,11 +17,12 @@ Launch parameters:
         --log|-l            Enable logging mode
 
     [Options]
-        --mode=             Startup mode (runtime, editor)
+        --mode=             Startup mode (runtime, editor, resource_editor)
         --engine=           Engine type (wx, qt or cui)
         --prj=              Project name
         --username=         User name
         --password=         User password
+        --res_filename=     Resource filename for resource editor
 """
 
 import sys
@@ -45,18 +46,20 @@ def main(*argv):
     try:
         options, args = getopt.getopt(argv, 'h?vdl',
                                       ['help', 'version', 'debug', 'log',
-                                       'mode=', 'engine=', 'prj=', 'username=', 'password='])
+                                       'mode=', 'engine=', 'prj=', 'username=', 'password=',
+                                       'res_filename='])
     except getopt.error as msg:
         log_func.error(str(msg), is_force_print=True)
         log_func.print_color_txt(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(2)
 
     mode = None
+    runtime_mode = False
     engine = config.DEFAULT_ENGINE_TYPE
     project = None
     username = None
     password = None
-    # runtime_mode = False
+    res_filename = None
 
     for option, arg in options:
         if option in ('-h', '--help', '-?'):
@@ -85,15 +88,22 @@ def main(*argv):
             username = arg
         elif option in ('--password',):
             password = arg
+        elif option in ('--res_filename',):
+            res_filename = arg
+        else:
+            log_func.warning(u'Not supported parameter <%s>' % option)
 
     if runtime_mode:
         kernel = iq.createKernel()
         kernel.start(mode=mode, project_name=project, username=username, password=password)
-    elif global_func.isWXEngine():
+    elif mode == iq.EDITOR_MODE_STATE and global_func.isWXEngine():
         from iq.editor.wx import start_editor
         start_editor.startEditor()
+    elif mode == iq.RESOURCE_EDITOR_MODE_STATE and global_func.isWXEngine():
+        from iq.editor.wx.res_editor import resource_editor
+        resource_editor.runResourceEditor(res_filename=res_filename)
     else:
-        log_func.error(u'Engine type <%s> not support' % engine)
+        log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
 
 
 if __name__ == '__main__':

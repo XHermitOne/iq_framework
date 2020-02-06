@@ -14,6 +14,9 @@ from . import file_func
 
 __version__ = (0, 0, 0, 1)
 
+# Resource file extension
+RESOURCE_FILE_EXT = '.res'
+
 
 def loadResource(res_filename):
     """

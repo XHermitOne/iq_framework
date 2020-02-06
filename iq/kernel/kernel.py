@@ -17,6 +17,7 @@ __version__ = (0, 0, 0, 1)
 
 RUNTIME_MODE_STATE = 'runtime'
 EDITOR_MODE_STATE = 'editor'
+RESOURCE_EDITOR_MODE_STATE = 'resource_editor'
 
 DEFAULT_RETURN_CODE = 0
 
