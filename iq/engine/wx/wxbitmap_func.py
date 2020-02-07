@@ -8,11 +8,13 @@ wxBitmap functions module.
 import os.path
 import wx
 
-from ...util import file_func
 from ...util import log_func
 from ...util import icon_func
 
 __version__ = (0, 0, 0, 1)
+
+DEFAULT_ICON_WIDTH = 16
+DEFAULT_ICON_HEIGHT = 16
 
 
 def createBitmap(img_filename, mask_colour=None):
@@ -24,7 +26,7 @@ def createBitmap(img_filename, mask_colour=None):
     :return: wx.Bitmap object or None if error.
     """
     try:
-        img_filename = file_func.getAbsolutePath(img_filename)
+        img_filename = os.path.abspath(img_filename)
         if (not img_filename) or (not os.path.exists(img_filename)):
             log_func.warning(u'Image file <%s> not found' % img_filename)
             return None
@@ -84,7 +86,8 @@ def createIconBitmap(icon_filename, mask_colour=None):
     :param mask_colour: Colour for create image mask. If None then mask not create.
     :return: wx.Bitmap object or None if error.
     """
-    img_filename =  icon_func.getIconFilename(icon_filename=icon_filename)
+    img_filename = icon_func.getIconFilename(icon_filename=icon_filename)
     if img_filename:
+        # log_func.debug(u'Create bitmap <%s>' % img_filename)
         return createBitmap(img_filename, mask_colour=mask_colour)
     return None

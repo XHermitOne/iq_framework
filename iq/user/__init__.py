@@ -5,5 +5,6 @@
 User component package.
 """
 
-__version__ = (0, 0, 0, 1)
+from .spc import SPC
 
+__version__ = (0, 0, 0, 1)

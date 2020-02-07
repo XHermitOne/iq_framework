@@ -589,19 +589,19 @@
                                             <event name="OnTreelistItemContextMenu"></event>
                                             <event name="OnTreelistItemExpanded"></event>
                                             <event name="OnTreelistItemExpanding"></event>
-                                            <event name="OnTreelistSelectionChanged"></event>
+                                            <event name="OnTreelistSelectionChanged">onResItemTreelistSelectionChanged</event>
                                             <event name="OnUpdateUI"></event>
                                             <object class="wxTreeListCtrlColumn" expanded="1">
                                                 <property name="alignment">wxALIGN_LEFT</property>
                                                 <property name="flag">wxCOL_RESIZABLE</property>
-                                                <property name="name">name_column</property>
-                                                <property name="width">wxCOL_WIDTH_DEFAULT</property>
+                                                <property name="name">Наименование</property>
+                                                <property name="width">wxCOL_WIDTH_AUTOSIZE</property>
                                             </object>
                                             <object class="wxTreeListCtrlColumn" expanded="1">
                                                 <property name="alignment">wxALIGN_LEFT</property>
                                                 <property name="flag">wxCOL_RESIZABLE</property>
-                                                <property name="name">description_column</property>
-                                                <property name="width">wxCOL_WIDTH_DEFAULT</property>
+                                                <property name="name">Описание</property>
+                                                <property name="width">wxCOL_WIDTH_AUTOSIZE</property>
                                             </object>
                                         </object>
                                     </object>
@@ -714,7 +714,7 @@
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
                                             <property name="enabled">1</property>
-                                            <property name="extra_style">wxPG_EX_MODE_BUTTONS</property>
+                                            <property name="extra_style"></property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
                                             <property name="font"></property>
@@ -739,7 +739,7 @@
                                             <property name="resize">Resizable</property>
                                             <property name="show">1</property>
                                             <property name="size"></property>
-                                            <property name="style">wxPGMAN_DEFAULT_STYLE</property>
+                                            <property name="style">wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER|wxPG_TOOLBAR</property>
                                             <property name="subclass"></property>
                                             <property name="toolbar_pane">0</property>
                                             <property name="tooltip"></property>
@@ -772,19 +772,19 @@
                                             <event name="OnSize"></event>
                                             <event name="OnUpdateUI"></event>
                                             <object class="propGridPage" expanded="1">
-                                                <property name="bitmap">Load From Art Provider; gtk-properties; wxART_MENU</property>
+                                                <property name="bitmap">Load From Art Provider; gtk-index; wxART_MENU</property>
                                                 <property name="label">Attributes</property>
                                                 <property name="name">attributes_propertyGridPage</property>
                                                 <property name="permission">protected</property>
                                             </object>
                                             <object class="propGridPage" expanded="1">
-                                                <property name="bitmap">Load From Art Provider; gtk-preferences; wxART_MENU</property>
+                                                <property name="bitmap">Load From Art Provider; gtk-execute; wxART_MENU</property>
                                                 <property name="label">Methods</property>
                                                 <property name="name">methods_propertyGridPage</property>
                                                 <property name="permission">protected</property>
                                             </object>
                                             <object class="propGridPage" expanded="1">
-                                                <property name="bitmap">Load From Art Provider; gtk-execute; wxART_MENU</property>
+                                                <property name="bitmap">Load From Art Provider; gtk-about; wxART_MENU</property>
                                                 <property name="label">Events</property>
                                                 <property name="name">events_propertyGridPage</property>
                                                 <property name="permission">protected</property>

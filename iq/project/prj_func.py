@@ -21,5 +21,5 @@ def getProjectNames():
     """
     framework_path = file_func.getFrameworkPath()
 
-    prj_names = [dirname for dirname in os.listdir(framework_path) if not dirname.startswith(file_func.HIDDEN_DIRNAME_SIGN) and dirname != 'iq']
+    prj_names = [dirname for dirname in os.listdir(framework_path) if dirname not in file_func.HIDDEN_DIRNAMES and dirname != 'iq']
     return prj_names

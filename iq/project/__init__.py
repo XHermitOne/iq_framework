@@ -5,4 +5,6 @@
 Project component package.
 """
 
+from .spc import SPC
+
 __version__ = (0, 0, 0, 1)

@@ -20,6 +20,7 @@ PROJECT_SPC = {
 
     'children': [],
 
+    '__package__': u'Project',
     '__icon__': 'fatcow%sbricks' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,

@@ -83,22 +83,23 @@ class iqProjectManager(object):
                 return False
 
         if not prj_name:
-            prj_name = os.path.basename(prj_path)
-
-        if not prj_name.startswith(res_func.RESOURCE_FILE_EXT):
-            prj_name += res_func.RESOURCE_FILE_EXT
+            prj_name = os.path.splitext(os.path.basename(prj_path))[0]
 
         try:
-            prj_res_filename = os.path.join(prj_path, prj_name)
+            prj_res_filename = os.path.join(prj_path, prj_name + res_func.RESOURCE_FILE_EXT)
 
             prj_resource = spc_func.clearResourceFromSpc(spc.SPC)
+            prj_resource['name'] = prj_name
+            prj_resource['description'] = u'Application project'
 
             user_resource = spc_func.clearResourceFromSpc(user_spc.SPC)
             user_resource['name'] = 'admin'
+            user_resource['description'] = u'Administrator'
             user_resource['roles'] = ['admins']
 
             role_resource = spc_func.clearResourceFromSpc(role_spc.SPC)
             role_resource['name'] = 'admins'
+            role_resource['description'] = u'Administrators'
 
             prj_resource[spc_func.CHILDREN_ATTR_NAME] = [user_resource, role_resource]
 

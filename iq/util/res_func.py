@@ -16,6 +16,7 @@ __version__ = (0, 0, 0, 1)
 
 # Resource file extension
 RESOURCE_FILE_EXT = '.res'
+PICKLE_RESOURCE_FILE_EXT = '.pcl'
 
 
 def loadResource(res_filename):
@@ -26,12 +27,18 @@ def loadResource(res_filename):
     :return: Resource struct data or None if error.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
-    struct = loadResourcePickle(res_filename)
-    if struct is None:
+    struct = None
+    if file_func.isFilenameExt(res_filename, PICKLE_RESOURCE_FILE_EXT):
+        struct = loadResourcePickle(res_filename)
+    elif file_func.isFilenameExt(res_filename, RESOURCE_FILE_EXT):
         struct = loadResourceText(res_filename)
+    else:
+        log_func.warning(u'Not resource file <%s>. Extension not <%s> or <%s>' % (res_filename,
+                                                                                  PICKLE_RESOURCE_FILE_EXT,
+                                                                                  RESOURCE_FILE_EXT))
+
     if struct is None:
         log_func.warning(u'Resource file format error: <%s>.' % res_filename)
-        return None
     return struct
 
 
@@ -92,6 +99,9 @@ def saveResourcePickle(res_filename, resource_data):
     :return: True/False.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
+    if file_func.isFilenameExt(res_filename, RESOURCE_FILE_EXT):
+        res_filename = file_func.setFilenameExt(res_filename, PICKLE_RESOURCE_FILE_EXT)
+
     f = None
     try:
         dir_name = os.path.dirname(res_filename)
@@ -122,6 +132,9 @@ def saveResourceText(res_filename, resource_data):
     :return: True/False.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
+    if file_func.isFilenameExt(res_filename, PICKLE_RESOURCE_FILE_EXT):
+        res_filename = file_func.setFilenameExt(res_filename, RESOURCE_FILE_EXT)
+
     f = None
     try:
         dir_name = os.path.dirname(res_filename)

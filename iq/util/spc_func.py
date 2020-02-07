@@ -11,9 +11,17 @@ from . import log_func
 
 __version__ = (0, 0, 0, 1)
 
-CHILDREN_ATTR_NAME = '_children_'
-PARENT_ATTR_NAME = '__parent__'
 SYS_ATTR_SIGN = '__'
+CHILDREN_ATTR_NAME = '_children_'
+
+ICON_ATTR_NAME = '__icon__'
+PARENT_ATTR_NAME = '__parent__'
+EDIT_ATTR_NAME = '__edit__'
+HELP_ATTR_NAME = '__help__'
+DOC_ATTR_NAME = '__doc__'
+
+BASIC_ATTRIBUTES = ('name', 'type', 'description', 'activate', 'guid')
+ALL_BASIC_ATTRIBUTES = list(BASIC_ATTRIBUTES) + [CHILDREN_ATTR_NAME]
 
 
 def fillResourceBySpc(resource=None, spc=None):

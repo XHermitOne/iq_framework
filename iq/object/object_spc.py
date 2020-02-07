@@ -17,7 +17,7 @@ OBJECT_SPC = {
     'activate': True,
     'guid': None,
 
-    'children': [],
+    '_children_': [],
 
     '__icon__': None,
     '__parent__': None,
@@ -36,7 +36,7 @@ OBJECT_SPC = {
         'activate': property_editor_id.CHECKBOX_EDITOR,
         'guid': property_editor_id.READONLY_EDITOR,
     },
-    '__methods__': {},
-    '__events__': {},
+    # '__methods__': {},
+    # '__events__': {},
     '__content__': [],
 }

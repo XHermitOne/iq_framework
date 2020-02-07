@@ -58,9 +58,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.resource_panel = wx.Panel( self.editor_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.resource_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.resource_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_SINGLE )
-		self.resource_treeListCtrl.AddColumn( u"name_column", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT, wx.COL_RESIZABLE )
-		self.resource_treeListCtrl.AddColumn( u"description_column", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT, wx.COL_RESIZABLE )
+		self.resource_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.resource_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, agwStyle=wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT )
+		self.resource_treeListCtrl.AddColumn( u"Наименование", 200, wx.ALIGN_LEFT)
+		self.resource_treeListCtrl.AddColumn( u"Описание", 300, wx.ALIGN_LEFT)
 		
 		bSizer2.Add( self.resource_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		
@@ -71,14 +71,13 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.property_panel = wx.Panel( self.editor_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer3 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.object_propertyGridManager = pg.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE)
-		self.object_propertyGridManager.SetExtraStyle( wx.propgrid.PG_EX_MODE_BUTTONS ) 
+		self.object_propertyGridManager = pg.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE|wx.propgrid.PG_SPLITTER_AUTO_CENTER|wx.propgrid.PG_TOOLBAR)
 		
-		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( u"Attributes", wx.ArtProvider.GetBitmap( u"gtk-properties", wx.ART_MENU ) );
+		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( u"Attributes", wx.ArtProvider.GetBitmap( u"gtk-index", wx.ART_MENU ) );
 		
-		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( u"Methods", wx.ArtProvider.GetBitmap( u"gtk-preferences", wx.ART_MENU ) );
+		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( u"Methods", wx.ArtProvider.GetBitmap( u"gtk-execute", wx.ART_MENU ) );
 		
-		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( u"Events", wx.ArtProvider.GetBitmap( u"gtk-execute", wx.ART_MENU ) );
+		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( u"Events", wx.ArtProvider.GetBitmap( u"gtk-about", wx.ART_MENU ) );
 		bSizer3.Add( self.object_propertyGridManager, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		
@@ -101,6 +100,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.Bind( wx.EVT_TOOL, self.onDesignToolClicked, id = self.design_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onScriptToolClicked, id = self.script_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onHelpToolClicked, id = self.help_tool.GetId() )
+		self.resource_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onResItemTreelistSelectionChanged )
 	
 	def __del__( self ):
 		pass
@@ -126,6 +126,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		event.Skip()
 	
 	def onHelpToolClicked( self, event ):
+		event.Skip()
+	
+	def onResItemTreelistSelectionChanged( self, event ):
 		event.Skip()
 	
 	def editor_splitterOnIdle( self, event ):
