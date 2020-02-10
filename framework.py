@@ -18,7 +18,7 @@ Launch parameters:
 
     [Options]
         --mode=             Startup mode (runtime, editor, resource_editor)
-        --engine=           Engine type (wx, qt or cui)
+        --engine=           Engine type (WX, QT or CUI)
         --prj=              Project name
         --username=         User name
         --password=         User password

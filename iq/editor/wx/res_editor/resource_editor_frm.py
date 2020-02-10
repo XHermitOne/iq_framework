@@ -101,6 +101,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.Bind( wx.EVT_TOOL, self.onScriptToolClicked, id = self.script_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onHelpToolClicked, id = self.help_tool.GetId() )
 		self.resource_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onResItemTreelistSelectionChanged )
+		self.object_propertyGridManager.Bind( pg.EVT_PG_CHANGED, self.onObjPropertyGridChanged )
 	
 	def __del__( self ):
 		pass
@@ -129,6 +130,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		event.Skip()
 	
 	def onResItemTreelistSelectionChanged( self, event ):
+		event.Skip()
+	
+	def onObjPropertyGridChanged( self, event ):
 		event.Skip()
 	
 	def editor_splitterOnIdle( self, event ):

@@ -16,8 +16,10 @@ except:
 from ....util import log_func
 from ....util import res_func
 from ....util import spc_func
+from ....util import global_func
 from ....engine.wx import wxbitmap_func
 from ....import components
+from .... import project
 
 from . import property_editor_manager
 
@@ -96,6 +98,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         name = resource.get('name', u'Unknown')
         component_type = resource.get('type', None)
+        if component_type == project.PROJECT_COMPONENT_TYPE:
+            global_func.setProjectName(name)
+
         description = resource.get('description', u'')
         icon_idx = self.component_icons.get(component_type, None)
         log_func.debug(u'Add new resource item <%s : %s : %s : %s>' % (component_type, name, description, icon_idx))
@@ -131,7 +136,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             root_tem = self.resource_treeListCtrl.GetRootItem()
             if root_tem and root_tem.IsOk():
                 self.resource_treeListCtrl.Expand(root_tem)
-
+                resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(root_tem)
+                self.buildPropertyEditors(property_editor=self.object_propertyGridManager, resource=resource)
             return result
         except:
             log_func.fatal(u'Load resource in editor error')
@@ -149,6 +155,71 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             log_func.fatal(u'Resource tree list control item selection changes handler error')
         event.Skip()
 
+    def getSelectedResource(self):
+        """
+        Get selected object resource.
+
+        :return: Object resource or None if not selected.
+        """
+        resource = None
+        selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
+        if selected_item and selected_item.IsOk():
+            resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(selected_item)
+        return resource
+
+    def refreshResourceItem(self, item=None, name='unknown', description=''):
+        """
+        Refresh resource tree item.
+
+        :param item: Tree item.
+        :param name: Name.
+        :param description: Description.
+        :return: True/False.
+        """
+        if item is None:
+            item = self.resource_treeListCtrl.GetMainWindow().GetRootItem()
+
+        if item and item.IsOk():
+            self.resource_treeListCtrl.GetMainWindow().SetItemText(item, name, 0)
+            self.resource_treeListCtrl.GetMainWindow().SetItemText(item, description, 1)
+
+    def onObjPropertyGridChanged(self, event):
+        """
+        Changed attribute value in property grid handler.
+        """
+        wx_property = event.GetProperty()
+        if wx_property:
+            name = wx_property.GetName()
+            str_value = wx_property.GetValueAsString()
+            log_func.info(u'Property [%s]. New value <%s>' % (name, str_value))
+
+            selected_resource = self.getSelectedResource()
+            if selected_resource:
+                selected_component_type = selected_resource.get('type', None)
+                if selected_component_type:
+                    spc = components.findComponentSpc(selected_component_type)
+                    spc = spc_func.fillSpcByParent(spc)
+                    value = self.convertPropertyValue(name, str_value, spc)
+                    if self.validatePropertyValue(name, value, spc):
+                        selected_resource[name] = value
+                        selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
+
+                        if name in ('name', 'description'):
+                            self.refreshResourceItem(selected_item,
+                                                     selected_resource.get('name', 'unknown'),
+                                                     selected_resource.get('description', ''))
+                    else:
+                        log_func.error(u'Value <%s> of property [%s] not valid' % (str_value, name))
+
+        # event.Skip()
+
+    def onSaveAsToolClicked(self, event):
+        """
+        Save tool button click handler.
+        """
+
+        event.Skip()
+
 
 def openResourceEditor(parent=None, res_filename=None):
     """
@@ -157,12 +228,13 @@ def openResourceEditor(parent=None, res_filename=None):
     :param res_filename: Resource file name.
     :return: True/False.
     """
-    log_func.debug(u'Open resource editor. Resource file <%s>' % res_filename)
+    log_func.info(u'Open resource editor. Resource file <%s>' % res_filename)
     frame = None
     try:
         frame = iqResourceEditor(parent=parent)
         frame.init()
         resource = res_func.loadResourceText(res_filename)
+        resource = spc_func.fillResourceBySpc(resource=resource)
         frame.loadResource(resource)
         frame.Show()
         return True

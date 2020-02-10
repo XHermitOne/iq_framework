@@ -97,3 +97,21 @@ def getComponentSpcCache():
     if globals()['COMPONENT_SPC_CACHE'] is None:
         initComponentSpcCache()
     return globals()['COMPONENT_SPC_CACHE']
+
+
+def findComponentSpc(component_type):
+    """
+    Find component specification by component type in cache.
+
+    :param component_type: Component type.
+    :return: Component specification or None if error.
+    """
+    packages = getComponentSpcCache()
+    for package_name, package in packages.items():
+        log_func.debug(u'Package <%s>' % package_name)
+        component_types = [component_spc.get('type', None) for component_spc in package]
+        if component_type in component_types:
+            find_spc = package[component_types.index(component_type)]
+            return find_spc
+    log_func.warning(u'Component <%s> not found in specification cache' % component_type)
+    return None

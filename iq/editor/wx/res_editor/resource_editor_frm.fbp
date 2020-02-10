@@ -763,7 +763,7 @@
                                             <event name="OnMouseEvents"></event>
                                             <event name="OnMouseWheel"></event>
                                             <event name="OnPaint"></event>
-                                            <event name="OnPropertyGridChanged"></event>
+                                            <event name="OnPropertyGridChanged">onObjPropertyGridChanged</event>
                                             <event name="OnPropertyGridChanging"></event>
                                             <event name="OnRightDClick"></event>
                                             <event name="OnRightDown"></event>

@@ -31,7 +31,7 @@ OBJECT_SPC = {
     },
     '__edit__': {
         'name': property_editor_id.STRING_EDITOR,
-        'type': property_editor_id.STRING_EDITOR,
+        'type': property_editor_id.READONLY_EDITOR,
         'description': property_editor_id.TEXT_EDITOR,
         'activate': property_editor_id.CHECKBOX_EDITOR,
         'guid': property_editor_id.READONLY_EDITOR,

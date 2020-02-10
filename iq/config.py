@@ -36,11 +36,12 @@ PROFILE_PATH = os.path.join(os.environ.get('HOME', os.path.dirname(__file__)),
 KERNEL = None
 
 # Engine type. wx, qt or cui
-WX_ENGINE_TYPE = 'wx'
-QT_ENGINE_TYPE = 'qt'
-CUI_ENGINE_TYPE = 'cui'
+WX_ENGINE_TYPE = 'WX'
+QT_ENGINE_TYPE = 'QT'
+CUI_ENGINE_TYPE = 'CUI'
 DEFAULT_ENGINE_TYPE = WX_ENGINE_TYPE
 ENGINE_TYPE = DEFAULT_ENGINE_TYPE
+ENGINE_TYPES = (WX_ENGINE_TYPE, QT_ENGINE_TYPE, CUI_ENGINE_TYPE)
 
 
 def get_cfg_param(name):

@@ -155,4 +155,3 @@ def saveResourceText(res_filename, resource_data):
             f.close()
         log_func.fatal(u'Text resource file <%s> save error' % res_filename)
     return False
-

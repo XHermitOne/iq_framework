@@ -10,15 +10,16 @@ from iq.object import object_spc
 
 __version__ = (0, 0, 0, 1)
 
+PROJECT_COMPONENT_TYPE = 'iqProject'
 
 PROJECT_SPC = {
     'name': 'default',
-    'type': 'iqProject',
+    'type': PROJECT_COMPONENT_TYPE,
     'description': '',
     'activate': True,
     'uuid': None,
 
-    'children': [],
+    '_children_': [],
 
     '__package__': u'Project',
     '__icon__': 'fatcow%sbricks' % os.path.sep,

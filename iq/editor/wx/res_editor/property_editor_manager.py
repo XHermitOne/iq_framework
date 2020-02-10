@@ -14,7 +14,11 @@ from ....util import spc_func
 
 from ... import property_editor_id
 
+from ....engine.wx.dlg import wxdlg_func
+
 __version__ = (0, 0, 0, 1)
+
+VALIDATE_ENABLE = True
 
 
 class iqPropertyEditorManager(object):
@@ -71,8 +75,16 @@ class iqPropertyEditorManager(object):
             wx_property = wx.propgrid.FloatProperty(name, value=value)
 
         elif property_type == property_editor_id.CHOICE_EDITOR:
+            log_func.debug(u'Attribute <%s>' % name)
             choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
-            choices = [str(item) for item in choices]
+            if isinstance(choices, (list, tuple)):
+                choices = [str(item) for item in choices]
+            elif callable(choices):
+                choices = choices()
+            else:
+                log_func.error(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                choices = list()
+
             idx = choices.index(value) if value in choices else 0
             wx_property = wx.propgrid.EnumProperty(name, name, choices,
                                                    [i for i in range(len(choices))], idx)
@@ -85,14 +97,16 @@ class iqPropertyEditorManager(object):
             wx_property.SetAttribute('UseCheckbox', True)
 
         elif property_type == property_editor_id.MULTICHOICE_EDITOR:
-            # choice_list = None
-            # codes = None
-            # value_list = []
-
-            choices_dict = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', dict())
-            choices = list(choices_dict.keys())
-            str_value_lst = [key for key, code in choices_dict.items() if code & value]
-            wx_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=str_value_lst)
+            choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', dict())
+            if isinstance(choices, dict):
+                choices = list(choices.keys())
+            elif callable(choices):
+                choices = choices()
+            else:
+                log_func.error(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                choices = list()
+            values = [name for name in choices if name in value]
+            wx_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=values)
 
         elif property_type == property_editor_id.STRINGLIST_EDITOR:
             value_list = []
@@ -162,8 +176,8 @@ class iqPropertyEditorManager(object):
             if not isinstance(value, str):
                 value = str(value)
             wx_property = wx.propgrid.StringProperty(name, value=value)
-            wx_property.SetAttribute('Hint', 'This is a hint')
-            wx_property.SetAttribute('Password', True)
+            # wx_property.SetAttribute('Hint', 'This is a hint')
+            # wx_property.SetAttribute('Password', True)
 
         elif property_type == property_editor_id.FILE_EDITOR:
             if not isinstance(value, str):
@@ -191,6 +205,26 @@ class iqPropertyEditorManager(object):
             wx_property.SetHelpString(help_string)
         return wx_property
 
+    def _getAttrEditorType(self, resource, attr_name):
+        """
+        Get attribute editor type from resource.
+
+        :param resource: Resource struct.
+        :param attr_name: Attribute name.
+        :return: Attribute editor type code.
+        """
+        editors = resource.get(spc_func.EDIT_ATTR_NAME, dict())
+        edt_type = property_editor_id.READONLY_EDITOR
+        if isinstance(editors, dict):
+            edt_type = editors.get(attr_name, property_editor_id.READONLY_EDITOR)
+            edt_type = edt_type.get('editor',
+                                    property_editor_id.READONLY_EDITOR) if isinstance(edt_type,
+                                                                                      dict) else edt_type
+        else:
+            log_func.warning(u'Not define attribute editors in resource component <%s>' % resource.get('type', None))
+        log_func.debug(u'Editor type [%d]' % edt_type)
+        return edt_type
+
     def buildPropertyEditors(self, property_editor=None, resource=None):
         """
         Build all property editors.
@@ -216,9 +250,7 @@ class iqPropertyEditorManager(object):
 
         attributes = spc_func.BASIC_ATTRIBUTES
         for attr_name in attributes:
-            edt_type = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-            if isinstance(edt_type, dict):
-                edt_type = edt_type.get('editor', property_editor_id.READONLY_EDITOR)
+            edt_type = self._getAttrEditorType(resource, attr_name)
             wx_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type, spc=resource)
             if wx_property is not None:
                 prop_page.Append(wx_property)
@@ -228,13 +260,17 @@ class iqPropertyEditorManager(object):
         prop_page.Append(wx.propgrid.PropertyCategory(u'2 - Special'))
 
         attributes = [attr_name for attr_name in self.getResourceAttributes(resource) if attr_name not in spc_func.BASIC_ATTRIBUTES]
+        log_func.debug(u'Attributes: %s' % str(attributes))
         for attr_name in attributes:
-            edt_type = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-            if isinstance(edt_type, dict):
-                edt_type = edt_type.get('editor', property_editor_id.READONLY_EDITOR)
+            log_func.debug(u'Attribute editor <%s> ...' % attr_name)
+            edt_type = self._getAttrEditorType(resource, attr_name)
             wx_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type, spc=resource)
             if wx_property is not None:
-                prop_page.Append(wx_property)
+                add_property = prop_page.Append(wx_property)
+                # Advanced customization of property editors
+                if edt_type == property_editor_id.PASSWORD_EDITOR:
+                    add_property.SetAttribute('Hint', 'This is a hint')
+                    add_property.SetAttribute('Password', True)
                 # if edt_type == icDefInf.EDT_PY_SCRIPT:
                 #     # Связывать расширенный редактор со свойством можно только после добавления
                 #     # свойства
@@ -251,9 +287,7 @@ class iqPropertyEditorManager(object):
         #   3 - Methods page
         methods = self.getResourceMethods(resource)
         for method_name in methods:
-            edt_type = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-            if isinstance(edt_type, dict):
-                edt_type = edt_type.get('editor', property_editor_id.READONLY_EDITOR)
+            edt_type = self._getAttrEditorType(resource, method_name)
             wx_property = self.createPropertyEditor(method_name, resource.get(method_name, None), edt_type, spc=resource)
             if wx_property is not None:
                 methods_page.Append(wx_property)
@@ -268,9 +302,7 @@ class iqPropertyEditorManager(object):
         #   4 - Events page
         events = self.getResourceEvents(resource)
         for event_name in events:
-            edt_type = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-            if isinstance(edt_type, dict):
-                edt_type = edt_type.get('editor', property_editor_id.READONLY_EDITOR)
+            edt_type = self._getAttrEditorType(resource, event_name)
             wx_property = self.createPropertyEditor(event_name, resource.get(event_name, None), edt_type, spc=resource)
             if wx_property is not None:
                 events_page.Append(wx_property)
@@ -286,6 +318,7 @@ class iqPropertyEditorManager(object):
         :return: Attribute name list.
         """
         edit_section = resource.get(spc_func.EDIT_ATTR_NAME, dict())
+        log_func.debug(u'Resource __edit__ section: %s' % str(edit_section))
         return [attr_name for attr_name,
                               editor_type in list(edit_section.items()) if
                 editor_type not in (property_editor_id.METHOD_EDITOR,
@@ -314,3 +347,242 @@ class iqPropertyEditorManager(object):
         return [attr_name for attr_name,
                               editor_type in list(edit_section.items()) if
                 editor_type == property_editor_id.EVENT_EDITOR]
+
+    def getConvertedValue(self, attr_name, str_value, property_type, spc=None):
+        """
+        Values converted to type in specification.
+
+        :param attr_name: Attribute name.
+        :param str_value: Value as string.
+        :param property_type: Property editor type.
+        :param spc: Component specification.
+        :return: Converted property value or None if error.
+        """
+        value = None
+
+        if property_type == property_editor_id.STRING_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.TEXT_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.INTEGER_EDITOR:
+            try:
+                value = int(str_value)
+            except:
+                log_func.fatal(u'Error casting to a integer <%s>' % str_value)
+                value = 0
+
+        elif property_type == property_editor_id.FLOAT_EDITOR:
+            try:
+                value = float(str_value)
+            except:
+                log_func.fatal(u'Error casting to a real number <%s>' % str_value)
+                value = 0.0
+
+        elif property_type == property_editor_id.CHOICE_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.CHECKBOX_EDITOR:
+            try:
+                value = eval(str_value)
+            except:
+                log_func.fatal(u'Error casting to a boolean <%s>' % str_value)
+                value = False
+
+        elif property_type == property_editor_id.MULTICHOICE_EDITOR:
+            try:
+                value = eval(str_value)
+            except:
+                log_func.fatal(u'Error casting to a multichoice string list <%s>' % str_value)
+
+        elif property_type == property_editor_id.STRINGLIST_EDITOR:
+            try:
+                value = eval(str_value)
+            except:
+                log_func.fatal(u'Error casting to a string list <%s>' % str_value)
+
+        elif property_type == property_editor_id.READONLY_EDITOR:
+            try:
+                value = eval(str_value)
+            except:
+                log_func.fatal(u'Error casting to a ... <%s>' % str_value)
+
+        elif property_type == property_editor_id.EXTERNAL_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.CUSTOM_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.COLOUR_EDITOR:
+            try:
+                value = eval(str_value)
+            except NameError:
+                # If the colour is specified by name
+                colour_name = str_value.upper()
+                colour = wx.Colour(colour_name)
+                value = (colour.Red(), colour.Green(), colour.Blue())
+
+        elif property_type == property_editor_id.FONT_EDITOR:
+            value = dict()
+            value_list = str_value.split('; ')
+            value['type'] = 'Font'
+            value['name'] = 'default'
+            value['size'] = value_list[0]
+            value['face_name'] = value_list[1]
+            value['style'] = value_list[2]
+            value['weight'] = value_list[3]
+            value['underline'] = value_list[4]
+            value['family'] = value_list[5]
+
+        elif property_type == property_editor_id.POINT_EDITOR:
+            try:
+                value = eval(str_value)
+            except:
+                log_func.fatal(u'Point value <%s> convert error' % str_value)
+                value = (0, 0)
+
+        elif property_type == property_editor_id.SIZE_EDITOR:
+            try:
+                value = eval(str_value)
+            except:
+                log_func.fatal(u'Size value <%s> convert error' % str_value)
+                value = (0, 0)
+
+        elif property_type == property_editor_id.PASSWORD_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.FILE_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.DIR_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.IMAGE_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.SCRIPT_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.METHOD_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.EVENT_EDITOR:
+            value = str_value
+
+        else:
+            log_func.error(u'Not support property editor. Code [%d]' % property_type)
+
+        return value
+
+    def convertPropertyValue(self, name, str_value, spc):
+        """
+        Convert the property value to the type specified in the specification.
+
+        :param name: Attribute name.
+        :param str_value: Value as string.
+        :param spc: Component specification.
+        """
+        value = None
+        if spc is None:
+            log_func.error(u'Not define component specification')
+            return None
+
+        property_type = self.findPropertyType(name, spc)
+        if property_type is None:
+            # По умолчанию все не определенные атрибуты - скриптовые
+            property_type = property_editor_id.SCRIPT_EDITOR
+        value = self.getConvertedValue(name, str_value, property_type, spc)
+        return value
+
+    def findPropertyEditor(self, name, spc):
+        """
+        Get property/attribute editor dictionary.
+
+        :type name: C{string}
+        :param name: Attribute name.
+        :rtype: C{int}
+        :param spc: Fill component specification.
+        :return: Property/attribute editor dictionary or None if not found.
+        """
+        editor = None
+
+        editors = spc.get(spc_func.EDIT_ATTR_NAME, dict())
+        for attr_name, attr_editor in editors.items():
+            if attr_name == name:
+                editor = attr_editor
+                break
+
+        # Find in parent specification
+        if editor is None and spc_func.PARENT_ATTR_NAME in spc:
+            editor = self.findPropertyEditor(name, spc[spc_func.PARENT_ATTR_NAME])
+        return editor
+
+    def validatePropertyValue(self, name, value, spc):
+        """
+        Validate property value.
+
+        :type name: C{string}
+        :param name: Attribute name.
+        :type value: C{string}
+        :param value: Attribute value.
+        :rtype: C{int}
+        :param spc: Fill component specification.
+        :return: True - valid / False - not valid.
+        """
+        if not VALIDATE_ENABLE:
+            return True
+        valid = True
+
+        # Valid attribute type
+        editor = self.findPropertyEditor(name, spc)
+
+        if editor is None:
+            msg = u'Not define attribute editor <%s>' % name
+            log_func.error(msg)
+            wxdlg_func.openErrBox(u'VALIDATION', msg)
+            valid = False
+        elif isinstance(editor, int):
+            # No need to valid
+            pass
+        elif isinstance(editor, dict):
+            if 'valid' in editor and callable(editor['valid']):
+                try:
+                    valid = editor['valid'](value)
+                except:
+                    msg = 'Valid property/attribute <%s : %s> error' % (name, value)
+                    log_func.fatal(msg)
+                    wxdlg_func.openFatalBox(u'VALIDATION', msg)
+                    valid = False
+        else:
+            log_func.error(u'Not support property/attribute editor type <%s>' % type(editor))
+            valid = False
+
+        return valid
+
+    def findPropertyType(self, name, spc):
+        """
+        Find in specification property/attribute type.
+
+        :param name: Property/Attribute name.
+        :param spc: Component specification.
+        :return: Property editor type or None if not found.
+        """
+        property_type = None
+
+        editors = spc.get(spc_func.EDIT_ATTR_NAME, dict())
+        for attr_name, attr_editor in editors.items():
+            if isinstance(attr_editor, int):
+                property_type = attr_editor
+            elif isinstance(attr_editor, dict):
+                property_type = attr_editor.get('editor', None)
+            else:
+                log_func.error(u'Not supported property editor type <%s : %s> in <%s> specification' % (name,
+                                                                                                        type(attr_editor),
+                                                                                                        spc.get('type', None)))
+
+        # Find in parent specification
+        if property_type is None and spc_func.PARENT_ATTR_NAME in spc:
+            property_type = self.findPropertyType(name, spc[spc_func.PARENT_ATTR_NAME])
+        return property_type
+
