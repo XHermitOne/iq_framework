@@ -84,7 +84,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
         if not os.path.isdir(path):
             os.makedirs(path)
 
-        # If there is no ini file, then create it
+        # If there is no ini file, then _create it
         if not os.path.isfile(ini_filename):
             ini_file = open(ini_filename, 'wt')
             ini_file.write('')
@@ -96,7 +96,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
         ini_parser.readfp(ini_file)
         ini_file.close()
 
-        # If there is no such section, then create it.
+        # If there is no such section, then _create it.
         if not ini_parser.has_section(section_name):
             ini_parser.add_section(section_name)
 

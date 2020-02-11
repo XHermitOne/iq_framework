@@ -19,8 +19,10 @@ from ..util import file_func
 __version__ = (0, 0, 0, 1)
 
 COMPONENT_SPC_CACHE = None
+COMPONENTS = None
 UNKNOWN_PACKAGE_NAME = 'Other'
 DEFAULT_SPC_PY = 'spc.py'
+DEFAULT_COMPONENT_PY = 'component.py'
 
 
 def getComponentSpc(py_pkg, py_pkg_path):
@@ -84,7 +86,7 @@ def initComponentSpcCache():
     :return: True/False.
     """
     component_spc_cache = buildComponentSpcCache()
-    globals()['COMPONENT_SPC_CACHE'] = buildComponentSpcCache() if component_spc_cache else dict()
+    globals()['COMPONENT_SPC_CACHE'] = component_spc_cache if component_spc_cache else dict()
     return bool(component_spc_cache)
 
 
@@ -115,3 +117,76 @@ def findComponentSpc(component_type):
             return find_spc
     log_func.warning(u'Component <%s> not found in specification cache' % component_type)
     return None
+
+
+def getComponents():
+    """
+    Get components cache.
+
+    :return:
+    """
+    if globals()['COMPONENTS'] is None:
+        initComponents()
+    return globals()['COMPONENTS']
+
+
+def initComponents():
+    """
+    Initialization component cache.
+
+    :return: True/False.
+    """
+    components = buildComponents()
+    globals()['COMPONENTS'] = components if components else dict()
+    return True
+
+
+def buildComponents():
+    """
+    Build components cache.
+
+    :return: Components cache dictionary.
+    """
+    result = dict()
+    try:
+        prj_type = project.SPC.get('type', None)
+        prj_component = project.COMPONENT
+        result[prj_type] = prj_component
+
+        components_dirname = os.path.dirname(__file__)
+        component_names = file_func.getDirectoryNames(components_dirname)
+
+        for py_pkg in component_names:
+            py_pkg_path = os.path.join(components_dirname, py_pkg)
+
+            component_pkg = imp_func.loadPyModule(py_pkg, py_pkg_path)
+            component_type = None
+            if component_pkg and hasattr(component_pkg, 'SPC'):
+                component_type = component_pkg.SPC.get('type', None)
+            else:
+                spc_module_path = os.path.join(py_pkg_path, DEFAULT_SPC_PY)
+                spc_module = imp_func.loadPyModule(py_pkg, spc_module_path)
+                if spc_module and hasattr(spc_module, 'SPC'):
+                    component_type = spc_module.SPC.get('type', None)
+
+            component_class = None
+            if component_pkg and hasattr(component_pkg, 'COMPONENT'):
+                component_class = component_pkg.COMPONENT
+            else:
+                component_module_path = os.path.join(py_pkg_path, DEFAULT_COMPONENT_PY)
+                component_module = imp_func.loadPyModule(py_pkg, component_module_path)
+                if component_module and hasattr(component_module, 'COMPONENT'):
+                    component_class = component_module.COMPONENT
+
+            if component_type is None:
+                log_func.error(u'Not find component type in <%s>' % py_pkg)
+            if component_class is None:
+                log_func.error(u'Not find component class in <%s>' % py_pkg)
+            if component_type and component_class:
+                result[component_type] = component_class
+                log_func.info(u'Component <%s> registered' % component_type)
+
+        return result
+    except:
+        log_func.fatal(u'Build component specification cache error')
+    return dict()

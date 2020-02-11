@@ -140,3 +140,43 @@ def getSpcByType(component_type):
     :return: Component specification or None if error.
     """
     return components.findComponentSpc(component_type=component_type)
+
+
+def findObjResource(resource, object_type=None, object_name=None, object_guid=None):
+    """
+    Find object resource in parent resource by type, name and guid.
+
+    :param resource: Parent object resource.
+    :param object_type: Object type.
+        If None then not searched.
+    :param object_name: Object name.
+        If None then not searched.
+    :param object_guid:
+        If None then not searched.
+    :return: Object resource or None if not found.
+    """
+    if object_type is None:
+        return resource
+
+    resource_type = resource.get('type', None)
+    resource_name = resource.get('name', None)
+    resource_guid = resource.get('guid', None)
+
+    find_resource = None
+    if object_type and resource_type == object_type:
+        find_resource = resource
+    if find_resource:
+        if object_name:
+            find_resource = resource if resource_name == object_name else None
+    if find_resource:
+        if object_guid:
+            find_resource = resource if resource_guid == object_guid else None
+    if find_resource:
+        return find_resource
+    else:
+        children = resource.get(CHILDREN_ATTR_NAME, list())
+        for child_resource in children:
+            find_resource = findObjResource(child_resource, object_type, object_name, object_guid)
+            if find_resource:
+                break
+    return find_resource

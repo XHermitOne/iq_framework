@@ -6,6 +6,7 @@ Global functions module.
 """
 
 from .. import config
+from ..engine import settings_access
 
 __version__ = (0, 0, 0, 1)
 

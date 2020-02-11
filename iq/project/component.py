@@ -27,3 +27,5 @@ class iqProject(object.iqObject, prj.iqProjectManager):
         """
         object.iqObject.__init__(parent=parent, resource=resource, spc=spc.SPC, context=context)
         prj.iqProjectManager.__init__(self, *args, **kwargs)
+
+COMPONENT = iqProject

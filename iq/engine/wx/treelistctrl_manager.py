@@ -71,7 +71,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
 
         :param ctrl: wx.TreeListCtrl control.
         :param parent_item: Parent item.
-            If None then create root item.
+            If None then _create root item.
         :param node: Item data.
             If item data is dictionary then add node.
             If item data is list then add nodes.
@@ -126,7 +126,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
 
         :param ctrl: wx.TreeListCtrl control.
         :param parent_item: Parent item.
-            If None then create root item.
+            If None then _create root item.
         :param node: Item data.
             If item data is dictionary then add node.
             If item data is list then add nodes.

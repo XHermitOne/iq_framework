@@ -42,6 +42,25 @@ def loadResource(res_filename):
     return struct
 
 
+def loadRuntimeResource(res_filename):
+    """
+    Load resource in runtime mode.
+
+    :param res_filename: Resource file path.
+    :return: Resource struct data or None if error.
+    """
+    text_res_filename = file_func.setFilenameExt(res_filename, RESOURCE_FILE_EXT)
+    pickle_res_filename = file_func.setFilenameExt(res_filename, PICKLE_RESOURCE_FILE_EXT)
+
+    if (os.path.isfile(text_res_filename) and not os.path.isfile(pickle_res_filename)) or \
+            (os.path.exists(text_res_filename) and os.path.exists(pickle_res_filename) and
+             os.path.getmtime(pickle_res_filename) < os.path.getmtime(text_res_filename)):
+        resource = loadResourceText(text_res_filename)
+        saveResourcePickle(pickle_res_filename, resource)
+        return resource
+    return loadResourcePickle(pickle_res_filename)
+
+
 def loadResourcePickle(res_filename):
     """
     Load resource file as Pickle.

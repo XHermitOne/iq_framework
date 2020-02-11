@@ -43,6 +43,12 @@ DEFAULT_ENGINE_TYPE = WX_ENGINE_TYPE
 ENGINE_TYPE = DEFAULT_ENGINE_TYPE
 ENGINE_TYPES = (WX_ENGINE_TYPE, QT_ENGINE_TYPE, CUI_ENGINE_TYPE)
 
+# Project settings saved to file INI
+SETTINGS = None
+
+# Access to project objects
+OBJECTS = None
+
 
 def get_cfg_param(name):
     """

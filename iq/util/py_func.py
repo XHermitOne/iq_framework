@@ -36,7 +36,7 @@ def createInitModule(package_path, init_file_body=None):
     :return: True/False.
     """
     if not package_path:
-        log_func.warning(u'Not define package path for create __init__.py file')
+        log_func.warning(u'Not define package path for _create __init__.py file')
         return False
 
     if init_file_body is None:

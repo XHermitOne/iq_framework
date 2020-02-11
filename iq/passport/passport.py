@@ -11,10 +11,18 @@ The composition of the passport includes:
     guid - The unique identifier of the object in memory.
 """
 
+import os.path
+
+from ..util import file_func
+from ..util import global_func
+from ..util import res_func
+from ..util import spc_func
+
 __version__ = (0, 0, 0, 1)
 
 
 PASSPORT_STR_DELIM = '.'
+DEFAULT_THIS_PROJECT_NAME = 'THIS'
 
 
 class iqPassport(object):
@@ -52,6 +60,7 @@ class iqPassport(object):
         self.typename = typename
         self.name = name
         self.guid = guid
+        return self
 
     def to_str(self):
         """
@@ -77,6 +86,7 @@ class iqPassport(object):
 
         passport_tuple = tuple(passport.split(PASSPORT_STR_DELIM))
         self.from_tuple(passport_tuple)
+        return self
 
     def to_dict(self):
         """
@@ -109,6 +119,7 @@ class iqPassport(object):
         self.typename = passport.get('type', None)
         self.name = passport.get('name', None)
         self.guid = passport.get('guid', None)
+        return self
 
     def from_tuple(self, passport=None):
         """
@@ -127,6 +138,7 @@ class iqPassport(object):
         self.typename = passport[2]
         self.name = passport[3]
         self.guid = passport[4] if len(passport) == 5 else None
+        return self
 
     def is_passport(self, passport=None):
         """
@@ -170,3 +182,68 @@ class iqPassport(object):
             if compare_guid:
                 compare.append(self.guid == passport[4])
         return all(compare)
+
+    def findResourceFilename(self, passport=None, find_path=None):
+        """
+        Find resource file by passport.
+
+        :param passport: Object passport.
+        :param find_path: Directory path to search.
+            If None then get project path.
+        :return: Resource filename or None if error.
+        """
+        passport = self.set_from(passport)
+
+        if find_path is None:
+            prj_name = global_func.getProjectName() if not passport.prj or passport.prj == DEFAULT_THIS_PROJECT_NAME else passport.prj
+            prj_path = os.path.join(file_func.getFrameworkPath(), prj_name)
+            find_path = prj_path
+
+        file_names = file_func.getFileNames(find_path)
+        res_filename = file_func.setFilenameExt(passport.module, res_func.RESOURCE_FILE_EXT)
+        if res_filename in file_names:
+            return os.path.join(find_path, res_filename)
+        else:
+            dir_paths = file_func.getDirectoryPaths(find_path)
+            for dir_path in dir_paths:
+                find_res_filename = self.findResourceFilename(passport, find_path=dir_path)
+                if find_res_filename:
+                    return find_res_filename
+        return None
+
+    def findObjResource(self, passport=None):
+        """
+        Find object resource by passport.
+
+        :param passport: Object passport.
+        :return: Object resource or None if not found.
+        """
+        passport = self.set_from(passport)
+
+        res_filename = self.findResourceFilename(passport=passport)
+        if res_filename:
+            resource = res_func.loadRuntimeResource(res_filename)
+            return spc_func.findObjResource(resource,
+                                            object_type=passport.typename,
+                                            object_name=passport.name,
+                                            object_guid=passport.guid)
+        return None
+
+    def set_from(self, passport=None):
+        """
+        Set passport.
+
+        :param passport: Passport data.
+        :return: Self passport.
+        """
+        if passport is None:
+            passport = self
+        elif isinstance(passport, iqPassport):
+            pass
+        elif isinstance(passport, str):
+            passport = self.from_str(passport)
+        elif isinstance(passport, dict):
+            passport = self.from_dict(passport)
+        elif isinstance(passport, (list, tuple)):
+            passport = self.from_tuple(passport)
+        return passport

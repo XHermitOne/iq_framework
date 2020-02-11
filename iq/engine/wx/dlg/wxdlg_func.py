@@ -382,7 +382,7 @@ class icProgressDlg(wx.ProgressDialog):
             self.SetSize(wx.Size(500, 130))
             self.CenterOnScreen()
         except:
-            log_func.fatal(u'Progress dialog create error')
+            log_func.fatal(u'Progress dialog _create error')
 
     def getMax(self):
         return self._ProgressMAX
@@ -587,7 +587,7 @@ class iqStrComboBoxDialog(wx.Dialog):
                                           choices, wx.CB_DROPDOWN)
             self._string = default_value
         except:
-            log_func.fatal(u'Select/edit string dialog create error')
+            log_func.fatal(u'Select/edit string dialog _create error')
 
     def onOKButtonClick(self, event):
         """
@@ -681,7 +681,7 @@ class iqAboutDialog(wx.Dialog):
             self.SetAutoLayout(True)
             sizer.Fit(self)
         except:
-            log_func.fatal(u'Diallog <About...> create error')
+            log_func.fatal(u'Diallog <About...> _create error')
 
     def onOKButtonClick(self, event):
         """
@@ -796,7 +796,7 @@ class iqLoginDialog(wx.Dialog):
 
             self._user_edit.SetFocus()
         except:
-            log_func.fatal(u'Login dialog create error')
+            log_func.fatal(u'Login dialog _create error')
 
     def onKeyDown(self, event):
         """
