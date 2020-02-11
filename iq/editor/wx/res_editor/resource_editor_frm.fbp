@@ -586,7 +586,7 @@
                                             <event name="OnTreelistColumnSorted"></event>
                                             <event name="OnTreelistItemActivated"></event>
                                             <event name="OnTreelistItemChecked"></event>
-                                            <event name="OnTreelistItemContextMenu"></event>
+                                            <event name="OnTreelistItemContextMenu">onResTreelistItemContextMenu</event>
                                             <event name="OnTreelistItemExpanded"></event>
                                             <event name="OnTreelistItemExpanding"></event>
                                             <event name="OnTreelistSelectionChanged">onResItemTreelistSelectionChanged</event>
@@ -594,13 +594,13 @@
                                             <object class="wxTreeListCtrlColumn" expanded="1">
                                                 <property name="alignment">wxALIGN_LEFT</property>
                                                 <property name="flag">wxCOL_RESIZABLE</property>
-                                                <property name="name">Наименование</property>
+                                                <property name="name">Name</property>
                                                 <property name="width">wxCOL_WIDTH_AUTOSIZE</property>
                                             </object>
                                             <object class="wxTreeListCtrlColumn" expanded="1">
                                                 <property name="alignment">wxALIGN_LEFT</property>
                                                 <property name="flag">wxCOL_RESIZABLE</property>
-                                                <property name="name">Описание</property>
+                                                <property name="name">Description</property>
                                                 <property name="width">wxCOL_WIDTH_AUTOSIZE</property>
                                             </object>
                                         </object>

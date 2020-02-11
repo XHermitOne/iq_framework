@@ -21,6 +21,10 @@ PARENT_ATTR_NAME = '__parent__'
 EDIT_ATTR_NAME = '__edit__'
 HELP_ATTR_NAME = '__help__'
 DOC_ATTR_NAME = '__doc__'
+CONTENT_ATTR_NAME = '__content__'
+
+TEST_FUNC_ATTR_NAME = '__test__'
+DESIGN_FUNC_ATTR_NAME = '__design__'
 
 BASIC_ATTRIBUTES = ('name', 'type', 'description', 'activate', 'guid')
 ALL_BASIC_ATTRIBUTES = list(BASIC_ATTRIBUTES) + [CHILDREN_ATTR_NAME]

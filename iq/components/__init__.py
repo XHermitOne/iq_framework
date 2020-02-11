@@ -88,9 +88,9 @@ def initComponentSpcCache():
     return bool(component_spc_cache)
 
 
-def getComponentSpcCache():
+def getComponentSpcPalette():
     """
-    Get component specification cache.
+    Get component specification cache/palette.
 
     :return: Component specification cache dictionary or empty dictionary if error.
     """
@@ -106,7 +106,7 @@ def findComponentSpc(component_type):
     :param component_type: Component type.
     :return: Component specification or None if error.
     """
-    packages = getComponentSpcCache()
+    packages = getComponentSpcPalette()
     for package_name, package in packages.items():
         log_func.debug(u'Package <%s>' % package_name)
         component_types = [component_spc.get('type', None) for component_spc in package]

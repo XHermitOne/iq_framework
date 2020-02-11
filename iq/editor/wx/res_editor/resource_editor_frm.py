@@ -59,8 +59,8 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.resource_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.resource_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, agwStyle=wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT )
-		self.resource_treeListCtrl.AddColumn( u"Наименование", 200, wx.ALIGN_LEFT)
-		self.resource_treeListCtrl.AddColumn( u"Описание", 300, wx.ALIGN_LEFT)
+		self.resource_treeListCtrl.AddColumn( u"Name", 200, wx.ALIGN_LEFT)
+		self.resource_treeListCtrl.AddColumn( u"Description", 300, wx.ALIGN_LEFT)
 		
 		bSizer2.Add( self.resource_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		
@@ -100,6 +100,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.Bind( wx.EVT_TOOL, self.onDesignToolClicked, id = self.design_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onScriptToolClicked, id = self.script_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onHelpToolClicked, id = self.help_tool.GetId() )
+		self.resource_treeListCtrl.Bind( wx.EVT_TREE_ITEM_RIGHT_CLICK, self.onResTreelistItemContextMenu )
 		self.resource_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onResItemTreelistSelectionChanged )
 		self.object_propertyGridManager.Bind( pg.EVT_PG_CHANGED, self.onObjPropertyGridChanged )
 	
@@ -127,6 +128,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		event.Skip()
 	
 	def onHelpToolClicked( self, event ):
+		event.Skip()
+	
+	def onResTreelistItemContextMenu( self, event ):
 		event.Skip()
 	
 	def onResItemTreelistSelectionChanged( self, event ):
