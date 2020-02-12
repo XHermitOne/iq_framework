@@ -109,7 +109,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         name = resource.get('name', u'Unknown')
         component_type = resource.get('type', None)
-        if component_type == project.PROJECT_COMPONENT_TYPE:
+        if component_type == project.COMPONENT_TYPE:
             global_func.setProjectName(name)
 
         description = resource.get('description', u'')
@@ -139,6 +139,10 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :param resource: Resource struct.
         :return: True/False.
         """
+        if resource is None:
+            log_func.error(u'Resource editor. Not define resource for loading')
+            return False
+
         try:
             self.resource_treeListCtrl.DeleteAllItems()
 

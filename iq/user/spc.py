@@ -16,7 +16,7 @@ from .. import config
 __version__ = (0, 0, 0, 1)
 
 
-def getProjectRoles(prj_name=None):
+def getProjectRoles(prj_name=None, *args, **kwargs):
     """
     Get project role name list.
 
@@ -46,13 +46,18 @@ USER_SPC = {
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': [],
-    '__edit__': {'password': property_editor_id.PASSWORD_EDITOR,
-                 'roles': {'editor': property_editor_id.MULTICHOICE_EDITOR,
-                           'choices': getProjectRoles},
-                 'engine': {'editor': property_editor_id.CHOICE_EDITOR,
-                            'choices': config.ENGINE_TYPES},
-                 'do_main': property_editor_id.METHOD_EDITOR,
-                 },
+    '__edit__': {
+        'password': property_editor_id.PASSWORD_EDITOR,
+        'roles': {
+            'editor': property_editor_id.MULTICHOICE_EDITOR,
+            'choices': getProjectRoles,
+        },
+        'engine': {
+            'editor': property_editor_id.CHOICE_EDITOR,
+            'choices': config.ENGINE_TYPES,
+        },
+        'do_main': property_editor_id.METHOD_EDITOR,
+    },
     '__help__': {
         'password': u'User password',
         'roles': u'Role list',

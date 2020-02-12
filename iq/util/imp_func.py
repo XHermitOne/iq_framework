@@ -10,6 +10,7 @@ import sys
 import importlib.util
 
 from . import log_func
+from . import py_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -24,6 +25,13 @@ def loadPyModule(name, path):
     :param path: Module path.
     :return: Python module or None is error.
     """
+    if os.path.isdir(path):
+        path = os.path.join(path, py_func.INIT_PY_FILENAME)
+
+    if not os.path.exists(path):
+        log_func.error(u'Module file <%s> not exists' % path)
+        return None
+
     module = None
     try:
         log_func.info(u'Load/Import python module <%s> by path <%s>' % (name, path))

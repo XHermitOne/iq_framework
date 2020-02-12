@@ -2,20 +2,20 @@
 # -*- coding: utf-8 -*-
 
 """
-Project manager component.
+Data model navigator component.
 """
 
-from .. import object
+from ... import object
 
 from . import spc
-from . import prj
+from . import model_navigator
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqProject(object.iqObject, prj.iqProjectManager):
+class iqDataNavigator(object.iqObject, model_navigator.iqModelNavigatorManager):
     """
-    Project manager component.
+    Data model navigator component.
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -26,7 +26,7 @@ class iqProject(object.iqObject, prj.iqProjectManager):
         :param context: Context dictionary.
         """
         object.iqObject.__init__(parent=parent, resource=resource, spc=spc.SPC, context=context)
-        prj.iqProjectManager.__init__(self, *args, **kwargs)
+        model_navigator.iqModelNavigatorManager.__init__(self, *args, **kwargs)
 
 
-COMPONENT = iqProject
+COMPONENT = iqDataNavigator

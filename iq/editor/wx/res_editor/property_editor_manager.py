@@ -80,7 +80,7 @@ class iqPropertyEditorManager(object):
             if isinstance(choices, (list, tuple)):
                 choices = [str(item) for item in choices]
             elif callable(choices):
-                choices = choices()
+                choices = choices(resource=spc)
             else:
                 log_func.error(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
                 choices = list()

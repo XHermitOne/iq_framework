@@ -37,8 +37,11 @@ def fillSpcByParent(spc):
     :param spc: Component specification dictionary.
     :return:
     """
-    if PARENT_ATTR_NAME in spc and isinstance(spc[PARENT_ATTR_NAME], dict):
-        spc = fillResourceBySpc(resource=spc, spc=spc[PARENT_ATTR_NAME])
+    if spc:
+        if PARENT_ATTR_NAME in spc and isinstance(spc[PARENT_ATTR_NAME], dict):
+            spc = fillResourceBySpc(resource=spc, spc=spc[PARENT_ATTR_NAME])
+    else:
+        log_func.error(u'Not define specification for fill')
     return spc
 
 

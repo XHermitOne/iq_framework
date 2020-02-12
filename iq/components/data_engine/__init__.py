@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Project component package.
+Data engine component package.
 """
 
 from .spc import SPC

@@ -7,13 +7,14 @@ Components package.
 
 import os
 import os.path
+import importlib
 
 from .. import project
 from .. import user
 from .. import role
 
 from ..util import log_func
-from ..util import imp_func
+# from ..util import imp_func
 from ..util import file_func
 
 __version__ = (0, 0, 0, 1)
@@ -31,7 +32,8 @@ def getComponentSpc(py_pkg, py_pkg_path):
 
     :return: Component SPC dictionary or None if not find it.
     """
-    component_module = imp_func.loadPyModule(py_pkg, py_pkg_path)
+    # component_module = imp_func.loadPyModule(py_pkg, py_pkg_path)
+    component_module = importComponent(py_pkg)
     if component_module and hasattr(component_module, 'SPC'):
         return component_module.SPC
     return None
@@ -157,26 +159,27 @@ def buildComponents():
         component_names = file_func.getDirectoryNames(components_dirname)
 
         for py_pkg in component_names:
-            py_pkg_path = os.path.join(components_dirname, py_pkg)
+            # py_pkg_path = os.path.join(components_dirname, py_pkg)
 
-            component_pkg = imp_func.loadPyModule(py_pkg, py_pkg_path)
+            # component_pkg = imp_func.loadPyModule(py_pkg, py_pkg_path)
+            component_pkg = importComponent(py_pkg)
             component_type = None
             if component_pkg and hasattr(component_pkg, 'SPC'):
                 component_type = component_pkg.SPC.get('type', None)
-            else:
-                spc_module_path = os.path.join(py_pkg_path, DEFAULT_SPC_PY)
-                spc_module = imp_func.loadPyModule(py_pkg, spc_module_path)
-                if spc_module and hasattr(spc_module, 'SPC'):
-                    component_type = spc_module.SPC.get('type', None)
+            # else:
+            #     spc_module_path = os.path.join(py_pkg_path, DEFAULT_SPC_PY)
+            #     spc_module = imp_func.loadPyModule(py_pkg, spc_module_path)
+            #     if spc_module and hasattr(spc_module, 'SPC'):
+            #         component_type = spc_module.SPC.get('type', None)
 
             component_class = None
             if component_pkg and hasattr(component_pkg, 'COMPONENT'):
                 component_class = component_pkg.COMPONENT
-            else:
-                component_module_path = os.path.join(py_pkg_path, DEFAULT_COMPONENT_PY)
-                component_module = imp_func.loadPyModule(py_pkg, component_module_path)
-                if component_module and hasattr(component_module, 'COMPONENT'):
-                    component_class = component_module.COMPONENT
+            # else:
+            #     component_module_path = os.path.join(py_pkg_path, DEFAULT_COMPONENT_PY)
+            #     component_module = imp_func.loadPyModule(py_pkg, component_module_path)
+            #     if component_module and hasattr(component_module, 'COMPONENT'):
+            #         component_class = component_module.COMPONENT
 
             if component_type is None:
                 log_func.error(u'Not find component type in <%s>' % py_pkg)
@@ -190,3 +193,19 @@ def buildComponents():
     except:
         log_func.fatal(u'Build component specification cache error')
     return dict()
+
+
+def importComponent(component_pkg_name):
+    """
+    Import component package.
+
+    :param component_pkg_name: Component package name.
+    :return: Component package or None if error.
+    """
+    pkg_name = 'iq.components.%s' % str(component_pkg_name)
+    try:
+        component_pkg = importlib.import_module(pkg_name)
+        return component_pkg
+    except:
+        log_func.fatal(u'Import component package <%s> error' % pkg_name)
+    return None

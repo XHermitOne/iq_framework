@@ -71,3 +71,13 @@ class iqObject(object):
         Get kernel object.
         """
         return self._context.getKernel() if self._context else global_func.getKernel()
+
+    def getAttribute(self, attribute_name):
+        """
+        Get attribute from resource.
+
+        :param attribute_name: Attribute name.
+        :return: Attribute value.
+        """
+        value = self._resource.get(attribute_name, None) if self._resource else None
+        return value

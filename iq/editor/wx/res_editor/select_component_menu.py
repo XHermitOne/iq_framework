@@ -105,7 +105,7 @@ class iqSelectComponentMenu(wx.Menu, iqSelectComponentMenuManager):
                     bmp = wxbitmap_func.createIconBitmap(icon)
                     menuitem.SetBitmap(bmp)
 
-                if self.content and component_type not in self.content:
+                if not self.content or component_type not in self.content:
                     menuitem.Enable(False)
 
                 package_menu.Append(menuitem)
@@ -186,9 +186,12 @@ class iqSelectComponentFlatMenu(flatmenu.FlatMenu,
                 bmp = wxbitmap_func.createIconBitmap(icon)
                 component_type = component_spc.get('type', 'UndefinedType')
                 menuitem_id = wx.NewId()
-                menuitem = flatmenu.FlatMenuItem(package_menu, menuitem_id, label=component_type, normalBmp=bmp)
+                if bmp is None:
+                    menuitem = flatmenu.FlatMenuItem(package_menu, menuitem_id, label=component_type)
+                else:
+                    menuitem = flatmenu.FlatMenuItem(package_menu, menuitem_id, label=component_type, normalBmp=bmp)
 
-                if self.content and component_type not in self.content:
+                if not self.content or component_type not in self.content:
                     menuitem.Enable(False)
 
                 package_menu.AppendItem(menuitem)

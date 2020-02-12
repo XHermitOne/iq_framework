@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Project specification module.
+Data model navigator specification module.
 """
 
 import os.path
@@ -10,7 +10,7 @@ from iq.object import object_spc
 
 __version__ = (0, 0, 0, 1)
 
-COMPONENT_TYPE = 'iqProject'
+COMPONENT_TYPE = 'iqDataNavigator'
 
 PROJECT_SPC = {
     'name': 'default',
@@ -21,11 +21,11 @@ PROJECT_SPC = {
 
     '_children_': [],
 
-    '__package__': u'Project',
-    '__icon__': 'fatcow%sbricks' % os.path.sep,
+    '__package__': u'Data',
+    '__icon__': 'fatcow%scompass' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': ['iqUser', 'iqRole'],
+    '__content__': [],
 }
 
 SPC = PROJECT_SPC
