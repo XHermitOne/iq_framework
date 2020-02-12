@@ -26,6 +26,8 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.editor_toolBar = wx.ToolBar( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL ) 
+		self.new_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_NEW, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"New resource", u"New resource", None ) 
+		
 		self.open_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_FILE_OPEN, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Open resource", u"Open resource", None ) 
 		
 		self.save_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_FILE_SAVE, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Save resource", u"Save resource", None ) 
@@ -93,6 +95,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.frame_statusBar = self.CreateStatusBar( 1, 0, wx.ID_ANY )
 		
 		# Connect Events
+		self.Bind( wx.EVT_TOOL, self.onNewToolClicked, id = self.new_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onOpenToolClicked, id = self.open_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onSaveToolClicked, id = self.save_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onSaveAsToolClicked, id = self.saveas_tool.GetId() )
@@ -109,6 +112,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
+	def onNewToolClicked( self, event ):
+		event.Skip()
+	
 	def onOpenToolClicked( self, event ):
 		event.Skip()
 	
