@@ -87,6 +87,19 @@ def fillResourceBySpc(resource=None, spc=None):
     return resource
 
 
+def clearAllResourcesFromSpc(resource=None):
+    """
+    Clear resource from specification attributes.
+
+    :return: Purified resource from specification attributes or None if error.
+    """
+    resource = clearResourceFromSpc(resource)
+    if CHILDREN_ATTR_NAME in resource:
+        for i, child_resource in enumerate(resource[CHILDREN_ATTR_NAME]):
+            resource[CHILDREN_ATTR_NAME][i] = clearAllResourcesFromSpc(child_resource)
+    return resource
+
+
 def clearResourceFromSpc(resource=None):
     """
     Clear resource from specification attributes.

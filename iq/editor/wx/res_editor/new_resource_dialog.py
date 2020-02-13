@@ -204,7 +204,7 @@ def createNewResource(parent=None, component_spc=None, component_name=None, res_
         dlg.init(component_spc, component_name, res_filename)
         result = None
         if dlg.ShowModal() == wx.ID_OK:
-            resource = spc_func.clearResourceFromSpc(dlg.resource)
+            resource = spc_func.clearAllResourcesFromSpc(dlg.resource)
             if res_func.saveResourceText(dlg.res_filename, resource):
                 result = dlg.res_filename
         dlg.Destroy()

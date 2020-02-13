@@ -303,7 +303,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         Save tool button click handler.
         """
         resource = self.getResourceItem()
-        resource = spc_func.clearResourceFromSpc(resource)
+        resource = spc_func.clearAllResourcesFromSpc(resource)
         if self.res_filename is None:
             self.res_filename = wxdlg_func.getFileDlg(parent=self, title=u'SAVE',
                                                       wildcard_filter='Resource files (*.res)|*.res')
@@ -319,7 +319,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         Save As... tool button click handler.
         """
         resource = self.getResourceItem()
-        resource = spc_func.clearResourceFromSpc(resource)
+        resource = spc_func.clearAllResourcesFromSpc(resource)
         self.res_filename = wxdlg_func.getFileDlg(parent=self, title=u'SAVE',
                                                   wildcard_filter='Resource files (*.res)|*.res')
         if self.res_filename:
