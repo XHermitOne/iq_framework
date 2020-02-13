@@ -29,6 +29,7 @@ from .. import clipboard
 
 from . import property_editor_manager
 from . import select_component_menu
+from . import new_resource_dialog
 
 __version__ = (0, 0, 0, 1)
 
@@ -231,6 +232,26 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetNextChild(child_item, cookie=cookie)
         return resource
 
+    def getPropertyEditor(self, attribute_name):
+        """
+        Get attribute/property editor by attribute name.
+
+        :param attribute_name: Attribute name.
+        :return: Property editor or None if not found.
+        """
+        property = self.object_propertyGridManager.GetPropertyEditor(attribute_name)
+        return property
+
+    def getProperty(self, attribute_name):
+        """
+        Get attribute/property by attribute name.
+
+        :param attribute_name: Attribute name.
+        :return: Property editor or None if not found.
+        """
+        property = self.object_propertyGridManager.GetProperty(attribute_name)
+        return property
+
     def onObjPropertyGridChanged(self, event):
         """
         Changed attribute value in property grid handler.
@@ -250,6 +271,14 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                     value = self.convertPropertyValue(name, str_value, spc)
                     if self.validatePropertyValue(name, value, spc):
                         selected_resource[name] = value
+
+                        try:
+                            on_change = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('on_change', None)
+                            if on_change:
+                                on_change(resource_editor=self, resource=selected_resource)
+                        except:
+                            log_func.fatal(u'Change attribute <%s> error' % name)
+
                         selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
 
                         if name in ('name', 'description'):
@@ -260,6 +289,16 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                         log_func.error(u'Value <%s> of property [%s] not valid' % (str_value, name))
 
         # event.Skip()
+
+    def onNewToolClicked(self, event):
+        """
+        New resoure tool button click handler.
+        """
+        res_filename = new_resource_dialog.createNewResource(parent=self)
+        if res_filename is not None:
+            self.loadResourceFile(res_filename
+                                  )
+        event.Skip()
 
     def onSaveToolClicked(self, event):
         """

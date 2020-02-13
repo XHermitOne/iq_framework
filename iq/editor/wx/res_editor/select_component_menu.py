@@ -47,7 +47,7 @@ class iqSelectComponentMenuManager(object):
         if parent_component is None:
             self.content = None
         else:
-            self.content = parent_component.get(spc_func.CONTENT_ATTR_NAME, None)
+            self.content = parent_component.get(spc_func.CONTENT_ATTR_NAME, list())
 
     def create(self, menuitem_handler=None):
         """
@@ -57,7 +57,7 @@ class iqSelectComponentMenuManager(object):
         :return: wx.FlatMenu object or None if error.
         """
         try:
-            return self._create()
+            return self._create(menuitem_handler=menuitem_handler)
         except:
             log_func.fatal(u'Create component palette menu error')
         return None
@@ -105,10 +105,10 @@ class iqSelectComponentMenu(wx.Menu, iqSelectComponentMenuManager):
                     bmp = wxbitmap_func.createIconBitmap(icon)
                     menuitem.SetBitmap(bmp)
 
-                if not self.content or component_type not in self.content:
-                    menuitem.Enable(False)
-
                 package_menu.Append(menuitem)
+
+                if isinstance(self.content, (list, tuple)) and component_type not in self.content:
+                    menuitem.Enable(False)
 
                 if self._parent and menuitem_handler is None:
                     self._parent.Bind(wx.EVT_MENU, self.onSelectComponentMenuItem, id=menuitem_id)
@@ -134,12 +134,13 @@ class iqSelectComponentMenu(wx.Menu, iqSelectComponentMenuManager):
         event.Skip()
 
 
-def popup_component_menu(parent=None, button=None):
+def popupComponentMenu(parent=None, button=None, menuitem_handler=None):
     """
     Open popup component palette menu.
 
     :param parent: Parent frame.
     :param button: wx.Button object, which calls up the menu.
+    :param menuitem_handler: Menuitem activate handler.
     :return: The specification of the selected component or
         None if the component is not selected.
     """
@@ -149,7 +150,7 @@ def popup_component_menu(parent=None, button=None):
 
     select_menu = iqSelectComponentMenu()
     select_menu.init(parent)
-    select_menu.create()
+    select_menu.create(menuitem_handler=menuitem_handler)
 
     if button:
         button.PopupMenu(select_menu)
@@ -191,7 +192,7 @@ class iqSelectComponentFlatMenu(flatmenu.FlatMenu,
                 else:
                     menuitem = flatmenu.FlatMenuItem(package_menu, menuitem_id, label=component_type, normalBmp=bmp)
 
-                if not self.content or component_type not in self.content:
+                if isinstance(self.content, (list, tuple)) and component_type not in self.content:
                     menuitem.Enable(False)
 
                 package_menu.AppendItem(menuitem)
@@ -221,12 +222,13 @@ class iqSelectComponentFlatMenu(flatmenu.FlatMenu,
         event.Skip()
 
 
-def popup_component_flatmenu(parent=None, button=None):
+def popupComponentFlatMenu(parent=None, button=None, menuitem_handler=None):
     """
     Open popup component palette menu.
 
     :param parent: Parent frame.
     :param button: wx.Button object, which calls up the menu.
+    :param menuitem_handler: Menuitem activate handler.
     :return: The specification of the selected component or
         None if the component is not selected.
     """
@@ -236,7 +238,7 @@ def popup_component_flatmenu(parent=None, button=None):
 
     select_menu = iqSelectComponentFlatMenu()
     select_menu.init(parent)
-    select_menu.create()
+    select_menu.create(menuitem_handler=menuitem_handler)
 
     if button:
         button_size = button.GetSize()

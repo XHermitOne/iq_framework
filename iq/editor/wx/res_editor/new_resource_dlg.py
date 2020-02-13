@@ -25,6 +25,9 @@ class iqNewResourceDialogProto ( wx.Dialog ):
 		
 		bSizer2 = wx.BoxSizer( wx.HORIZONTAL )
 		
+		self.component_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer2.Add( self.component_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		
 		self.m_staticText1 = wx.StaticText( self, wx.ID_ANY, u"Component:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText1.Wrap( -1 )
 		bSizer2.Add( self.m_staticText1, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -81,7 +84,9 @@ class iqNewResourceDialogProto ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
+		self.component_textCtrl.Bind( wx.EVT_TEXT, self.onComponentText )
 		self.component_button.Bind( wx.EVT_BUTTON, self.onComponentButtonClick )
+		self.name_textCtrl.Bind( wx.EVT_TEXT, self.onNameText )
 		self.path_dirPicker.Bind( wx.EVT_DIRPICKER_CHANGED, self.onPathDirChanged )
 		self.cancel_button.Bind( wx.EVT_BUTTON, self.onCancelButtonClick )
 		self.ok_button.Bind( wx.EVT_BUTTON, self.onOkButtonClick )
@@ -91,7 +96,13 @@ class iqNewResourceDialogProto ( wx.Dialog ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
+	def onComponentText( self, event ):
+		event.Skip()
+	
 	def onComponentButtonClick( self, event ):
+		event.Skip()
+	
+	def onNameText( self, event ):
 		event.Skip()
 	
 	def onPathDirChanged( self, event ):

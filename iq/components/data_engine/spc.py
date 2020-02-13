@@ -37,6 +37,31 @@ def getDrivers(resource=None, *args, **kwargs):
     return [''] + list(DB_DRIVERS.get(dialect, list()))
 
 
+def getEncodings(*args, **kwargs):
+    """
+    Get database encoding list.
+    """
+    return str_func.getEncodings()
+
+
+def onDialectChange(resource_editor=None, resource=None, *args, **kwargs):
+    """
+    Change dialect.
+
+    :param resource: Object resource.
+    """
+    if resource:
+        dialect = resource.get('dialect', None)
+        drivers = [''] + list(DB_DRIVERS.get(dialect, list()))
+        if resource_editor:
+            property_editor = resource_editor.getPropertyEditor('driver')
+            property_editor.InsertItem('---')
+            # print(dir(property_editor))
+            # property_item = resource_editor.getProperty('driver')
+            # print(property_item, dir(property_editor))
+
+
+
 COMPONENT_TYPE = 'iqDataEngine'
 
 PROJECT_SPC = {
@@ -74,6 +99,7 @@ PROJECT_SPC = {
         'dialect': {
             'editor': property_editor_id.CHOICE_EDITOR,
             'choices': sqlalchemy.dialects.__all__,
+            'on_change': onDialectChange,
         },
         'driver': {
             'editor': property_editor_id.CHOICE_EDITOR,
@@ -90,7 +116,7 @@ PROJECT_SPC = {
         # 'echo_pool': property_editor_id.CHECKBOX_EDITOR,
         'encoding': {
             'editor': property_editor_id.CHOICE_EDITOR,
-            'choices': str_func.getEncodings,
+            'choices': getEncodings,
         },
         # 'execution_options': property_editor_id.SCRIPT_EDITOR,
         # 'implicit_returning': property_editor_id.CHECKBOX_EDITOR,
