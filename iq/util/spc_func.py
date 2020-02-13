@@ -44,6 +44,18 @@ def fillAllResourcesBySpc(resource=None):
     return resource
 
 
+def fillSpcByParent(spc):
+    """
+    Add specification with parent specification attributes.
+
+    :param spc: Component specification.
+    :return: Qualified component specification filled or None if error.
+    """
+    if PARENT_ATTR_NAME in spc and isinstance(spc[PARENT_ATTR_NAME], dict):
+        spc = fillResourceBySpc(spc, spc[PARENT_ATTR_NAME])
+    return spc
+
+
 def fillResourceBySpc(resource=None, spc=None):
     """
     Add resource with specification attributes.

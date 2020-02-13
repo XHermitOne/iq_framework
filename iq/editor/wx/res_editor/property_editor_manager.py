@@ -409,7 +409,7 @@ class iqPropertyEditorManager(object):
             try:
                 value = eval(str_value)
             except:
-                log_func.fatal(u'Error casting to a ... <%s>' % str_value)
+                value = str_value
 
         elif property_type == property_editor_id.EXTERNAL_EDITOR:
             value = str_value

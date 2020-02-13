@@ -53,6 +53,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         self.component_icons = dict()
 
         self.item_context_menu = None
+        self.component_menu = None
 
     def initComponentIcons(self):
         """
@@ -271,9 +272,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                         selected_resource[name] = value
 
                         try:
-                            on_change = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('on_change', None)
-                            if on_change:
-                                on_change(resource_editor=self, resource=selected_resource)
+                            editor = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict())
+                            if isinstance(editor, dict):
+                                on_change = editor.get('on_change', None)
+                                if on_change:
+                                    on_change(resource_editor=self, resource=selected_resource)
                         except:
                             log_func.fatal(u'Change attribute <%s> error' % name)
 
@@ -420,11 +423,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
 
             context_menu = flatmenu.FlatMenu()
-            component_menu = select_component_menu.iqSelectComponentFlatMenu()
-            component_menu.init(parent=self.resource_treeListCtrl,
-                                parent_component=resource_item)
-            component_menu.create(menuitem_handler=self.onSelectComponentMenuItem)
-            context_menu.AppendMenu(wx.NewId(), 'Add', component_menu)
+            self.component_menu = select_component_menu.iqSelectComponentFlatMenu()
+            self.component_menu.init(parent=self.resource_treeListCtrl,
+                                     parent_component=resource_item)
+            self.component_menu.create(menuitem_handler=self.onSelectComponentMenuItem)
+            context_menu.AppendMenu(wx.NewId(), 'Add', self.component_menu)
 
             context_menu.AppendSeparator()
 
@@ -442,7 +445,6 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Cut',
                                              normalBmp=wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_MENU))
             context_menu.AppendItem(menuitem)
-
             return context_menu
         return None
 
@@ -450,13 +452,14 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         Select component menu item handler.
         """
-        if self.item_context_menu:
+        if self.item_context_menu and self.component_menu:
             menuitem_id = event.GetId()
-            selected_component = self.item_context_menu.menuitem2component_spc.get(menuitem_id, None)
+            selected_component = self.component_menu.menuitem2component_spc.get(menuitem_id, None)
             component_type = selected_component.get('type', 'UndefinedType')
             log_func.info(u'Selected component <%s>' % component_type)
 
             self.item_context_menu = None
+            self.component_menu = None
         event.Skip()
 
     def copyResourceItem(self, item=None):
