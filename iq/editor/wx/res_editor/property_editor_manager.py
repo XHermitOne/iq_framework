@@ -44,7 +44,7 @@ class iqPropertyEditorManager(object):
             log_func.error(u'Not define property editor')
         return False
 
-    def createPropertyEditor(self, name, value, property_type, spc=None):
+    def createPropertyEditor(self, name, value, property_type=None, spc=None):
         """
         Create wx property.
 
@@ -55,6 +55,9 @@ class iqPropertyEditorManager(object):
         :return: wx.Property object.
         """
         wx_property = None
+
+        if property_type is None and spc:
+            property_type = self._getAttrEditorType(spc, name)
 
         if property_type == property_editor_id.STRING_EDITOR:
             if not isinstance(value, str):

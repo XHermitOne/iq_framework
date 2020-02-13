@@ -239,8 +239,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :param attribute_name: Attribute name.
         :return: Property editor or None if not found.
         """
-        property = self.object_propertyGridManager.GetPropertyEditor(attribute_name)
-        return property
+        return self.object_propertyGridManager.GetPropertyEditor(attribute_name)
 
     def getProperty(self, attribute_name):
         """
@@ -249,8 +248,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :param attribute_name: Attribute name.
         :return: Property editor or None if not found.
         """
-        property = self.object_propertyGridManager.GetProperty(attribute_name)
-        return property
+        return self.object_propertyGridManager.GetProperty(attribute_name)
 
     def onObjPropertyGridChanged(self, event):
         """
