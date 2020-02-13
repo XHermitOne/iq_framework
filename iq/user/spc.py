@@ -45,7 +45,7 @@ USER_SPC = {
     '__icon__': 'fatcow%suser' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': [],
+    '__content__': (),
     '__edit__': {
         'password': property_editor_id.PASSWORD_EDITOR,
         'roles': {

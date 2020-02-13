@@ -25,7 +25,7 @@ PROJECT_SPC = {
     '__icon__': 'fatcow%sbricks' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': ['iqUser', 'iqRole'],
+    '__content__': ('iqUser', 'iqRole'),
 }
 
 SPC = PROJECT_SPC

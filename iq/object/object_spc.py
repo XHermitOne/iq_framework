@@ -36,7 +36,7 @@ OBJECT_SPC = {
         'activate': property_editor_id.CHECKBOX_EDITOR,
         'guid': property_editor_id.READONLY_EDITOR,
     },
-    '__content__': [],
+    '__content__': (),
 
     '__test__': None,       # Test function
     '__design__': None,     # Design function

@@ -28,7 +28,7 @@ PROJECT_SPC = {
     '__icon__': 'fatcow%schart_organisation' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': ['iqDataModel'],
+    '__content__': ('iqDataModel', ),
     '__edit__': {
         'db_engine': property_editor_id.READONLY_EDITOR,
     },

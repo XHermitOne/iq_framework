@@ -45,7 +45,7 @@ PROJECT_SPC = {
     '__icon__': 'fatcow%stable_select_column' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': [],
+    '__content__': (),
     '__edit__': {
         'field_type': {
             'editor': property_editor_id.CHOICE_EDITOR,

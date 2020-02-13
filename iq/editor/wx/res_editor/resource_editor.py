@@ -333,8 +333,10 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         Open tool button click handler.
         """
+        default_path = file_func.getProjectPath() if file_func.getProjectPath() else file_func.getFrameworkPath()
         res_filename = wxdlg_func.getFileDlg(parent=self, title=u'LOAD',
-                                             wildcard_filter='Resource files (*.res)|*.res')
+                                             wildcard_filter='Resource files (*.res)|*.res',
+                                             default_path=default_path)
 
         if res_filename:
             self.loadResourceFile(res_filename)
@@ -416,6 +418,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         if item and item.IsOk():
             resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+
             context_menu = flatmenu.FlatMenu()
             component_menu = select_component_menu.iqSelectComponentFlatMenu()
             component_menu.init(parent=self.resource_treeListCtrl,

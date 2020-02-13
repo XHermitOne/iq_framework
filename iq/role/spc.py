@@ -24,7 +24,7 @@ ROLE_SPC = {
     '__icon__': 'fatcow%skey_go' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': [],
+    '__content__': (),
 }
 
 SPC = ROLE_SPC

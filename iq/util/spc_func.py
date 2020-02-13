@@ -64,17 +64,15 @@ def fillResourceBySpc(resource=None, spc=None):
             log_func.warning(u'Not define component specification <%s>' % component_type)
 
     try:
-        for attr_name in spc.keys():
-            if attr_name == PARENT_ATTR_NAME and isinstance(spc[PARENT_ATTR_NAME], dict):
-                resource = fillResourceBySpc(resource, spc['__parent__'])
+        if PARENT_ATTR_NAME in spc and isinstance(spc[PARENT_ATTR_NAME], dict):
+            spc = fillResourceBySpc(spc, spc[PARENT_ATTR_NAME])
 
-            elif (attr_name in (EDIT_ATTR_NAME, HELP_ATTR_NAME) and attr_name in resource and
-                  isinstance(resource[attr_name], dict) and isinstance(spc[attr_name], dict)):
+        for attr_name in spc.keys():
+            if (attr_name in (EDIT_ATTR_NAME, HELP_ATTR_NAME) and attr_name in resource and
+               isinstance(resource[attr_name], dict) and isinstance(spc[attr_name], dict)):
                 for attr in spc[attr_name].keys():
                     if attr not in resource[attr_name]:
                         resource[attr_name][attr] = spc[attr_name][attr]
-                    # else:
-                    #     resource[attr_name][attr] = list(set(resource[attr_name][attr]) | set(spc[attr_name][attr]))
 
             elif attr_name not in resource and attr_name != PARENT_ATTR_NAME:
                 if isinstance(spc[attr_name], (list, dict)):

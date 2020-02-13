@@ -93,7 +93,7 @@ PROJECT_SPC = {
     '__icon__': 'fatcow%sdatabase_gear' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': [],
+    '__content__': (),
     '__edit__': {
         'dialect': {
             'editor': property_editor_id.CHOICE_EDITOR,

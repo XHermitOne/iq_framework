@@ -25,7 +25,7 @@ PROJECT_SPC = {
     '__icon__': 'fatcow%scompass' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': [],
+    '__content__': (),
 }
 
 SPC = PROJECT_SPC
