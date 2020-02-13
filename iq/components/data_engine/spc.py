@@ -42,13 +42,15 @@ def getEncodings(*args, **kwargs):
     """
     Get database encoding list.
     """
-    return str_func.getEncodings()
+    return [''] + list(str_func.getEncodings())
 
 
 def onDialectChange(resource_editor=None, resource=None, *args, **kwargs):
     """
     Change dialect.
+    When replacing a dialect, the list of DBAPI drivers changes.
 
+    :param resource_editor: Resource editor frame.
     :param resource: Object resource.
     """
     if resource:

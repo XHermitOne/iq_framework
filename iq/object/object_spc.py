@@ -20,7 +20,7 @@ OBJECT_SPC = {
     '_children_': [],
 
     '__icon__': None,
-    '__parent__': None,
+    # '__parent__': None,
     '__doc__': None,
     '__help__': {
         'name': u'Object name',

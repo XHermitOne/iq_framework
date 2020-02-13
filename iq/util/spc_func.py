@@ -30,19 +30,18 @@ BASIC_ATTRIBUTES = ('name', 'type', 'description', 'activate', 'guid')
 ALL_BASIC_ATTRIBUTES = list(BASIC_ATTRIBUTES) + [CHILDREN_ATTR_NAME]
 
 
-def fillSpcByParent(spc):
+def fillAllResourcesBySpc(resource=None):
     """
-    Fill component specification by __parent__.
+    Add all object resources with specification attributes.
 
-    :param spc: Component specification dictionary.
-    :return:
+    :param resource: Resource dictionary.
+    :return: Qualified resource filled or None if error.
     """
-    if spc:
-        if PARENT_ATTR_NAME in spc and isinstance(spc[PARENT_ATTR_NAME], dict):
-            spc = fillResourceBySpc(resource=spc, spc=spc[PARENT_ATTR_NAME])
-    else:
-        log_func.error(u'Not define specification for fill')
-    return spc
+    resource = fillResourceBySpc(resource)
+    if CHILDREN_ATTR_NAME in resource:
+        for i, child_resource in enumerate(resource[CHILDREN_ATTR_NAME]):
+            resource[CHILDREN_ATTR_NAME][i] = fillAllResourcesBySpc(child_resource)
+    return resource
 
 
 def fillResourceBySpc(resource=None, spc=None):
@@ -65,36 +64,27 @@ def fillResourceBySpc(resource=None, spc=None):
             log_func.warning(u'Not define component specification <%s>' % component_type)
 
     try:
-        spc = fillSpcByParent(spc)
+        for attr_name in spc.keys():
+            if attr_name == PARENT_ATTR_NAME and isinstance(spc[PARENT_ATTR_NAME], dict):
+                resource = fillResourceBySpc(resource, spc['__parent__'])
 
-        for attr_name in list(spc.keys()):
-            # log_func.debug(u'Attr <%s> Resource %s Specification %s' % (attr_name, resource, spc))
-            if attr_name not in resource and attr_name != PARENT_ATTR_NAME:
-                if attr_name.startswith(SYS_ATTR_SIGN):
-                    resource[attr_name] = spc[attr_name]
+            elif (attr_name in (EDIT_ATTR_NAME, HELP_ATTR_NAME) and attr_name in resource and
+                  isinstance(resource[attr_name], dict) and isinstance(spc[attr_name], dict)):
+                for attr in spc[attr_name].keys():
+                    if attr not in resource[attr_name]:
+                        resource[attr_name][attr] = spc[attr_name][attr]
+                    # else:
+                    #     resource[attr_name][attr] = list(set(resource[attr_name][attr]) | set(spc[attr_name][attr]))
+
+            elif attr_name not in resource and attr_name != PARENT_ATTR_NAME:
+                if isinstance(spc[attr_name], (list, dict)):
+                    resource[attr_name] = copy.deepcopy(spc[attr_name])
                 else:
-                    if isinstance(spc[attr_name], list) and attr_name in resource:
-                        resource[attr_name] += copy.deepcopy(spc[attr_name])
-                    elif isinstance(spc[attr_name], list) and attr_name not in resource:
-                        resource[attr_name] = copy.deepcopy(spc[attr_name])
-                    elif isinstance(spc[attr_name], dict) and attr_name in resource:
-                        resource[attr_name].update(copy.deepcopy(spc[attr_name]))
-                    elif isinstance(spc[attr_name], dict) and attr_name not in resource:
-                        resource[attr_name] = copy.deepcopy(spc[attr_name])
-                    else:
-                        resource[attr_name] = spc[attr_name]
-
-        if CHILDREN_ATTR_NAME in resource:
-            children = resource[CHILDREN_ATTR_NAME]
-            resource[CHILDREN_ATTR_NAME] = [fillResourceBySpc(resource=child) for child in children]
-
-        if PARENT_ATTR_NAME in resource:
-            del resource[PARENT_ATTR_NAME]
-        # log_func.debug(u'Resource %s Specification %s' % (resource, spc))
-        return resource
+                    resource[attr_name] = spc[attr_name]
     except:
-        log_func.fatal(u'Add resource with specification attributes error')
-    return None
+        log_func.fatal('Add resource with specification attributes error')
+
+    return resource
 
 
 def clearResourceFromSpc(resource=None):

@@ -168,7 +168,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         self.res_filename = res_filename
         resource = res_func.loadResourceText(res_filename)
-        resource = spc_func.fillResourceBySpc(resource=resource)
+        resource = spc_func.fillAllResourcesBySpc(resource=resource)
         return self.loadResource(resource)
 
     def onResItemTreelistSelectionChanged(self, event):
