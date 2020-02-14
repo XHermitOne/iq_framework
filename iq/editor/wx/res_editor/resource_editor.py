@@ -457,6 +457,27 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                                              normalBmp=wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_MENU))
             self.Bind(wx.EVT_MENU, self.onCutResourceMenuitem, id=menuitem_id)
             context_menu.AppendItem(menuitem)
+
+            context_menu.AppendSeparator()
+            root_item = self.resource_treeListCtrl.GetMainWindow().GetRootItem()
+            parent_item = self.resource_treeListCtrl.GetMainWindow().GetItemParent(item)
+            first_child_item = self.resource_treeListCtrl.GetMainWindow().GetFirstChild(parent_item)[0] if parent_item and parent_item.IsOk() else None
+            last_child_item = self.resource_treeListCtrl.GetMainWindow().GetLastChild(parent_item) if parent_item and parent_item.IsOk() else None
+
+            menuitem_id = wx.NewId()
+            menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Move up',
+                                             normalBmp=wx.ArtProvider.GetBitmap(wx.ART_GO_UP, wx.ART_MENU))
+            self.Bind(wx.EVT_MENU, self.onMoveUpResourceMenuitem, id=menuitem_id)
+            context_menu.AppendItem(menuitem)
+            menuitem.Enable(item != root_item and first_child_item and item != first_child_item)
+
+            menuitem_id = wx.NewId()
+            menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Move down',
+                                             normalBmp=wx.ArtProvider.GetBitmap(wx.ART_GO_DOWN, wx.ART_MENU))
+            self.Bind(wx.EVT_MENU, self.onMoveDownResourceMenuitem, id=menuitem_id)
+            context_menu.AppendItem(menuitem)
+            menuitem.Enable(item != root_item and last_child_item and item != last_child_item)
+
             return context_menu
         return None
 
@@ -593,6 +614,74 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             log_func.fatal(u'Cut resource to clipboard error')
         return None
 
+    def moveUpResourceItem(self, item=None):
+        """
+        Move up resource.
+
+        :param item: Resource tree item.
+            If None then get selected item.
+        :return: True/False.
+        """
+        if item is None:
+            item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
+        try:
+            if item and item.IsOk():
+                parent_item = self.resource_treeListCtrl.GetMainWindow().GetItemParent(item)
+                if parent_item and parent_item.IsOk():
+                    prev_item = self.resource_treeListCtrl.GetMainWindow().GetPrev(item)
+                    resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(prev_item)
+                    name = resource_item.get('name', 'Unknown')
+                    description = resource_item.get('description', '')
+                    img_idx = self.resource_treeListCtrl.GetMainWindow().GetItemImage(prev_item)
+                    new_item = self.resource_treeListCtrl.GetMainWindow().InsertItemByItem(parentId=parent_item,
+                                                                                           idPrevious=item,
+                                                                                           text=name,
+                                                                                           image=img_idx,
+                                                                                           data=resource_item)
+                    self.resource_treeListCtrl.GetMainWindow().SetItemText(new_item, description, 1)
+                    self.resource_treeListCtrl.GetMainWindow().Delete(prev_item)
+                    self.resource_treeListCtrl.GetMainWindow().SelectItem(item)
+                    return True
+            else:
+                log_func.error(u'Item <%s> not correct' % str(item))
+        except:
+            log_func.fatal(u'Move up resource error')
+        return False
+
+    def moveDownResourceItem(self, item=None):
+        """
+        Move down resource.
+
+        :param item: Resource tree item.
+            If None then get selected item.
+        :return: True/False.
+        """
+        if item is None:
+            item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
+        try:
+            if item and item.IsOk():
+                parent_item = self.resource_treeListCtrl.GetMainWindow().GetItemParent(item)
+                if parent_item and parent_item.IsOk():
+                    next_item = self.resource_treeListCtrl.GetMainWindow().GetNext(item)
+                    resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+                    name = resource_item.get('name', 'Unknown')
+                    description = resource_item.get('description', '')
+                    img_idx = self.resource_treeListCtrl.GetMainWindow().GetItemImage(item)
+                    new_item = self.resource_treeListCtrl.GetMainWindow().InsertItemByItem(parentId=parent_item,
+                                                                                           idPrevious=next_item,
+                                                                                           text=name,
+                                                                                           image=img_idx,
+                                                                                           data=resource_item)
+                    self.resource_treeListCtrl.GetMainWindow().SetItemText(new_item, description, 1)
+                    self.resource_treeListCtrl.GetMainWindow().Delete(item)
+                    self.resource_treeListCtrl.GetMainWindow().SelectItem(new_item)
+                    return True
+            else:
+                log_func.error(u'Item <%s> not correct' % str(item))
+        except:
+            log_func.fatal(u'Move down resource error')
+        return False
+
     def onCopyResourceMenuitem(self, event):
         """
         Copy item resource to clipboard handler.
@@ -612,6 +701,20 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         Cut selected item to clipboard handler.
         """
         self.cutResourceItem()
+        event.Skip()
+
+    def onMoveUpResourceMenuitem(self, event):
+        """
+        Move up selected item to clipboard handler.
+        """
+        self.moveUpResourceItem()
+        event.Skip()
+
+    def onMoveDownResourceMenuitem(self, event):
+        """
+        Move down selected item to clipboard handler.
+        """
+        self.moveDownResourceItem()
         event.Skip()
 
 
