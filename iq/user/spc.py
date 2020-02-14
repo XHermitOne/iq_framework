@@ -25,7 +25,7 @@ def getProjectRoles(prj_name=None, *args, **kwargs):
     """
     if prj_name is None:
         prj_name = global_func.getProjectName()
-    log_func.debug(u'Project name <%s>' % prj_name)
+    # log_func.debug(u'Project name <%s>' % prj_name)
     return list()
 
 

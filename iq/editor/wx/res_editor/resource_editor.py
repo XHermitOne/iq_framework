@@ -7,6 +7,7 @@ Resource editor class module.
 
 import sys
 import os.path
+import copy
 import wx
 from wx.lib.agw import flatmenu
 
@@ -64,6 +65,10 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         self.component_imagelist = wx.ImageList(wxbitmap_func.DEFAULT_ICON_WIDTH,
                                                 wxbitmap_func.DEFAULT_ICON_HEIGHT)
         component_spc_cache = components.getComponentSpcPalette()
+
+        empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+        empty_icon_idx = self.component_imagelist.Add(empty_bmp)
+        self.component_icons[None] = empty_icon_idx
 
         if component_spc_cache:
             for package in list(component_spc_cache.keys()):
@@ -220,17 +225,21 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             If None then get root item.
         :return: Resource dictionary.
         """
+        resource = dict()
         if item is None:
             item = self.resource_treeListCtrl.GetMainWindow().GetRootItem()
 
-        resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
-        if self.resource_treeListCtrl.GetMainWindow().HasChildren(item):
-            resource[spc_func.CHILDREN_ATTR_NAME] = list()
-            child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetFirstChild()
-            while child_item and child_item.IsOk():
-                child_resource = self.getResourceItem(child_item)
-                resource[spc_func.CHILDREN_ATTR_NAME].append(child_resource)
-                child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetNextChild(child_item, cookie=cookie)
+        try:
+            resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+            if self.resource_treeListCtrl.GetMainWindow().HasChildren(item):
+                resource[spc_func.CHILDREN_ATTR_NAME] = list()
+                child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetFirstChild(item)
+                while child_item and child_item.IsOk():
+                    child_resource = self.getResourceItem(child_item)
+                    resource[spc_func.CHILDREN_ATTR_NAME].append(child_resource)
+                    child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetNextChild(item, cookie=cookie)
+        except:
+            log_func.fatal(u'Get resource from editor error')
         return resource
 
     def getPropertyEditor(self, attribute_name):
@@ -434,19 +443,61 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             menuitem_id = wx.NewId()
             menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Copy',
                                              normalBmp=wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_MENU))
+            self.Bind(wx.EVT_MENU, self.onCopyResourceMenuitem, id=menuitem_id)
             context_menu.AppendItem(menuitem)
 
             menuitem_id = wx.NewId()
             menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Paste',
                                              normalBmp=wx.ArtProvider.GetBitmap(wx.ART_PASTE, wx.ART_MENU))
+            self.Bind(wx.EVT_MENU, self.onPasteResourceMenuitem, id=menuitem_id)
             context_menu.AppendItem(menuitem)
 
             menuitem_id = wx.NewId()
             menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Cut',
                                              normalBmp=wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_MENU))
+            self.Bind(wx.EVT_MENU, self.onCutResourceMenuitem, id=menuitem_id)
             context_menu.AppendItem(menuitem)
             return context_menu
         return None
+
+    def appendResourceItem(self, item=None, resource=None, expand=True):
+        """
+        Append new child resource in item.
+
+        :param item: Parent tree list ctrl item.
+            If item is None then get selected item.
+        :param resource: Child resource.
+        :param expand: Expand item after append?
+        :return: True/False.
+        """
+        if resource is None:
+            resource = dict()
+        if item is None:
+            item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
+
+        try:
+            if item and item.IsOk():
+                item_resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+                item_resource[spc_func.CHILDREN_ATTR_NAME].append(resource)
+
+                name = resource.get('name', 'Unknown')
+                description = resource.get('description', '')
+                component_type = resource.get('type', None)
+                img_idx = self.component_icons.get(component_type,
+                                                   self.component_icons[None])
+                child_item = self.resource_treeListCtrl.GetMainWindow().AppendItem(parentId=item, text=name,
+                                                                                   image=img_idx, data=resource)
+                self.resource_treeListCtrl.GetMainWindow().SetItemText(child_item, description, 1)
+
+                if expand:
+                    self.resource_treeListCtrl.GetMainWindow().Expand(item)
+
+                return True
+            else:
+                log_func.error(u'Item <%s> not correct' % str(item))
+        except:
+            log_func.fatal(u'Append new child resource in item error')
+        return False
 
     def onSelectComponentMenuItem(self, event):
         """
@@ -457,6 +508,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             selected_component = self.component_menu.menuitem2component_spc.get(menuitem_id, None)
             component_type = selected_component.get('type', 'UndefinedType')
             log_func.info(u'Selected component <%s>' % component_type)
+            component_resource = components.findComponentSpc(component_type)
+            component_resource = spc_func.fillResourceBySpc(dict(), component_resource)
+            component_resource['name'] += str(wx.NewId())
+            selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
+            self.appendResourceItem(selected_item, component_resource)
 
             self.item_context_menu = None
             self.component_menu = None
@@ -473,10 +529,16 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         if item is None:
             item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
         resource_item = None
-        if item and item.IsOk():
-            resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
-            resource_item['name'] = resource_item.get('name', 'default') + str(wx.NewId())
-            clipboard.toClipboard(resource_item)
+        try:
+            if item and item.IsOk():
+                resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+                resource_item = copy.deepcopy(resource_item)
+                resource_item['name'] = resource_item.get('name', 'default') + str(wx.NewId())
+                clipboard.toClipboard(resource_item, do_copy=False)
+            else:
+                log_func.error(u'Item <%s> not correct' % str(item))
+        except:
+            log_func.fatal(u'Copy resource to clipboard error')
         return resource_item
 
     def pasteResourceItem(self, item=None):
@@ -489,19 +551,23 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         if item is None:
             item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
-        if item and item.IsOk():
-            resource_item = clipboard.fromClipboard()
-            component_type = resource_item.get('type', None)
-            item_spc = self.resource_treeListCtrl.GetMainWindow().GetItemData()
-            item_type = item_spc.get('type', 'Unknown')
-            item_content = item_spc.get(spc_func.CONTENT_ATTR_NAME, list())
-            if component_type in item_content:
-                self._loadResource(resource_item, item)
-                return True
+        try:
+            if item and item.IsOk():
+                resource_item = clipboard.fromClipboard()
+                component_type = resource_item.get('type', None)
+                item_spc = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+                item_content = item_spc.get(spc_func.CONTENT_ATTR_NAME, list())
+                if component_type in item_content:
+                    return self.appendResourceItem(item, resource_item)
+                else:
+                    item_type = item_spc.get('type', 'UnknownType')
+                    msg = u'Unable to add component <%s> to <%s>' % (component_type, item_type)
+                    log_func.warning(msg)
+                    wxdlg_func.openWarningBox(u'PASTE', msg)
             else:
-                msg = u'Unable to add component <%s> to <%s>' % (component_type, item_type)
-                log_func.warning(msg)
-                wxdlg_func.openWarningBox(u'PASTE', msg)
+                log_func.error(u'Item <%s> not correct' % str(item))
+        except:
+            log_func.fatal(u'Past resource from clipboard error')
         return False
 
     def cutResourceItem(self, item=None):
@@ -514,11 +580,17 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         if item is None:
             item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
-        if item and item.IsOk():
-            resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData()
-            clipboard.toClipboard(resource_item)
-            self.resource_treeListCtrl.GetMainWindow().Delete(item)
-            return resource_item
+        try:
+            if item and item.IsOk():
+                resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+                resource_item = copy.deepcopy(resource_item)
+                clipboard.toClipboard(resource_item, do_copy=False)
+                self.resource_treeListCtrl.GetMainWindow().Delete(item)
+                return resource_item
+            else:
+                log_func.error(u'Item <%s> not correct' % str(item))
+        except:
+            log_func.fatal(u'Cut resource to clipboard error')
         return None
 
     def onCopyResourceMenuitem(self, event):

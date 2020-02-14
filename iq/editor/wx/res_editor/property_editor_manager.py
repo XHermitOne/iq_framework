@@ -78,7 +78,7 @@ class iqPropertyEditorManager(object):
             wx_property = wx.propgrid.FloatProperty(name, value=value)
 
         elif property_type == property_editor_id.CHOICE_EDITOR:
-            log_func.debug(u'Attribute <%s>' % name)
+            # log_func.debug(u'Attribute <%s>' % name)
             choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
             if isinstance(choices, (list, tuple)):
                 choices = [str(item) for item in choices]
@@ -225,7 +225,7 @@ class iqPropertyEditorManager(object):
                                                                                       dict) else edt_type
         else:
             log_func.warning(u'Not define attribute editors in resource component <%s>' % resource.get('type', None))
-        log_func.debug(u'Editor type [%d]' % edt_type)
+        # log_func.debug(u'Editor type [%d]' % edt_type)
         return edt_type
 
     def buildPropertyEditors(self, property_editor=None, resource=None):
@@ -263,9 +263,9 @@ class iqPropertyEditorManager(object):
         prop_page.Append(wx.propgrid.PropertyCategory(u'2 - Special'))
 
         attributes = [attr_name for attr_name in self.getResourceAttributes(resource) if attr_name not in spc_func.BASIC_ATTRIBUTES]
-        log_func.debug(u'Attributes: %s' % str(attributes))
+        # log_func.debug(u'Attributes: %s' % str(attributes))
         for attr_name in attributes:
-            log_func.debug(u'Attribute editor <%s> ...' % attr_name)
+            # log_func.debug(u'Attribute editor <%s> ...' % attr_name)
             edt_type = self._getAttrEditorType(resource, attr_name)
             wx_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type, spc=resource)
             if wx_property is not None:
@@ -321,7 +321,7 @@ class iqPropertyEditorManager(object):
         :return: Attribute name list.
         """
         edit_section = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-        log_func.debug(u'Resource __edit__ section: %s' % str(edit_section))
+        # log_func.debug(u'Resource __edit__ section: %s' % str(edit_section))
         return [attr_name for attr_name,
                               editor_type in list(edit_section.items()) if
                 editor_type not in (property_editor_id.METHOD_EDITOR,

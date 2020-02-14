@@ -120,11 +120,7 @@ class iqNewResourceDialog(new_resource_dlg.iqNewResourceDialogProto):
             menuitem_id = event.GetId()
             selected_component = self.component_menu.menuitem2component_spc.get(menuitem_id, None)
             component_type = selected_component.get('type', 'UndefinedType')
-            component_icon = selected_component.get(spc_func.ICON_ATTR_NAME, None)
-            if component_icon:
-                bmp = wxbitmap_func.createIconBitmap(component_icon)
-            else:
-                bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+            bmp = wxbitmap_func.createIconBitmap(selected_component.get(spc_func.ICON_ATTR_NAME, None))
             self.component_textCtrl.SetValue(component_type)
             self.component_bitmap.SetBitmap(bmp)
 

@@ -78,16 +78,20 @@ def getImageFileType(img_filename):
     return None
 
 
-def createIconBitmap(icon_filename, mask_colour=None):
+def createIconBitmap(icon_filename=None, mask_colour=None):
     """
     Create wx.Bitmap from library icon image filename.
 
     :param icon_filename: Icon filename as 'library/img_filename.png'
+        If None then create missing image bitmap.
     :param mask_colour: Colour for _create image mask. If None then mask not _create.
     :return: wx.Bitmap object or None if error.
     """
+    if icon_filename is None:
+        return wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
     img_filename = icon_func.getIconFilename(icon_filename=icon_filename)
     if img_filename:
         # log_func.debug(u'Create bitmap <%s>' % img_filename)
         return createBitmap(img_filename, mask_colour=mask_colour)
     return None
+
