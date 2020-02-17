@@ -31,6 +31,15 @@ class iqObject(object):
         self._resource = spc_func.fillResourceBySpc(resource=resource, spc=spc)
         self._context = self.createContext(context)
 
+    def getName(self):
+        """
+        Object name.
+        """
+        res = self.getResource()
+        if isinstance(res, dict):
+            return res.get('name', u'Unknown')
+        return u'Unknown'
+
     def getParent(self):
         """
         Get parent object.

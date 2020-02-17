@@ -222,13 +222,13 @@ def fatal(message=u'', is_force_print=False, is_force_log=False):
     trace_txt = traceback.format_exc()
 
     try:
-        msg = message + u'\n' + trace_txt
+        msg = message + os.linesep + trace_txt
     except UnicodeDecodeError:
         if not isinstance(message, str):
             message = str(message)
         if not isinstance(trace_txt, str):
             trace_txt = str(trace_txt)
-        msg = message + u'\n' + trace_txt
+        msg = message + os.linesep + trace_txt
 
     if CONFIG:
         if get_debug_mode() or is_force_print:

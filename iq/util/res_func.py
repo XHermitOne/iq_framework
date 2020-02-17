@@ -97,7 +97,7 @@ def loadResourceText(res_filename):
         f = None
         try:
             f = open(res_filename, 'rt')
-            txt = f.read().replace('\r\n', '\n')
+            txt = f.read().replace('\r\n', os.linesep)
             f.close()
             return eval(txt)
         except:

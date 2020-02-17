@@ -35,6 +35,11 @@ PROFILE_PATH = os.path.join(os.environ.get('HOME', os.path.dirname(__file__)),
 # Kernel object
 KERNEL = None
 
+# Current project object
+PROJECT = None
+# Current user object
+USER = None
+
 # Engine type. wx, qt or cui
 WX_ENGINE_TYPE = 'WX'
 QT_ENGINE_TYPE = 'QT'

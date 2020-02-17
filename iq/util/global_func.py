@@ -125,3 +125,21 @@ def isCUIEngine():
     :return: True/False.
     """
     return config.get_cfg_param('ENGINE_TYPE') == config.CUI_ENGINE_TYPE
+
+
+def getProject():
+    """
+    Get current project object.
+
+    :return: Project object.
+    """
+    return config.get_cfg_param('PROJECT')
+
+
+def getUser():
+    """
+    Get current user object.
+
+    :return: User object.
+    """
+    return config.get_cfg_param('USER')

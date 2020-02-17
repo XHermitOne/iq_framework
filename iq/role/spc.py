@@ -10,10 +10,13 @@ from iq.object import object_spc
 
 __version__ = (0, 0, 0, 1)
 
+COMPONENT_TYPE = 'iqRole'
+
+ADMINISTRATORS_ROLE_NAME = 'admins'
 
 ROLE_SPC = {
     'name': 'default',
-    'type': 'iqRole',
+    'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
     'uuid': None,

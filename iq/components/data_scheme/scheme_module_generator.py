@@ -5,6 +5,7 @@
 Scheme python module generator.
 """
 
+import os
 import os.path
 
 from ...util import log_func
@@ -124,7 +125,7 @@ class iqSchemeModuleGenerator(object):
         tablename = resource.get('tablename', '')
         tablename = tablename if tablename else name.lower()
         columns_text = [self.genColumnTxt(column) for column in resource.get(spc_func.CHILDREN_ATTR_NAME, list())]
-        return MODEL_TEXT_FMT % (name, description, tablename, u'\n'.join(columns_text))
+        return MODEL_TEXT_FMT % (name, description, tablename, os.linesep.join(columns_text))
 
     def genColumnTxt(self, resource):
         """

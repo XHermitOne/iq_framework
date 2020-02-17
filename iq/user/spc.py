@@ -15,6 +15,8 @@ from .. import config
 
 __version__ = (0, 0, 0, 1)
 
+COMPONENT_TYPE = 'iqUser'
+
 
 def getProjectRoles(prj_name=None, *args, **kwargs):
     """
@@ -31,7 +33,7 @@ def getProjectRoles(prj_name=None, *args, **kwargs):
 
 USER_SPC = {
     'name': 'default',
-    'type': 'iqUser',
+    'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
     'uuid': None,

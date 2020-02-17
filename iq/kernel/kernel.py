@@ -13,8 +13,9 @@ from ..util import global_func
 from ..util import log_func
 from ..util import res_func
 from .. import components
-from ..passport import passport
 
+from ..passport import passport
+from .. import project
 
 __version__ = (0, 0, 0, 1)
 
@@ -61,7 +62,7 @@ class iqKernel(object):
 
     def start(self, mode=None, project_name=None, username=None, password=None):
         """
-        Start programm.
+        Start program.
 
         :param mode: Startup mode (runtime, editor).
             If not defined, it is taken from the configuration file.
@@ -76,8 +77,16 @@ class iqKernel(object):
         if isinstance(project_name, str):
             global_func.setProjectName(project_name)
 
-        # self.app = QtWidgets.QApplication(sys.argv)
-        # self.app_return_code = self.app.exec_()
+        try:
+            prj_psp = passport.iqPassport(prj=project_name, module=project_name,
+                                          typename=project.COMPONENT_TYPE, name=project_name)
+            prj = self.createObject(psp=prj_psp, parent=self)
+
+            config.set_cfg_param('PROJECT', prj)
+            return prj.start(username, password)
+        except:
+            log_func.fatal(u'Start programm error')
+        return False
 
     def stop(self):
         """
@@ -85,7 +94,10 @@ class iqKernel(object):
 
         :return: True/False
         """
-        # sys.exit(self.app_return_code)
+        prj = global_func.getProject()
+        if prj:
+            prj.stop()
+
         sys.exit(DEFAULT_RETURN_CODE)
 
     def _createByResource(self, parent=None, resource=None, context=None, *args, **kwargs):

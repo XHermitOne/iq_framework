@@ -6,6 +6,7 @@ Execute functions module.
 """
 
 import os
+import uuid
 
 from . import log_func
 
@@ -45,3 +46,36 @@ def openHtmlBrowser(html_filename=None):
     else:
         log_func.warning(u'Not define HTML file for view')
     return False
+
+
+INDENTATION = u' ' * 4
+
+
+def execTxtFunction(function, context=None):
+    """
+    Execute function.
+
+    :param function: Function text body.
+    :param context: Run function context dictionary.
+    :return: Run function result.
+    """
+    if context is None:
+        context = globals()
+
+    if not isinstance(function, str):
+        log_func.error(u'Not valid function body type <%s>' % type(function))
+        return None
+
+    function_body = os.linesep.join(INDENTATION + line for line in function.split(os.linesep))
+    function_name = str(uuid.uuid4()).replace('-', '_')
+    function_header = 'def __%s():%s' % (function_name, os.linesep)
+    function_footer = '%s__result__ = __%s()' % (os.linesep, function_name)
+    function_txt = function_header + function_body + function_footer
+    try:
+        exec(function_txt, context)
+        return context['__result__']
+    except:
+        log_func.error(u'Execute function:')
+        log_func.error(function_txt)
+        log_func.fatal(u'Execute function error')
+    return None

@@ -275,8 +275,6 @@ class iqPropertyEditorManager(object):
                     add_property.SetAttribute('Hint', 'This is a hint')
                     add_property.SetAttribute('Password', True)
                 # if edt_type == icDefInf.EDT_PY_SCRIPT:
-                #     # Связывать расширенный редактор со свойством можно только после добавления
-                #     # свойства
                 #     self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
                 # elif edt_type == icDefInf.EDT_USER_PROPERTY:
                 #     # Связывать расширенный редактор со свойством можно только после добавления
@@ -294,8 +292,6 @@ class iqPropertyEditorManager(object):
             wx_property = self.createPropertyEditor(method_name, resource.get(method_name, None), edt_type, spc=resource)
             if wx_property is not None:
                 methods_page.Append(wx_property)
-                # Связывать расширенный редактор со свойством можно только после добавления
-                # свойства
                 # self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
 
         bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
@@ -309,8 +305,6 @@ class iqPropertyEditorManager(object):
             wx_property = self.createPropertyEditor(event_name, resource.get(event_name, None), edt_type, spc=resource)
             if wx_property is not None:
                 events_page.Append(wx_property)
-                # Связывать расширенный редактор со свойством можно только после добавления
-                # свойства
                 # self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
 
     def getResourceAttributes(self, resource):

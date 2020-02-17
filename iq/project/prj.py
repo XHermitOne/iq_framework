@@ -14,8 +14,11 @@ from ..dialog import dlg_func
 from ..util import py_func
 from ..util import spc_func
 from ..util import res_func
-from ..user import spc as user_spc
-from ..role import spc as role_spc
+
+from ..passport import passport
+from .. import user
+from .. import role
+from .. import config
 
 from . import spc
 
@@ -92,13 +95,13 @@ class iqProjectManager(object):
             prj_resource['name'] = prj_name
             prj_resource['description'] = u'Application project'
 
-            user_resource = spc_func.clearResourceFromSpc(user_spc.SPC)
+            user_resource = spc_func.clearResourceFromSpc(user.SPC)
             user_resource['name'] = 'admin'
             user_resource['description'] = u'Administrator'
-            user_resource['roles'] = ['admins']
+            user_resource['roles'] = [role.ADMINISTRATORS_ROLE_NAME]
 
-            role_resource = spc_func.clearResourceFromSpc(role_spc.SPC)
-            role_resource['name'] = 'admins'
+            role_resource = spc_func.clearResourceFromSpc(role.SPC)
+            role_resource['name'] = role.ADMINISTRATORS_ROLE_NAME
             role_resource['description'] = u'Administrators'
 
             prj_resource[spc_func.CHILDREN_ATTR_NAME] = [user_resource, role_resource]
@@ -165,3 +168,33 @@ class iqProjectManager(object):
             self.setName(name)
 
         pass
+
+    def start(self, username=None, password=None):
+        """
+        Start project.
+
+        :param username: User name.
+        :param password: User password.
+        :return: True/False.
+        """
+        user_psp = passport.iqPassport(prj=self.name, module=self.name,
+                                       typename=user.COMPONENT_TYPE, name=username)
+        user_obj = self.getKernel().createObject(psp=user_psp, parent=self)
+
+        config.set_cfg_param('USER', user_obj)
+        result = user_obj.login(password)
+        config.set_cfg_param('USER', user_obj if result else None)
+        if result:
+            user_obj.run()
+        return result
+
+    def stop(self):
+        """
+        Stop programm.
+
+        :return: True/False
+        """
+        user_obj = config.get_cfg_param('USER')
+        if user_obj:
+            return user_obj.logout()
+        return False
