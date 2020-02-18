@@ -30,7 +30,7 @@ PROJECT_SPC = {
     '__doc__': None,
     '__content__': ('iqDataModel', ),
     '__edit__': {
-        'db_engine': property_editor_id.READONLY_EDITOR,
+        'db_engine': property_editor_id.PASSPORT_EDITOR,
     },
     '__help__': {
         'db_engine': u'Database engine',

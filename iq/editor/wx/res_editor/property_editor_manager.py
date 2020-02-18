@@ -5,6 +5,7 @@
 Property editor class module.
 """
 
+import sys
 import hashlib
 import datetime
 import wx
@@ -17,15 +18,44 @@ from ... import property_editor_id
 
 from ....engine.wx.dlg import wxdlg_func
 
+from . import passport_property_editor
+
 __version__ = (0, 0, 0, 1)
 
 VALIDATE_ENABLE = True
+
+CUSTOM_PROPERTY_EDITORS = (passport_property_editor.iqPassportPropertyEditor,)
 
 
 class iqPropertyEditorManager(object):
     """
     Property editor class.
     """
+    def registerCustomEditors(self, property_editor=None, *editor_classes):
+        """
+        Register custom editors.
+
+        :param property_editor: Property grid manager.
+        :param editor_classes: Custom editors classes.
+        """
+        if not editor_classes:
+            editor_classes = CUSTOM_PROPERTY_EDITORS
+        #
+        # Let's use some simple custom editor
+        #
+        # NOTE: Editor must be registered *before* adding a property that
+        # uses it.
+        if not getattr(sys, '_PropGridEditorsRegistered', False):
+            for editor_class in editor_classes:
+                if editor_class:
+                    log_func.info(u'Register custom property editor <%s>' % editor_class.__name__)
+                    editor_class.setPropertyEditManager(property_editor)
+                    property_editor.RegisterEditor(editor_class, editor_class.__name__)
+                else:
+                    log_func.error(u'Custom property editor not defined')
+            # ensure we only do it once
+            sys._PropGridEditorsRegistered = True
+
     def clearProperties(self, property_editor=None):
         """
         Clear property editor.
@@ -201,6 +231,11 @@ class iqPropertyEditorManager(object):
         elif property_type == property_editor_id.DATE_EDITOR:
             wx_property = wx.propgrid.DateProperty(name, value=value)
 
+        elif property_type == property_editor_id.PASSPORT_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            wx_property = wx.propgrid.StringProperty(name, value=value)
+
         else:
             log_func.error(u'Property type <%s> not supported' % property_type)
 
@@ -233,6 +268,7 @@ class iqPropertyEditorManager(object):
         """
         Build all property editors.
 
+        :param property_editor: Property grid manager.
         :param resource: Component resource.
         :return: True/False.
         """
@@ -275,11 +311,11 @@ class iqPropertyEditorManager(object):
                 if edt_type == property_editor_id.PASSWORD_EDITOR:
                     add_property.SetAttribute('Hint', 'This is a hint')
                     add_property.SetAttribute('Password', True)
+                elif edt_type == property_editor_id.PASSPORT_EDITOR:
+                    property_editor.SetPropertyEditor(attr_name, passport_property_editor.iqPassportPropertyEditor.__name__)
                 # if edt_type == icDefInf.EDT_PY_SCRIPT:
                 #     self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
                 # elif edt_type == icDefInf.EDT_USER_PROPERTY:
-                #     # Связывать расширенный редактор со свойством можно только после добавления
-                #     # свойства
                 #     self.SetPropertyEditor(attr, icedituserproperty.icEditUserPropertyEditor.__name__)
 
         bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
@@ -466,6 +502,9 @@ class iqPropertyEditorManager(object):
             value = str_value
 
         elif property_type == property_editor_id.EVENT_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.PASSPORT_EDITOR:
             value = str_value
 
         else:

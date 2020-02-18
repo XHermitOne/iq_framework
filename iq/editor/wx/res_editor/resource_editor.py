@@ -23,12 +23,13 @@ from ....util import global_func
 from ....util import file_func
 from ....util import exec_func
 from ....engine.wx import wxbitmap_func
+from ....engine.wx import imglib_manager
 from ....engine.wx.dlg import wxdlg_func
 from ....import components
 from .... import project
 from .. import clipboard
 
-from ... import property_editor_id
+# from ... import property_editor_id
 from . import property_editor_manager
 from . import select_component_menu
 from . import new_resource_dialog
@@ -37,7 +38,8 @@ __version__ = (0, 0, 0, 1)
 
 
 class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
-                       property_editor_manager.iqPropertyEditorManager):
+                       property_editor_manager.iqPropertyEditorManager,
+                       imglib_manager.iqImageLibraryManager):
     """
     Resource editor class.
     """
@@ -48,10 +50,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :param parent: Parent window object.
         """
         resource_editor_frm.iqResourceEditorFrameProto.__init__(self, parent=parent)
+        imglib_manager.iqImageLibraryManager.__init__(self)
 
         self.res_filename = None
 
-        self.component_imagelist = None
+        # self.component_imagelist = None
         self.component_icons = dict()
 
         self.item_context_menu = None
@@ -63,13 +66,14 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         :return:
         """
-        self.component_imagelist = wx.ImageList(wxbitmap_func.DEFAULT_ICON_WIDTH,
-                                                wxbitmap_func.DEFAULT_ICON_HEIGHT)
+        self.initImageLibrary()
+        # self.component_imagelist = wx.ImageList(wxbitmap_func.DEFAULT_ICON_WIDTH,
+        #                                         wxbitmap_func.DEFAULT_ICON_HEIGHT)
         component_spc_cache = components.getComponentSpcPalette()
 
-        empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
-        empty_icon_idx = self.component_imagelist.Add(empty_bmp)
-        self.component_icons[None] = empty_icon_idx
+        # empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+        # empty_icon_idx = self.component_imagelist.Add(empty_bmp)
+        # self.component_icons[None] = empty_icon_idx
 
         if component_spc_cache:
             for package in list(component_spc_cache.keys()):
@@ -80,19 +84,21 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                         icon_name = component_spc.get('__icon__', None)
                         if icon_name:
                             # log_func.debug(u'Create icon <%s>' % icon_name)
-                            component_icon_bmp = wxbitmap_func.createIconBitmap(icon_name)
-                            if component_icon_bmp:
-                                component_icon_idx = self.component_imagelist.Add(component_icon_bmp)
-                                self.component_icons[component_type] = component_icon_idx
-                            else:
-                                log_func.warning(u'Not valid icon name component <%s>' % component_type)
+                            component_icon_idx = self.getImageIdx(icon_name)
+                            self.component_icons[component_type] = component_icon_idx
+                            # component_icon_bmp = wxbitmap_func.createIconBitmap(icon_name)
+                            # if component_icon_bmp:
+                            #     component_icon_idx = self.component_imagelist.Add(component_icon_bmp)
+                            #     self.component_icons[component_type] = component_icon_idx
+                            # else:
+                            #     log_func.warning(u'Not valid icon name component <%s>' % component_type)
                         else:
                             log_func.warning(u'Component <%s> specification not define icon' % component_type)
                             log_func.warning(u'Verify __icon__ attribute in specification')
                     else:
                         log_func.error(u'In specification %s not define type' % component_spc)
 
-            self.resource_treeListCtrl.SetImageList(self.component_imagelist)
+            self.resource_treeListCtrl.SetImageList(self.getImageList())
         else:
             log_func.error(u'Empty component specification cache <%s>' % str(component_spc_cache))
 
@@ -103,6 +109,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :return:
         """
         self.initComponentIcons()
+        self.registerCustomEditors(property_editor=self.object_propertyGridManager)
 
         # self.clearProperties(self.object_propertyGridManager)
 

@@ -42,7 +42,8 @@ def getIconFilename(icon_filename):
         else:
             log_func.error(u'Format icon filename <%s> error' % icon_filename)
             return None
-    return getLibraryIconFilename(icon_filename=icon_filename, library=library)
+    icon_filename = getLibraryIconFilename(icon_filename=icon_filename, library=library)
+    return icon_filename
 
 
 def getLibraryIconFilename(icon_filename, library=None):
