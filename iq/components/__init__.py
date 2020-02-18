@@ -151,9 +151,20 @@ def buildComponents():
     """
     result = dict()
     try:
-        prj_type = project.SPC.get('type', None)
+        prj_type = project.COMPONENT_TYPE
         prj_component = project.COMPONENT
         result[prj_type] = prj_component
+        log_func.info(u'Component <%s> registered' % prj_type)
+
+        user_type = user.COMPONENT_TYPE
+        user_component = user.COMPONENT
+        result[user_type] = user_component
+        log_func.info(u'Component <%s> registered' % user_type)
+
+        role_type = role.COMPONENT_TYPE
+        role_component = role.COMPONENT
+        result[role_type] = role_component
+        log_func.info(u'Component <%s> registered' % role_type)
 
         components_dirname = os.path.dirname(__file__)
         component_names = file_func.getDirectoryNames(components_dirname)

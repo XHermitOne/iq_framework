@@ -25,8 +25,9 @@ class iqProject(object.iqObject, prj.iqProjectManager):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(parent=parent, resource=resource, spc=spc.SPC, context=context)
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
         prj.iqProjectManager.__init__(self, *args, **kwargs)
+        self.name = self.getName()
 
 
 COMPONENT = iqProject

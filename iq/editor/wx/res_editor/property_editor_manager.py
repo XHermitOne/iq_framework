@@ -5,6 +5,7 @@
 Property editor class module.
 """
 
+import hashlib
 import datetime
 import wx
 import wx.propgrid
@@ -447,7 +448,7 @@ class iqPropertyEditorManager(object):
                 value = (0, 0)
 
         elif property_type == property_editor_id.PASSWORD_EDITOR:
-            value = str_value
+            value = hashlib.md5(str_value.encode()).hexdigest()
 
         elif property_type == property_editor_id.FILE_EDITOR:
             value = str_value
@@ -490,6 +491,7 @@ class iqPropertyEditorManager(object):
             # По умолчанию все не определенные атрибуты - скриптовые
             property_type = property_editor_id.SCRIPT_EDITOR
         value = self.getConvertedValue(name, str_value, property_type, spc)
+        log_func.debug(u'Convert property value <%s : %s : %s>' % (name, str_value, property_type))
         return value
 
     def findPropertyEditor(self, name, spc):
@@ -568,7 +570,9 @@ class iqPropertyEditorManager(object):
         property_type = None
 
         editors = spc.get(spc_func.EDIT_ATTR_NAME, dict())
-        for attr_name, attr_editor in editors.items():
+        if name in editors:
+            attr_editor = editors[name]
+
             if isinstance(attr_editor, int):
                 property_type = attr_editor
             elif isinstance(attr_editor, dict):
@@ -582,4 +586,21 @@ class iqPropertyEditorManager(object):
         if property_type is None and spc_func.PARENT_ATTR_NAME in spc:
             property_type = self.findPropertyType(name, spc[spc_func.PARENT_ATTR_NAME])
         return property_type
+
+    def getPropertyValueAsString(self, property, name, spc):
+        """
+        Get property value as string.
+
+        :param property: Property object.
+        :param name: Attribute name.
+        :param spc: Component specification.
+        :return: Property value as string.
+        """
+        editor = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, None)
+        if editor == property_editor_id.PASSWORD_EDITOR:
+            str_value = str(property.GetValue())
+        else:
+            str_value = property.GetValueAsString()
+        # log_func.info(u'Property [%s]. New value <%s>' % (name, str_value))
+        return str_value
 

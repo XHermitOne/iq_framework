@@ -25,7 +25,7 @@ class iqDataScheme(object.iqObject, scheme.iqSchemeManager):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(parent=parent, resource=resource, spc=spc.SPC, context=context)
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
         scheme.iqSchemeManager.__init__(self, *args, **kwargs)
 
     def getDBEngine(self):

@@ -28,6 +28,7 @@ from ....import components
 from .... import project
 from .. import clipboard
 
+from ... import property_editor_id
 from . import property_editor_manager
 from . import select_component_menu
 from . import new_resource_dialog
@@ -267,15 +268,16 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         wx_property = event.GetProperty()
         if wx_property:
             name = wx_property.GetName()
-            str_value = wx_property.GetValueAsString()
-            log_func.info(u'Property [%s]. New value <%s>' % (name, str_value))
 
             selected_resource = self.getSelectedResource()
             if selected_resource:
                 selected_component_type = selected_resource.get('type', None)
+                log_func.debug(u'Selected object type <%s>' % selected_component_type)
                 if selected_component_type:
                     spc = components.findComponentSpc(selected_component_type)
                     spc = spc_func.fillSpcByParent(spc)
+
+                    str_value = self.getPropertyValueAsString(wx_property, name, spc)
                     value = self.convertPropertyValue(name, str_value, spc)
                     if self.validatePropertyValue(name, value, spc):
                         selected_resource[name] = value

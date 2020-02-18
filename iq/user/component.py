@@ -28,7 +28,7 @@ class iqUser(object.iqObject, user.iqUserManager):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(parent=parent, resource=resource, spc=spc.SPC, context=context)
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
         user.iqUserManager.__init__(self, *args, **kwargs)
 
     def getPasswordHash(self):

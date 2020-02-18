@@ -25,7 +25,7 @@ class iqDataEngine(object.iqObject, db_engine.iqDBEngineManager):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(parent=parent, resource=resource, spc=spc.SPC, context=context)
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
         db_engine.iqDBEngineManager.__init__(self, *args, **kwargs)
 
     def getDialect(self):

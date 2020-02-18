@@ -41,6 +41,7 @@ class iqUserManager(object):
         else:
             password = password if password else ''
             login_password_hash = hashlib.md5(password.encode()).hexdigest()
+            # log_func.debug(u'Check password <%s> : <%s>' % (login_password_hash, password_hash))
             login_result = password_hash == login_password_hash
 
         if login_result:

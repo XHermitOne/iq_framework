@@ -80,6 +80,7 @@ class iqKernel(object):
         try:
             prj_psp = passport.iqPassport(prj=project_name, module=project_name,
                                           typename=project.COMPONENT_TYPE, name=project_name)
+            log_func.debug(u'Project passport <%s>' % prj_psp.to_str())
             prj = self.createObject(psp=prj_psp, parent=self)
 
             config.set_cfg_param('PROJECT', prj)

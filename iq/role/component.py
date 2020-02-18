@@ -2,20 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-Data column component.
+Role component.
 """
 
-from ... import object
+from .. import object
 
 from . import spc
-from . import column
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqDataColumn(object.iqObject, column.iqColumnManager):
+class iqRole(object.iqObject):
     """
-    Data column component.
+    Role component.
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -26,7 +25,6 @@ class iqDataColumn(object.iqObject, column.iqColumnManager):
         :param context: Context dictionary.
         """
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
-        column.iqColumnManager.__init__(self, *args, **kwargs)
 
 
-COMPONENT = iqDataColumn
+COMPONENT = iqRole
