@@ -47,7 +47,7 @@
             <property name="size">448,308</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass"></property>
-            <property name="title">iQ Framework</property>
+            <property name="title">iqFramework</property>
             <property name="tooltip"></property>
             <property name="window_extra_style"></property>
             <property name="window_name"></property>

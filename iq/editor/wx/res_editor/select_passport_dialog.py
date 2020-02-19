@@ -107,7 +107,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
 
         # Add root item
         root_img_idx = self.component_icons['root']
-        root_item = self.prj_treeListCtrl.GetMainWindow().AddRoot(text=u'iQ', image=root_img_idx)
+        root_item = self.prj_treeListCtrl.GetMainWindow().AddRoot(text=u'Root', image=root_img_idx)
 
         # Add project
         prj_item = None

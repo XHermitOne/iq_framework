@@ -41,7 +41,7 @@ class iqMetaDotUseProto(object):
                 del kwarg['context']
             else:
                 context = object_context.iqContext(kernel=kernel)
-            return kernel.createObjecte(psp=self.passport(), parent=parent, context=context, *arg, **kwarg)
+            return kernel.createObject(psp=self.passport(), parent=parent, context=context, *arg, **kwarg)
 
     def get(self, parent=None, *arg, **kwarg):
         """

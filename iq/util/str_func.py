@@ -23,4 +23,4 @@ def getEncodings():
         result.sort()
         return tuple(result)
     except:
-        return ('utf_8', )
+        return 'utf_8',

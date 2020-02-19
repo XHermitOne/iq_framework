@@ -180,7 +180,7 @@ class iqProjectManager(object):
         user_psp = passport.iqPassport(prj=self.name, module=self.name,
                                        typename=user.COMPONENT_TYPE, name=username)
         log_func.debug(u'User passport <%s>' % user_psp.getAsStr())
-        user_obj = self.getKernel().createObject(psp=user_psp, parent=self)
+        user_obj = self.getKernel().createObject(psp=user_psp, parent=self, register=True)
 
         config.set_cfg_param('USER', user_obj)
         result = user_obj.login(password)

@@ -81,7 +81,7 @@ class iqKernel(object):
             prj_psp = passport.iqPassport(prj=project_name, module=project_name,
                                           typename=project.COMPONENT_TYPE, name=project_name)
             log_func.debug(u'Project passport <%s>' % prj_psp.getAsStr())
-            prj = self.createObject(psp=prj_psp, parent=self)
+            prj = self.createObject(psp=prj_psp, parent=self, register=True)
 
             config.set_cfg_param('PROJECT', prj)
             return prj.start(username, password)
@@ -203,15 +203,17 @@ class iqKernel(object):
 
         return self.createObject(psp=psp, *args, **kwargs)
 
-    def createObject(self, psp, *args, **kwargs):
+    def createObject(self, psp, register=False, *args, **kwargs):
         """
         Create object by passport.
 
         :param psp: Object passport.
+        :param register: Register in object cache.
         :return: Registered object or None if error.
         """
         obj = self._createByPsp(psp=psp, *args, **kwargs)
-        self._object_cache[psp] = obj
+        if register:
+            self._object_cache[psp] = obj
         return obj
 
 
@@ -245,6 +247,7 @@ def createKernel():
     """
     kernel = iqKernel()
     config.set_cfg_param('KERNEL', kernel)
+    log_func.info(u'Create KERNEL object')
 
     initSettings()
     initObjects()

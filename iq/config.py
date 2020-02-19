@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Configuration file iQ framework.
+Configuration file iqframework.
 """
 
 import os.path
@@ -53,6 +53,14 @@ SETTINGS = None
 
 # Access to project objects
 OBJECTS = None
+
+FRAMEWORK_LOGO_TXT = u'''
+ _     _____                                 _   
+|_|___|   __|___ ___ _____ ___ _ _ _ ___ ___| |_ 
+| | . |   __|  _| .'|     | -_| | | | . |  _| '_|
+|_|_  |__|  |_| |__,|_|_|_|___|_____|___|_| |_,_|
+    |_|     
+'''
 
 
 def get_cfg_param(name):

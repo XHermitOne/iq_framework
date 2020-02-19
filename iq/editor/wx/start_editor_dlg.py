@@ -17,7 +17,7 @@ import wx.xrc
 class iqStartEditorDialogProto ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"iQ Framework", pos = wx.DefaultPosition, size = wx.Size( 448,308 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"iqFramework", pos = wx.DefaultPosition, size = wx.Size( 448,308 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		

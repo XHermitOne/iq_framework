@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-iQ Framework - RAD Software platform for developing applications in Python using the PyQt GUI.
+iqFramework - RAD Software platform for developing applications in Python using the PyQt GUI.
 
 Command line parameters:
 
@@ -50,6 +50,7 @@ def main(*argv):
                                        'res_filename='])
     except getopt.error as msg:
         log_func.error(str(msg), is_force_print=True)
+        log_func.print_color_txt(config.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
         log_func.print_color_txt(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(2)
 
@@ -63,10 +64,12 @@ def main(*argv):
 
     for option, arg in options:
         if option in ('-h', '--help', '-?'):
+            log_func.print_color_txt(config.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
             log_func.print_color_txt(__doc__, color=log_func.GREEN_COLOR_TEXT)
             sys.exit(0)
         elif option in ('-v', '--version'):
-            str_version = 'iQ Framework %s' % '.'.join([str(sign) for sign in config.VERSION])
+            str_version = 'iqFramework %s' % '.'.join([str(sign) for sign in config.VERSION])
+            log_func.print_color_txt(config.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
             log_func.print_color_txt(str_version, color=log_func.GREEN_COLOR_TEXT)
             sys.exit(0)
         elif option in ('-d', '--debug'):
@@ -93,6 +96,8 @@ def main(*argv):
         else:
             log_func.warning(u'Not supported parameter <%s>' % option)
 
+    log_func.info(u'iqFramework ... START')
+
     if runtime_mode:
         kernel = iq.createKernel()
         kernel.start(mode=mode, project_name=project, username=username, password=password)
@@ -104,6 +109,8 @@ def main(*argv):
         resource_editor.runResourceEditor(res_filename=res_filename)
     else:
         log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
+
+    log_func.info(u'iqFramework ... STOP')
 
 
 if __name__ == '__main__':
