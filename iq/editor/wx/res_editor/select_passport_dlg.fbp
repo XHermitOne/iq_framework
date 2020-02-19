@@ -517,7 +517,7 @@
                                             <event name="OnSetFocus"></event>
                                             <event name="OnSize"></event>
                                             <event name="OnTreelistColumnSorted"></event>
-                                            <event name="OnTreelistItemActivated">onPrjTreelistItemActivated</event>
+                                            <event name="OnTreelistItemActivated"></event>
                                             <event name="OnTreelistItemChecked"></event>
                                             <event name="OnTreelistItemContextMenu"></event>
                                             <event name="OnTreelistItemExpanded"></event>
@@ -705,7 +705,7 @@
                                             <event name="OnTreelistItemContextMenu"></event>
                                             <event name="OnTreelistItemExpanded"></event>
                                             <event name="OnTreelistItemExpanding"></event>
-                                            <event name="OnTreelistSelectionChanged"></event>
+                                            <event name="OnTreelistSelectionChanged">onResTreelistSelectionChanged</event>
                                             <event name="OnUpdateUI"></event>
                                             <object class="wxTreeListCtrlColumn" expanded="1">
                                                 <property name="alignment">wxALIGN_LEFT</property>

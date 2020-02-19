@@ -80,7 +80,7 @@ class iqKernel(object):
         try:
             prj_psp = passport.iqPassport(prj=project_name, module=project_name,
                                           typename=project.COMPONENT_TYPE, name=project_name)
-            log_func.debug(u'Project passport <%s>' % prj_psp.to_str())
+            log_func.debug(u'Project passport <%s>' % prj_psp.getAsStr())
             prj = self.createObject(psp=prj_psp, parent=self)
 
             config.set_cfg_param('PROJECT', prj)
@@ -167,7 +167,7 @@ class iqKernel(object):
         :return: New object or None if error.
         """
         psp = passport.iqPassport()
-        if psp.is_passport(object_data):
+        if psp.isPassport(object_data):
             return self._createByPsp(parent=parent, psp=psp, context=context, *args, **kwargs)
         elif isinstance(object_data, str) and os.path.isfile(object_data):
             return self._createByResFile(parent=parent, res_filename=object_data, context=context, *args, **kwargs)
@@ -183,9 +183,9 @@ class iqKernel(object):
         :param compare_guid: Compare GUID?
         :return: Registered object or None if not found.
         """
-        obj_psp = passport.iqPassport().set_from(psp)
+        obj_psp = passport.iqPassport().setAsAny(psp)
         for psp_tuple in list(self._object_cache.keys()):
-            if obj_psp.same_passport(psp_tuple, compare_guid=compare_guid):
+            if obj_psp.isSamePassport(psp_tuple, compare_guid=compare_guid):
                 return self._object_cache[psp_tuple]
         return None
 

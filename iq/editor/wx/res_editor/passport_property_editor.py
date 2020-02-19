@@ -88,8 +88,10 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
 
         if eventType == wx.wxEVT_COMMAND_BUTTON_CLICKED:
             value = select_passport_dialog.selectPassportDlg(parent=None,
-                                                             prj_name=global_func.getProjectName())
-            property.SetValueInEvent(value)
+                                                             prj_name=global_func.getProjectName(),
+                                                             default_psp=property.GetValue())
+            if value is not None:
+                property.SetValueInEvent(value)
             return True
 
         return False

@@ -129,7 +129,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         description = resource.get('description', u'')
         icon_idx = self.component_icons.get(component_type, None)
-        log_func.debug(u'Add new resource item <%s : %s : %s : %s>' % (component_type, name, description, icon_idx))
+        # log_func.debug(u'Add new resource item <%s : %s : %s : %s>' % (component_type, name, description, icon_idx))
 
         if parent_item is None:
             new_item = self.resource_treeListCtrl.AddRoot(name)

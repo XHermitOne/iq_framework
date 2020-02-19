@@ -13,10 +13,12 @@ from . import select_passport_dlg
 from ....util import log_func
 from ....util import file_func
 from ....util import res_func
+from ....util import spc_func
+from ....passport import passport
 
 from ....engine.wx import imglib_manager
 from .... import components
-from .... import project
+# from .... import project
 
 __version__ = (0, 0, 0, 1)
 
@@ -134,6 +136,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         self.prj_treeListCtrl.GetMainWindow().Expand(root_item)
         if prj_item:
             self.prj_treeListCtrl.GetMainWindow().Expand(prj_item)
+        return True
 
     def _buildFolder(self, parent_path, parent_item, prj_name='unknown'):
         """
@@ -156,7 +159,8 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                 log_func.error(u'Project directory path <%s> not found' % dir_path)
 
         res_filenames = file_func.getFilePaths(parent_path)
-        res_filenames = [filename for filename in res_filenames if file_func.isFilenameExt(filename, '.res')]
+        res_filenames = [filename for filename in res_filenames if file_func.isFilenameExt(filename,
+                                                                                           res_func.RESOURCE_FILE_EXT)]
         for res_filename in res_filenames:
             if os.path.exists(res_filename):
                 res_name = os.path.splitext(os.path.basename(res_filename))[0]
@@ -171,6 +175,118 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                 self.prj_treeListCtrl.GetMainWindow().SetItemText(item=item, text=description, column=1)
             else:
                 log_func.error(u'Project resource file <%s> not found' % res_filename)
+
+    def buildResource(self, resource=None):
+        """
+        Build resource tree.
+
+        :param resource: Object resource dictionary.
+        :return: True/False.
+        """
+        if not resource:
+            log_func.warning(u'Not define resource')
+            return False
+
+        self.res_treeListCtrl.DeleteAllItems()
+
+        result = self._buildObject(resource)
+
+        root_tem = self.res_treeListCtrl.GetRootItem()
+        if root_tem and root_tem.IsOk():
+            self.res_treeListCtrl.Expand(root_tem)
+        return result
+
+    def _buildObject(self, resource, parent_item=None):
+        """
+        Build resource objects.
+
+        :param resource: Resource struct.
+        :param parent_item: Parent item for append resource.
+            If None then append root item.
+        :return: True/False.
+        """
+        name = resource.get('name', u'Unknown')
+        component_type = resource.get('type', None)
+        description = resource.get('description', u'')
+        icon_idx = self.component_icons.get(component_type, self.component_icons[None])
+        # log_func.debug(u'Add new resource item <%s : %s : %s : %s>' % (component_type, name, description, icon_idx))
+
+        if parent_item is None:
+            new_item = self.res_treeListCtrl.AddRoot(name)
+        else:
+            new_item = self.res_treeListCtrl.AppendItem(parent_item, name)
+        self.res_treeListCtrl.SetItemText(new_item, description, 1)
+        if icon_idx is not None:
+            self.res_treeListCtrl.SetItemImage(new_item, icon_idx, which=wx.TreeItemIcon_Normal)
+        self.res_treeListCtrl.GetMainWindow().SetItemData(new_item, resource)
+
+        result = list()
+        children = resource.get(spc_func.CHILDREN_ATTR_NAME, list())
+        for child_resource in children:
+            result.append(self._buildObject(child_resource, new_item))
+
+        return all(result)
+
+    def selectPassport(self, psp):
+        """
+        Select passport object.
+
+        :param psp: Passport as string.
+        :return: True/False.
+        """
+        obj_psp = passport.iqPassport()
+        if obj_psp.isPassport(psp):
+            obj_psp.setAsStr(psp)
+        prj_name = obj_psp.prj
+        module_name = obj_psp.module
+        if prj_name and module_name:
+            item = self.findItemByRes(self.prj_treeListCtrl,
+                                      {'__project__': prj_name, '__module__': module_name})
+            if item:
+                self.prj_treeListCtrl.GetMainWindow().SelectItem(item)
+
+            obj_type = obj_psp.typename
+            obj_name = obj_psp.name
+            item = self.findItemByRes(self.res_treeListCtrl,
+                                      {'type': obj_type, 'name': obj_name})
+            if item:
+                self.res_treeListCtrl.GetMainWindow().SelectItem(item)
+
+    def findItemByRes(self, treelist_ctrl, res_attrs, item=None):
+        """
+        Find treelist control item by resource elements.
+
+        :param treelist_ctrl: Tree list control object.
+        :param res_attrs: Resource element attributes dictionary.
+        :param item: Current find item.
+            If None then get root item.
+        :return: Tree list control item or None if not found.
+        """
+        if not treelist_ctrl:
+            log_func.error(u'Not define TreeListCtrl object for find item')
+            return None
+
+        if not isinstance(res_attrs, dict):
+            log_func.error(u'Resource attributes type error <%s>' % type(res_attrs))
+            return None
+
+        if item is None:
+            item = treelist_ctrl.GetMainWindow().GetRootItem()
+
+        res_item = treelist_ctrl.GetMainWindow().GetItemData(item)
+        if res_item:
+            is_find = all([res_item.get(name, None) == value for name, value in res_attrs.items()])
+            if is_find:
+                return item
+
+        if treelist_ctrl.GetMainWindow().HasChildren(item):
+            child_item, cookie = treelist_ctrl.GetMainWindow().GetFirstChild(item)
+            while child_item and child_item.IsOk():
+                find_item = self.findItemByRes(treelist_ctrl, res_attrs, item=child_item)
+                if find_item:
+                    return find_item
+                child_item, cookie = treelist_ctrl.GetMainWindow().GetNextChild(item, cookie=cookie)
+        return None
 
     def getSelectedPassport(self):
         """
@@ -206,31 +322,43 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                                  resource.get('name', 'unknown')) if resource else u''
         self.psp_staticText.SetLabel(label)
 
+        self.buildResource(resource)
+
         event.Skip()
 
-    def onPrjTreelistItemActivated(self, event):
+    def onResTreelistSelectionChanged(self, event):
         """
-        Projects treelist control item activated handler.
+        Resource treelist control item selection changed handler.
         """
         item = event.GetItem()
-        resource = self.prj_treeListCtrl.GetMainWindow().GetItemData(item)
+        resource = self.res_treeListCtrl.GetMainWindow().GetItemData(item)
+        root_item = self.res_treeListCtrl.GetMainWindow().GetRootItem()
+        root_resource = self.res_treeListCtrl.GetMainWindow().GetItemData(root_item)
+        label = '%s.%s.%s.%s' % (root_resource.get('__project__', 'unknown'),
+                                 root_resource.get('__module__', 'unknown'),
+                                 resource.get('type', 'unknown'),
+                                 resource.get('name', 'unknown')) if resource else u''
+        self.psp_staticText.SetLabel(label)
 
         event.Skip()
 
 
-def selectPassportDlg(parent=None, prj_name=None):
+def selectPassportDlg(parent=None, prj_name=None, default_psp=None):
     """
     Open select passport dialog.
 
     :param parent: Parent form.
     :param prj_name: Project name.
         If None then you can choose from any project.
+    :param default_psp: Default selected passport.
     :return: Passport as string or None if Cancel pressed or error.
     """
     dlg = None
     try:
         dlg = iqSelectPassportDialog(parent=parent)
         dlg.init(prj_name)
+        if default_psp:
+            dlg.selectPassport(default_psp)
         result = None
         if dlg.ShowModal() == wx.ID_OK:
             result = dlg.passport

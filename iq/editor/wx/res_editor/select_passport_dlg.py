@@ -90,8 +90,8 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 		
 		# Connect Events
-		self.prj_treeListCtrl.Bind( wx.EVT_TREE_ITEM_ACTIVATED, self.onPrjTreelistItemActivated )
 		self.prj_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onPrjTreelistSelectionChanged )
+		self.res_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onResTreelistSelectionChanged )
 		self.cancel_button.Bind( wx.EVT_BUTTON, self.onCancelButtonClick )
 		self.ok_button.Bind( wx.EVT_BUTTON, self.onOkButtonClick )
 	
@@ -100,10 +100,10 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 	
 	
 	# Virtual event handlers, overide them in your derived class
-	def onPrjTreelistItemActivated( self, event ):
+	def onPrjTreelistSelectionChanged( self, event ):
 		event.Skip()
 	
-	def onPrjTreelistSelectionChanged( self, event ):
+	def onResTreelistSelectionChanged( self, event ):
 		event.Skip()
 	
 	def onCancelButtonClick( self, event ):

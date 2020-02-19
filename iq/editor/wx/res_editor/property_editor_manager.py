@@ -309,7 +309,7 @@ class iqPropertyEditorManager(object):
                 add_property = prop_page.Append(wx_property)
                 # Advanced customization of property editors
                 if edt_type == property_editor_id.PASSWORD_EDITOR:
-                    add_property.SetAttribute('Hint', 'This is a hint')
+                    # add_property.SetAttribute('Hint', 'This is a hint')
                     add_property.SetAttribute('Password', True)
                 elif edt_type == property_editor_id.PASSPORT_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, passport_property_editor.iqPassportPropertyEditor.__name__)

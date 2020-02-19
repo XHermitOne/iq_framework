@@ -17,6 +17,7 @@ from ..util import file_func
 from ..util import global_func
 from ..util import res_func
 from ..util import spc_func
+from ..util import log_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -62,7 +63,7 @@ class iqPassport(object):
         self.guid = guid
         return self
 
-    def to_str(self):
+    def getAsStr(self):
         """
         Convert to string.
 
@@ -74,21 +75,21 @@ class iqPassport(object):
                                   str(self.name),
                                   '.%s' % str(self.guid) if self.guid else '')
 
-    def from_str(self, passport=None):
+    def setAsStr(self, passport=None):
         """
         Set passport from string.
 
         :param passport: Passport as string.
         :return:
         """
-        if not isinstance(passport, str):
-            assert u'Error passport as string'
+        assert (isinstance(passport, str) and self.isPassport(passport)), u'Error passport as string'
 
         passport_tuple = tuple(passport.split(PASSPORT_STR_DELIM))
-        self.from_tuple(passport_tuple)
+        log_func.debug(u'Passport as tuple %s : %s' % (str(passport_tuple), self.isPassport(passport)))
+        self.setAsTuple(passport_tuple)
         return self
 
-    def to_dict(self):
+    def getAsDict(self):
         """
         Convert to dictionary.
 
@@ -97,22 +98,13 @@ class iqPassport(object):
         return dict(prj=self.prj, module=self.module,
                     type=self.typename, name=self.name, guid=self.guid)
 
-    def to_tuple(self):
-        """
-        Convert to tuple.
-
-        :return: Passport as tuple.
-        """
-        return self.prj, self.module, self.typename, self.name, self.guid
-
-    def from_dict(self, passport=None):
+    def setAsDict(self, passport=None):
         """
         Set passport from dictionary.
 
         :param passport: Passport as dictionary.
         """
-        if not isinstance(passport, dict):
-            assert u'Error passport as dictionary'
+        assert (isinstance(passport, dict) and self.isPassport(passport)), u'Error passport as dictionary'
 
         self.prj = passport.get('prj', None)
         self.module = passport.get('module', None)
@@ -121,17 +113,23 @@ class iqPassport(object):
         self.guid = passport.get('guid', None)
         return self
 
-    def from_tuple(self, passport=None):
+    def getAsTuple(self):
+        """
+        Convert to tuple.
+
+        :return: Passport as tuple.
+        """
+        return self.prj, self.module, self.typename, self.name, self.guid
+
+    def setAsTuple(self, passport=None):
         """
         Set passport from tuple.
 
         :param passport: Passport as tuple.
         """
-        if not isinstance(passport, tuple):
-            assert u'Error passport as tuple'
+        assert (isinstance(passport, tuple) and self.isPassport(passport)), u'Error passport as tuple'
 
-        if len(passport) not in (4, 5):
-            assert u'Error length passport as tuple'
+        assert (len(passport) in (4, 5)), u'Error length passport as tuple'
 
         self.prj = passport[0]
         self.module = passport[1]
@@ -140,7 +138,7 @@ class iqPassport(object):
         self.guid = passport[4] if len(passport) == 5 else None
         return self
 
-    def is_passport(self, passport=None):
+    def isPassport(self, passport=None):
         """
         Check whether the structure is a passport.
 
@@ -151,11 +149,13 @@ class iqPassport(object):
             return True
         elif isinstance(passport, tuple) and len(passport) in (4, 5):
             return True
+        elif isinstance(passport, str) and len(passport.split(PASSPORT_STR_DELIM)) in (4, 5):
+            return True
         elif issubclass(passport.__class__, self.__class__):
             return True
         return False
 
-    def same_passport(self, passport=None, compare_guid=False):
+    def isSamePassport(self, passport=None, compare_guid=False):
         """
         Passport сomparison.
 
@@ -163,7 +163,7 @@ class iqPassport(object):
         :param compare_guid: Compare GUID?
         :return: True - Same passport / False - Different passports.
         """
-        if not self.is_passport(passport=passport):
+        if not self.isPassport(passport=passport):
             return False
 
         compare = [False]
@@ -192,7 +192,7 @@ class iqPassport(object):
             If None then get project path.
         :return: Resource filename or None if error.
         """
-        passport = self.set_from(passport)
+        passport = self.setAsAny(passport)
 
         if find_path is None:
             prj_name = global_func.getProjectName() if not passport.prj or passport.prj == DEFAULT_THIS_PROJECT_NAME else passport.prj
@@ -218,7 +218,7 @@ class iqPassport(object):
         :param passport: Object passport.
         :return: Object resource or None if not found.
         """
-        passport = self.set_from(passport)
+        passport = self.setAsAny(passport)
 
         res_filename = self.findResourceFilename(passport=passport)
         if res_filename:
@@ -229,7 +229,7 @@ class iqPassport(object):
                                             object_guid=passport.guid)
         return None
 
-    def set_from(self, passport=None):
+    def setAsAny(self, passport=None):
         """
         Set passport.
 
@@ -241,9 +241,9 @@ class iqPassport(object):
         elif isinstance(passport, iqPassport):
             pass
         elif isinstance(passport, str):
-            passport = self.from_str(passport)
+            passport = self.setAsStr(passport)
         elif isinstance(passport, dict):
-            passport = self.from_dict(passport)
+            passport = self.setAsDict(passport)
         elif isinstance(passport, (list, tuple)):
-            passport = self.from_tuple(passport)
+            passport = self.setAsTuple(passport)
         return passport
