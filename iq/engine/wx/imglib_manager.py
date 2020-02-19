@@ -10,44 +10,42 @@ from ...util import log_func
 
 from . import wxbitmap_func
 
+from . import base_manager
+
 __version__ = (0, 0, 0, 1)
 
 
-class iqImageLibraryManager(object):
+class iqImageLibManager(base_manager.iqBaseManager):
     """
     Image library manager class.
     """
-    def __init__(self):
-        """
-        Constructor.
-        """
-        self._imagelist = None
-        self._img_idx = dict()
-
-    def initImageLibrary(self):
+    def initImageLib(self):
         """
         Initialization component icon image list object.
 
         :return: Image list.
         """
+        self.__img_idx = dict()
+        
         self._imagelist = wx.ImageList(wxbitmap_func.DEFAULT_ICON_WIDTH,
                                        wxbitmap_func.DEFAULT_ICON_HEIGHT)
 
         empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
         empty_icon_idx = self._imagelist.Add(empty_bmp)
-        self._img_idx[None] = empty_icon_idx
+        self.__img_idx[None] = empty_icon_idx
 
         return self._imagelist
 
-    def getImageList(self):
+    def getImageLibImageList(self):
         """
         Get image list object.
 
         :return:
         """
+        assert hasattr(self, '_imagelist'), u'Image library not init'
         return self._imagelist
 
-    def addImage(self, img_name=None):
+    def addImageLibImage(self, img_name=None):
         """
         Add image to library.
 
@@ -60,10 +58,10 @@ class iqImageLibraryManager(object):
 
         bmp = wxbitmap_func.createIconBitmap(icon_filename=img_name)
         if bmp:
-            return self.addBitmap(img_name, bmp)
+            return self.addImageLibBitmap(img_name, bmp)
         return None
 
-    def addBitmap(self, img_name, bmp):
+    def addImageLibBitmap(self, img_name, bmp):
         """
         Add image to library.
 
@@ -72,35 +70,35 @@ class iqImageLibraryManager(object):
         :return: wx.Bitmap object or None if error.
         """
         img_idx = self._imagelist.Add(bmp)
-        self._img_idx[img_name] = img_idx
+        self.__img_idx[img_name] = img_idx
         return bmp
 
-    def getImageIdx(self, img_name):
+    def getImageLibImageIdx(self, img_name):
         """
         Get image index in imagelist.
 
         :param img_name: Image as icon name.
         :return: Image index or None if error.
         """
-        if img_name not in self._img_idx:
-            self.addImage(img_name)
+        if img_name not in self.__img_idx:
+            self.addImageLibImage(img_name)
 
-        if img_name in self._img_idx:
-            return self._img_idx[img_name]
+        if img_name in self.__img_idx:
+            return self.__img_idx[img_name]
         return None
 
-    def getImageBmp(self, img_name):
+    def getImageLibImageBmp(self, img_name):
         """
         Get image bitmap in imagelist.
 
         :param img_name: Image as icon name.
         :return: Image bitmap or None if error.
         """
-        if img_name not in self._img_idx:
-            bmp = self.addImage(img_name)
+        if img_name not in self.__img_idx:
+            bmp = self.addImageLibImage(img_name)
             return bmp
 
-        if img_name in self._img_idx:
-            img_idx = self._img_idx[img_name]
+        if img_name in self.__img_idx:
+            img_idx = self.__img_idx[img_name]
             return self._imagelist.GetBitmap(img_idx)
         return None

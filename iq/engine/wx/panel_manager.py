@@ -11,13 +11,9 @@ import wx.gizmos
 import wx.dataview
 import wx.grid
 
-# from ic.log import log
-# from ic.utils import datetimefunc
-# from ic.utils import strfunc
-# from ic.utils import key_combins
-# from ic.utils import wxfunc
-# from ic import config
+from ...util import log_func
 
+from . import wxdatetime_func
 from . import listctrl_manager
 from . import treectrl_manager
 from . import toolbar_manager
@@ -33,34 +29,31 @@ class iqPanelManager(validate_manager.iqValidateManager):
     """
     Panel manager.
     """
-    def set_ctrl_value(self, ctrl, value):
+    def setPanelCtrlValue(self, ctrl, value):
         """
-        Установить значение контрола не зависимо от типа.
+        Set control value.
 
-        :param ctrl: Объект контрола.
-        :param value: Значение контрола.
+        :param ctrl: Control object.
+        :param value: Value.
         :return: True/False.
         """
         result = False
         if hasattr(ctrl, 'setValue'):
-            # Обработка пользовательских контролов
-            # Обычно все пользовательские контролы имеют
-            # метод установки данных <setValue>
             ctrl.setVaue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.CheckBox):
             ctrl.SetValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.StaticText):
-            value = value if isinstance(value, str) else strfunc.toUnicode(value, config.DEFAULT_ENCODING)
+            value = value if isinstance(value, str) else str(value)
             ctrl.SetLabel(value)
             result = True
         elif issubclass(ctrl.__class__, wx.TextCtrl):
-            value = value if isinstance(value, str) else strfunc.toUnicode(value, config.DEFAULT_ENCODING)
+            value = value if isinstance(value, str) else str(value)
             ctrl.SetValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
-            wx_dt = datetimefunc.pydatetime2wxdatetime(value)
+            wx_dt = wxdatetime_func.datetime2wxdatetime(value)
             ctrl.SetValue(wx_dt)
             result = True
         elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
@@ -73,19 +66,19 @@ class iqPanelManager(validate_manager.iqValidateManager):
             self._set_wxDataViewListCtrl_data(ctrl, value)
             result = True
         else:
-            log.warning(u'icFormManager. Тип контрола <%s> не поддерживается для заполнения' % ctrl.__class__.__name__)
+            log_func.warning(u'Panel manager. Control <%s> not support' % ctrl.__class__.__name__)
         return result
 
-    def get_panel_data(self, panel, data_dict=None, *ctrl_names):
+    def getPanelCtrlValues(self, panel, data_dict=None, *ctrl_names):
         """
-        Получить выставленные значения в контролах объекта панели.
+        Get control values.
 
-        :param data_dict: Словарь для заполнения.
-            Если не определен то создается новый словарь.
-        :param ctrl_names: Взять только контролы с именами...
-            Если имена контролов не определены,
-            то обрабатываются контролы,
-            указанные в соответствиях (accord).
+        :param data_dict: Result dictionary.
+            If None then create new dictionary.
+        :param ctrl_names: Control object names.
+            If no control names are defined,
+            then controls are processed
+            indicated in correspondence (accord).
         """
         result = dict() if data_dict is None else data_dict
         if not ctrl_names:
@@ -93,25 +86,21 @@ class iqPanelManager(validate_manager.iqValidateManager):
 
         for ctrlname in dir(panel):
             if ctrl_names and ctrlname not in ctrl_names:
-                # Если нельзя автоматически добавлять новые
-                # данные и этих данных нет в заполняемом словаре,
-                # то пропустить обработку
                 continue
             if ctrlname in SKIP_ACCORD_NAMES:
-                # Пропускаем не обрабатываемые имена
                 continue
 
             ctrl = getattr(panel, ctrlname)
             if issubclass(ctrl.__class__, wx.Window) and ctrl.IsEnabled():
                 if issubclass(ctrl.__class__, wx.Panel):
-                    data = self.get_panel_data(ctrl, data_dict, *ctrl_names)
+                    data = self.getPanelCtrlValues(ctrl, data_dict, *ctrl_names)
                     result.update(data)
                 else:
-                    value = self.get_ctrl_value(ctrl)
+                    value = self.getPanelCtrlValue(ctrl)
                     result[ctrlname] = value
         return result
 
-    def set_panel_data(self, panel, data_dict=None, *ctrl_names):
+    def setPanelCtrlValues(self, panel, data_dict=None, *ctrl_names):
         """
         Установить значения в контролах.
 
@@ -136,7 +125,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
 
                 if ctrlname == name:
                     ctrl = getattr(panel, ctrlname)
-                    self.set_ctrl_value(ctrl, value)
+                    self.setPanelCtrlValue(ctrl, value)
                     break
 
     def _getCtrlData(self):
@@ -186,7 +175,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
                     log.warning(u'icDialogManager. Тип контрола <%s> не поддерживается' % ctrl.__class__.__name__)
         return True
 
-    def set_accord(self, **accord):
+    def setPanelAccord(self, **accord):
         """
         Установить словарь соответствий значений
         контролов и имен прикладного кода.
@@ -198,7 +187,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         """
         self.__accord = accord
 
-    def add_accord(self, **accord):
+    def addPanelAccord(self, **accord):
         """
         Добавить словарь соответствий значений
         контролов и имен прикладного кода.
@@ -211,7 +200,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         if accord:
             self.__accord.update(accord)
 
-    def get_accord(self):
+    def getPanelAccord(self):
         """
         Получить словарь соответствий значений
         контролов и имен прикладного кода.
@@ -223,7 +212,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         """
         return self.__accord
 
-    def get_accord_ctrl_data(self):
+    def getPanelAccordCtrlData(self):
         """
         Получить согласованные данные.
 
@@ -236,7 +225,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         result_data = dict([(name, ctrl_data[self.__accord[name]]) for name in self.__accord.keys()])
         return result_data
 
-    def set_accord_ctrl_data(self, **data):
+    def setPanelAccordCtrlData(self, **data):
         """
         Установить согласованные данные.
 
@@ -248,7 +237,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         ctrl_data = dict([(self.__accord[name], data[name]) for name in data.keys()])
         self.set_ctrl_data(ctrl_data, *ctrl_data.keys())
 
-    def find_panel_accord(self, panel):
+    def findPanelAccord(self, panel):
         """
         Найти на панели контролы ввода на панели и определить
         их как словарь соответствий.
@@ -281,7 +270,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
                 continue
             # log.debug(u'Добавление контрола <%s> в словарь соответствий' % ctrl_name)
             ctrl = getattr(panel, ctrl_name)
-            # log.debug(u'Тип <%s>' % str(type(ctrl)))
+            # log.debug(u'Тип <%s>' % str(type(treelistctrl)))
             if isinstance(ctrl, wx.TextCtrl):
                 accord[ctrl_name] = ctrl_name
             elif isinstance(ctrl, wx.SpinCtrl):
@@ -576,7 +565,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             то обрабатываются контролы,
             указанные в соответствиях (accord).
         """
-        return self.get_panel_data(self, data_dict, *ctrl_names)
+        return self.getPanelCtrlValues(self, data_dict, *ctrl_names)
 
     def set_ctrl_data(self, data_dict=None, *ctrl_names):
         """
@@ -588,7 +577,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             то обрабатываются контролы,
             указанные в соответствиях (accord).
         """
-        return self.set_panel_data(self, data_dict, *ctrl_names)
+        return self.setPanelCtrlValues(self, data_dict, *ctrl_names)
 
     def isDarkSysTheme(self):
         """

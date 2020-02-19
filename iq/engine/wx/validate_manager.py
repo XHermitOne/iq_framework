@@ -31,7 +31,7 @@ class iqValidateManager(object):
             {'name': Наименование проверки,
              'function': Функция проверки правильного значения,
              'err_txt': Текст ошибки, в случае если проверка не прошла,
-             'ctrl': Объект проверяемого контрола,
+             'treelistctrl': Объект проверяемого контрола,
             }
         """
         if not hasattr(self, VALIDATIONS_ATTR_NAME):
@@ -130,7 +130,7 @@ class iqValidateManager(object):
                 validate_msg = validation.get('err_txt', validation_name)
                 try:
                     validate_func = validation.get('function', None)
-                    validate_ctrl = validation.get('ctrl', None)
+                    validate_ctrl = validation.get('treelistctrl', None)
                     if validate_ctrl is None:
                         log_func.warning(u'Not define validate control <%s>' % validate_msg)
                         continue

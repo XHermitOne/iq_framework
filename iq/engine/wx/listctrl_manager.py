@@ -2,412 +2,133 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль класса - менеджера абстрактного спискового контрола WX.
+ListCtrl manager.
 """
 
-# Подключение библиотек
 import sys
-import hashlib
 import wx
-import wx.adv
-import wx.gizmos
-import wx.dataview
-import wx.grid
-import ic.contrib.ObjectListView
 
-from ic.log import log
-from ic.utils import strfunc
-from ic.utils import wxfunc
-from ic.bitmap import bmpfunc
-from ic import config
+from ...util import log_func
+
+from . import wxcolour_func
+from . import base_manager
+
+__version__ = (0, 0, 0, 1)
 
 
-__version__ = (0, 1, 7, 1)
-
-# Размер картинок элементов дерева по умолчанию
-DEFAULT_ITEM_IMAGE_WIDTH = 16
-DEFAULT_ITEM_IMAGE_HEIGHT = 16
-DEFAULT_ITEM_IMAGE_SIZE = (DEFAULT_ITEM_IMAGE_WIDTH, DEFAULT_ITEM_IMAGE_HEIGHT)
-
-LIST_CTRL_IMAGE_LIST_CACHE_NAME = '__image_list_cache'
-
-
-class icListCtrlManager(object):
+class iqListCtrlManager(base_manager.iqBaseManager):
     """
-    Менеджер WX спискового контрола.
-    В самом общем случае в этот класс перенесены функции работы
-    со списковыми контролами из менеджера форм.
-    Перенос сделан с целью рефакторинга.
-    Также этот класс могут наследовать классы специализированных
-    менеджеров, которые работают со списками записей/объектов.
+    ListCtrl manager.
     """
-
-    def _get_wxDataViewListCtrl_data(self, ctrl):
+    def refreshListCtrl(self, listctrl, data_list=None, columns=None):
         """
-        Получить данные из контрола wxDataViewListCtrl.
+        Refresh rows wx.ListCtrl object.
 
-        :param ctrl: Объект контрола.
-        :return: Список словарей - строк контрола.
+        :param listctrl: wx.ListCtrl object.
+        :param data_list: Data list.
+        :param columns: Column list.
         """
-        recordset = list()
-        store = ctrl.GetStore()
-        # Определить имена колонок контрола
-        self_col_names = [name for name in dir(self) if
-                          issubclass(getattr(self, name).__class__, wx.dataview.DataViewColumn)]
-        # По именом определить объекты колонок определенные в диалоговой форме
-        self_cols = [getattr(self, name) for name in self_col_names]
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        for i_row in range(store.GetCount()):
-            record = dict()
-            for i_col in range(ctrl.GetColumnCount()):
-                # Колонка контрола
-                col = ctrl.GetColumn(i_col)
-                # Если можно определить имя колонки, то берем имя
-                # иначе берем в качестве имени индекс
-                col_name = self_col_names[wxfunc.get_index_wx_object_in_list(col, self_cols)] if wxfunc.is_wx_object_in_list(col, self_cols) else i_col
-                # Добавить значение колонки в запись
-                record[col_name] = ctrl.GetValue(i_row, i_col)
-            recordset.append(record)
+        if data_list is None:
+            data_list = list()
 
-        return recordset
+        if columns is not None:
+            data_list = [[rec[col] for col in columns] for rec in data_list]
 
-    def _set_wxDataViewListCtrl_data(self, ctrl, records):
+        self.setListCtrlRows(listctrl, data_list)
+
+    def moveUpListCtrlRow(self, listctrl, data_list=None, idx=wx.NOT_FOUND,
+                          columns=None, n_col=None, do_refresh=False):
         """
-        Установить данные в контрол wxDataViewListCtrl.
+        Move up row in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола.
-        :param records: Список словарей - записей.
-            Имя колонки в записи может задаваться как именем,
-            так и индексом.
+        :param listctrl: wx.ListCtrl object.
+        :param data_list: Data list.
+        :param idx: Moving row index.
+        :param columns: Column list.
+        :param n_col: Number column name/index.
+        :param do_refresh: Make a complete update control?
         :return: True/False.
         """
-        # Сначала очистить контрол от записей
-        ctrl.DeleteAllItems()
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        # Определить имена колонок контрола
-        self_col_names = [name for name in dir(self) if
-                          issubclass(getattr(self, name).__class__, wx.dataview.DataViewColumn)]
-        # По именом определить объекты колонок определенные в диалоговой форме
-        self_cols = [getattr(self, name) for name in self_col_names]
-
-        for record in records:
-            wx_rec = [u''] * ctrl.GetColumnCount()
-            for colname, value in record.items():
-                if isinstance(colname, str):
-                    # Колонка задается именем
-                    if colname in self_col_names:
-                        i_colname = self_col_names.index(colname)
-                        idx = wxfunc.get_index_wx_object_in_list(self_cols[i_colname],
-                                                                 ctrl.GetColumns())
-                        wx_rec[idx] = strfunc.toUnicode(value)
-                    else:
-                        log.warning(u'Не найдено имя колонки <%s> при заполнении wxDataViewListCtrl контрола данными' % colname)
-                elif isinstance(colname, int):
-                    # Колонка задается индексом
-                    wx_rec[colname] = strfunc.toUnicode(value)
-                else:
-                    log.warning(u'Не поддерживаемый тип имени колонки <%s> при заполнении wxDataViewListCtrl контрола данными' % colname)
-            ctrl.AppendItem(wx_rec)
-
-        return True
-
-    def refresh_DataViewListCtrl(self, ctrl, data_list=None, columns=None):
-        """
-        Обновить список строк контрола типа wx.dataview.DataViewListCtrl
-
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        """
-        if data_list is None:
-            data_list = list()
-
-        if columns is not None:
-            data_list = [[rec[col] for col in columns] for rec in data_list]
-
-        # Удаляем все строки
-        ctrl.DeleteAllItems()
-        for row in data_list:
-            ctrl.AppendItem(row)
-
-    def refresh_ListCtrl(self, ctrl, data_list=None, columns=None):
-        """
-        Обновить список строк контрола типа wx.ListCtrl
-
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        """
-        if data_list is None:
-            data_list = list()
-
-        if columns is not None:
-            data_list = [[rec[col] for col in columns] for rec in data_list]
-
-        self.setRows_list_ctrl(ctrl, data_list)
-
-    def refresh_list_ctrl(self, ctrl=None, data_list=None, columns=None):
-        """
-        Обновить список строк контрола.
-
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для обновления')
-            return
-
-        if isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            self.refresh_DataViewListCtrl(ctrl, data_list, columns)
-        elif isinstance(ctrl, wx.ListCtrl):
-            self.refresh_ListCtrl(ctrl, data_list, columns)
-        else:
-            log.warning(u'Обновление списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-
-    def moveUpRow_DataViewListCtrl(self, ctrl, data_list=None, idx=wx.NOT_FOUND,
-                                   columns=None, n_col=None, do_refresh=False):
-        """
-        Переместить строку выше в контроле типа wx.dataview.DataViewListCtrl
-
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param idx: Индекс перемещаемой строки.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        :param n_col: Наименование/индекс колонки номера строки.
-            Если не определено, то нет такой колонки.
-        :param do_refresh: Произвести полное обновление контрола?
-        :return: True - было сделано перемещение, False - перемещения не было.
-        """
         if idx != wx.NOT_FOUND and idx > 0:
-            # Поменять номер строки если необходимо
+
             if n_col is not None:
                 value = data_list[idx][n_col]
                 data_list[idx][n_col] = data_list[idx - 1][n_col]
                 data_list[idx - 1][n_col] = value
-            # Поменять значения строк
+
             value = data_list[idx - 1]
             data_list[idx - 1] = data_list[idx]
             data_list[idx] = value
 
             if do_refresh:
-                # Обновляем полностью контрол
-                self.refresh_DataViewListCtrl(ctrl, data_list, columns=columns)
+                self.refreshListCtrl(listctrl, data_list, columns=columns)
             else:
-                # Обновляем конкретные строки
                 for i_col, value in enumerate(data_list[idx-1]):
-                    ctrl.SetTextValue(value if isinstance(value, str) else str(value), idx-1, i_col)
+                    listctrl.SetStringItem(idx - 1, i_col, value if isinstance(value, str) else str(value))
                 for i_col, value in enumerate(data_list[idx]):
-                    ctrl.SetTextValue(value if isinstance(value, str) else str(value), idx, i_col)
-            ctrl.SelectRow(idx - 1)
+                    listctrl.SetStringItem(idx, i_col, value if isinstance(value, str) else str(value))
+            listctrl.Select(idx - 1)
             return True
         else:
-            log.warning(u'Не выбрана перемещаемая строка списка')
+            log_func.warning(u'Not select moving row')
         return False
 
-    def moveUpRow_ListCtrl(self, ctrl, data_list=None, idx=wx.NOT_FOUND,
-                           columns=None, n_col=None, do_refresh=False):
-        """
-        Переместить строку выше в контроле типа wx.ListCtrl
-
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param idx: Индекс перемещаемой строки.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        :param n_col: Наименование/индекс колонки номера строки.
-            Если не определено, то нет такой колонки.
-        :param do_refresh: Произвести полное обновление контрола?
-        :return: True - было сделано перемещение, False - перемещения не было.
-        """
-        if idx != wx.NOT_FOUND and idx > 0:
-            # Поменять номер строки если необходимо
-            if n_col is not None:
-                value = data_list[idx][n_col]
-                data_list[idx][n_col] = data_list[idx - 1][n_col]
-                data_list[idx - 1][n_col] = value
-            # Поменять значения строк
-            value = data_list[idx - 1]
-            data_list[idx - 1] = data_list[idx]
-            data_list[idx] = value
-
-            if do_refresh:
-                # Обновляем полностью контрол
-                self.refresh_ListCtrl(ctrl, data_list, columns=columns)
-            else:
-                # Обновляем конкретные строки
-                for i_col, value in enumerate(data_list[idx-1]):
-                    ctrl.SetStringItem(idx-1, i_col, value if isinstance(value, str) else str(value))
-                for i_col, value in enumerate(data_list[idx]):
-                    ctrl.SetStringItem(idx, i_col, value if isinstance(value, str) else str(value))
-            ctrl.Select(idx - 1)
-            return True
-        else:
-            log.warning(u'Не выбрана перемещаемая строка списка')
-        return False
-
-    def moveUpRow_list_ctrl(self, ctrl, data_list=None, idx=wx.NOT_FOUND,
+    def moveDownListCtrlRow(self, listctrl, data_list=None, idx=wx.NOT_FOUND,
                             columns=None, n_col=None, do_refresh=False):
         """
-        Переместить строку выше в контроле.
+        Move down row in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param idx: Индекс перемещаемой строки.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        :param n_col: Наименование/индекс колонки номера строки.
-            Если не определено, то нет такой колонки.
-        :param do_refresh: Произвести полное обновление контрола?
-        :return: True - было сделано перемещение, False - перемещения не было.
+        :param listctrl: wx.ListCtrl object.
+        :param data_list: Data list.
+        :param idx: Moving row index.
+        :param columns: Column list.
+        :param n_col: Number column name/index.
+        :param do_refresh: Make a complete update control?
+        :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для обновления')
-            return False
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        if isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            return self.moveUpRow_DataViewListCtrl(ctrl=ctrl, data_list=data_list,
-                                                   idx=idx, columns=columns, n_col=n_col,
-                                                   do_refresh=do_refresh)
-        elif isinstance(ctrl, wx.ListCtrl):
-            return self.moveUpRow_ListCtrl(ctrl=ctrl, data_list=data_list,
-                                           idx=idx, columns=columns, n_col=n_col,
-                                           do_refresh=do_refresh)
-        else:
-            log.warning(u'Перемещение строки списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
-
-    def moveDownRow_DataViewListCtrl(self, ctrl, data_list=None, idx=wx.NOT_FOUND,
-                                     columns=None, n_col=None, do_refresh=False):
-        """
-        Переместить строку ниже в контроле типа wx.dataview.DataViewListCtrl
-
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param idx: Индекс перемещаемой строки.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        :param n_col: Наименование/индекс колонки номера строки.
-            Если не определено, то нет такой колонки.
-        :param do_refresh: Произвести полное обновление контрола?
-        :return: True - было сделано перемещение, False - перемещения не было.
-        """
         if idx != wx.NOT_FOUND and idx < (len(data_list) - 1):
-            # Поменять номер строки если необходимо
             if n_col is not None:
                 value = data_list[idx][n_col]
                 data_list[idx][n_col] = data_list[idx + 1][n_col]
                 data_list[idx + 1][n_col] = value
-            # Поменять значения строк
+
             value = data_list[idx + 1]
             data_list[idx + 1] = data_list[idx]
             data_list[idx] = value
 
             if do_refresh:
-                # Обновляем полностью контрол
-                self.refresh_DataViewListCtrl(ctrl, data_list, columns=columns)
+                self.refreshListCtrl(listctrl, data_list, columns=columns)
             else:
-                # Обновляем конкретные строки
                 for i_col, value in enumerate(data_list[idx]):
-                    ctrl.SetTextValue(value if isinstance(value, str) else str(value), idx, i_col)
+                    listctrl.SetStringItem(idx, i_col, value if isinstance(value, str) else str(value))
                 for i_col, value in enumerate(data_list[idx+1]):
-                    ctrl.SetTextValue(value if isinstance(value, str) else str(value), idx+1, i_col)
-            ctrl.SelectRow(idx + 1)
+                    listctrl.SetStringItem(idx + 1, i_col, value if isinstance(value, str) else str(value))
+            listctrl.Select(idx + 1)
             return True
         else:
-            log.warning(u'Не выбрана строка списка для перемещения')
+            log_func.warning(u'Not select moving row')
         return False
 
-    def moveDownRow_ListCtrl(self, ctrl, data_list=None, idx=wx.NOT_FOUND,
-                             columns=None, n_col=None, do_refresh=False):
+    def appendListCtrlColumn(self, listctrl, label=u'', width=-1, align='LEFT'):
         """
-        Переместить строку ниже в контроле типа wx.ListCtrl
+        Append column in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param idx: Индекс перемещаемой строки.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        :param n_col: Наименование/индекс колонки номера строки.
-            Если не определено, то нет такой колонки.
-        :param do_refresh: Произвести полное обновление контрола?
-        :return: True - было сделано перемещение, False - перемещения не было.
+        :param listctrl: wx.ListCtrl object.
+        :param label: Column label string.
+        :param width: Column width.
+        :param align: Column text align LEFT/RIGHT/CENTRE.
+        :return: True/False.
         """
-        if idx != wx.NOT_FOUND and idx < (len(data_list) - 1):
-            # Поменять номер строки если необходимо
-            if n_col is not None:
-                value = data_list[idx][n_col]
-                data_list[idx][n_col] = data_list[idx + 1][n_col]
-                data_list[idx + 1][n_col] = value
-            # Поменять значения строк
-            value = data_list[idx + 1]
-            data_list[idx + 1] = data_list[idx]
-            data_list[idx] = value
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-            if do_refresh:
-                # Обновляем полностью контрол
-                self.refresh_ListCtrl(ctrl, data_list, columns=columns)
-            else:
-                # Обновляем конкретные строки
-                for i_col, value in enumerate(data_list[idx]):
-                    ctrl.SetStringItem(idx, i_col, value if isinstance(value, str) else str(value))
-                for i_col, value in enumerate(data_list[idx+1]):
-                    ctrl.SetStringItem(idx+1, i_col, value if isinstance(value, str) else str(value))
-            ctrl.Select(idx + 1)
-            return True
-        else:
-            log.warning(u'Не выбрана строка списка для перемещения')
-        return False
-
-    def moveDownRow_list_ctrl(self, ctrl, data_list=None, idx=wx.NOT_FOUND,
-                              columns=None, n_col=None, do_refresh=False):
-        """
-        Переместить строку ниже в контроле.
-
-        :param ctrl: Объект контрола.
-        :param data_list: Данные списка.
-        :param idx: Индекс перемещаемой строки.
-        :param columns: Список/кортеж колонок в случае если строки списка
-            задаются словарями.
-        :param n_col: Наименование/индекс колонки номера строки.
-            Если не определено, то нет такой колонки.
-        :param do_refresh: Произвести полное обновление контрола?
-        :return: True - было сделано перемещение, False - перемещения не было.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для обновления')
-            return False
-
-        if isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            return self.moveDownRow_DataViewListCtrl(ctrl=ctrl, data_list=data_list,
-                                                     idx=idx, columns=columns, n_col=n_col,
-                                                     do_refresh=do_refresh)
-        elif isinstance(ctrl, wx.ListCtrl):
-            return self.moveDownRow_ListCtrl(ctrl=ctrl, data_list=data_list,
-                                             idx=idx, columns=columns, n_col=n_col,
-                                             do_refresh=do_refresh)
-        else:
-            log.warning(u'Перемещение строки списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
-
-    def appendColumn_ListCtrl(self, ctrl, label=u'', width=-1, align='LEFT'):
-        """
-        Добавить колонку в wx.ListCtrl.
-        ВНИМАНИЕ! На старых ОС (...-16.04) wx.LIST_AUTOSIZE_USEHEADER не работает!!!
-            Поэтому для автоширины используем везде wx.LIST_AUTOSIZE.
-
-        :param ctrl: Объект контрола wx.ListCtrl.
-        :param label: Надпись колонки.
-        :param width: Ширина колонки.
-        :param align: Выравнивание: LEFT/RIGHT.
-        :return: True - все прошло нормально / False - какая-то ошибка.
-        """
         try:
-            i = ctrl.GetColumnCount()
+            i = listctrl.GetColumnCount()
             if width <= 0:
                 width = wx.LIST_AUTOSIZE
 
@@ -420,487 +141,241 @@ class icListCtrlManager(object):
                 col_format = wx.LIST_FORMAT_CENTER
             else:
                 col_format = wx.LIST_FORMAT_LEFT
-            ctrl.InsertColumn(i, label, width=width, format=col_format)
+            listctrl.InsertColumn(i, label, width=width, format=col_format)
             return True
         except:
-            log.fatal(u'Ошибка добавления колонки в контрол wx.ListCtrl')
+            log_func.fatal(u'Append column in wx.ListCtrl object error')
         return False
 
-    def appendColumn_list_ctrl(self, ctrl=None, label=u'', width=-1, align='LEFT'):
+    def setListCtrlColumns(self, listctrl=None, cols=()):
         """
-        Добавить колонку в контрол списка.
+        Set columns in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола.
-        :param label: Надпись колонки.
-        :param width: Ширина колонки.
-        :param align: Выравнивание: LEFT/RIGHT.
-        :return: True - все прошло нормально / False - какая-то ошибка.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для добавления колонки')
-            return False
-
-        if isinstance(ctrl, ic.contrib.ObjectListView.GroupListView):
-            # Список с группировкой
-            return self.appendColumn_GroupListView(ctrl=ctrl, label=label, width=width)
-        elif isinstance(ctrl, wx.ListCtrl):
-            # Обычный контрол списка
-            return self.appendColumn_ListCtrl(ctrl=ctrl, label=label, width=width)
-        else:
-            log.warning(u'Добавление колонки списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
-
-    def setColumns_list_ctrl(self, ctrl=None, cols=()):
-        """
-        Установить колонки в контрол списка.
-
-        :param ctrl: Объект контрола.
-        :param cols: Список описаний колонок.
-            колонка может описываться как списком
-            ('Заголовок колонки', Ширина колонки, Выравнивание)
-            так и словарем:
-            {'label': Заголовок колонки,
-            'width': Ширина колонки,
-            'align': Выравнивание}
-            ВНИМАНИЕ! На старых ОС (...-16.04) wx.LIST_AUTOSIZE_USEHEADER не работает!!!
-                Поэтому для автоширины используем везде wx.LIST_AUTOSIZE.
-        :return: True - все прошло нормально / False - какая-то ошибка.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для добавления колонки')
-            return False
-
-        if isinstance(ctrl, wx.ListCtrl):
-            result = True
-            ctrl.ClearAll()
-            for col in cols:
-                if isinstance(col, dict):
-                    result = result and self.appendColumn_ListCtrl(ctrl=ctrl, **col)
-                elif isinstance(col, list) or isinstance(col, tuple):
-                    result = result and self.appendColumn_ListCtrl(ctrl, *col)
-            return result
-
-        elif isinstance(ctrl, wx.gizmos.TreeListCtrl):
-            col_count = ctrl.GetColumnCount()
-            if col_count:
-                for i_col in range(col_count-1, -1, -1):
-                    ctrl.RemoveColumn(i_col)
-            for i_col, col in enumerate(cols):
-                if isinstance(col, dict):
-                    ctrl.AddColumn(col.get('label', u''))
-                    ctrl.SetColumnWidth(i_col, col.get('width', wx.COL_WIDTH_AUTOSIZE))
-                elif isinstance(col, list) or isinstance(col, tuple):
-                    ctrl.AddColumn(col[0])
-                    ctrl.SetColumnWidth(i_col, col[1])
-                else:
-                    log.warning(u'Не поддерживаемый тип данных колонки')
-            # Назначить первую колонку главной
-            ctrl.SetMainColumn(0)
-            return True
-        elif isinstance(ctrl, wx.grid.Grid):
-            col_count = ctrl.GetNumberCols()
-            cols_len = len(cols)
-            if col_count < cols_len:
-                # Добавить не достающие колонки
-                ctrl.AppendCols(cols_len - col_count)
-            elif col_count > cols_len:
-                # Удалить лишние колонки
-                ctrl.DeleteCols(cols_len, cols_len - col_count)
-            for i_col, col in enumerate(cols):
-                label = col.get('label', u'')
-                width = col.get('width', wx.COL_WIDTH_AUTOSIZE)
-                # align = col.get('align', None)
-                ctrl.SetColLabelValue(i_col, label)
-                ctrl.SetColSize(i_col, width)
-                # if align:
-                #     ctrl.SetColLabelAlignment()
-            return True
-        elif isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            result = True
-            for i_col, col in enumerate(cols):
-                if isinstance(col, dict):
-                    label = col.get('label', u'')
-                    width = col.get('width', 100)
-                elif isinstance(col, list) or isinstance(col, tuple):
-                    label = col[0]
-                    width = col[1]
-                else:
-                    label = u''
-                    width = 100
-                if i_col >= ctrl.GetColumnCount():
-                    ctrl.AppendTextColumn(label=label, width=width)
-                else:
-                    column = ctrl.GetColumn(i_col)
-                    column.SetTitle(label)
-                    column.SetWidth(width)
-            return result
-        else:
-            log.warning(u'Добавление колонок списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
-
-    def setColumnsAutoSize_list_ctrl(self, ctrl=None):
-        """
-        Установить авторазмер колонок контрола списка.
-        ВНИМАНИЕ! На старых ОС (...-16.04) wx.LIST_AUTOSIZE_USEHEADER не работает!!!
-            Поэтому для автоширины используем везде wx.LIST_AUTOSIZE.
-
-        :param ctrl: Объект контрола.
-        :return: True - все прошло нормально / False - какая-то ошибка.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для установки авторазмеров списка')
-            return False
-
-        if isinstance(ctrl, wx.ListCtrl):
-            # Обновить размер колонок
-            for i in range(ctrl.GetColumnCount()):
-                ctrl.SetColumnWidth(i, wx.LIST_AUTOSIZE)
-            return True
-        else:
-            log.warning(u'Установление авторазмера колонок списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
-
-    def setColumnLabel(self, ctrl=None, n_column=0, label=u''):
-        """
-        Установить надпись колонки.
-
-        :param ctrl: Объект контрола списка (wx.ListCtrl и т.п.).
-        :param n_column: Идекс колонки.
-        :param label: Надпись колонки.
+        :param listctrl: wx.ListCtrl object.
+        :param cols: List of column definitions.
+            As tuple ('Column title', width, align)
+            or as dictionary:
+            {'label': 'Column title',
+            'width': Column width,
+            'align': Column align}
         :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для установки надписи колонки')
-            return False
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        if isinstance(ctrl, wx.ListCtrl):
-            if 0 <= n_column < ctrl.GetColumnCount():
-                column = ctrl.GetColumn(n_column)
-                column.SetText(label)
-                ctrl.SetColumn(n_column, column)
-                return True
-            else:
-                log.warning(u'Не корректный индекс колонки [%s] контрола списка <%s>' % (n_column, str(ctrl)))
+        result = True
+        listctrl.ClearAll()
+        for col in cols:
+            if isinstance(col, dict):
+                result = result and self.appendListCtrlColumn(listctrl=listctrl, **col)
+            elif isinstance(col, (list, tuple)):
+                result = result and self.appendListCtrlColumn(listctrl, *col)
+        return result
+
+    def setListCtrlColumnsAutoSize(self, listctrl=None):
+        """
+        Set auto-size columns in wx.ListCtrl object.
+
+        :param listctrl: wx.ListCtrl object.
+        :return: True/False.
+        """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        for i in range(listctrl.GetColumnCount()):
+            listctrl.SetColumnWidth(i, wx.LIST_AUTOSIZE)
+        return True
+
+    def setListCtrlColumnLabel(self, listctrl=None, column_idx=0, label=u''):
+        """
+        Set column label.
+
+        :param listctrl: wx.ListCtrl object.
+        :param column_idx: Column index.
+        :param label: Column label.
+        :return: True/False.
+        """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if 0 <= column_idx < listctrl.GetColumnCount():
+            column = listctrl.GetColumn(column_idx)
+            column.SetText(label)
+            listctrl.SetColumn(column_idx, column)
+            return True
         else:
-            log.warning(u'Не поддерживаемы тип контрола <%s> в функции установки надписи колонки' % ctrl.__class__.__name__)
+            log_func.error(u'Not valid column index [%s] ListCtrl object <%s>' % (column_idx, str(listctrl)))
         return False
 
-    def appendRow_ListCtrl(self, ctrl, row=(),
-                           evenBackgroundColour=wxfunc.DEFAULT_COLOUR, oddBackgroundColour=wxfunc.DEFAULT_COLOUR,
-                           auto_select=False):
+    def appendListCtrlRow(self, listctrl, row=(),
+                          even_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                          odd_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                          auto_select=False):
         """
-        Добавить строку в контрол wx.ListCtrl.
+        Append row in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола wx.ListCtrl.
-        :param row: Список строки по полям.
-        :param evenBackgroundColour: Цвет фона четных строк.
-        :param oddBackgroundColour: Цвет фона нечетных строк.
-        :param auto_select: Автоматически выбрать добавленную строку?
-        :return: True - все прошло нормально / False - какая-то ошибка.
+        :param listctrl: wx.ListCtrl object.
+        :param row: List of rows by fields.
+        :param even_background_colour: Even line background color.
+        :param odd_background_colour: Odd line background color.
+        :param auto_select: Automatically select the added row?
+        :return: True/False.
         """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
         if not isinstance(row, (list, tuple)):
-            log.warning(u'Не корректный тип списка строки <%s> объекта wx.ListCtrl' % type(row))
+            log_func.error(u'Row typeerror <%s> in wx.ListCtrl object' % type(row))
             return False
+
         try:
             row_idx = -1
-            # Ограничить список количеством колонок
-            row = row[:ctrl.GetColumnCount()]
+
+            row = row[:listctrl.GetColumnCount()]
             for i, value in enumerate(row):
                 if value is None:
                     value = u''
                 elif isinstance(value, (int, float)):
                     value = str(value)
-                # elif isinstance(value, str):
-                #    value = unicode(value, config.DEFAULT_ENCODING)
                 elif isinstance(value, str):
                     pass
                 else:
                     value = str(value)
 
                 if i == 0:
-                    # row_idx = ctrl.InsertStringItem(sys.maxsize, value)
-                    row_idx = ctrl.InsertItem(sys.maxsize, value)
+                    row_idx = listctrl.InsertItem(sys.maxsize, value)
                 else:
-                    # ctrl.SetStringItem(row_idx, idx, value)
-                    ctrl.SetItem(row_idx, i, value)
+                    listctrl.SetItem(row_idx, i, value)
 
             if row_idx != -1:
-                if evenBackgroundColour and not (row_idx & 1):
-                    # Добавляемая строка четная?
-                    colour = self.defaultEvenRowsBGColour() if wxfunc.isDefaultColour(evenBackgroundColour) else evenBackgroundColour
-                    # log.debug(u'Установка цвета фона четной строки %s' % str(colour))
-                    ctrl.SetItemBackgroundColour(row_idx, colour)
-                elif oddBackgroundColour and (row_idx & 1):
-                    # Добавляемая строка не четная?
-                    colour = self.defaultOddRowsBGColour() if wxfunc.isDefaultColour(oddBackgroundColour) else oddBackgroundColour
-                    # log.debug(u'Установка цвета фона не четной строки %s' % str(colour))
-                    ctrl.SetItemBackgroundColour(row_idx, colour)
+                if even_background_colour and not (row_idx & 1):
+
+                    colour = self.defaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
+                    listctrl.SetItemBackgroundColour(row_idx, colour)
+                elif odd_background_colour and (row_idx & 1):
+                    colour = self.defaultOddRowsBGColour() if wxcolour_func.isDefaultColour(odd_background_colour) else odd_background_colour
+                    listctrl.SetItemBackgroundColour(row_idx, colour)
 
                 if auto_select:
-                    # Автоматически выбрать добавленную строку?
-                    ctrl.Select(row_idx)
+                    listctrl.Select(row_idx)
             return True
         except:
-            log.fatal(u'Ошибка добавления строки %s в контрол wx.ListCtrl' % str(row))
+            log_func.fatal(u'Append row %s  error in wx.ListCtrl object' % str(row))
         return False
 
-    def appendRow_GroupListView(self, ctrl, row=(),
-                                evenBackgroundColour=wxfunc.DEFAULT_COLOUR, oddBackgroundColour=wxfunc.DEFAULT_COLOUR,
-                                auto_select=False):
+    def delListCtrlRow(self, listctrl=None, row_idx=None):
         """
-        Добавить строку в контрол wx.ListCtrl.
+        Delete row in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола wx.ListCtrl.
-        :param row: Список строки по полям.
-        :param evenBackgroundColour: Цвет фона четных строк.
-        :param oddBackgroundColour: Цвет фона нечетных строк.
-        :param auto_select: Автоматически выбрать добавленную строку?
-        :return: True - все прошло нормально / False - какая-то ошибка.
+        :param listctrl: wx.ListCtrl object.
+        :param row_idx: Row index.
+            If not defined, the current selected row is taken.
+        :return: True/False.
         """
-        if not isinstance(row, (list, tuple)):
-            log.warning(u'Не корректный тип списка строки <%s> объекта GroupListView' % type(row))
-            return False
-        try:
-            # colour = self.defaultEvenRowsBGColour() if wxfunc.isDefaultColour(evenBackgroundColour) else evenBackgroundColour
-            # if ctrl.evenRowsBackColour != colour:
-            #     ctrl.evenRowsBackColour = colour
-            # colour = self.defaultOddRowsBGColour() if wxfunc.isDefaultColour(oddBackgroundColour) else oddBackgroundColour
-            # if ctrl.oddRowsBackColour != colour:
-            #     ctrl.oddRowsBackColour = colour
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-            # Ограничить список количеством колонок
-            row = row[:ctrl.GetColumnCount()]
-            # Исключаем колонку указателя свертывания/развертывания группы------------------------V
-            row_dict = dict([(column.valueGetter, row[i]) for i, column in enumerate(ctrl.columns[1:])])
-            # log.debug(u'Добавляемая запись %s' % str(row_dict))
-            ctrl.AddObject(row_dict)
-            if auto_select and ctrl.lastGetObjectIndex:
-                ctrl.Select(ctrl.lastGetObjectIndex)
-            return True
-        except:
-            log.fatal(u'Ошибка добавления строки %s в контрол GroupListView' % str(row))
-        return False
-
-    def appendRow_list_ctrl(self, ctrl=None, row=(),
-                            evenBackgroundColour=wxfunc.DEFAULT_COLOUR, oddBackgroundColour=wxfunc.DEFAULT_COLOUR,
-                            auto_select=False):
-        """
-        Добавить строку в контрол списка.
-
-        :param ctrl: Объект контрола.
-        :param row: Список строки по полям.
-        :param evenBackgroundColour: Цвет фона четных строк.
-        :param oddBackgroundColour: Цвет фона нечетных строк.
-        :param auto_select: Автоматически выбрать добавленную строку?
-        :return: True - все прошло нормально / False - какая-то ошибка.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для добавления строки')
-            return False
-
-        if isinstance(ctrl, wx.ListCtrl):
-            return self.appendRow_ListCtrl(ctrl=ctrl, row=row,
-                                           evenBackgroundColour=evenBackgroundColour,
-                                           oddBackgroundColour=oddBackgroundColour,
-                                           auto_select=auto_select)
-        elif isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            ctrl.AppendItem(row)
-            return True
-        elif isinstance(ctrl, wx.grid.Grid):
-            ctrl.AppendRows(1)
-
-            colour = None
-            # Определяем цвет фона линий
-            row_idx = ctrl.GetNumberRows() - 1
-            if row_idx != -1:
-                if evenBackgroundColour and not (row_idx & 1):
-                    # Добавляемая строка четная?
-                    colour = self.defaultEvenRowsBGColour() if wxfunc.isDefaultColour(evenBackgroundColour) else evenBackgroundColour
-                elif oddBackgroundColour and (row_idx & 1):
-                    # Добавляемая строка не четная?
-                    colour = self.defaultOddRowsBGColour() if wxfunc.isDefaultColour(oddBackgroundColour) else oddBackgroundColour
-            # Заполняем строку
-            for i_col, cell in enumerate(row):
-                if cell is not None:
-                    ctrl.SetCellValue(row_idx, i_col, str(cell))
-                    if colour:
-                        # Если цвет фона линии определен, то устанавливаем
-                        ctrl.SetCellBackgroundColour(row=row_idx, col=i_col, colour=colour)
+        if row_idx is None:
+            row_idx = self.getListCtrlelectedRowIdx(listctrl)
+        if 0 <= row_idx < listctrl.GetItemCount():
+            listctrl.DeleteItem(item=row_idx)
             return True
         else:
-            log.warning(u'Добавление колонок списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
+            log_func.warning(u'Not valid row index [%d] on wx.ListCtrl object' % row_idx)
         return False
 
-    def removeRow_list_ctrl(self, ctrl=None, item=None):
+    def setListCtrlRow(self, listctrl=None, row_idx=-1, row=(),
+                       even_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                       odd_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                       keep_pos=False):
         """
-        Удалить строку из контрола списка.
+        Set row in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола.
-        :param item: Индекс удаляемой строки.
-            Если не определено, то берется текущая выбранная строка.
-        :return: True - все прошло нормально / False - какая-то ошибка.
+        :param listctrl: wx.ListCtrl object.
+        :param row_idx: Row index.
+        :param row: Row as tuple.
+            (value 1, value 2, ..., value N),
+        :param even_background_colour: Even line background color.
+        :param odd_background_colour: Odd line background color.
+        :param keep_pos: Keep cursor position?
+        :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для удаления строки')
-            return False
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        if isinstance(ctrl, wx.ListCtrl):
-            if item is None:
-                item = self.getItemSelectedIdx(ctrl)
-            if 0 <= item < ctrl.GetItemCount():
-                ctrl.DeleteItem(item=item)
-                return True
-            else:
-                log.warning(u'Не корректный индекс [%d] удаляемой строки контрола списка' % item)
-        else:
-            log.warning(u'Удаление строк списка контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
-
-    def setRow_list_ctrl(self, ctrl=None, row_idx=-1, row=(),
-                         evenBackgroundColour=wxfunc.DEFAULT_COLOUR, oddBackgroundColour=wxfunc.DEFAULT_COLOUR,
-                         doSavePos=False):
-        """
-        Установить строку контрола списка.
-
-        :param ctrl: Объект контрола.
-        :param row_idx: Индекс строки. Если -1, то строка не устанавливается.
-        :param row: Cтрока.
-            Строка представляет собой список/кортеж:
-            (Значение 1, Значение 2, ..., Значение N),
-        :param evenBackgroundColour: Цвет фона четных строк.
-        :param oddBackgroundColour: Цвет фона нечетных строк.
-        :param doSavePos: Сохранять позицию курсора?
-        :return: True - все прошло нормально / False - какая-то ошибка.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для установки строки')
-            return False
         if row_idx == -1:
-            log.warning(u'Не указан индекс устанавливаемой строки')
+            log_func.error(u'The row index to be set is not specified')
             return False
         if not isinstance(row, list) and not isinstance(row, tuple):
-            log.warning(u'Не корректный тип данных строки <%s>' % row.__class__.__name__)
+            log_func.error(u'Invalid row data type <%s>' % row.__class__.__name__)
             return False
 
-        if isinstance(ctrl, wx.ListCtrl):
-            row_count = ctrl.GetItemCount()
-            if 0 > row_idx > row_count:
-                log.warning(u'Не корректный индекс <%d> контрола <%s>' % (row_idx, ctrl.__class__.__name__))
-                return False
-            cursor_pos = None
-            if doSavePos:
-                cursor_pos = ctrl.GetFirstSelected()
+        row_count = listctrl.GetItemCount()
+        if 0 > row_idx > row_count:
+            log_func.error(u'Not valid row index [%d] in <%s>' % (row_idx, listctrl.__class__.__name__))
+            return False
 
-            for i, item in enumerate(row):
-                item_str = strfunc.toUnicode(item, config.DEFAULT_ENCODING)
-                # ctrl.SetStringItem(row_idx, idx, item_str)
-                ctrl.SetItem(row_idx, i, item_str)
-                if evenBackgroundColour and not (row_idx & 1):
-                    # Четная строка?
-                    colour = self.defaultEvenRowsBGColour() if wxfunc.isDefaultColour(evenBackgroundColour) else evenBackgroundColour
-                    # log.debug(u'Устанавливаемый цвет фона четной строки %s' % str(colour))
-                    ctrl.SetItemBackgroundColour(row_idx, colour)
-                elif oddBackgroundColour and (row_idx & 1):
-                    # Не четная строка?
-                    colour = self.defaultOddRowsBGColour() if wxfunc.isDefaultColour(oddBackgroundColour) else oddBackgroundColour
-                    # log.debug(u'Устанавливаемый цвет фона не четной строки %s' % str(colour))
-                    ctrl.SetItemBackgroundColour(row_idx, colour)
-            if cursor_pos not in (None, -1) and cursor_pos < row_count:
-                ctrl.Select(cursor_pos)
-            return True
-        else:
-            log.warning(u'Установка строки контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
+        cursor_pos = None
+        if keep_pos:
+            cursor_pos = listctrl.GetFirstSelected()
 
-    def setRows_list_ctrl(self, ctrl=None, rows=(),
-                          evenBackgroundColour=wxfunc.DEFAULT_COLOUR, oddBackgroundColour=wxfunc.DEFAULT_COLOUR,
-                          doSavePos=False):
+        for i, item in enumerate(row):
+            item_str = str(item)
+
+            listctrl.SetItem(row_idx, i, item_str)
+            if even_background_colour and not (row_idx & 1):
+                colour = self.defaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
+                listctrl.SetItemBackgroundColour(row_idx, colour)
+            elif odd_background_colour and (row_idx & 1):
+                colour = self.defaultOddRowsBGColour() if wxcolour_func.isDefaultColour(odd_background_colour) else odd_background_colour
+                listctrl.SetItemBackgroundColour(row_idx, colour)
+        if cursor_pos not in (None, -1) and cursor_pos < row_count:
+            listctrl.Select(cursor_pos)
+        return True
+
+    def setListCtrlRows(self, listctrl=None, rows=(),
+                        even_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                        odd_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                        keep_pos=False):
         """
-        Установить строки в контрол списка.
+        Set rows in wx.ListCtrl object.
 
-        :param ctrl: Объект контрола.
-        :param rows: Список строк.
-            Строка представляет собой список:
+        :param listctrl: wx.ListCtrl object.
+        :param rows: Row list.
             [
-            (Значение 1, Значение 2, ..., Значение N), ...
+            (value 1, value 2, ..., value N), ...
             ]
-        :param evenBackgroundColour: Цвет фона четных строк.
-        :param oddBackgroundColour: Цвет фона нечетных строк.
-        :param doSavePos: Сохранять позицию курсора?
-        :return: True - все прошло нормально / False - какая-то ошибка.
+        :param even_background_colour: Even line background color.
+        :param odd_background_colour: Odd line background color.
+        :param keep_pos: Keep cursor position?
+        :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для добавления строк')
-            return False
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
         result = True
         cursor_pos = None
 
-        if isinstance(ctrl, ic.contrib.ObjectListView.GroupListView):
-            if doSavePos:
-                cursor_pos = ctrl.GetFocusedRow()
-            # Исключаем колонку указателя свертывания/развертывания группы--------------------------V
-            dict_rows = [dict([(column.valueGetter, row[i]) for i, column in enumerate(ctrl.columns[1:])]) for row in rows]
-            ctrl.SetObjects(dict_rows)
-            if cursor_pos not in (None, -1):
-                ctrl.Select(cursor_pos)
-                ctrl.Focus(cursor_pos)
-            return result
+        if keep_pos:
+            cursor_pos = listctrl.GetFirstSelected()
 
-        elif isinstance(ctrl, wx.ListCtrl):
-            if doSavePos:
-                cursor_pos = ctrl.GetFirstSelected()
-            ctrl.DeleteAllItems()
-            for row in rows:
-                if isinstance(row, list) or isinstance(row, tuple):
-                    result = result and self.appendRow_ListCtrl(ctrl=ctrl, row=row,
-                                                                evenBackgroundColour=evenBackgroundColour,
-                                                                oddBackgroundColour=oddBackgroundColour)
-            if cursor_pos not in (None, -1):
-                try:
-                    len_rows = len(rows)
-                    if cursor_pos < len_rows:
-                        ctrl.Select(cursor_pos)
-                        # Использую для прокрутки скролинга до выбранного элемента
-                        ctrl.Focus(cursor_pos)
-                    elif len_rows:
-                        ctrl.Select(len_rows - 1)
-                        # Использую для прокрутки скролинга до выбранного элемента
-                        ctrl.Focus(len_rows - 1)
-                except:
-                    log.fatal(u'Ошибка восставления выбора элемента списка')
-            return result
-        elif isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            if doSavePos:
-                cursor_pos = ctrl.GetSelection()
-            ctrl.DeleteAllItems()
-            for row in rows:
-                if isinstance(row, list) or isinstance(row, tuple):
-                    try:
-                        ctrl.AppendItem(row)
-                        result = result and True
-                    except:
-                        log.fatal(u'Ошибка доавления строки %s в контрол <%s>' % (str(row), ctrl.__class__.__name__))
-                        result = False
-            if cursor_pos not in (None, -1):
-                try:
-                    len_rows = len(rows)
-                    if cursor_pos < len_rows:
-                        ctrl.SelectRow(cursor_pos)
-                    elif len_rows:
-                        ctrl.SelectRow(len_rows - 1)
-                except:
-                    log.fatal(u'Ошибка восставления выбора элемента списка')
-            return result
-        else:
-            log.warning(u'Добавление колонок контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
-        return False
+        listctrl.DeleteAllItems()
+        for row in rows:
+            if isinstance(row, list) or isinstance(row, tuple):
+                result = result and self.appendListCtrlRow(listctrl=listctrl, row=row,
+                                                           even_background_colour=even_background_colour,
+                                                           odd_background_colour=odd_background_colour)
+        if cursor_pos not in (None, -1):
+            try:
+                len_rows = len(rows)
+                if cursor_pos < len_rows:
+                    listctrl.Select(cursor_pos)
+                    listctrl.Focus(cursor_pos)
+                elif len_rows:
+                    listctrl.Select(len_rows - 1)
+                    listctrl.Focus(len_rows - 1)
+            except:
+                log_func.fatal(u'List item selection recovery error')
+        return result
 
-    def getRows_list_ctrl(self, ctrl=None):
+    def getListCtrlRows(self, listctrl=None):
         """
         Получить список строк в виде списка кортежей.
 
-        :param ctrl: Объект контрола списка.
+        :param listctrl: Объект контрола списка.
         :return: Список строк.
             Строка представляет собой список:
             [
@@ -908,17 +383,17 @@ class icListCtrlManager(object):
             ]
         """
         rows = list()
-        if ctrl is None:
+        if listctrl is None:
             log.warning(u'Не определен контрол для получения списка строк')
             return rows
 
-        if isinstance(ctrl, wx.ListCtrl):
-            for i_row in range(ctrl.GetItemCount()):
-                row = [ctrl.GetItemText(i_row, col=i_col) for i_col in range(ctrl.GetColumnCount())]
+        if isinstance(listctrl, wx.ListCtrl):
+            for i_row in range(listctrl.GetItemCount()):
+                row = [listctrl.GetItemText(i_row, col=i_col) for i_col in range(listctrl.GetColumnCount())]
                 rows.append(row)
-        elif isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            for i_row in range(ctrl.GetItemCount()):
-                row = [ctrl.GetValue(i_row, col=i_col) for i_col in range(ctrl.GetColumnCount())]
+        elif isinstance(listctrl, wx.dataview.DataViewListCtrl):
+            for i_row in range(listctrl.GetItemCount()):
+                row = [listctrl.GetValue(i_row, col=i_col) for i_col in range(listctrl.GetColumnCount())]
                 rows.append(row)
         return rows
 
@@ -937,7 +412,7 @@ class icListCtrlManager(object):
             log.warning(u'Не определен контрол для получения списка строк')
             return None
         if 0 > item or item is None:
-            item = self.getItemSelectedIdx(obj=ctrl)
+            item = self.getListCtrlelectedRowIdx(obj=ctrl)
 
         row = None
         if 0 <= item:
@@ -1042,7 +517,7 @@ class icListCtrlManager(object):
             log.warning(u'Установление цвета строки контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
         return False
 
-    def getItemSelectedIdx(self, obj):
+    def getListCtrlelectedRowIdx(self, obj):
         """
         Получить индекс выбранного элемента контрола.
         Т.к. индекс выбранного элемента может возвращать объекты разных
@@ -1091,7 +566,7 @@ class icListCtrlManager(object):
                 log.warning(u'Не корректный индекс <%d> контрола списка <%s>' % (item_idx, ctrl.__class__.__name__))
                 return False
             if deselect_prev:
-                ctrl.Select(self.getItemSelectedIdx(ctrl), 0)
+                ctrl.Select(self.getListCtrlelectedRowIdx(ctrl), 0)
             ctrl.Select(item_idx)
             if is_focus:
                 ctrl.Focus(item_idx)
@@ -1108,7 +583,7 @@ class icListCtrlManager(object):
                 log.warning(u'Не корректный индекс <%d> контрола списка <%s>' % (item_idx, ctrl.__class__.__name__))
                 return False
             if deselect_prev:
-                ctrl.SetSelection(self.getItemSelectedIdx(ctrl), 0)
+                ctrl.SetSelection(self.getListCtrlelectedRowIdx(ctrl), 0)
             ctrl.SetSelection(item_idx)
             return True
         else:
@@ -1200,12 +675,12 @@ class icListCtrlManager(object):
         """
         if isinstance(ctrl, wx.ListCtrl):
             if i_row < 0:
-                i_row = self.getItemSelectedIdx(ctrl)
+                i_row = self.getListCtrlelectedRowIdx(ctrl)
             ctrl.CheckItem(i_row, check=check)
             return True
         elif isinstance(ctrl, wx.CheckListBox):
             if i_row < 0:
-                i_row = self.getItemSelectedIdx(ctrl)
+                i_row = self.getListCtrlelectedRowIdx(ctrl)
             ctrl.Check(i_row, check=check)
             return True
 
@@ -1267,7 +742,7 @@ class icListCtrlManager(object):
                 return None
 
             if not indexes and check_selected:
-                selected = self.getItemSelectedIdx(ctrl)
+                selected = self.getListCtrlelectedRowIdx(ctrl)
                 if selected >= 0:
                     indexes = [selected]
             return indexes
@@ -1298,7 +773,7 @@ class icListCtrlManager(object):
                 return None
 
             if not check_records and check_selected:
-                selected = self.getItemSelectedIdx(ctrl)
+                selected = self.getListCtrlelectedRowIdx(ctrl)
                 if selected >= 0:
                     check_records = [self.records[selected]]
             return check_records
@@ -1389,43 +864,6 @@ class icListCtrlManager(object):
         """
         return self.findRowIdx_requirement(ctrl=ctrl, rows=rows, requirement=requirement)
 
-    def getListCtrlImageList(self, ctrl=None, image_width=DEFAULT_ITEM_IMAGE_WIDTH,
-                             image_height=DEFAULT_ITEM_IMAGE_HEIGHT):
-        """
-        Получить список картинок элементов контрола дерева wx.ListCtrl.
-
-        :param ctrl: Объект контрола wx.ListCtrl.
-        :param image_width: Ширина картинки.
-        :param image_height: Высота картинки.
-        :return: Объект списка образов.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол wx.ListCtrl')
-            return None
-
-        image_list = ctrl.GetImageList(wx.IMAGE_LIST_SMALL)
-        if not image_list:
-            image_list = wx.ImageList(image_width, image_height)
-            # ВНИМАНИЕ! Здесь необходимо вставить хотя бы пустой Bitmap
-            # Иначе при заполнении контрол валиться
-            empty_dx = image_list.Add(bmpfunc.createEmptyBitmap(image_width, image_height))
-            ctrl.SetImageList(image_list, wx.IMAGE_LIST_SMALL)
-        return image_list
-
-    def getListCtrlImageListCache(self, ctrl=None):
-        """
-        Кеш списка образов.
-
-        :param ctrl: Объект контрола wx.ListCtrl.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол wx.ListCtrl')
-            return None
-
-        if not hasattr(ctrl, LIST_CTRL_IMAGE_LIST_CACHE_NAME):
-            setattr(ctrl, LIST_CTRL_IMAGE_LIST_CACHE_NAME, dict())
-        return getattr(ctrl, LIST_CTRL_IMAGE_LIST_CACHE_NAME)
-
     def setItemImage_list_ctrl(self, ctrl=None, item=None, image=None):
         """
         Установить картинку элемента списка.
@@ -1443,7 +881,7 @@ class icListCtrlManager(object):
             return None
 
         if item is None:
-            item_idx = self.getItemSelectedIdx(ctrl)
+            item_idx = self.getListCtrlelectedRowIdx(ctrl)
             item = ctrl.GetItem(item_idx)
         elif isinstance(item, wx.ListItem):
             item_idx = item.GetId()
@@ -1464,41 +902,6 @@ class icListCtrlManager(object):
             else:
                 log.warning(u'Не корректный индекс строки <%s>' % str(item_idx))
         return True
-
-    def getImageIndex_list_ctrl(self, ctrl=None, image=None, auto_add=True):
-        """
-        Поиск образа в списке образов wx.ListCtrl.
-
-        :param ctrl: Объект контрола списка.
-        :param image: Объект образа.
-        :param auto_add: Автоматически добавить в список, если отсутствует?
-        :return: Индекс образа или -1 если образ не найден.
-        """
-        if image is None:
-            return -1
-
-        if isinstance(image, wx.Bitmap):
-            img = image.ConvertToImage()
-            img_id = hashlib.md5(img.GetData()).hexdigest()
-        elif isinstance(image, wx.Image):
-            img_id = hashlib.md5(image.GetData()).hexdigest()
-        else:
-            log.warning(u'Не обрабатываемый тип образа <%s>' % image.__class__.__name__)
-            return -1
-
-        # Сначала проверяем в кеше
-        img_cache = self.getListCtrlImageListCache(ctrl=ctrl)
-
-        img_idx = -1
-        if img_id in img_cache:
-            img_idx = img_cache[img_id]
-        else:
-            if auto_add:
-                image_list = self.getListCtrlImageList(ctrl=ctrl)
-                img_idx = image_list.Add(image)
-                # Запоминаем в кеше
-                img_cache[img_id] = img_idx
-        return img_idx
 
     def clear_list_ctrl(self, ctrl=None):
         """

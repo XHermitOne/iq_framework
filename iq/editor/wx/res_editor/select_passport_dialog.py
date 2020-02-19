@@ -24,7 +24,7 @@ __version__ = (0, 0, 0, 1)
 
 
 class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
-                             imglib_manager.iqImageLibraryManager):
+                             imglib_manager.iqImageLibManager):
     """
     Select passport dialog.
     """
@@ -35,7 +35,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         :param parent: Parent form.
         """
         select_passport_dlg.iqSelectPassportDialogProto.__init__(self, parent=parent, *args, **kwargs)
-        imglib_manager.iqImageLibraryManager.__init__(self)
+        imglib_manager.iqImageLibManager.__init__(self)
 
         self.component_icons = dict()
 
@@ -58,14 +58,14 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
 
         :return:
         """
-        self.initImageLibrary()
+        self.initImageLib()
 
-        self.addBitmap('none', wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU))
-        self.component_icons[None] = self.getImageIdx('none')
+        self.addImageLibBitmap('none', wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU))
+        self.component_icons[None] = self.getImageLibImageIdx('none')
 
         # Add framework icon
-        self.addBitmap('root', wx.ArtProvider.GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_MENU))
-        self.component_icons['root'] = self.getImageIdx('root')
+        self.addImageLibBitmap('root', wx.ArtProvider.GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_MENU))
+        self.component_icons['root'] = self.getImageLibImageIdx('root')
 
         component_spc_cache = components.getComponentSpcPalette()
 
@@ -77,7 +77,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                     if component_type:
                         icon_name = component_spc.get('__icon__', None)
                         if icon_name:
-                            component_icon_idx = self.getImageIdx(icon_name)
+                            component_icon_idx = self.getImageLibImageIdx(icon_name)
                             self.component_icons[component_type] = component_icon_idx
                         else:
                             log_func.warning(u'Component <%s> specification not define icon' % component_type)
@@ -85,8 +85,8 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                     else:
                         log_func.error(u'In specification %s not define type' % component_spc)
 
-            self.prj_treeListCtrl.SetImageList(self.getImageList())
-            self.res_treeListCtrl.SetImageList(self.getImageList())
+            self.prj_treeListCtrl.SetImageList(self.getImageLibImageList())
+            self.res_treeListCtrl.SetImageList(self.getImageLibImageList())
         else:
             log_func.error(u'Empty component specification cache <%s>' % str(component_spc_cache))
 

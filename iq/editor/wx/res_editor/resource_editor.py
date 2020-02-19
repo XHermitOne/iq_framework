@@ -39,7 +39,7 @@ __version__ = (0, 0, 0, 1)
 
 class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                        property_editor_manager.iqPropertyEditorManager,
-                       imglib_manager.iqImageLibraryManager):
+                       imglib_manager.iqImageLibManager):
     """
     Resource editor class.
     """
@@ -50,7 +50,6 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :param parent: Parent window object.
         """
         resource_editor_frm.iqResourceEditorFrameProto.__init__(self, parent=parent)
-        imglib_manager.iqImageLibraryManager.__init__(self)
 
         self.res_filename = None
 
@@ -66,14 +65,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         :return:
         """
-        self.initImageLibrary()
-        # self.component_imagelist = wx.ImageList(wxbitmap_func.DEFAULT_ICON_WIDTH,
-        #                                         wxbitmap_func.DEFAULT_ICON_HEIGHT)
-        component_spc_cache = components.getComponentSpcPalette()
+        self.initImageLib()
 
-        # empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
-        # empty_icon_idx = self.component_imagelist.Add(empty_bmp)
-        # self.component_icons[None] = empty_icon_idx
+        component_spc_cache = components.getComponentSpcPalette()
 
         if component_spc_cache:
             for package in list(component_spc_cache.keys()):
@@ -84,21 +78,15 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                         icon_name = component_spc.get('__icon__', None)
                         if icon_name:
                             # log_func.debug(u'Create icon <%s>' % icon_name)
-                            component_icon_idx = self.getImageIdx(icon_name)
+                            component_icon_idx = self.getImageLibImageIdx(icon_name)
                             self.component_icons[component_type] = component_icon_idx
-                            # component_icon_bmp = wxbitmap_func.createIconBitmap(icon_name)
-                            # if component_icon_bmp:
-                            #     component_icon_idx = self.component_imagelist.Add(component_icon_bmp)
-                            #     self.component_icons[component_type] = component_icon_idx
-                            # else:
-                            #     log_func.warning(u'Not valid icon name component <%s>' % component_type)
                         else:
                             log_func.warning(u'Component <%s> specification not define icon' % component_type)
                             log_func.warning(u'Verify __icon__ attribute in specification')
                     else:
                         log_func.error(u'In specification %s not define type' % component_spc)
 
-            self.resource_treeListCtrl.SetImageList(self.getImageList())
+            self.resource_treeListCtrl.SetImageList(self.getImageLibImageList())
         else:
             log_func.error(u'Empty component specification cache <%s>' % str(component_spc_cache))
 
@@ -494,7 +482,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         Append new child resource in item.
 
-        :param item: Parent tree list ctrl item.
+        :param item: Parent tree list treelistctrl item.
             If item is None then get selected item.
         :param resource: Child resource.
         :param expand: Expand item after append?
