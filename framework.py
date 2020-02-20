@@ -97,7 +97,7 @@ def main(*argv):
         else:
             log_func.warning(u'Not supported parameter <%s>' % option)
 
-    log_func.info(u'iqFramework ... START')
+    log_func.info(u'iqFramework <Engine: %s / Mode: %s>... START' % (engine, mode))
 
     if runtime_mode:
         kernel = iq.createKernel()
@@ -109,7 +109,7 @@ def main(*argv):
     else:
         log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
 
-    log_func.info(u'iqFramework ... STOP')
+    log_func.info(u'iqFramework <Engine: %s / Mode: %s>... STOP' % (engine, mode))
 
 
 if __name__ == '__main__':
