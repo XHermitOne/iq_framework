@@ -36,7 +36,7 @@ def createBitmap(img_filename, mask_colour=None):
             bmp.SetMask(wx.Colour(bmp, mask_colour))
         return bmp
     except:
-        log_func.fatal(u'Create wx.Bitmap object from <%s> error' % img_filename)
+        log_func.fatal(u'Error create wx.Bitmap object from <%s>' % img_filename)
     return None
 
 
@@ -73,7 +73,7 @@ def getImageFileType(img_filename):
             return wx.BITMAP_TYPE_ICO
         return None
     except:
-        log_func.fatal(u'Get image file type error')
+        log_func.fatal(u'Error get image file type')
 
     return None
 

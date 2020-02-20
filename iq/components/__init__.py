@@ -73,11 +73,11 @@ def buildComponentSpcCache():
                         result[pkg_name] = list()
                     result[pkg_name].append(component_spc)
                 else:
-                    log_func.error(u'Find component <%s> SPC error' % py_pkg)
+                    log_func.error(u'Error find component <%s> SPC' % py_pkg)
 
         return result
     except:
-        log_func.fatal(u'Build component specification cache error')
+        log_func.fatal(u'Error build component specification cache')
     return dict()
 
 
@@ -202,7 +202,7 @@ def buildComponents():
 
         return result
     except:
-        log_func.fatal(u'Build component specification cache error')
+        log_func.fatal(u'Error build component specification cache')
     return dict()
 
 
@@ -218,5 +218,5 @@ def importComponent(component_pkg_name):
         component_pkg = importlib.import_module(pkg_name)
         return component_pkg
     except:
-        log_func.fatal(u'Import component package <%s> error' % pkg_name)
+        log_func.fatal(u'Error import component package <%s>' % pkg_name)
     return None

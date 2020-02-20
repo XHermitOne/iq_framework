@@ -2,125 +2,103 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль класса - менеджера абстрактного контрола панели инструментов WX.
+Toolbar manager.
 """
 
-# Подключение библиотек
 import wx
 
-from ic.log import log
-from ic.bitmap import bmpfunc
+from ...util import log_func
+
+from .import imglib_manager
+
+__version__ = (0, 0, 0, 1)
 
 
-__version__ = (0, 1, 1, 2)
-
-
-class icToolBarManager(object):
+class iqToolBarManager(imglib_manager.iqImageLibManager):
     """
-    Менеджер WX панели инструментов.
-    В самом общем случае в этот класс перенесены функции работы
-    с панелью инструментов из менеджера форм.
-    Перенос сделан с целью рефакторинга.
-    Также этот класс могут наследовать классы специализированных
-    менеджеров, которые работают с панелями инструментов управления
-    записями/объектами.
+    Toolbar manager.
     """
-    def enableTools_toolbar(self, toolbar, **kwargs):
+    def enableToolbarTools(self, toolbar, **tools):
         """
-        Установить вкл./выкл. инструментов панели инструментов wx.ToolBar.
+        Set on / off toolbar tools.
 
-        :param toolbar: Объект контрола wx.ToolBar.
-        :param kwargs: Словарь формата:
+        :param toolbar: wx.ToolBar object.
+        :param tools: Dictionary:
             {
-                Имя инструмента1: True/False,
+                tool_name: True/False,
                 ...
             }
-            Имя инструмента - имя контрола в проекте wx.FormBuilder.
-            Объект инструмента ищется среди атрибутов формы по типу wx.ToolBarToolBase.
-        :return: True - все ок, False - какая то ошибка
+            Tool name - name of the control in the wx.FormBuilder project.
+            The tool object is searched among the form attributes by type wx.ToolBarToolBase.
+        :return: True/False.
         """
+        assert issubclass(toolbar, wx.ToolBar), u'ToolBar manager type error'
+
         result = True
-
-        if not isinstance(toolbar, wx.ToolBar):
-            log.warning(u'Объект %s не типа wx.ToolBar' % str(toolbar))
-            return False
-
-        for tool_name, enable in kwargs.items():
+        for tool_name, enable in tools.items():
             tool = getattr(self, tool_name) if hasattr(self, tool_name) else None
             if tool and isinstance(tool, wx.ToolBarToolBase):
                 toolbar.EnableTool(tool.GetId(), enable)
                 result = result and True
             else:
-                log.warning(u'Инструмент <%s> не найден или не соответствует типу' % tool_name)
+                log_func.error(u'Tool <%s> not found' % tool_name)
                 result = result and False
 
         return result
 
-    def setLibImages_ToolBar(self, tool_bar=None, **tools):
+    def setToolBarLibImages(self, toolbar=None, **tools):
         """
-        Установить библиотечне картинки в качестве картинок
-        инструментов в wxToolBar.
+        Set library pictures as pictures tools in wxToolBar.
 
-        :param tool_bar: Объект wx.ToolBar.
-        :param tools: Словарь соответствий имен инструментов с именами файлов образов библиотеки.
-            Например:
-                edit_tool = 'document--pencil.png'
+        :param toolbar: wx.ToolBar object.
+        :param tools: Dictionary of correspondence of tool names
+            with the names of library image files.
+            For example:
+                edit_tool = 'fatcaw/document'
         :return: True/False.
         """
+        assert issubclass(toolbar, wx.ToolBar), u'ToolBar manager type error'
+
         if not tools:
-            # Если словарь соответствий пуст, то ничего не делаем
+            log_func.warning(u'Not define tools for set images')
             return False
 
-        for tool_name, lib_img_filename in tools.items():
+        result = True
+        for tool_name, lib_img_name in tools.items():
             if hasattr(self, tool_name):
                 # <wx.Tool>
                 tool = getattr(self, tool_name)
                 tool_id = tool.GetId()
-                bmp = bmpfunc.createLibraryBitmap(lib_img_filename)
+                bmp = self.getImageLibImageBmp(lib_img_name)
 
                 if bmp:
-                    if tool_bar is None:
-                        tool_bar = tool.getToolBar()
-                    # ВНИМАНИЕ! Для смены образа инструмента не надо использовать
-                    # метод инструмента <tool.SetNormalBitmap(bmp)> т.к. НЕ РАБОТАЕТ!
-                    # Для этого вызываем метод панели инструметнтов
-                    # <toolbar.SetToolNormalBitmap(tool_id, bmp)>
-                    tool_bar.SetToolNormalBitmap(tool_id, bmp)
+                    if toolbar is None:
+                        toolbar = tool.getToolBar()
+                    # ATTENTION! To change the tool image, you do not need to use
+                    # the tool method < tool.SetNormalBitmap(bmp) > since DOES NOT WORK!
+                    # To do this, call the toolbar method < toolbar.SetToolNormalBitmap(tool_id, bmp) >
+                    toolbar.SetToolNormalBitmap(tool_id, bmp)
                 else:
-                    log.warning(u'Не найдена библиотечная картинка <%s>' % lib_img_filename)
+                    log_func.error(u'Library icon <%s> not found' % lib_img_name)
+                    result = False
             else:
-                log.warning(u'Не найден инструмент <%s> панели инструментов' % tool_name)
+                log_func.error(u'Tool <%s> not found' % tool_name)
+                result = False
 
-        if tool_bar:
-            tool_bar.Realize()
-        else:
-            log.warning(u'Не определена панель инструментов wxToolBar')
+        toolbar.Realize()
+        return result
 
-    def getButtonLeftBottomPoint(self, button=None):
+    def getToolbarToolLeftBottomPoint(self, toolbar, tool):
         """
-        Определить точку левого-нижнего края кнопки.
-        Используется для вызова всплывающих меню.
+        Define the point of the left-bottom edge of the button.
+        Used to call up pop-up menus.
 
-        :param button: Объект кнопки wx.Button.
+        :param toolbar: wx.ToolBar object.
+        :param tool: wx.ToolBarToolBase toolbar tool object.
         """
-        if button is None:
-            # Если кнопка не определена, то функция бессмыслена
-            return None
-
-        point = button.GetPosition()
-        point = button.GetParent().ClientToScreen(point)
-        return wx.Point(point.x, point.y + button.GetSize().y)
-
-    def getToolLeftBottomPoint(self, toolbar, tool):
-        """
-        Определить точку левого-нижнего края кнопки.
-        Используется для вызова всплывающих меню.
-
-        :param toolbar: Объект панели инструментов wx.ToolBar.
-        :param tool: Объект инструмента панели инструментов wx.ToolBarToolBase.
-        """
+        assert issubclass(toolbar, wx.ToolBar), u'ToolBar manager type error'
         if tool is None:
-            # Если инструмент не определен, то функция бессмыслена
+            log_func.warning(u'Not define tool')
             return None
 
         toolbar_pos = toolbar.GetScreenPosition()
@@ -134,4 +112,3 @@ class icToolBarManager(object):
             x_offset += prev_ctrl.GetSize()[0] if prev_ctrl else tool_size[0]
 
         return wx.Point(toolbar_pos[0] + x_offset, toolbar_pos[1] + toolbar_size[1])
-

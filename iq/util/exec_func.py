@@ -26,7 +26,7 @@ def execSystemCommand(cmd=''):
             os.system(cmd)
             return True
         except:
-            log_func.fatal(u'Execute system command <%s>' % cmd)
+            log_func.fatal(u'Error execute system command <%s>' % cmd)
     else:
         log_func.warning(u'Not define system command')
     return False
@@ -77,5 +77,5 @@ def execTxtFunction(function, context=None):
     except:
         log_func.error(u'Execute function:')
         log_func.error(function_txt)
-        log_func.fatal(u'Execute function error')
+        log_func.fatal(u'Error execute function')
     return None

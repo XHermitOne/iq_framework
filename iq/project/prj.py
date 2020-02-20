@@ -108,7 +108,7 @@ class iqProjectManager(object):
 
             return res_func.saveResourceText(prj_res_filename, prj_resource)
         except:
-            log_func.fatal(u'Save default project resource error')
+            log_func.fatal(u'Error save default project resource')
         return False
 
     def createPath(self, prj_path):

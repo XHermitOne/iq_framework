@@ -39,7 +39,7 @@ def loadPyModule(name, path):
         module = importlib.util.module_from_spec(module_spec)
         module_spec.loader.exec_module(module)
     except ImportError:
-        log_func.fatal(u'Import module <%s> by path <%s> error' % (name, path))
+        log_func.fatal(u'Error import module <%s> by path <%s>' % (name, path))
 
     return module
 
@@ -76,7 +76,7 @@ def reloadPyModule(name, path=None):
                 py_file_name = os.path.splitext(py_file_name)[0]+'.py'
                 path = py_file_name
             except:
-                log_func.fatal(u'Get path python module error')
+                log_func.fatal(u'Error get path python module')
                 return None
         else:
             return None

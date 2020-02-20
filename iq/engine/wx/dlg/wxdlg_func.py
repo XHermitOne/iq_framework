@@ -82,7 +82,7 @@ def getDirDlg(parent=None, title='', default_path=''):
         if dlg.ShowModal() == wx.ID_OK:
             result = dlg.GetPath()
     except:
-        log_func.fatal(u'Open directory selection dialog error')
+        log_func.fatal(u'Error open directory selection dialog')
         result = None
 
     if dlg:
@@ -172,7 +172,7 @@ def getAskDlg(title='', prompt_text='', style=wx.YES_NO | wx.ICON_QUESTION):
     try:
         return wx.MessageBox(prompt_text, title, style=style)
     except:
-        log_func.fatal(u'Ask dialog error')
+        log_func.fatal(u'Error ask dialog')
     return None
 
 
@@ -196,7 +196,7 @@ def openMsgBox(title='', prompt_text='', **kwargs):
     try:
         return wx.MessageBox(prompt_text, title, style=wx.OK, **kwargs)
     except:
-        log_func.fatal(u'Open message box error')
+        log_func.fatal(u'Error open message box')
     return None
 
 
@@ -239,7 +239,7 @@ def openWarningBox(title='', prompt_text='', **kwargs):
     try:
         return wx.MessageBox(prompt_text, title, style=wx.OK | wx.ICON_WARNING, **kwargs)
     except:
-        log_func.fatal(u'Open warning message box error')
+        log_func.fatal(u'Error open warning message box')
     return None
 
 
@@ -382,7 +382,7 @@ class icProgressDlg(wx.ProgressDialog):
             self.SetSize(wx.Size(500, 130))
             self.CenterOnScreen()
         except:
-            log_func.fatal(u'Progress dialog _create error')
+            log_func.fatal(u'Error progress dialog _create')
 
     def getMax(self):
         return self._ProgressMAX
@@ -449,7 +449,7 @@ def openProgressDlg(parent=None, title='', prompt_text='',
     try:
         PROGRESS_DLG = icProgressDlg(parent, title, prompt_text, min_value, max_value, style)
     except:
-        log_func.fatal(u'Open progress bar dialog error')
+        log_func.fatal(u'Error open progress bar dialog')
     return PROGRESS_DLG
 
 

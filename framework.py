@@ -31,6 +31,7 @@ import getopt
 from iq import config
 from iq.util import log_func
 from iq.util import global_func
+from iq import editor
 import iq
 
 __version__ = (0, 0, 1, 1)
@@ -101,12 +102,10 @@ def main(*argv):
     if runtime_mode:
         kernel = iq.createKernel()
         kernel.start(mode=mode, project_name=project, username=username, password=password)
-    elif mode == iq.EDITOR_MODE_STATE and global_func.isWXEngine():
-        from iq.editor.wx import start_editor
-        start_editor.startEditor()
-    elif mode == iq.RESOURCE_EDITOR_MODE_STATE and global_func.isWXEngine():
-        from iq.editor.wx.res_editor import resource_editor
-        resource_editor.runResourceEditor(res_filename=res_filename)
+    elif mode == iq.EDITOR_MODE_STATE:
+        editor.openEditor()
+    elif mode == iq.RESOURCE_EDITOR_MODE_STATE:
+        editor.openResourceEditor(res_filename=res_filename)
     else:
         log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
 

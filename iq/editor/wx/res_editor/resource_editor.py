@@ -158,7 +158,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 self.buildPropertyEditors(property_editor=self.object_propertyGridManager, resource=resource)
             return result
         except:
-            log_func.fatal(u'Load resource in editor error')
+            log_func.fatal(u'Error load resource in editor')
         return False
 
     def loadResourceFile(self, res_filename):
@@ -182,7 +182,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
             self.buildPropertyEditors(property_editor=self.object_propertyGridManager, resource=resource)
         except:
-            log_func.fatal(u'Resource tree list control item selection changes handler error')
+            log_func.fatal(u'Error resource tree list control item selection changes handler')
         event.Skip()
 
     def getSelectedResource(self):
@@ -235,7 +235,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                     resource[spc_func.CHILDREN_ATTR_NAME].append(child_resource)
                     child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetNextChild(item, cookie=cookie)
         except:
-            log_func.fatal(u'Get resource from editor error')
+            log_func.fatal(u'Error get resource from editor')
         return resource
 
     def getPropertyEditor(self, attribute_name):
@@ -284,7 +284,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                                 if on_change:
                                     on_change(resource_editor=self, resource=selected_resource)
                         except:
-                            log_func.fatal(u'Change attribute <%s> error' % name)
+                            log_func.fatal(u'Error change attribute <%s>' % name)
 
                         selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
 
@@ -410,7 +410,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                                  parent_pos.y + event_point.y)
             self.item_context_menu.Popup(popup_pos, self.resource_treeListCtrl)
         except:
-            log_func.fatal(u'Popup resource item context menu error')
+            log_func.fatal(u'Error popup resource item context menu')
 
         event.Skip()
 
@@ -514,7 +514,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             else:
                 log_func.error(u'Item <%s> not correct' % str(item))
         except:
-            log_func.fatal(u'Append new child resource in item error')
+            log_func.fatal(u'Error append new child resource in item')
         return False
 
     def onSelectComponentMenuItem(self, event):
@@ -556,7 +556,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             else:
                 log_func.error(u'Item <%s> not correct' % str(item))
         except:
-            log_func.fatal(u'Copy resource to clipboard error')
+            log_func.fatal(u'Error copy resource to clipboard')
         return resource_item
 
     def pasteResourceItem(self, item=None):
@@ -585,7 +585,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             else:
                 log_func.error(u'Item <%s> not correct' % str(item))
         except:
-            log_func.fatal(u'Past resource from clipboard error')
+            log_func.fatal(u'Error past resource from clipboard')
         return False
 
     def cutResourceItem(self, item=None):
@@ -608,7 +608,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             else:
                 log_func.error(u'Item <%s> not correct' % str(item))
         except:
-            log_func.fatal(u'Cut resource to clipboard error')
+            log_func.fatal(u'Error cut resource to clipboard')
         return None
 
     def moveUpResourceItem(self, item=None):
@@ -642,7 +642,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             else:
                 log_func.error(u'Item <%s> not correct' % str(item))
         except:
-            log_func.fatal(u'Move up resource error')
+            log_func.fatal(u'Error move up resource')
         return False
 
     def moveDownResourceItem(self, item=None):
@@ -676,7 +676,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             else:
                 log_func.error(u'Item <%s> not correct' % str(item))
         except:
-            log_func.fatal(u'Move down resource error')
+            log_func.fatal(u'Error move down resource')
         return False
 
     def onCopyResourceMenuitem(self, event):
@@ -734,7 +734,7 @@ def openResourceEditor(parent=None, res_filename=None):
     except:
         if frame:
             frame.Destroy()
-        log_func.fatal(u'Open resource editor error')
+        log_func.fatal(u'Error open resource editor')
     return False
 
 

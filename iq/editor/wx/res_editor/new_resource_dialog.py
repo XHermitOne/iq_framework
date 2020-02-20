@@ -152,7 +152,7 @@ class iqNewResourceDialog(new_resource_dlg.iqNewResourceDialogProto):
 
             self.component_button.PopupMenu(self.component_menu)
         except:
-            log_func.fatal(u'Component select button error')
+            log_func.fatal(u'Error component select button')
 
         event.Skip()
 
@@ -206,7 +206,7 @@ def createNewResource(parent=None, component_spc=None, component_name=None, res_
         dlg.Destroy()
         return result
     except:
-        log_func.fatal(u'Create new resource error')
+        log_func.fatal(u'Error create new resource')
         if dlg:
             dlg.Destroy()
     return None

@@ -102,7 +102,7 @@ def getProjectPath():
         framework_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         return os.path.join(framework_path, prj_name)
     else:
-        log_func.warning(u'Get project path error')
+        log_func.warning(u'Error get project path')
     return None
 
 
@@ -116,7 +116,7 @@ def getFrameworkPath():
     if path and os.path.exists(path):
         return path
     else:
-        log_func.warning(u'Get framework path error')
+        log_func.warning(u'Error get framework path')
     return None
 
 

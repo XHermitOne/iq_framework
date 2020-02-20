@@ -158,3 +158,18 @@ def isDefaultColour(colour):
     :return: True/False.
     """
     return isinstance(colour, str) and colour == DEFAULT_COLOUR
+
+
+def getDefaultEvenRowsBGColour():
+    """
+    The background color of even lines is the default.
+    """
+    colour = tuple(wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX))[:-1]
+    return wx.Colour(*colour)
+
+
+def getDefaultOddRowsBGColour():
+    """
+    The background color is not even lines by default.
+    """
+    return getTintColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX))

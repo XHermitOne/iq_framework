@@ -128,7 +128,7 @@ def saveResourcePickle(res_filename, resource_data):
             try:
                 os.makedirs(dir_name)
             except:
-                log_func.fatal(u'Create path <%s> error' % dir_name)
+                log_func.fatal(u'Error create path <%s>' % dir_name)
 
         f = open(res_filename, 'wb')
         pickle.dump(resource_data, f)
@@ -138,7 +138,7 @@ def saveResourcePickle(res_filename, resource_data):
     except:
         if f:
             f.close()
-        log_func.fatal(u'Pickle resource file <%s> save error' % res_filename)
+        log_func.fatal(u'Error save pickle resource file <%s>' % res_filename)
     return False
 
 
@@ -161,7 +161,7 @@ def saveResourceText(res_filename, resource_data):
             try:
                 os.makedirs(dir_name)
             except:
-                log_func.fatal(u'Create path <%s> error' % dir_name)
+                log_func.fatal(u'Error create path <%s>' % dir_name)
 
         f = open(res_filename, 'wt')
         text = str(resource_data)
@@ -172,5 +172,15 @@ def saveResourceText(res_filename, resource_data):
     except:
         if f:
             f.close()
-        log_func.fatal(u'Text resource file <%s> save error' % res_filename)
+        log_func.fatal(u'Error save text resource file <%s>' % res_filename)
     return False
+
+
+def isResourceFile(res_filename):
+    """
+    Check if the file is resource.
+
+    :param res_filename: Resource file path.
+    :return: True/False.
+    """
+    return file_func.isFilenameExt(res_filename, RESOURCE_FILE_EXT)

@@ -365,7 +365,7 @@ def selectPassportDlg(parent=None, prj_name=None, default_psp=None):
         dlg.Destroy()
         return result
     except:
-        log_func.fatal(u'Select passport dialog error')
+        log_func.fatal(u'Error select passport dialog')
         if dlg:
             dlg.Destroy()
     return None

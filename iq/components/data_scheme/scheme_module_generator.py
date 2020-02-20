@@ -110,7 +110,7 @@ class iqSchemeModuleGenerator(object):
             result = txtfile_func.saveTextFile(modeles_text, scheme_text, rewrite=rewrite)
             return module_filename if result else None
         except:
-            log_func.fatal(u'Generate scheme module error')
+            log_func.fatal(u'Error generate scheme module')
         return None
 
     def genModelTxt(self, resource):

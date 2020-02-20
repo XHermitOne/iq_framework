@@ -127,7 +127,7 @@ def openStartEditorDlg(parent=None):
     except:
         if dlg:
             dlg.Destroy()
-        log_func.fatal(u'Open start editor dialog error')
+        log_func.fatal(u'Error open start editor dialog')
     return False
 
 

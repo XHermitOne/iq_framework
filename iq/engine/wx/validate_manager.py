@@ -108,7 +108,7 @@ class iqValidateManager(object):
         try:
             return self._validateValuesDict(**values)
         except:
-            log_func.fatal(u'Validate error')
+            log_func.fatal(u'Error validate')
         return None
 
     def _validateCtrlDict(self, *names):
@@ -163,7 +163,7 @@ class iqValidateManager(object):
         try:
             return self._validateCtrlDict(*names)
         except:
-            log_func.fatal(u'Validate control values error')
+            log_func.fatal(u'Eddor validate control values')
         return None
 
     def getCtrlValue(self, ctrl):

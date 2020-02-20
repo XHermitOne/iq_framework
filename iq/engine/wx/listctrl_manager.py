@@ -12,11 +12,13 @@ from ...util import log_func
 
 from . import wxcolour_func
 from . import base_manager
+from . import imglib_manager
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqListCtrlManager(base_manager.iqBaseManager):
+class iqListCtrlManager(base_manager.iqBaseManager,
+                        imglib_manager.iqImageLibManager):
     """
     ListCtrl manager.
     """
@@ -225,7 +227,7 @@ class iqListCtrlManager(base_manager.iqBaseManager):
             return False
 
         try:
-            row_idx = -1
+            item = -1
 
             row = row[:listctrl.GetColumnCount()]
             for i, value in enumerate(row):
@@ -239,47 +241,47 @@ class iqListCtrlManager(base_manager.iqBaseManager):
                     value = str(value)
 
                 if i == 0:
-                    row_idx = listctrl.InsertItem(sys.maxsize, value)
+                    item = listctrl.InsertItem(sys.maxsize, value)
                 else:
-                    listctrl.SetItem(row_idx, i, value)
+                    listctrl.SetItem(item, i, value)
 
-            if row_idx != -1:
-                if even_background_colour and not (row_idx & 1):
+            if item != -1:
+                if even_background_colour and not (item & 1):
 
-                    colour = self.defaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
-                    listctrl.SetItemBackgroundColour(row_idx, colour)
-                elif odd_background_colour and (row_idx & 1):
-                    colour = self.defaultOddRowsBGColour() if wxcolour_func.isDefaultColour(odd_background_colour) else odd_background_colour
-                    listctrl.SetItemBackgroundColour(row_idx, colour)
+                    colour = wxcolour_func.getDefaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
+                    listctrl.SetItemBackgroundColour(item, colour)
+                elif odd_background_colour and (item & 1):
+                    colour = wxcolour_func.getDefaultOddRowsBGColour() if wxcolour_func.isDefaultColour(odd_background_colour) else odd_background_colour
+                    listctrl.SetItemBackgroundColour(item, colour)
 
                 if auto_select:
-                    listctrl.Select(row_idx)
+                    listctrl.Select(item)
             return True
         except:
             log_func.fatal(u'Append row %s  error in wx.ListCtrl object' % str(row))
         return False
 
-    def delListCtrlRow(self, listctrl=None, row_idx=None):
+    def delListCtrlRow(self, listctrl=None, item=None):
         """
         Delete row in wx.ListCtrl object.
 
         :param listctrl: wx.ListCtrl object.
-        :param row_idx: Row index.
+        :param item: Row index.
             If not defined, the current selected row is taken.
         :return: True/False.
         """
         assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        if row_idx is None:
-            row_idx = self.getListCtrlelectedRowIdx(listctrl)
-        if 0 <= row_idx < listctrl.GetItemCount():
-            listctrl.DeleteItem(item=row_idx)
+        if item is None:
+            item = self.getListCtrlSelectedRowIdx(listctrl)
+        if 0 <= item < listctrl.GetItemCount():
+            listctrl.DeleteItem(item=item)
             return True
         else:
-            log_func.warning(u'Not valid row index [%d] on wx.ListCtrl object' % row_idx)
+            log_func.warning(u'Not valid row index [%d] on wx.ListCtrl object' % item)
         return False
 
-    def setListCtrlRow(self, listctrl=None, row_idx=-1, row=(),
+    def setListCtrlRow(self, listctrl=None, item=-1, row=(),
                        even_background_colour=wxcolour_func.DEFAULT_COLOUR,
                        odd_background_colour=wxcolour_func.DEFAULT_COLOUR,
                        keep_pos=False):
@@ -287,7 +289,7 @@ class iqListCtrlManager(base_manager.iqBaseManager):
         Set row in wx.ListCtrl object.
 
         :param listctrl: wx.ListCtrl object.
-        :param row_idx: Row index.
+        :param item: Row index.
         :param row: Row as tuple.
             (value 1, value 2, ..., value N),
         :param even_background_colour: Even line background color.
@@ -297,7 +299,7 @@ class iqListCtrlManager(base_manager.iqBaseManager):
         """
         assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        if row_idx == -1:
+        if item == -1:
             log_func.error(u'The row index to be set is not specified')
             return False
         if not isinstance(row, list) and not isinstance(row, tuple):
@@ -305,8 +307,8 @@ class iqListCtrlManager(base_manager.iqBaseManager):
             return False
 
         row_count = listctrl.GetItemCount()
-        if 0 > row_idx > row_count:
-            log_func.error(u'Not valid row index [%d] in <%s>' % (row_idx, listctrl.__class__.__name__))
+        if 0 > item > row_count:
+            log_func.error(u'Not valid row index [%d] in <%s>' % (item, listctrl.__class__.__name__))
             return False
 
         cursor_pos = None
@@ -316,13 +318,13 @@ class iqListCtrlManager(base_manager.iqBaseManager):
         for i, item in enumerate(row):
             item_str = str(item)
 
-            listctrl.SetItem(row_idx, i, item_str)
-            if even_background_colour and not (row_idx & 1):
-                colour = self.defaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
-                listctrl.SetItemBackgroundColour(row_idx, colour)
-            elif odd_background_colour and (row_idx & 1):
-                colour = self.defaultOddRowsBGColour() if wxcolour_func.isDefaultColour(odd_background_colour) else odd_background_colour
-                listctrl.SetItemBackgroundColour(row_idx, colour)
+            listctrl.SetItem(item, i, item_str)
+            if even_background_colour and not (item & 1):
+                colour = wxcolour_func.getDefaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
+                listctrl.SetItemBackgroundColour(item, colour)
+            elif odd_background_colour and (item & 1):
+                colour = wxcolour_func.getDefaultOddRowsBGColour() if wxcolour_func.isDefaultColour(odd_background_colour) else odd_background_colour
+                listctrl.SetItemBackgroundColour(item, colour)
         if cursor_pos not in (None, -1) and cursor_pos < row_count:
             listctrl.Select(cursor_pos)
         return True
@@ -373,555 +375,430 @@ class iqListCtrlManager(base_manager.iqBaseManager):
 
     def getListCtrlRows(self, listctrl=None):
         """
-        Получить список строк в виде списка кортежей.
+        Get a list of rows as a list of tuples.
 
-        :param listctrl: Объект контрола списка.
-        :return: Список строк.
-            Строка представляет собой список:
+        :param listctrl: wx.ListCtrl object.
+        :return: Row list.
             [
-            (Значение 1, Значение 2, ..., Значение N), ...
+            (value 1, value 2, ..., value N), ...
             ]
         """
-        rows = list()
-        if listctrl is None:
-            log.warning(u'Не определен контрол для получения списка строк')
-            return rows
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        if isinstance(listctrl, wx.ListCtrl):
-            for i_row in range(listctrl.GetItemCount()):
-                row = [listctrl.GetItemText(i_row, col=i_col) for i_col in range(listctrl.GetColumnCount())]
-                rows.append(row)
-        elif isinstance(listctrl, wx.dataview.DataViewListCtrl):
-            for i_row in range(listctrl.GetItemCount()):
-                row = [listctrl.GetValue(i_row, col=i_col) for i_col in range(listctrl.GetColumnCount())]
-                rows.append(row)
+        rows = list()
+        for i_row in range(listctrl.GetItemCount()):
+            row = [listctrl.GetItemText(i_row, col=i_col) for i_col in range(listctrl.GetColumnCount())]
+            rows.append(row)
         return rows
 
-    def getRow_list_ctrl(self, ctrl=None, item=-1):
+    def getListCtrlRow(self, listctrl=None, item=-1):
         """
-        Получить строку по индексу в виде кортежа.
+        Get a row by index as a tuple.
 
-        :param ctrl: Объект контрола списка.
-        :param item: Индекс запрашиваемой строки.
-            Если не определен, то возвращается индекс текущей строки.
-        :return: Кортеж строки или None в случае ошибки.
-            Строка представляет собой кортеж:
-            (Значение 1, Значение 2, ..., Значение N)
+        :param listctrl: wx.ListCtrl object.
+        :param item: Row index.
+            If None then get selected row.
+        :return: Tuple row or None if error.
+            (value 1, value 2, ..., value N)
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для получения списка строк')
-            return None
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
         if 0 > item or item is None:
-            item = self.getListCtrlelectedRowIdx(obj=ctrl)
+            item = self.getListCtrlSelectedRowIdx(listctrl_or_event=listctrl)
 
         row = None
         if 0 <= item:
-            if isinstance(ctrl, wx.ListCtrl):
-                row = [ctrl.GetItemText(item, col=i_col) for i_col in range(ctrl.GetColumnCount())]
-            elif isinstance(ctrl, wx.dataview.DataViewListCtrl):
-                row = [ctrl.GetValue(item, col=i_col) for i_col in range(ctrl.GetColumnCount())]
-            else:
-                log.warning(u'Не поддерживаемый тип контрола списка <%s> в функции getRow_list_ctrl' % ctrl.__class__.__name__)
+            row = tuple([listctrl.GetItemText(item, col=i_col) for i_col in range(listctrl.GetColumnCount())])
         return row
 
-    def setRowColour_list_ctrl_requirement(self, ctrl=None, rows=(),
-                                           fg_colour=None, bg_colour=None, requirement=None):
+    def setListCtrlRowColourExpression(self, listctrl=None, rows=(),
+                                       foreground_colour=None,
+                                       background_colour=None,
+                                       expression=None):
         """
-        Установить цвет строки в контроле списка по определенному условию.
+        Set the line color in the list control according to a certain condition.
 
-        :param ctrl: Объект контрола.
-        :param rows: Список строк.
-        :param fg_colour: Цвет текста, если условие выполненно.
-        :param bg_colour: Цвет фона, если условие выполненно.
-        :param requirement: lambda выражение, формата:
+        :param listctrl: wx.ListCtrl object.
+        :param rows: Row list.
+        :param foreground_colour: Text color if condition is met.
+        :param background_colour: Background color if condition is met.
+        :param expression: lambda expression:
             lambda idx, row: ...
-            Которое возвращает True/False.
-            Если True, то установка цвета будет сделана.
-            False - строка не расцвечивается.
+            Return True/False.
+            If True, then the color setting will be done.
+            False - the line does not color.
         :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для установления цвета строки')
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if expression is None:
+            log_func.warning(u'Color condition not defined')
             return False
-        if requirement is None:
-            log.warning(u'Не определено условие установки цвета')
-            return False
-        if fg_colour is None and bg_colour is None:
-            log.warning(u'Не определены цвета')
+
+        if foreground_colour is None and background_colour is None:
+            log_func.warning(u'Undefined colors')
             return False
 
         for i, row in enumerate(rows):
-            colorize = requirement(i, row)
-            if fg_colour and colorize:
-                self.setRowForegroundColour_list_ctrl(ctrl, i, fg_colour)
-            if bg_colour and colorize:
-                self.setRowBackgroundColour_list_ctrl(ctrl, i, bg_colour)
+            colorize = expression(i, row)
+            if foreground_colour and colorize:
+                self.setListCtrlRowForegroundColour(listctrl, i, foreground_colour)
+            if background_colour and colorize:
+                self.setListCtrlRowBackgroundColour(listctrl, i, background_colour)
         return True
 
-    def setRowForegroundColour_list_ctrl(self, ctrl=None, i_row=0, colour=None):
+    def setListCtrlRowForegroundColour(self, listctrl=None, item=0, colour=None):
         """
-        Установить цвет текста строки в контроле списка.
+        Set the color of the string text in the list control.
 
-        :param ctrl: Объект контрола.
-        :param i_row: Индекс строки.
-        :param colour: Цвет текста строки.
-        :return: True - все прошло нормально / False - какая-то ошибка.
+        :param listctrl: wx.ListCtrl object.
+        :param item: Row index.
+        :param colour: wx.Colour object.
+        :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для установления цвета строки')
-            return False
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
         if colour is None:
             colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_CAPTIONTEXT)
 
-        if isinstance(ctrl, ic.contrib.ObjectListView.GroupListView):
-            # У списков с группировкой цвета строк устанавливаются через rowFormat
+        try:
+            colour = colour if not wxcolour_func.isDefaultColour(colour) else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
+            listctrl.SetItemTextColour(item, colour)
             return True
-        elif isinstance(ctrl, wx.ListCtrl):
-            try:
-                colour = colour if not wxfunc.isDefaultColour(colour) else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
-                # log.debug(u'Устанавливаемый цвет текста строки %s' % str(colour))
-                ctrl.SetItemTextColour(i_row, colour)
-            except:
-                log.warning(u'Не корректный индекс строки <%s>' % i_row)
-                return False
-            return True
-        else:
-            log.warning(u'Установление цвета строки контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
+        except:
+            log_func.warning(u'Set row [%s] foreground colour error' % item)
         return False
 
-    def setRowBackgroundColour_list_ctrl(self, ctrl=None, i_row=0, colour=None):
+    def setListCtrlRowBackgroundColour(self, listctrl=None, item=0, colour=None):
         """
-        Установить цвет фона строки в контроле списка.
+        Set the background color of the string in the list control.
 
-        :param ctrl: Объект контрола.
-        :param i_row: Индекс строки.
-        :param colour: Цвет фона строки.
-        :return: True - все прошло нормально / False - какая-то ошибка.
+        :param listctrl: wx.ListCtrl object.
+        :param item: Row index.
+        :param colour: wx.Colour object.
+        :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для установления цвета строки')
-            return False
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
         if colour is None:
             colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_INACTIVECAPTION)
 
-        if isinstance(ctrl, wx.ListCtrl):
-            try:
-                colour = colour if not wxfunc.isDefaultColour(colour) else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
-                # log.debug(u'Устанавливаемый цвет фона строки %s' % str(colour))
-                ctrl.SetItemBackgroundColour(i_row, colour)
-            except:
-                log.warning(u'Не корректный индекс строки <%s>' % i_row)
-                return False
+        try:
+            colour = colour if not wxcolour_func.isDefaultColour(colour) else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
+            listctrl.SetItemBackgroundColour(item, colour)
             return True
-        else:
-            log.warning(u'Установление цвета строки контрола типа <%s> не поддерживается' % ctrl.__class__.__name__)
+        except:
+            log_func.warning(u'Set row [%s] background colour error' % item)
         return False
 
-    def getListCtrlelectedRowIdx(self, obj):
+    def getListCtrlSelectedRowIdx(self, listctrl_or_event):
         """
-        Получить индекс выбранного элемента контрола.
-        Т.к. индекс выбранного элемента может возвращать объекты разных
-        типов (контролы и события) то:
-        Эта функция нужна чтобы не заботиться о названии функции
-        для каждого контрола/события.
+        Get the index of the selected control.
 
-        :param obj: Объект контрола или события.
-        :return: Индекс выбранного элемента или -1 если ничего не выбрано.
+        :param listctrl_or_event: Object of wx.ListCtrl control or event.
+        :return: The index of the selected item or -1 if nothing is selected.
         """
-        if isinstance(obj, wx.ListEvent):
-            return obj.Index
-        elif isinstance(obj, ic.contrib.ObjectListView.GroupListView):
-            selected_object = obj.GetSelectedObject()
-            try:
-                return obj.modelObjects.index(selected_object) if selected_object else -1
-            except IndexError:
-                return -1
-        elif isinstance(obj, wx.ListCtrl):
-            return obj.GetFirstSelected()
-        elif isinstance(obj, wx.dataview.DataViewListCtrl):
-            return obj.GetSelectedRow()
-        elif isinstance(obj, wx.CheckListBox) or isinstance(obj, wx.ListBox):
-            idx = obj.GetSelection()
-            return -1 if idx == wx.NOT_FOUND else idx
-
-        log.warning(u'Объект типа <%s> не поддерживается как определитель выбранного элемента контрола' % obj.__class__.__name__)
+        if isinstance(listctrl_or_event, wx.ListEvent):
+            return listctrl_or_event.Index
+        elif issubclass(listctrl_or_event, wx.ListCtrl):
+            return listctrl_or_event.GetFirstSelected()
         return -1
 
-    def selectItem_list_ctrl(self, ctrl=None, item_idx=-1,
-                             is_focus=True, deselect_prev=False):
+    def selectListCtrlItem(self, listctrl=None, item=-1,
+                           is_focus=True, deselect_prev=False):
         """
-        Выбрать элемент контрола списка по индексу.
+        Select a list control by index.
 
-        :param ctrl: Объект контрола.
-        :param is_focus: Автоматически переместить фокус на элемент?
-        :param deselect_prev: Произвести отмену выбора предыдущего выбранного элемента?
-        :return: True - выбор прошел успешно.
+        :param listctrl: wx.ListCtrl object.
+        :param item: Row index.
+        :param is_focus: Automatically move focus to an item?
+        :param deselect_prev: Unselect the previous selected item?
+        :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не указан контрол списка для выбора элемента')
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if (0 > item) or (item >= listctrl.GetItemCount()):
+            log_func.warning(u'Not valid row index [%d] ListCtrl object <%s>' % (item, listctrl.__class__.__name__))
             return False
 
-        if isinstance(ctrl, wx.ListCtrl):
-            if (0 > item_idx) or (item_idx >= ctrl.GetItemCount()):
-                log.warning(u'Не корректный индекс <%d> контрола списка <%s>' % (item_idx, ctrl.__class__.__name__))
-                return False
-            if deselect_prev:
-                ctrl.Select(self.getListCtrlelectedRowIdx(ctrl), 0)
-            ctrl.Select(item_idx)
-            if is_focus:
-                ctrl.Focus(item_idx)
-            return True
-        elif isinstance(ctrl, wx.dataview.DataViewListCtrl):
-            try:
-                ctrl.SelectRow(item_idx)
-            except:
-                log.fatal(u'Ошибка индекса <%d> контрола списка <%s>' % (item_idx, ctrl.__class__.__name__))
-                return False
-            return True
-        elif isinstance(ctrl, wx.CheckListBox) or isinstance(ctrl, wx.ListBox):
-            if (0 > item_idx) or (item_idx >= ctrl.GetCount()):
-                log.warning(u'Не корректный индекс <%d> контрола списка <%s>' % (item_idx, ctrl.__class__.__name__))
-                return False
-            if deselect_prev:
-                ctrl.SetSelection(self.getListCtrlelectedRowIdx(ctrl), 0)
-            ctrl.SetSelection(item_idx)
-            return True
-        else:
-            log.warning(u'Объект типа <%s> не поддерживается для выбора элемента контрола' % ctrl.__class__.__name__)
-        return False
+        if deselect_prev:
+            listctrl.Select(self.getListCtrlSelectedRowIdx(listctrl), 0)
+        listctrl.Select(item)
+        if is_focus:
+            listctrl.Focus(item)
+        return True
 
-    def getItemCount(self, obj):
+    def getListCtrlItemCount(self, listctrl):
         """
-        Получить количество элементов контрола.
-        Т.к.  количество элементов контрола может возвращать объекты разных
-        типов, то:
-        Эта функция нужна чтобы не заботиться о названии функции
-        для каждого контрола.
+        Get the number of controls.
 
-        :param obj: Объект контрола списка элементов.
-        :return: Количество элементов контрола списка.
+        :param listctrl: wx.ListCtrl object.
+        :return: The number of list controls.
         """
-        if isinstance(obj, wx.ListCtrl):
-            return obj.GetItemCount()
-        elif isinstance(obj, wx.dataview.DataViewListCtrl):
-            log.warning(u'ВНИМАНИЕ! В этой версии wxPython не реализована функция получения количества элементов для контрола <%s>' % obj.__class__.__name__)
-            return 0
-        elif isinstance(obj, wx.CheckListBox) or isinstance(obj, wx.ListBox):
-            return obj.GetCount()
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        log.warning(u'Объект типа <%s> не поддерживается как определитель количества элементов контрола' % obj.__class__.__name__)
-        return 0
+        return listctrl.GetItemCount()
 
-    def getLastItemIdx(self, obj):
+    def getListCtrlLastItemIdx(self, listctrl):
         """
-        Индекс последнего элемента списка.
+        The index of the last item in the list.
 
-        :param obj: Объект контрола списка элементов.
-        :return: Индекс последнего элемента контрола списка или -1 если
-            в списке нет элементов.
+        :param listctrl: wx.ListCtrl object.
+        :return: The index of the last item in the list or
+            -1 if there are no items in the list.
         """
-        item_count = self.getItemCount(obj)
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        item_count = self.getListCtrlItemCount(listctrl)
         return item_count - 1
 
-    def checkAllItems_list_ctrl(self, ctrl, check=True):
+    def checkListCtrlAllItems(self, listctrl, check=True):
         """
-        Установить галки всех элементов контрола списка.
+        Set ticks of all list control items.
 
-        :param check: Вкл./выкл.
+        :param listctrl: wx.ListCtrl object.
+        :param check: On/Off.
         :return: True/False.
         """
-        return self.checkItems_list_ctrl(ctrl, check=check)
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-    def checkItems_list_ctrl(self, ctrl, check=True, n_begin=-1, n_end=-1):
+        return self.checkListCtrlItems(listctrl, check=check)
+
+    def checkListCtrlItems(self, listctrl, check=True, begin_idx=-1, end_idx=-1):
         """
-        Установить галки элементов контрола списка.
+        Set ticks of all list control items.
 
-        :param ctrl: Объект контрола.
-        :param check: Вкл./выкл.
-        :param n_begin: Номер первого обрабатываемого элемента.
-            Если не определен, то берется самый первый элемент.
-        :param n_end: Номер последнего обрабатываемого элемента.
+        :param listctrl: wx.ListCtrl object.
+        :param check: On/Off.
+        :param begin_idx: The index of the first item to be processed.
+            If not defined, then the very first element is taken.
+        :param end_idx: The index of the last item to be processed.
         :return: True/False.
         """
-        if isinstance(ctrl, wx.ListCtrl):
-            if n_begin < 0:
-                n_begin = 0
-            if n_end < 0:
-                n_end = ctrl.GetItemCount() - 1
-            for i in range(n_begin, n_end + 1):
-                ctrl.CheckItem(i, check=check)
-            return True
-        elif isinstance(ctrl, wx.CheckListBox):
-            if n_begin < 0:
-                n_begin = 0
-            if n_end < 0:
-                n_end = ctrl.GetCount() - 1
-            for i in range(n_begin, n_end + 1):
-                ctrl.Check(i, check=check)
-            return True
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        log.warning(u'Объект типа <%s> не поддерживается вкл./выкл. элментов контрола' % ctrl.__class__.__name__)
-        return False
+        if begin_idx < 0:
+            begin_idx = 0
+        if end_idx < 0:
+            end_idx = listctrl.GetItemCount() - 1
 
-    def checkItem_list_ctrl(self, ctrl, check=True, i_row=-1):
+        for i in range(begin_idx, end_idx + 1):
+            listctrl.CheckItem(i, check=check)
+        return True
+
+    def checkListCtrlItem(self, listctrl, check=True, item=-1):
         """
-        Установить галки элементов контрола списка.
+        Set tick list control item.
 
-        :param ctrl: Объект контрола.
-        :param check: Вкл./выкл.
-        :param i_row: Индекс обрабатываемого элемента.
-            Если не определен, то берется текущий выбранный элемент.
+        :param listctrl: wx.ListCtrl object.
+        :param check: On/Off.
+        :param item: Row index.
+            If not defined, then the currently selected item is taken.
         :return: True/False.
         """
-        if isinstance(ctrl, wx.ListCtrl):
-            if i_row < 0:
-                i_row = self.getListCtrlelectedRowIdx(ctrl)
-            ctrl.CheckItem(i_row, check=check)
-            return True
-        elif isinstance(ctrl, wx.CheckListBox):
-            if i_row < 0:
-                i_row = self.getListCtrlelectedRowIdx(ctrl)
-            ctrl.Check(i_row, check=check)
-            return True
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
-        log.warning(u'Объект типа <%s> не поддерживается вкл./выкл. элментов контрола' % ctrl.__class__.__name__)
-        return False
+        if item < 0:
+            item = self.getListCtrlSelectedRowIdx(listctrl)
+        listctrl.CheckItem(item, check=check)
+        return True
 
-    def checkItems_requirement(self, ctrl=None, rows=(), requirement=None,
-                               bSet=False):
+    def checkListCtrlItemsExpression(self, listctrl=None, rows=(),
+                                     expression=None, do_set=False):
         """
-        Наити и пометить строку списка по определенному условию.
+        Find and mark a list line by a specific condition.
 
-        :param ctrl: Объект контрола.
-        :param rows: Список строк.
-        :param requirement: lambda выражение, формата:
+        :param listctrl: wx.ListCtrl object.
+        :param rows: Row list.
+        :param expression: lambda expression:
             lambda idx, row: ...
-            Которое возвращает True/False.
-            Если True, то считаем что строка удовлетворяет условию.
-            False - строка не удовлетворяет.
-        :param bSet: Произвести установку меток всех элементов
-            в соответствии с условием.
-        :return: Список индексов помеченных строк.
+            Return True/False.
+            If True, then we consider that the string satisfies the condition.
+            False - row does not satisfy.
+        :param do_set: Label all items according to the condition.
+        :return: List of indices of marked lines.
         """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
         check_list = list()
 
         if not rows:
-            # Нет строк. И не надо обрабатывать
             return check_list
 
         for i, row in enumerate(rows):
-            checked = requirement(i, row)
+            checked = expression(i, row)
             if checked:
                 check_list.append(i)
-            if bSet:
-                self.checkItems_list_ctrl(ctrl=ctrl, check=checked,
-                                          n_begin=i, n_end=i)
-            elif not bSet and checked:
-                self.checkItem_list_ctrl(ctrl=ctrl, check=True, i_row=i)
+            if do_set:
+                self.checkListCtrlItems(listctrl=listctrl, check=checked,
+                                        begin_idx=i, end_idx=i)
+            elif not do_set and checked:
+                self.checkListCtrlItem(listctrl=listctrl, check=True, item=i)
         return check_list
 
-    def getCheckedItems_list_ctrl(self, ctrl, check_selected=False):
+    def getListCtrlCheckedItems(self, listctrl, check_selected=False):
         """
-        Получить список индексов помеченных/отмеченных элементов контрола списка.
+        Get the list of indices of the marked list control items.
 
-        :param ctrl: Объект контрола списка элементов.
-        :param check_selected: Считать выделенный элемент списка как помеченный?
-            Если да, то выделенный элемент считается помеченным только когда
-            ни один другой элемент не помечен.
-        :return: Список индексов помеченных элементов контрола списка.
-            Либо None в случае ошибки.
+        :param listctrl: wx.ListCtrl object.
+        :param check_selected: Treat selected list item as marked?
+            If yes, then the selected item is considered marked only when
+            no other item is marked.
+        :return: A list of indices of tagged list controls or None if error.
         """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
         try:
-            if isinstance(ctrl, wx.ListCtrl):
-                indexes = [i for i in range(ctrl.GetItemCount()) if ctrl.IsChecked(i)]
-            elif isinstance(ctrl, wx.CheckListBox):
-                indexes = [i for i in range(ctrl.GetCount()) if ctrl.IsChecked(i)]
-            else:
-                log.warning(
-                    u'Объект типа <%s> не поддерживается вкл./выкл. элментов контрола' % ctrl.__class__.__name__)
-                return None
+            indexes = [i for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
 
             if not indexes and check_selected:
-                selected = self.getListCtrlelectedRowIdx(ctrl)
+                selected = self.getListCtrlSelectedRowIdx(listctrl)
                 if selected >= 0:
                     indexes = [selected]
             return indexes
         except:
-            log.fatal(u'Ошибка определения индексов отмеченных элементов контрола <%s>' % ctrl.__class__.__name__)
+            log_func.fatal(u'Error in defining indices of marked controls <%s>' % listctrl.__class__.__name__)
         return None
 
-    def getCheckedItemRecords_list_ctrl(self, ctrl, records, check_selected=False):
+    def getListCtrlCheckedItemRecords(self, listctrl, records, check_selected=False):
         """
-        Получить список помеченных/отмеченных записей элементов контрола списка.
+        Get a list of checked entries for list control items.
 
-        :param ctrl: Объект контрола списка элементов.
-        :param records: Список записей.
-        :param check_selected: Считать выделенный элемент списка как помеченный?
-            Если да, то выделенный элемент считается помеченным только когда
-            ни один другой элемент не помечен.
-        :return: Список записей помеченных элементов контрола списка.
-            Либо None в случае ошибки.
+        :param listctrl: wx.ListCtrl object.
+        :param records: Record list.
+        :param check_selected: Treat selected list item as marked?
+            If yes, then the selected item is considered marked only when
+            no other item is marked.
+        :return: List of records of labeled list lontrols or None if error.
         """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
         try:
-            if isinstance(ctrl, wx.ListCtrl):
-                check_records = [records[i] for i in range(ctrl.GetItemCount()) if ctrl.IsChecked(i)]
-            elif isinstance(ctrl, wx.CheckListBox):
-                check_records = [records[i] for i in range(ctrl.GetCount()) if ctrl.IsChecked(i)]
-            else:
-                log.warning(
-                    u'Объект типа <%s> не поддерживается вкл./выкл. элментов контрола' % ctrl.__class__.__name__)
-                return None
+            check_records = [records[i] for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
 
             if not check_records and check_selected:
-                selected = self.getListCtrlelectedRowIdx(ctrl)
+                selected = self.getListCtrlSelectedRowIdx(listctrl)
                 if selected >= 0:
-                    check_records = [self.records[selected]]
+                    check_records = [records[selected]]
             return check_records
         except:
-            log.fatal(u'Ошибка определения отмеченных записей контрола <%s>' % ctrl.__class__.__name__)
+            log_func.fatal(u'Error determining marked control records <%s>' % listctrl.__class__.__name__)
         return None
 
-    def defaultEvenRowsBGColour(self):
+    def setListCtrlRowsBackgroundColour(self, listctrl,
+                                        even_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                                        odd_background_colour=wxcolour_func.DEFAULT_COLOUR):
         """
-        Цвет фона четных строк по умолчанию.
-        """
-        colour = tuple(wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX))[:-1]
-        return wx.Colour(*colour)
+        Just colorize the background of even and not even lines.
 
-    def defaultOddRowsBGColour(self):
-        """
-        Цвет фона не четных строк по умолчанию.
-        """
-        return wxfunc.getTintColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX))
-
-    def setRowsBackgroundColour(self, ctrl, evenBackgroundColour=wxfunc.DEFAULT_COLOUR,
-                                oddBackgroundColour=wxfunc.DEFAULT_COLOUR):
-        """
-        Просто раскрасить фон четных и не четных строк.
-
-        :param ctrl: Объект контрола wx.ListCtrl.
-        :param evenBackgroundColour: Цвет фона четных строк.
-        :param oddBackgroundColour: Цвет фона нечетных строк.
-        :return: True - все прошло нормально / False - какая-то ошибка.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для установки цвета')
-            return False
-
-        for row_idx in range(ctrl.GetItemCount()):
-            if evenBackgroundColour and not (row_idx & 1):
-                # Добавляемая строка четная?
-                colour = self.defaultEvenRowsBGColour() if wxfunc.isDefaultColour(evenBackgroundColour) else evenBackgroundColour
-                log.debug(u'Установка цвета фона строки %s' % str(colour))
-                ctrl.SetItemBackgroundColour(row_idx, colour)
-            elif oddBackgroundColour and (row_idx & 1):
-                # Добавляемая строка не четная?
-                colour = self.defaultOddRowsBGColour() if wxfunc.isDefaultColour(oddBackgroundColour) else oddBackgroundColour
-                log.debug(u'Установка цвета фона строки %s' % str(colour))
-                ctrl.SetItemBackgroundColour(row_idx, colour)
-
-    def findRowIdx_requirement(self, ctrl=None, rows=(), requirement=None, auto_select=False):
-        """
-        Наити индекс строки списка по определенному условию.
-
-        :param ctrl: Объект контрола.
-        :param rows: Список строк.
-        :param requirement: lambda выражение, формата:
-            lambda idx, row: ...
-            Которое возвращает True/False.
-            Если True, то считаем что строка удовлетворяет условию.
-            False - строка не удовлетворяет.
-        :param auto_select: Произвести автоматическое выделение строки в контроле
-        :return: индекс найденной строки или None если строка не найдена.
-        """
-        if ctrl is None:
-            log.warning(u'Не определен контрол для поиска строки')
-            return False
-        if requirement is None:
-            log.warning(u'Не определено условие для поиска строки')
-            return False
-
-        for i, row in enumerate(rows):
-            is_found = requirement(i, row)
-            if is_found:
-                if auto_select:
-                    self.selectItem_list_ctrl(ctrl, item_idx=i, is_focus=True, deselect_prev=True)
-                return i
-        return True
-
-    def selectRow_requirement(self, ctrl=None, rows=(), requirement=None):
-        """
-        Наити и выделить индекс строки списка по определенному условию.
-
-        :param ctrl: Объект контрола.
-        :param rows: Список строк.
-        :param requirement: lambda выражение, формата:
-            lambda idx, row: ...
-            Которое возвращает True/False.
-            Если True, то считаем что строка удовлетворяет условию.
-            False - строка не удовлетворяет.
-        :return: индекс найденной строки или None если строка не найдена.
-        """
-        return self.findRowIdx_requirement(ctrl=ctrl, rows=rows, requirement=requirement)
-
-    def setItemImage_list_ctrl(self, ctrl=None, item=None, image=None):
-        """
-        Установить картинку элемента списка.
-
-        :param ctrl: Объект контрола wx.ListCtrl.
-        :param item: Элемент списка.
-            Элемент списка может задаваться как индексом так и объектом wx.ListItem.
-            Если None, то имеется текущий выбранный элемент.
-        :param image: Объект картинки wx.Bitmap.
-            Если не определен, то картинка удаляется.
+        :param listctrl: wx.ListCtrl object.
+        :param even_background_colour: Background color of even lines.
+        :param odd_background_colour: Background color of odd lines.
         :return: True/False.
         """
-        if ctrl is None:
-            log.warning(u'Не определен контрол wx.ListCtrl')
-            return None
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
 
+        for item in range(listctrl.GetItemCount()):
+            if even_background_colour and not (item & 1):
+                colour = wxcolour_func.getDefaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
+                listctrl.SetItemBackgroundColour(item, colour)
+            elif odd_background_colour and (item & 1):
+                colour = wxcolour_func.getDefaultOddRowsBGColour() if wxcolour_func.isDefaultColour(odd_background_colour) else odd_background_colour
+                listctrl.SetItemBackgroundColour(item, colour)
+
+    def findListCtrlRowIdxExpression(self, listctrl=None, rows=(),
+                                     expression=None, auto_select=False):
+        """
+        Find the index of a list string by a specific condition.
+
+        :param listctrl: wx.ListCtrl object.
+        :param rows: Row list.
+        :param expression: lambda expression:
+            lambda idx, row: ...
+            Return True/False.
+            If True, then we consider that the string satisfies the condition.
+            False - row does not satisfy.
+        :param auto_select: Automatically select a line in the control.
+        :return: The index of the row found, or None if the row is not found.
+        """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if expression is None:
+            log_func.warning(u'Undefined condition for string search')
+            return False
+
+        try:
+            for i, row in enumerate(rows):
+                is_found = expression(i, row)
+                if is_found:
+                    if auto_select:
+                        self.selectListCtrlItem(listctrl, item=i, is_focus=True, deselect_prev=True)
+                    return i
+            return True
+        except:
+            log_func.fatal(u'Find the index of a list string by a specific condition error')
+        return False
+
+    def selectListCtrlRowExpression(self, listctrl=None, rows=(), expression=None):
+        """
+        Find and highlight the list row index by a specific condition.
+
+        :param listctrl: wx.ListCtrl object.
+        :param rows: Row list.
+        :param expression: lambda expression:
+            lambda idx, row: ...
+            Return True/False.
+            If True, then we consider that the string satisfies the condition.
+            False - row does not satisfy.
+        :return: The index of the row found, or None if the row is not found.
+        """
+        return self.findListCtrlRowIdxExpression(listctrl=listctrl, rows=rows, expression=expression)
+
+    def setListCtrlItemImage(self, listctrl=None, item=None, image=None):
+        """
+        Set a icon of a list item.
+
+        :param listctrl: wx.ListCtrl object.
+        :param item: List item.
+            A list item can be specified by either an index or a wx.ListItem object.
+            If None, then there is the currently selected item.
+        :param image: Icon name.
+        :return: True/False.
+        """
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        item_idx = -1
         if item is None:
-            item_idx = self.getListCtrlelectedRowIdx(ctrl)
-            item = ctrl.GetItem(item_idx)
+            item_idx = self.getListCtrlSelectedRowIdx(listctrl)
+            item = listctrl.GetItem(item_idx)
         elif isinstance(item, wx.ListItem):
             item_idx = item.GetId()
         elif isinstance(item, int):
             item_idx = item
-            item = ctrl.GetItem(item_idx)
+            item = listctrl.GetItem(item_idx)
 
         if image is None:
-            ctrl.SetItemImage(item, None)
+            listctrl.SetItemImage(item, None)
         else:
             if item_idx >= 0:
+                img_idx = None
                 try:
-                    img_idx = self.getImageIndex_list_ctrl(ctrl=ctrl, image=image, auto_add=True)
-                    # log.debug(u'Индекс образа в списке [%d]' % img_idx)
-                    ctrl.SetItemImage(item_idx, img_idx, selImage=wx.TreeItemIcon_Normal)
+                    img_idx = self.getImageLibImageBmp(image)
+                    listctrl.SetItemImage(item_idx, img_idx, selImage=wx.TreeItemIcon_Normal)
                 except:
-                    log.fatal(u'Ошибка установки образа [%d] элемента списка <%s>' % (img_idx, item))
+                    log_func.fatal(u'Icon set error [%d] for item <%s>' % (img_idx, item))
             else:
-                log.warning(u'Не корректный индекс строки <%s>' % str(item_idx))
+                log_func.error(u'Invalid row index [%s]' % str(item_idx))
         return True
 
-    def clear_list_ctrl(self, ctrl=None):
+    def clearListCtrl(self, listctrl=None):
         """
-        Очистка контрола списка.
+        Clearing the list control.
 
-        :param ctrl: Объект контрола списка.
+        :param listctrl: wx.ListCtrl object.
         :return: True/False.
         """
-        try:
-            if isinstance(ctrl, wx.ListCtrl):
-                ctrl.DeleteAllItems()
-                return True
-            elif isinstance(ctrl, wx.CheckListBox):
-                ctrl.Clear()
-                return True
-            elif isinstance(ctrl, wx.dataview.DataViewListCtrl):
-                ctrl.DeleteAllItems()
-                return True
-            else:
-                log.warning(u'Не поддерживается очистка контрола списка для <%s>' % self.__class__.__name__)
-        except:
-            log.fatal(u'Ошибка очистки контрола списка')
-        return False
+        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+
+        listctrl.DeleteAllItems()
+        return True

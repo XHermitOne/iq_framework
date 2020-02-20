@@ -9,9 +9,12 @@ import os.path
 
 from . import txtfile_func
 from . import log_func
+from . import file_func
 
 __version__ = (0, 0, 0, 1)
 
+
+PYTHON_FILE_EXT = '.py'
 
 INIT_PY_FILENAME = '__init__.py'
 
@@ -46,7 +49,7 @@ def createInitModule(package_path, init_file_body=None):
         try:
             os.makedirs(package_path)
         except OSError:
-            log_func.fatal(u'Create directory <%s> error' % package_path)
+            log_func.fatal(u'Error create directory <%s>' % package_path)
             return False
 
     init_py_filename = os.path.join(package_path, INIT_PY_FILENAME)
@@ -61,3 +64,38 @@ def createPackage(package_path):
     :return: True/False.
     """
     return createInitModule(package_path)
+
+
+def isPythonFile(filename):
+    """
+    Check if the file is python module.
+
+    :param filename: Checked file path.
+    :return: True/False.
+    """
+    return file_func.isFilenameExt(filename, PYTHON_FILE_EXT)
+
+
+def isPyFileSignature(py_filename, signature):
+    """
+    Is there a signature in the python file?
+
+    :param py_filename: Python file path.
+    :param signature: Signature text.
+    :return: True/False.
+    """
+    if not isPythonFile(py_filename):
+        log_func.warning(u'File <%s> is not python module' % py_filename)
+        return False
+
+    py_file = None
+    try:
+        py_file = open(py_filename, 'rt')
+        text = py_file.read()
+        py_file.close()
+        return text.find(signature) != -1
+    except:
+        log_func.fatal(u'Error searching signature <%s> in python file <%s>.' % (signature, py_filename))
+        if py_file:
+            py_file.close()
+    return False

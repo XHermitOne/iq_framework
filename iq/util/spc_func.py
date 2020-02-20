@@ -92,7 +92,7 @@ def fillResourceBySpc(resource=None, spc=None):
                 else:
                     resource[attr_name] = spc[attr_name]
     except:
-        log_func.fatal('Add resource with specification attributes error')
+        log_func.fatal('Error add resource with specification attributes')
 
     return resource
 
@@ -130,7 +130,7 @@ def clearResourceFromSpc(resource=None):
                     dst_resource[attr_name].append(clearResourceFromSpc(resource=child_resource))
         return dst_resource
     except:
-        log_func.fatal(u'Clear resource from specification attributes error')
+        log_func.fatal(u'Error clear resource from specification attributes')
     return None
 
 
@@ -144,7 +144,7 @@ def getResourceRootComponentType(resource):
     if isinstance(resource, dict):
         return resource.get('type', None)
     else:
-        log_func.error(u'Resource type error')
+        log_func.error(u'Error resource type')
     return None
 
 
