@@ -5,7 +5,7 @@
 Global functions module.
 """
 
-from .. import config
+from .. import global_data
 
 __version__ = (0, 0, 0, 1)
 
@@ -14,49 +14,65 @@ def isRuntimeMode():
     """
     Is GUI runtime mode?
     """
-    return config.get_cfg_param('RUNTIME_MODE')
+    return global_data.getGlobal('RUNTIME_MODE')
 
 
 def setRuntimeMode(runtime_mode=True):
     """
     Set GUI runtime mode.
     """
-    config.set_cfg_param('RUNTIME_MODE', runtime_mode)
+    global_data.setGlobal('RUNTIME_MODE', runtime_mode)
 
 
 def isEditorMode():
     """
     Is editor mode?
     """
-    return not config.get_cfg_param('RUNTIME_MODE')
+    return not global_data.getGlobal('RUNTIME_MODE')
 
 
 def isDebugMode():
     """
     Is debug mode?
     """
-    return config.get_cfg_param('DEBUG_MODE')
+    return global_data.getGlobal('DEBUG_MODE')
 
 
 def setDebugMode(debug_mode=True):
     """
     Set debug mode.
     """
-    config.set_cfg_param('DEBUG_MODE', debug_mode)
+    global_data.setGlobal('DEBUG_MODE', debug_mode)
 
 
 def isLogMode():
     """
     Is logging mode?
     """
-    return config.get_cfg_param('LOG_MODE')
+    return global_data.getGlobal('LOG_MODE')
 
 
 def setLogMode(log_mode=True):
     """
     Set logging mode.
     """
-    config.set_cfg_param('LOG_MODE', log_mode)
+    global_data.setGlobal('LOG_MODE', log_mode)
+
+
+def getLogFilename():
+    """
+    Get log filename.
+    """
+    return global_data.getGlobal('LOG_FILENAME')
+
+
+def setLogFilename(log_filename):
+    """
+    Set log filename.
+
+    :param log_filename: Log file name.
+    """
+    global_data.setGlobal('LOG_FILENAME', log_filename)
 
 
 def getKernel():
@@ -65,14 +81,14 @@ def getKernel():
 
     :return: Kernel object.
     """
-    return config.get_cfg_param('KERNEL')
+    return global_data.getGlobal('KERNEL')
 
 
 def setProjectName(project_name=None):
     """
     Set project_name name.
     """
-    config.set_cfg_param('PROJECT_NAME', project_name)
+    global_data.setGlobal('PROJECT_NAME', project_name)
 
 
 def getProjectName():
@@ -81,14 +97,14 @@ def getProjectName():
 
     :return: Project name.
     """
-    return config.get_cfg_param('PROJECT_NAME')
+    return global_data.getGlobal('PROJECT_NAME')
 
 
 def getEngineType():
     """
     Get engine type (wx, qt, cui and etc).
     """
-    return config.get_cfg_param('ENGINE_TYPE')
+    return global_data.getGlobal('ENGINE_TYPE')
 
 
 def setEngineType(engine_type):
@@ -97,7 +113,7 @@ def setEngineType(engine_type):
 
     :param engine_type: Engine type (wx, qt, cui and etc).
     """
-    return config.set_cfg_param('ENGINE_TYPE', engine_type)
+    return global_data.setGlobal('ENGINE_TYPE', engine_type)
 
 
 def isWXEngine():
@@ -106,7 +122,7 @@ def isWXEngine():
 
     :return: True/False.
     """
-    return config.get_cfg_param('ENGINE_TYPE') == config.WX_ENGINE_TYPE
+    return global_data.getGlobal('ENGINE_TYPE') == global_data.WX_ENGINE_TYPE
 
 
 def isQTEngine():
@@ -115,7 +131,7 @@ def isQTEngine():
 
     :return: True/False.
     """
-    return config.get_cfg_param('ENGINE_TYPE') == config.QT_ENGINE_TYPE
+    return global_data.getGlobal('ENGINE_TYPE') == global_data.QT_ENGINE_TYPE
 
 
 def isCUIEngine():
@@ -124,7 +140,7 @@ def isCUIEngine():
 
     :return: True/False.
     """
-    return config.get_cfg_param('ENGINE_TYPE') == config.CUI_ENGINE_TYPE
+    return global_data.getGlobal('ENGINE_TYPE') == global_data.CUI_ENGINE_TYPE
 
 
 def getProject():
@@ -133,7 +149,7 @@ def getProject():
 
     :return: Project object.
     """
-    return config.get_cfg_param('PROJECT')
+    return global_data.getGlobal('PROJECT')
 
 
 def getUser():
@@ -142,4 +158,13 @@ def getUser():
 
     :return: User object.
     """
-    return config.get_cfg_param('USER')
+    return global_data.getGlobal('USER')
+
+
+def getDefaultShellEncoding():
+    """
+    Determine the current encoding for text output.
+
+    :return: Actual text encoding.
+    """
+    return global_data.getGlobal('DEFAULT_SHELL_ENCODING')

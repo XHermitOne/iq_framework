@@ -8,7 +8,7 @@ Kernel - general dispatcher of all program objects.
 import sys
 import os.path
 
-from .. import config
+from .. import global_data
 from ..util import global_func
 from ..util import log_func
 from ..util import res_func
@@ -83,7 +83,7 @@ class iqKernel(object):
             log_func.debug(u'Project passport <%s>' % prj_psp.getAsStr())
             prj = self.createObject(psp=prj_psp, parent=self, register=True)
 
-            config.set_cfg_param('PROJECT', prj)
+            global_data.setGlobal('PROJECT', prj)
             return prj.start(username, password)
         except:
             log_func.fatal(u'Start programm error')
@@ -221,22 +221,22 @@ def initSettings():
     """
     Project settings saved to file INI.
     """
-    if config.get_cfg_param('SETTINGS') is None:
+    if global_data.getGlobal('SETTINGS') is None:
         from ..engine import settings_access
-        config.set_cfg_param('SETTINGS',
-                             settings_access.iqSettingsDotUse())
-    return config.get_cfg_param('SETTINGS')
+        global_data.setGlobal('SETTINGS',
+                              settings_access.iqSettingsDotUse())
+    return global_data.getGlobal('SETTINGS')
 
 
 def initObjects():
     """
     Access to project objects.
     """
-    if config.get_cfg_param('OBJECTS') is None:
+    if global_data.getGlobal('OBJECTS') is None:
         from ..engine import objects_access
-        config.set_cfg_param('OBJECTS',
-                             objects_access.iqObjectDotUse())
-    return config.get_cfg_param('OBJECTS')
+        global_data.setGlobal('OBJECTS',
+                              objects_access.iqObjectDotUse())
+    return global_data.getGlobal('OBJECTS')
 
 
 def createKernel():
@@ -246,7 +246,7 @@ def createKernel():
     :return: Kernel object.
     """
     kernel = iqKernel()
-    config.set_cfg_param('KERNEL', kernel)
+    global_data.setGlobal('KERNEL', kernel)
     log_func.info(u'Create KERNEL object')
 
     initSettings()

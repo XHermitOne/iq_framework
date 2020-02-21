@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Configuration file iqframework.
+Global variables and objects iqFramework.
 """
 
+import sys
+import locale
 import os.path
 import datetime
 
@@ -21,6 +23,9 @@ PROJECT_NAME = None
 PROFILE_DIRNAME = '.iq'
 
 DEFAULT_ENCODING = 'utf-8'
+
+# Default shell encoding
+DEFAULT_SHELL_ENCODING = sys.stdout.encoding if sys.platform.startswith('win') else locale.getpreferredencoding()
 
 # Log file name
 LOG_FILENAME = os.path.join(os.environ.get('HOME',
@@ -63,9 +68,9 @@ FRAMEWORK_LOGO_TXT = u'''
 '''
 
 
-def get_cfg_param(name):
+def getGlobal(name):
     """
-    Read the config parameter value.
+    Read the global parameter value.
 
     :type name: C{string}
     :param name: Parameter name.
@@ -73,9 +78,9 @@ def get_cfg_param(name):
     return globals()[name]
 
 
-def set_cfg_param(name, value):
+def setGlobal(name, value):
     """
-    Set config parameter value.
+    Set global parameter value.
 
     :type name: C{string}
     :param name: Parameter name.

@@ -18,7 +18,7 @@ from ..util import res_func
 from ..passport import passport
 from .. import user
 from .. import role
-from .. import config
+from .. import global_data
 
 from . import spc
 
@@ -182,9 +182,19 @@ class iqProjectManager(object):
         log_func.debug(u'User passport <%s>' % user_psp.getAsStr())
         user_obj = self.getKernel().createObject(psp=user_psp, parent=self, register=True)
 
-        config.set_cfg_param('USER', user_obj)
-        result = user_obj.login(password)
-        config.set_cfg_param('USER', user_obj if result else None)
+        global_data.setGlobal('USER', user_obj)
+
+        # Login loop
+        result = False
+        for i in range(user.DEFAULT_LOGIN_LOOP_COUNT):
+            result = user_obj.login(password)
+            if result:
+                break
+        if not result:
+            # If login failed then exit
+            return result
+
+        global_data.setGlobal('USER', user_obj if result else None)
         if result:
             user_obj.run()
         return result
@@ -195,7 +205,7 @@ class iqProjectManager(object):
 
         :return: True/False
         """
-        user_obj = config.get_cfg_param('USER')
+        user_obj = global_data.getGlobal('USER')
         if user_obj:
             return user_obj.logout()
         return False

@@ -28,7 +28,7 @@ Launch parameters:
 import sys
 import getopt
 
-from iq import config
+from iq import global_data
 from iq.util import log_func
 from iq.util import global_func
 from iq import editor
@@ -51,13 +51,13 @@ def main(*argv):
                                        'res_filename='])
     except getopt.error as msg:
         log_func.error(str(msg), is_force_print=True)
-        log_func.print_color_txt(config.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
-        log_func.print_color_txt(__doc__, color=log_func.GREEN_COLOR_TEXT)
+        log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
+        log_func.printColourText(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(2)
 
     mode = None
     runtime_mode = False
-    engine = config.DEFAULT_ENGINE_TYPE
+    engine = global_data.DEFAULT_ENGINE_TYPE
     project = None
     username = None
     password = None
@@ -65,20 +65,19 @@ def main(*argv):
 
     for option, arg in options:
         if option in ('-h', '--help', '-?'):
-            log_func.print_color_txt(config.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
-            log_func.print_color_txt(__doc__, color=log_func.GREEN_COLOR_TEXT)
+            log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
+            log_func.printColourText(__doc__, color=log_func.GREEN_COLOR_TEXT)
             sys.exit(0)
         elif option in ('-v', '--version'):
-            str_version = 'iqFramework %s' % '.'.join([str(sign) for sign in config.VERSION])
-            log_func.print_color_txt(config.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
-            log_func.print_color_txt(str_version, color=log_func.GREEN_COLOR_TEXT)
+            str_version = 'iqFramework %s' % '.'.join([str(sign) for sign in global_data.VERSION])
+            log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
+            log_func.printColourText(str_version, color=log_func.GREEN_COLOR_TEXT)
             sys.exit(0)
         elif option in ('-d', '--debug'):
             global_func.setDebugMode()
-            log_func.init(config)
         elif option in ('-l', '--log'):
             global_func.setLogMode()
-            log_func.init(config)
+            log_func.init()
         elif option in ('--mode',):
             mode = arg.lower()
             runtime_mode = mode == iq.RUNTIME_MODE_STATE

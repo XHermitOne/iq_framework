@@ -11,7 +11,7 @@ from ..object import object_spc
 from ..util import global_func
 from ..util import log_func
 from ..editor import property_editor_id
-from .. import config
+from .. import global_data
 
 __version__ = (0, 0, 0, 1)
 
@@ -56,7 +56,7 @@ USER_SPC = {
         },
         'engine': {
             'editor': property_editor_id.CHOICE_EDITOR,
-            'choices': config.ENGINE_TYPES,
+            'choices': global_data.ENGINE_TYPES,
         },
         'do_main': property_editor_id.METHOD_EDITOR,
     },

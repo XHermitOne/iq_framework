@@ -7,10 +7,11 @@ File functions module.
 
 import os
 import os.path
+import platform
 
 from . import log_func
 from . import global_func
-from .. import config
+from .. import global_data
 
 __version__ = (0, 0, 0, 1)
 
@@ -124,7 +125,7 @@ def getProfilePath():
     """
     Get profile directory path.
     """
-    return config.get_cfg_param('PROFILE_PATH')
+    return global_data.getGlobal('PROFILE_PATH')
 
 
 def getCurDirPrj(path=None):
@@ -177,3 +178,18 @@ def setFilenameExt(filename, ext):
     :return: New filename with new extension.
     """
     return os.path.splitext(filename)[0] + ext
+
+
+def getHomePath():
+    """
+    Home directory path.
+    """
+    os_platform = platform.uname()[0].lower()
+    if os_platform == 'windows':
+        home_path = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH']
+    elif os_platform == 'linux':
+        home_path = os.environ['HOME']
+    else:
+        log_func.error(u'OS <%s> not support' % os_platform)
+        return None
+    return os.path.normpath(home_path)

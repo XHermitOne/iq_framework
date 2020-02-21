@@ -5,7 +5,7 @@
 Main engine package.
 """
 
-from .config import *
+from .global_data import *
 from .util.global_func import *
 
 from iq.kernel.kernel import createKernel

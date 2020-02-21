@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Logging features.
+Logging functions.
 """
 
 import sys
@@ -12,12 +12,10 @@ import os.path
 import tempfile
 import stat
 import traceback
-import locale
+
+from . import global_func
 
 __version__ = (0, 0, 0, 1)
-
-# Default shell encoding
-DEFAULT_ENCODING = sys.stdout.encoding if sys.platform.startswith('win') else locale.getpreferredencoding()
 
 # Shell text colors
 RED_COLOR_TEXT = '\x1b[31;1m'       # red
@@ -34,7 +32,7 @@ NOT_INIT_LOG_SYS_MSG = u'Not Initialized Logging System'
 LOG_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 
 
-def print_color_txt(text, color=NORMAL_COLOR_TEXT):
+def printColourText(text, color=NORMAL_COLOR_TEXT):
     if sys.platform.startswith('win'):
         # Color coded for Windows systems disabled
         txt = text
@@ -44,73 +42,21 @@ def print_color_txt(text, color=NORMAL_COLOR_TEXT):
     print(txt)        
 
 
-# Configuration module
-CONFIG = None
-
-
-def get_default_encoding():
-    """
-    Determine the current encoding for text output.
-    :return: Actual text encoding.
-    """
-    global CONFIG
-    if CONFIG is not None and hasattr(CONFIG, 'DEFAULT_ENCODING'):
-        # The priority is the explicitly specified encoding in the configuration file
-        return CONFIG.DEFAULT_ENCODING
-    return DEFAULT_ENCODING
-
-
-def get_debug_mode():
-    """
-    Determine the current debug mode.
-    The default mode is off.
-    :return: True - debug mode enabled / False - debug mode off.
-    """
-    global CONFIG
-    if CONFIG is not None and hasattr(CONFIG, 'DEBUG_MODE'):
-        # The priority is explicitly specified parameter in the configuration file.
-        return CONFIG.DEBUG_MODE
-    # The default mode is off
-    return False
-
-
-def get_log_mode():
-    """
-    Determine the current logging mode.
-    The default mode is off.
-    :return: True - logging mode enabled / False - logging mode is off.
-    """
-    global CONFIG
-    if CONFIG is not None and hasattr(CONFIG, 'LOG_MODE'):
-        # The priority is explicitly specified parameter in the configuration file.
-        return CONFIG.LOG_MODE
-    # The default mode is off.
-    return False
-
-
-def get_log_filename():
-    """
-    The name of the log file.
-    :return: The name of the log file.
-    """
-    global CONFIG
-    return CONFIG.LOG_FILENAME if CONFIG and hasattr(CONFIG, 'LOG_FILENAME') else None
-
-
-def init(config=None, log_filename=None):
+def init(log_filename=None):
     """
     Initializing the log file.
-    :param config: Configuration module.
+
     :param log_filename: Log file name.
     """
-    global CONFIG
-    CONFIG = config
-    
-    if not get_log_mode():
+    if not global_func.isLogMode():
         return
     
     if log_filename is None:
-        log_filename = CONFIG.LOG_FILENAME if hasattr(CONFIG, 'LOG_FILENAME') else tempfile.mktemp()
+        log_filename = global_func.getLogFilename()
+        if not log_filename:
+            log_filename = tempfile.mktemp()
+    else:
+        global_func.setLogFilename(log_filename)
         
     # Create a log folder if it is missing
     log_dirname = os.path.normpath(os.path.dirname(log_filename))
@@ -130,95 +76,74 @@ def init(config=None, log_filename=None):
                  stat.S_IWGRP | stat.S_IRGRP |
                  stat.S_IWOTH | stat.S_IROTH)
 
-    if get_debug_mode():
-        print_color_txt('INFO. Initializing the log file <%s>' % log_filename, GREEN_COLOR_TEXT)
+    if global_func.isDebugMode():
+        printColourText('INFO. Initializing the log file <%s>' % log_filename, GREEN_COLOR_TEXT)
 
 
 def debug(message=u'', is_force_print=False, is_force_log=False):
     """
     Display debug information.
+
     :param message: Text message.
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
-    global CONFIG
-    
-    if CONFIG:
-        if get_debug_mode() or is_force_print:
-            print_color_txt('DEBUG. ' + message, BLUE_COLOR_TEXT)
-        if get_log_mode() or is_force_log:
-            logging.debug(message)
-    else:
-        print_color_txt(NOT_INIT_LOG_SYS_MSG, PURPLE_COLOR_TEXT)
-        print_color_txt('DEBUG. ' + message, BLUE_COLOR_TEXT)
+    if global_func.isDebugMode() or is_force_print:
+        printColourText('DEBUG. ' + message, BLUE_COLOR_TEXT)
+    if global_func.isLogMode() or is_force_log:
+        logging.debug(message)
 
 
 def info(message=u'', is_force_print=False, is_force_log=False):
     """
     Print information.
+
     :param message: Text message.
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
-    global CONFIG
-    
-    if CONFIG:
-        if get_debug_mode() or is_force_print:
-            print_color_txt('INFO. ' + message, GREEN_COLOR_TEXT)
-        if get_log_mode() or is_force_log:
-            logging.info(message)
-    else:
-        print_color_txt(NOT_INIT_LOG_SYS_MSG, PURPLE_COLOR_TEXT)
-        print_color_txt('INFO. ' + message, GREEN_COLOR_TEXT)
+    if global_func.isDebugMode() or is_force_print:
+        printColourText('INFO. ' + message, GREEN_COLOR_TEXT)
+    if global_func.isLogMode() or is_force_log:
+        logging.info(message)
 
 
 def error(message=u'', is_force_print=False, is_force_log=False):
     """
     Print error message.
+
     :param message: Text message.
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
-    global CONFIG
-    
-    if CONFIG:
-        if get_debug_mode() or is_force_print:
-            print_color_txt('ERROR. ' + message, RED_COLOR_TEXT)
-        if get_log_mode() or is_force_log:
-            logging.error(message)
-    else:
-        print_color_txt(NOT_INIT_LOG_SYS_MSG, PURPLE_COLOR_TEXT)
-        print_color_txt('ERROR. ' + message, RED_COLOR_TEXT)
+    if global_func.isDebugMode() or is_force_print:
+        printColourText('ERROR. ' + message, RED_COLOR_TEXT)
+    if global_func.isLogMode() or is_force_log:
+        logging.error(message)
 
 
 def warning(message=u'', is_force_print=False, is_force_log=False):
     """
     Print warning message.
+
     :param message: Text message.
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
-    global CONFIG
-    
-    if CONFIG:
-        if get_debug_mode() or is_force_print:
-            print_color_txt('WARNING. ' + message, YELLOW_COLOR_TEXT)
-        if get_log_mode() or is_force_log:
-            logging.warning(message)
-    else:
-        print_color_txt(NOT_INIT_LOG_SYS_MSG, PURPLE_COLOR_TEXT)
-        print_color_txt('WARNING. ' + message, YELLOW_COLOR_TEXT)
+    if global_func.isDebugMode() or is_force_print:
+        printColourText('WARNING. ' + message, YELLOW_COLOR_TEXT)
+    if global_func.isLogMode() or is_force_log:
+        logging.warning(message)
 
 
 def fatal(message=u'', is_force_print=False, is_force_log=False):
     """
     Print critical error message.
+
     :param message: Text message.
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
-    global CONFIG
-
     trace_txt = traceback.format_exc()
 
     try:
@@ -230,30 +155,21 @@ def fatal(message=u'', is_force_print=False, is_force_log=False):
             trace_txt = str(trace_txt)
         msg = message + os.linesep + trace_txt
 
-    if CONFIG:
-        if get_debug_mode() or is_force_print:
-            print_color_txt('FATAL. '+msg, RED_COLOR_TEXT)
-        if get_log_mode() or is_force_log:
-            logging.fatal(msg)
-    else:
-        print_color_txt(NOT_INIT_LOG_SYS_MSG, PURPLE_COLOR_TEXT)
-        print_color_txt('FATAL. ' + msg, RED_COLOR_TEXT)
+    if global_func.isDebugMode() or is_force_print:
+        printColourText('FATAL. ' + msg, RED_COLOR_TEXT)
+    if global_func.isLogMode() or is_force_log:
+        logging.fatal(msg)
 
 
 def service(message=u'', is_force_print=False, is_force_log=False):
     """
     Print service message.
+
     :param message: Text message.
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
-    global CONFIG
-
-    if CONFIG:
-        if get_debug_mode() or is_force_print:
-            print_color_txt('SERVICE. ' + message, CYAN_COLOR_TEXT)
-        if get_log_mode() or is_force_log:
-            logging.debug('SERVICE. ' + message)
-    else:
-        print_color_txt(NOT_INIT_LOG_SYS_MSG, PURPLE_COLOR_TEXT)
-        print_color_txt('SERVICE. ' + message, CYAN_COLOR_TEXT)
+    if global_func.isDebugMode() or is_force_print:
+        printColourText('SERVICE. ' + message, CYAN_COLOR_TEXT)
+    if global_func.isLogMode() or is_force_log:
+        logging.debug('SERVICE. ' + message)

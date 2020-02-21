@@ -5,6 +5,8 @@
 User component.
 """
 
+import os
+
 from .. import object
 
 from . import spc
@@ -48,7 +50,11 @@ class iqUser(object.iqObject, user.iqUserManager):
         """
         do_main_func = self.getAttribute('do_main')
         if do_main_func:
-            exec_func.execTxtFunction(do_main_func, context=self.getContext())
+            context = self.getContext()
+            # Add environment variables
+            if context:
+                context.update(dict(os.environ))
+            exec_func.execTxtFunction(do_main_func, context=context)
         else:
             log_func.warning(u'Not define main function for <%s> user' % self.getName())
 

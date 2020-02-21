@@ -66,7 +66,8 @@ def execTxtFunction(function, context=None):
         log_func.error(u'Not valid function body type <%s>' % type(function))
         return None
 
-    function_body = os.linesep.join(INDENTATION + line for line in function.split(os.linesep))
+    linesep = os.linesep.replace('\n', '\\n').replace('\r', '\\r')
+    function_body = os.linesep.join(INDENTATION + line for line in function.split(linesep))
     function_name = str(uuid.uuid4()).replace('-', '_')
     function_header = 'def __%s():%s' % (function_name, os.linesep)
     function_footer = '%s__result__ = __%s()' % (os.linesep, function_name)
