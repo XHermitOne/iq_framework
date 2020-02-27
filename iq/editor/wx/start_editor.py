@@ -62,7 +62,7 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto):
         """
         Button click handler <Exit>.
         """
-        self.EndModal(wx.ID_OK)
+        self.EndModal(wx.ID_CANCEL)
         event.Skip()
 
     def onNewPrjButtonClick(self, event):
@@ -121,9 +121,9 @@ def openStartEditorDlg(parent=None):
     try:
         dlg = iqStartEditorDialog(parent=parent)
         dlg.init()
-        dlg.ShowModal()
+        result = dlg.ShowModal() == wx.ID_OK
         dlg.Destroy()
-        return True
+        return result
     except:
         if dlg:
             dlg.Destroy()
@@ -138,8 +138,9 @@ def startEditor():
     :return:
     """
     app = wx.App()
-    openStartEditorDlg()
+    result = openStartEditorDlg()
     app.MainLoop()
+    return result
 
 
 if __name__ == '__main__':

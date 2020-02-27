@@ -17,7 +17,7 @@ from iq.dialog import dlg_func
 from . import scanner_dlg_proto
 
 
-__version__ = (0, 0, 0, 0)
+__version__ = (0, 0, 0, 1)
 
 
 class iqLoadSheetsDialog(scanner_dlg_proto.iqLoadSheetsDlgProto):

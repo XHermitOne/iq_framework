@@ -11,6 +11,7 @@ from ..util import res_func
 from ..util import py_func
 
 from ..dialog import dlg_func
+from ..editor.wx import wxfb_manager
 
 __version__ = (0, 0, 0, 1)
 
@@ -43,25 +44,15 @@ def _openResourceEditor(res_filename):
             from .wx.res_editor import resource_editor
             resource_editor.runResourceEditor(res_filename=res_filename)
             return True
-        elif py_func.isPythonFile(res_filename):
-            import wx
-            from .wx import wxfb_manager
 
-            app = wx.App()
-            if wxfb_manager.isWXFormBuilderFormPy(res_filename):
-                result = wxfb_manager.adaptWXWFormBuilderPy(res_filename)
-                if result:
-                    msg = u'Python adaptation of wxFormBuilder module <%s> was successful' % res_filename
-                    dlg_func.openMsgBox(title=u'EDITOR', prompt_text=msg)
-                else:
-                    msg = u'Python adaptation of wxFormBuilder module <%s> ended unsuccessfully' % res_filename
-                    dlg_func.openErrBox(title=u'EDITOR', prompt_text=msg)
-                return result
-            else:
-                msg = u'Python module <%s> maintenance not supported' % res_filename
-                log_func.warning(msg)
-                dlg_func.openWarningBox(title=u'EDITOR', prompt_text=msg)
-            app.MainLoop()
+        elif py_func.isPythonFile(res_filename):
+            from .wx import start_py
+            return start_py.startPythonEditor(py_filename=res_filename)
+
+        elif wxfb_manager.isWXFormBuilderProjectFile(res_filename):
+            from .wx import start_wxfb
+            return start_wxfb.startWXFormBuilderEditor(fbp_filename=res_filename)
+
         else:
             log_func.error(u'Not support editing file <%s>' % res_filename)
     else:

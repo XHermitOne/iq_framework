@@ -11,8 +11,13 @@ import os.path
 from ...util import log_func
 from ...util import exec_func
 from ...util import py_func
+from ...util import file_func
+
+from ...script import migrate_fbp
 
 __version__ = (0, 0, 0, 1)
+
+WXFB_PROJECT_FILE_EXT = '.fbp'
 
 ALTER_WXFORMBUILDER = '~/dev/ide/wxFormBuilder/output/bin/wxformbuilder'
 
@@ -61,6 +66,16 @@ ADAPTATION_REPLACES = (dict(compare=STARTSWITH_SIGNATURE, src='import wx.combo',
                        dict(compare=CONTAIN_SIGNATURE, src=', wx.COL_RESIZABLE|wx.COL_SORTABLE )', dst=')'),
                        dict(compare=CONTAIN_SIGNATURE, src=', wx.lib.gizmos.TR_', dst=', agwStyle=wx.lib.gizmos.TR_'),
                        )
+
+
+def isWXFormBuilderProjectFile(filename):
+    """
+    Check if the file is wxFormBuilder project.
+
+    :param filename: Checked file path.
+    :return: True/False.
+    """
+    return file_func.isFilenameExt(filename, WXFB_PROJECT_FILE_EXT)
 
 
 def getWXFormBuilderExecutable():
@@ -237,3 +252,17 @@ def adaptWXWFormBuilderPy(py_filename):
     else:
         log_func.error(u'Python adaptation of wxFormBuilder module <%s> ... FAIL' % py_filename)
     return result
+
+
+def migrateWXFormBuilderProject(fbp_filename):
+    """
+    Make wxFormBuilder project module migration replacements.
+
+    :param fbp_filename: Python file path.
+    :return: True/False.
+    """
+    try:
+        return migrate_fbp.migrateFBP(fbp_filename=fbp_filename)
+    except:
+        log_func.fatal(u'Error make wxFormBuilder project module <%s> migration' % fbp_filename)
+    return False

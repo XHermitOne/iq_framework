@@ -77,6 +77,8 @@ sudo apt install --assume-yes python3-pypdf2
 sudo apt install --assume-yes python3-odf python-odf-doc
 sudo apt install --assume-yes libreoffice-java-common
 
+pip3 install mtranslate
+
 # 
 sudo apt --fix-broken install --assume-yes
 
