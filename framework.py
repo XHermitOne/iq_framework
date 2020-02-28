@@ -17,7 +17,7 @@ Launch parameters:
         --log|-l            Enable logging mode
 
     [Options]
-        --mode=             Startup mode (runtime, editor, resource_editor)
+        --mode=             Startup mode (runtime, editor)
         --engine=           Engine type (WX, QT or CUI)
         --prj=              Project name
         --username=         User name
@@ -27,6 +27,7 @@ Launch parameters:
 
 import sys
 import getopt
+import os.path
 
 from iq import global_data
 from iq.util import log_func
@@ -101,9 +102,9 @@ def main(*argv):
     if runtime_mode:
         kernel = iq.createKernel()
         kernel.start(mode=mode, project_name=project, username=username, password=password)
-    elif mode == iq.EDITOR_MODE_STATE:
+    elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
         editor.openEditor()
-    elif mode == iq.RESOURCE_EDITOR_MODE_STATE:
+    elif mode == iq.EDITOR_MODE_STATE:
         editor.openResourceEditor(res_filename=res_filename)
     else:
         log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))

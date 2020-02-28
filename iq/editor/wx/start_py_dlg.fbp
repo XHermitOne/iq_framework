@@ -44,7 +44,7 @@
             <property name="minimum_size"></property>
             <property name="name">iqStartPythonEditorDialogProto</property>
             <property name="pos"></property>
-            <property name="size">438,147</property>
+            <property name="size">438,166</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass"></property>
             <property name="title">Python module</property>
