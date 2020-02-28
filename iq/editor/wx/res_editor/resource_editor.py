@@ -223,7 +223,6 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             self.resource_treeListCtrl.GetMainWindow().SetItemText(item, description, 1)
             active_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT if activate else wx.SYS_COLOUR_GRAYTEXT)
             self.resource_treeListCtrl.GetMainWindow().SetItemTextColour(item, active_colour)
-            # self.resource_treeListCtrl.GetMainWindow().Refresh()
 
     def getResourceItem(self, item=None):
         """
@@ -312,7 +311,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
     def onNewToolClicked(self, event):
         """
-        New resoure tool button click handler.
+        <New> resoure tool button click handler.
         """
         res_filename = new_resource_dialog.createNewResource(parent=self)
         if res_filename is not None:
@@ -322,7 +321,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
     def onSaveToolClicked(self, event):
         """
-        Save tool button click handler.
+        <Save> tool button click handler.
         """
         resource = self.getResourceItem()
         resource = spc_func.clearAllResourcesFromSpc(resource)
@@ -345,14 +344,15 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
     def onSaveAsToolClicked(self, event):
         """
-        Save As... tool button click handler.
+        <Save As...> tool button click handler.
         """
         resource = self.getResourceItem()
         resource = spc_func.clearAllResourcesFromSpc(resource)
 
         res_filename = None
+        default_path = file_func.getProjectPath() if file_func.getProjectPath() else file_func.getFrameworkPath()
         save_dirname = wxdlg_func.getDirDlg(parent=self, title=u'SAVE',
-                                            default_path=file_func.getProjectPath())
+                                            default_path=default_path)
         if save_dirname and os.path.exists(save_dirname):
             res_name = wxdlg_func.getTextEntryDlg(parent=self, title=u'SAVE',
                                                   prompt_text=u'Enter a name for the new resource',
@@ -376,7 +376,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
     def onOpenToolClicked(self, event):
         """
-        Open tool button click handler.
+        <Open> tool button click handler.
         """
         default_path = file_func.getProjectPath() if file_func.getProjectPath() else file_func.getFrameworkPath()
         res_filename = wxdlg_func.getFileDlg(parent=self, title=u'LOAD',
@@ -536,17 +536,17 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 name = resource.get('name', 'Unknown')
                 description = resource.get('description', '')
                 component_type = resource.get('type', None)
+                activate = resource.get('activate', True)
 
                 # Add but only if the name is unique
                 children_names = [child_res.get('name', 'Unknown') for child_res in item_resource[spc_func.CHILDREN_ATTR_NAME]]
                 if name not in children_names:
                     item_resource[spc_func.CHILDREN_ATTR_NAME].append(resource)
 
-                img_idx = self.component_icons.get(component_type,
-                                                   self.component_icons[None])
+                img_idx = self.component_icons.get(component_type, self.component_icons[None])
                 child_item = self.resource_treeListCtrl.GetMainWindow().AppendItem(parentId=item, text=name,
                                                                                    image=img_idx, data=resource)
-                self.resource_treeListCtrl.GetMainWindow().SetItemText(child_item, description, 1)
+                self.refreshResourceItem(item=child_item, name=name, description=description, activate=activate)
 
                 if resource.get(spc_func.CHILDREN_ATTR_NAME, None):
                     for child_resource in resource[spc_func.CHILDREN_ATTR_NAME]:
