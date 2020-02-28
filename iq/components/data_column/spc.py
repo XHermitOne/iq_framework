@@ -24,10 +24,10 @@ PROJECT_SPC = {
 
     '_children_': [],
 
-    'field_type': None,
+    'field_type': 'Text',
     'field_attr': None,
 
-    'autoincrement': True,
+    'autoincrement': False,
     'default': None,
     'key': None,
     'index': False,

@@ -5,13 +5,25 @@
 Data model specification module.
 """
 
+import copy
 import os.path
+
 from iq.object import object_spc
 from ...editor import property_editor_id
+
+from .. import data_column
 
 __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqDataModel'
+
+# Automatically add an identifier column
+ID_COLUMN_SPC = copy.deepcopy(data_column.SPC)
+ID_COLUMN_SPC['name'] = 'id'
+ID_COLUMN_SPC['description'] = 'Identifier'
+ID_COLUMN_SPC['field_type'] = 'BigInteger'
+ID_COLUMN_SPC['autoincrement'] = True
+
 
 PROJECT_SPC = {
     'name': 'default',
@@ -20,7 +32,7 @@ PROJECT_SPC = {
     'activate': True,
     'uuid': None,
 
-    '_children_': [],
+    '_children_': [ID_COLUMN_SPC],
 
     'tablename': None,
     # 'mapper_args': None,

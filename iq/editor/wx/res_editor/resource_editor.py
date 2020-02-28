@@ -66,6 +66,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :return:
         """
         self.initImageLib()
+        self.component_icons[None] = self.getImageLibImageIdx(None)
 
         component_spc_cache = components.getComponentSpcPalette()
 
@@ -116,6 +117,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             global_func.setProjectName(name)
 
         description = resource.get('description', u'')
+        activate = resource.get('activate', True)
         icon_idx = self.component_icons.get(component_type, None)
         # log_func.debug(u'Add new resource item <%s : %s : %s : %s>' % (component_type, name, description, icon_idx))
 
@@ -127,6 +129,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         if icon_idx is not None:
             self.resource_treeListCtrl.SetItemImage(new_item, icon_idx, which=wx.TreeItemIcon_Normal)
         self.resource_treeListCtrl.GetMainWindow().SetItemData(new_item, resource)
+        active_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT if activate else wx.SYS_COLOUR_GRAYTEXT)
+        self.resource_treeListCtrl.GetMainWindow().SetItemTextColour(new_item, active_colour)
 
         result = list()
         children = resource.get(spc_func.CHILDREN_ATTR_NAME, list())
@@ -171,7 +175,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         self.res_filename = res_filename
         resource = res_func.loadResourceText(res_filename)
         resource = spc_func.fillAllResourcesBySpc(resource=resource)
-        return self.loadResource(resource)
+        result = self.loadResource(resource)
+        if result:
+            title = 'Resource editor <%s>' % os.path.basename(self.res_filename)
+            self.SetTitle(title)
+        return result
 
     def onResItemTreelistSelectionChanged(self, event):
         """
@@ -197,13 +205,14 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(selected_item)
         return resource
 
-    def refreshResourceItem(self, item=None, name='unknown', description=''):
+    def refreshResourceItem(self, item=None, name='unknown', description='', activate=True):
         """
         Refresh resource tree item.
 
         :param item: Tree item.
         :param name: Name.
         :param description: Description.
+        :param activate: Activity flag.
         :return: True/False.
         """
         if item is None:
@@ -212,6 +221,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         if item and item.IsOk():
             self.resource_treeListCtrl.GetMainWindow().SetItemText(item, name, 0)
             self.resource_treeListCtrl.GetMainWindow().SetItemText(item, description, 1)
+            active_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT if activate else wx.SYS_COLOUR_GRAYTEXT)
+            self.resource_treeListCtrl.GetMainWindow().SetItemTextColour(item, active_colour)
+            # self.resource_treeListCtrl.GetMainWindow().Refresh()
 
     def getResourceItem(self, item=None):
         """
@@ -288,10 +300,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
                         selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
 
-                        if name in ('name', 'description'):
+                        if name in ('name', 'description', 'activate'):
                             self.refreshResourceItem(selected_item,
-                                                     selected_resource.get('name', 'unknown'),
-                                                     selected_resource.get('description', ''))
+                                                     name=selected_resource.get('name', 'unknown'),
+                                                     description=selected_resource.get('description', ''),
+                                                     activate=selected_resource.get('activate', True))
                     else:
                         log_func.error(u'Value <%s> of property [%s] not valid' % (str_value, name))
 
@@ -317,9 +330,16 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             self.res_filename = wxdlg_func.getFileDlg(parent=self, title=u'SAVE',
                                                       wildcard_filter='Resource files (*.res)|*.res')
         if self.res_filename:
-            res_func.saveResourceText(self.res_filename, resource_data=resource)
+            result = res_func.saveResourceText(self.res_filename, resource_data=resource)
+            if result:
+                wxdlg_func.openMsgBox(title=u'EDITOR', prompt_text=u'Resource <%s> saving successful' % self.res_filename)
+            else:
+                wxdlg_func.openWarningBox(title=u'EDITOR', prompt_text=u'Resource <%s> saving unsuccessful' % self.res_filename)
+
         else:
-            log_func.warning(u'Not define resource filename')
+            msg = u'Not define resource filename'
+            log_func.warning(msg)
+            wxdlg_func.openWarningBox(title=u'EDITOR', prompt_text=msg)
 
         event.Skip()
 
@@ -329,12 +349,28 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         resource = self.getResourceItem()
         resource = spc_func.clearAllResourcesFromSpc(resource)
-        self.res_filename = wxdlg_func.getFileDlg(parent=self, title=u'SAVE',
-                                                  wildcard_filter='Resource files (*.res)|*.res')
-        if self.res_filename:
-            res_func.saveResourceText(self.res_filename, resource_data=resource)
+
+        res_filename = None
+        save_dirname = wxdlg_func.getDirDlg(parent=self, title=u'SAVE',
+                                            default_path=file_func.getProjectPath())
+        if save_dirname and os.path.exists(save_dirname):
+            res_name = wxdlg_func.getTextEntryDlg(parent=self, title=u'SAVE',
+                                                  prompt_text=u'Enter a name for the new resource',
+                                                  default_value=os.path.splitext(os.path.basename(self.res_filename))[0] + str(wx.NewId()) if self.res_filename else 'Unknown')
+            if res_name:
+                res_filename = os.path.join(save_dirname, res_name + res_func.RESOURCE_FILE_EXT)
+
+        if res_filename:
+            result = res_func.saveResourceText(res_filename, resource_data=resource)
+            if result:
+                wxdlg_func.openMsgBox(title=u'EDITOR', prompt_text=u'Resource <%s> saving successful' % self.res_filename)
+                self.loadResourceFile(res_filename)
+            else:
+                wxdlg_func.openWarningBox(title=u'EDITOR', prompt_text=u'Resource <%s> saving unsuccessful' % self.res_filename)
         else:
-            log_func.warning(u'Not define resource filename')
+            msg = u'Not define resource filename'
+            log_func.warning(msg)
+            wxdlg_func.openWarningBox(title=u'EDITOR', prompt_text=msg)
 
         event.Skip()
 
@@ -496,16 +532,26 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         try:
             if item and item.IsOk():
                 item_resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
-                item_resource[spc_func.CHILDREN_ATTR_NAME].append(resource)
 
                 name = resource.get('name', 'Unknown')
                 description = resource.get('description', '')
                 component_type = resource.get('type', None)
+
+                # Add but only if the name is unique
+                children_names = [child_res.get('name', 'Unknown') for child_res in item_resource[spc_func.CHILDREN_ATTR_NAME]]
+                if name not in children_names:
+                    item_resource[spc_func.CHILDREN_ATTR_NAME].append(resource)
+
                 img_idx = self.component_icons.get(component_type,
                                                    self.component_icons[None])
                 child_item = self.resource_treeListCtrl.GetMainWindow().AppendItem(parentId=item, text=name,
                                                                                    image=img_idx, data=resource)
                 self.resource_treeListCtrl.GetMainWindow().SetItemText(child_item, description, 1)
+
+                if resource.get(spc_func.CHILDREN_ATTR_NAME, None):
+                    for child_resource in resource[spc_func.CHILDREN_ATTR_NAME]:
+                        # log_func.debug(u'Append %s : %s' % (resource['name'], child_resource['name']))
+                        self.appendResourceItem(item=child_item, resource=child_resource, expand=False)
 
                 if expand:
                     self.resource_treeListCtrl.GetMainWindow().Expand(item)
