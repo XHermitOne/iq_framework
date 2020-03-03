@@ -8,7 +8,8 @@
 ###########################################################################
 
 import wx
-import wx.xrc
+import wx.adv
+import wx.lib.gizmos
 
 import gettext
 _ = gettext.gettext
@@ -22,7 +23,7 @@ class iqStartWXFormBuilderEditorDielogProto ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"wxFormBuilder"), pos = wx.DefaultPosition, size = wx.Size( 483,214 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 		
@@ -39,7 +40,7 @@ class iqStartWXFormBuilderEditorDielogProto ( wx.Dialog ):
 		
 		bSizer21 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.open_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_FOLDER_OPEN, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.open_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_FILE_OPEN, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer21.Add( self.open_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		self.open_button = wx.Button( self, wx.ID_ANY, _(u"Open wxFormBuilder project"), wx.DefaultPosition, wx.DefaultSize, 0 )

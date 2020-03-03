@@ -799,7 +799,7 @@
                                                 <property name="permission">protected</property>
                                             </object>
                                             <object class="propGridPage" expanded="1">
-                                                <property name="bitmap">Load From Art Provider; gtk-execute; wxART_MENU</property>
+                                                <property name="bitmap">Load From Art Provider; gtk-properties; wxART_MENU</property>
                                                 <property name="label">Methods</property>
                                                 <property name="name">methods_propertyGridPage</property>
                                                 <property name="permission">protected</property>

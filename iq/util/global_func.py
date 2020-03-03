@@ -168,3 +168,22 @@ def getDefaultShellEncoding():
     :return: Actual text encoding.
     """
     return global_data.getGlobal('DEFAULT_SHELL_ENCODING')
+
+
+def getMainWin():
+    """
+    Main window object.
+    """
+    main_win = global_data.getGlobal('MAIN_WINDOW')
+    if main_win is None:
+        if isWXEngine():
+            from ..engine.wx import mainform_manager
+            main_win = mainform_manager.getMainWindow()
+        elif isQTEngine():
+            main_win = None
+        elif isCUIEngine():
+            main_win = None
+
+        if main_win:
+            global_data.setGlobal('MAIN_WINDOW', main_win)
+    return main_win

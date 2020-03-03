@@ -41,13 +41,14 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
         """
         Init form.
         """
-        self.init_images()
+        self.initImages()
 
-    def init_images(self):
+    def initImages(self):
         """
         Init images of controls on form.
         """
-        pass
+        bmp = wxbitmap_func.createIconBitmap('fatcow/script_go')
+        self.migrate_bitmap.SetBitmap(bmp)
 
     def onExitButtonClick(self, event):
         """

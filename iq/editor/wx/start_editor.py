@@ -40,9 +40,9 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto):
         """
         Init form.
         """
-        self.init_images()
+        self.initImages()
 
-    def init_images(self):
+    def initImages(self):
         """
         Init images of controls on form.
         """

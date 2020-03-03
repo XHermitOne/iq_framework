@@ -19,6 +19,7 @@ from ...dialog import dlg_func
 
 from . import wxfb_manager
 from ...script import migrate_py
+from .code_generator import gui_generator
 
 __version__ = (0, 0, 0, 1)
 
@@ -39,16 +40,24 @@ class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto):
         """
         Init form.
         """
-        self.init_images()
+        self.initImages()
 
-        self.wxfb_button.Enable(wxfb_manager.isWXFormBuilderFormPy(self.py_filename))
+        is_wxfb_py = wxfb_manager.isWXFormBuilderFormPy(self.py_filename)
+        self.wxfb_button.Enable(is_wxfb_py)
+        self.gen_button.Enable(is_wxfb_py)
 
-    def init_images(self):
+    def initImages(self):
         """
         Init images of controls on form.
         """
         bmp = wxbitmap_func.createIconBitmap('fatcow/plugin_go')
         self.wxfb_bitmap.SetBitmap(bmp)
+
+        bmp = wxbitmap_func.createIconBitmap('fatcow/script_gear')
+        self.gen_bitmap.SetBitmap(bmp)
+
+        bmp = wxbitmap_func.createIconBitmap('fatcow/script_go')
+        self.migrate_bitmap.SetBitmap(bmp)
 
     def onExitButtonClick(self, event):
         """
@@ -82,6 +91,23 @@ class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto):
 
         if result:
             msg = u'Python migrate <%s> was successful' % self.py_filename
+            dlg_func.openMsgBox(title=u'EDITOR', prompt_text=msg)
+            self.EndModal(wx.ID_OK)
+        else:
+            msg = u'Python migrate <%s> ended unsuccessfully' % self.py_filename
+            dlg_func.openErrBox(title=u'EDITOR', prompt_text=msg)
+            self.EndModal(wx.ID_CANCEL)
+
+        event.Skip()
+
+    def onGenButtonClick(self, event):
+        """
+        Button click handler <Generate GUI module>.
+        """
+        result = gui_generator.gen(src_filename=self.py_filename, parent=self)
+
+        if result:
+            msg = u'Python generate by <%s> was successful' % self.py_filename
             dlg_func.openMsgBox(title=u'EDITOR', prompt_text=msg)
             self.EndModal(wx.ID_OK)
         else:

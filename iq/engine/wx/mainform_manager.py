@@ -21,6 +21,16 @@ __version__ = (0, 0, 0, 1)
 DEFAULT_SPLASH_DELAY = 5
 
 
+def getMainWindow():
+    """
+    Main window object.
+    """
+    app = wx.GetApp()
+    if app:
+        return app.GetTopWindow()
+    return None
+
+
 class iqMainFormManager(base_manager.iqBaseManager):
     """
     Main form manager.

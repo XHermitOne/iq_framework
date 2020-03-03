@@ -297,7 +297,7 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; wxART_FOLDER_OPEN; wxART_MENU</property>
+                                <property name="bitmap">Load From Art Provider; wxART_FILE_OPEN; wxART_MENU</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>

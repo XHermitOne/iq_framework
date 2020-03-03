@@ -59,6 +59,9 @@ SETTINGS = None
 # Access to project objects
 OBJECTS = None
 
+# Main window object
+MAIN_WINDOW = None
+
 FRAMEWORK_LOGO_TXT = u'''
  _     _____                                 _   
 |_|___|   __|___ ___ _____ ___ _ _ _ ___ ___| |_ 

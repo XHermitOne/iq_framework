@@ -77,7 +77,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		
 		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( u"Attributes", wx.ArtProvider.GetBitmap( u"gtk-index", wx.ART_MENU ) );
 		
-		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( u"Methods", wx.ArtProvider.GetBitmap( u"gtk-execute", wx.ART_MENU ) );
+		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( u"Methods", wx.ArtProvider.GetBitmap( u"gtk-properties", wx.ART_MENU ) );
 		
 		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( u"Events", wx.ArtProvider.GetBitmap( u"gtk-about", wx.ART_MENU ) );
 		bSizer3.Add( self.object_propertyGridManager, 1, wx.ALL|wx.EXPAND, 5 )

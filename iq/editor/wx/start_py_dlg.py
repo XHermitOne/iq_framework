@@ -20,7 +20,7 @@ _ = gettext.gettext
 class iqStartPythonEditorDialogProto ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Python module"), pos = wx.DefaultPosition, size = wx.Size( 438,166 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Python module"), pos = wx.DefaultPosition, size = wx.Size( 438,245 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -36,6 +36,17 @@ class iqStartPythonEditorDialogProto ( wx.Dialog ):
 		
 		
 		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )
+		
+		bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		self.gen_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_EXECUTABLE_FILE, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer22.Add( self.gen_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		
+		self.gen_button = wx.Button( self, wx.ID_ANY, _(u"Generate GUI module"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer22.Add( self.gen_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		
+		
+		bSizer1.Add( bSizer22, 1, wx.EXPAND, 5 )
 		
 		bSizer21 = wx.BoxSizer( wx.HORIZONTAL )
 		
@@ -68,6 +79,7 @@ class iqStartPythonEditorDialogProto ( wx.Dialog ):
 		
 		# Connect Events
 		self.wxfb_button.Bind( wx.EVT_BUTTON, self.onWXFBButtonClick )
+		self.gen_button.Bind( wx.EVT_BUTTON, self.onGenButtonClick )
 		self.migrate_button.Bind( wx.EVT_BUTTON, self.onMigrateButtonClick )
 		self.exit_button.Bind( wx.EVT_BUTTON, self.onExitButtonClick )
 	
@@ -77,6 +89,9 @@ class iqStartPythonEditorDialogProto ( wx.Dialog ):
 	
 	# Virtual event handlers, overide them in your derived class
 	def onWXFBButtonClick( self, event ):
+		event.Skip()
+	
+	def onGenButtonClick( self, event ):
 		event.Skip()
 	
 	def onMigrateButtonClick( self, event ):
