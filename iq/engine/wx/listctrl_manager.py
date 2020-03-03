@@ -17,8 +17,7 @@ from . import imglib_manager
 __version__ = (0, 0, 0, 1)
 
 
-class iqListCtrlManager(base_manager.iqBaseManager,
-                        imglib_manager.iqImageLibManager):
+class iqListCtrlManager(imglib_manager.iqImageLibManager):
     """
     ListCtrl manager.
     """

@@ -315,8 +315,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         res_filename = new_resource_dialog.createNewResource(parent=self)
         if res_filename is not None:
-            self.loadResourceFile(res_filename
-                                  )
+            self.loadResourceFile(res_filename)
         event.Skip()
 
     def onSaveToolClicked(self, event):

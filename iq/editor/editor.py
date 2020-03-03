@@ -5,6 +5,8 @@
 Editor functions.
 """
 
+import os.path
+
 from ..util import log_func
 from ..util import global_func
 from ..util import res_func
@@ -52,6 +54,17 @@ def _openResourceEditor(res_filename):
         elif wxfb_manager.isWXFormBuilderProjectFile(res_filename):
             from .wx import start_wxfb
             return start_wxfb.startWXFormBuilderEditor(fbp_filename=res_filename)
+
+        elif os.path.isdir(res_filename):
+            from .wx import start_folder_dialog
+            return start_folder_dialog.startFolderEditor(folder_path=res_filename)
+
+        elif not os.path.exists(res_filename):
+            # PyCharm
+            res_filename = os.path.dirname(res_filename)
+            if os.path.isdir(res_filename):
+                from .wx import start_folder_dialog
+                return start_folder_dialog.startFolderEditor(folder_path=res_filename)
 
         else:
             log_func.error(u'Not support editing file <%s>' % res_filename)
