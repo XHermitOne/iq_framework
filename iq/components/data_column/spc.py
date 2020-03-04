@@ -15,7 +15,7 @@ __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqDataColumn'
 
-PROJECT_SPC = {
+DATACOLUMN_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
     'description': '',
@@ -87,4 +87,4 @@ PROJECT_SPC = {
     },
 }
 
-SPC = PROJECT_SPC
+SPC = DATACOLUMN_SPC

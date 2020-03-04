@@ -12,7 +12,7 @@ __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqDataNavigator'
 
-PROJECT_SPC = {
+DATANAVIGATOR_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
     'description': '',
@@ -28,4 +28,4 @@ PROJECT_SPC = {
     '__content__': (),
 }
 
-SPC = PROJECT_SPC
+SPC = DATANAVIGATOR_SPC

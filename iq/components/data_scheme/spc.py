@@ -13,7 +13,7 @@ __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqDataScheme'
 
-PROJECT_SPC = {
+DATASCHEME_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
     'description': '',
@@ -37,4 +37,4 @@ PROJECT_SPC = {
     },
 }
 
-SPC = PROJECT_SPC
+SPC = DATASCHEME_SPC

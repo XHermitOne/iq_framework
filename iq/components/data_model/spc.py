@@ -25,7 +25,7 @@ ID_COLUMN_SPC['field_type'] = 'BigInteger'
 ID_COLUMN_SPC['autoincrement'] = True
 
 
-PROJECT_SPC = {
+DATAMODEL_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
     'description': '',
@@ -50,4 +50,4 @@ PROJECT_SPC = {
     },
 }
 
-SPC = PROJECT_SPC
+SPC = DATAMODEL_SPC

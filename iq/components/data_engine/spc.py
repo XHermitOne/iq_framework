@@ -63,7 +63,7 @@ def onDialectChange(resource_editor=None, resource=None, *args, **kwargs):
 
 COMPONENT_TYPE = 'iqDataEngine'
 
-PROJECT_SPC = {
+DATAENGINE_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
     'description': '',
@@ -155,4 +155,4 @@ PROJECT_SPC = {
     },
 }
 
-SPC = PROJECT_SPC
+SPC = DATAENGINE_SPC
