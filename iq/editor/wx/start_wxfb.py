@@ -106,6 +106,8 @@ def openStartWXFormBuilderEditorDlg(parent=None, fbp_filename=None):
     try:
         dlg = iqStartWXFormBuilderEditorDialog(parent=parent)
         dlg.fbp_filename = fbp_filename
+        new_title = u'wxFormBuilder project <%s>' % os.path.basename(fbp_filename)
+        dlg.SetTitle(new_title)
         dlg.init()
         result = dlg.ShowModal() == wx.ID_OK
         dlg.Destroy()
@@ -125,7 +127,8 @@ def startWXFormBuilderEditor(fbp_filename, *args, **kwargs):
     """
     app = wx.App()
     result = openStartWXFormBuilderEditorDlg(parent=None, fbp_filename=fbp_filename)
-    app.MainLoop()
+    if result:
+        app.MainLoop()
     return result
 
 

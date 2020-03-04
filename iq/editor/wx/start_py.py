@@ -6,6 +6,7 @@ Start python module editor dialog.
 """
 
 import sys
+import os.path
 import wx
 
 try:
@@ -129,6 +130,8 @@ def openStartPythonEditorDlg(parent=None, py_filename=None):
     try:
         dlg = iqStartPythonEditorDialog(parent=parent)
         dlg.py_filename = py_filename
+        new_title = u'Python module <%s>' % os.path.basename(py_filename)
+        dlg.SetTitle(new_title)
         dlg.init()
         result = dlg.ShowModal() == wx.ID_OK
         dlg.Destroy()
@@ -148,7 +151,8 @@ def startPythonEditor(py_filename, *args, **kwargs):
     """
     app = wx.App()
     result = openStartPythonEditorDlg(parent=None, py_filename=py_filename)
-    app.MainLoop()
+    if result:
+        app.MainLoop()
     return result
 
 

@@ -102,6 +102,7 @@ def main(*argv):
     if runtime_mode:
         kernel = iq.createKernel()
         kernel.start(mode=mode, project_name=project, username=username, password=password)
+        kernel.stop()
     elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
         editor.openEditor()
     elif mode == iq.EDITOR_MODE_STATE:

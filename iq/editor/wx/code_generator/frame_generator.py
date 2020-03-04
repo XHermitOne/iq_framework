@@ -26,12 +26,26 @@ def show%s(parent=None):
 
         frame = %s(parent)
         frame.init()
-        result = frame.Show()
+        frame.Show()
         return True
     except:
         log_func.fatal(u'Error show frame <%s>')
     return False
 '''
+
+START_FRAME_FUNC_BODY_FMT = u'''
+def start%s():
+    """
+    Start.
+    """
+    app = wx.App()
+    if show%s():
+        app.MainLoop()
+        
+if __name__ == '__main__':
+    start%s()
+'''
+
 
 GEN_PY_MODULE_FMT = u'''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -84,6 +98,7 @@ class %s(%s.%s, form_manager.iqFormManager):
 
 %s
 %s
+%s
 '''
 
 
@@ -109,6 +124,18 @@ def genShowFunctionBody(class_name):
     """
     function_name = class_name[2:] if class_name.startswith('iq') else class_name
     frm_body_function = SHOW_FRAME_FUNC_BODY_FMT % (function_name, class_name, class_name)
+    return frm_body_function
+
+
+def genStartFunctionBody(class_name):
+    """
+    Generate start function text body.
+
+    :param class_name: Frame class name.
+    :return: Function text body.
+    """
+    function_name = class_name[2:] if class_name.startswith('iq') else class_name
+    frm_body_function = START_FRAME_FUNC_BODY_FMT % (function_name, function_name, function_name)
     return frm_body_function
 
 
@@ -140,12 +167,13 @@ def genPythonFrame(src_module, src_class_name):
     log_func.debug(body_functions)
 
     frm_body_function = genShowFunctionBody(dst_class_name)
+    start_frm_body_function = genStartFunctionBody(dst_class_name)
 
     py_txt = GEN_PY_MODULE_FMT % (src_class_name,
                                   src_module.__name__,
                                   dst_class_name, src_module.__name__, src_class_name,
                                   src_module.__name__, src_class_name,
                                   body_functions,
-                                  frm_body_function)
+                                  frm_body_function, start_frm_body_function)
     log_func.info(u'Generate frame class ... STOP')
     return py_txt

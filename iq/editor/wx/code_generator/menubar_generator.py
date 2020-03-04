@@ -13,17 +13,13 @@ __version__ = (0, 0, 0, 1)
 
 
 CREATE_MENUBAR_FUNC_BODY_FMT = u'''
-def create%s(parent=None):
+def create%s():
     \"\"\"
     Create menubar.
 
-    :param parent: Parent window.
     :return: MenuBar object or None if error.
     \"\"\"
     try:
-        if parent is None:
-            parent = global_func.getMainWin()
-
         menubar = %s(parent)
         menubar.init()
         return menubar

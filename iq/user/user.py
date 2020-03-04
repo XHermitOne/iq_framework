@@ -57,6 +57,7 @@ class iqUserManager(object):
 
         :return: True/False.
         """
+        log_func.info(u'Logout <%s> user ... OK' % self.getName())
         return True
 
     def run(self):

@@ -5,7 +5,7 @@
 Kernel - general dispatcher of all program objects.
 """
 
-import sys
+# import sys
 import os.path
 
 from .. import global_data
@@ -84,7 +84,8 @@ class iqKernel(object):
             prj = self.createObject(psp=prj_psp, parent=self, register=True)
 
             global_data.setGlobal('PROJECT', prj)
-            return prj.start(username, password)
+            result = prj.start(username, password)
+            return result
         except:
             log_func.fatal(u'Start programm error')
         return False
@@ -99,7 +100,7 @@ class iqKernel(object):
         if prj:
             prj.stop()
 
-        sys.exit(DEFAULT_RETURN_CODE)
+        # sys.exit(DEFAULT_RETURN_CODE)
 
     def _createByResource(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
