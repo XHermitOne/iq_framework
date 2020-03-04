@@ -91,14 +91,15 @@ class iqMnemoSchemeManager(object):
         log_func.error(u'The method of arrangement and dimensioning of controls of the mnemonic diagram is not defined')
         return False
 
-    def drawBackground(self, bAutoRewrite=False):
+    def drawBackground(self, auto_rewrite=False):
         """
         Draw the background of the mnemonic on the device context.
         ATTENTION! To extract an image from an SVG file
         The external SVG -> PNG conversion utility is used.
         And PNG is already displayed on the device context.
 
-        : param bAutoRewrite: Automatically overwrite the intermediate PNG file.         :return: True/False.
+        :param auto_rewrite: Automatically overwrite the intermediate PNG file.         :return: True/False.
+        :return: True/False.
         """
         try:
             # Mimic panel size
@@ -118,7 +119,7 @@ class iqMnemoSchemeManager(object):
                 file_func.delFilesByMask(file_func.getProjectProfilePath(),
                                          '%s_background_*.png' % self.getName())
 
-            if not os.path.exists(png_filename) or bAutoRewrite:
+            if not os.path.exists(png_filename) or auto_rewrite:
                 # Launch file conversion
                 cmd = SVG2PNG_CONVERT_CMD_FMT % (width, height, width, height, svg_filename, png_filename)
                 log_func.info(u'Start SVG -> PNG covert command: <%s> ' % cmd)
