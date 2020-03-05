@@ -34,6 +34,9 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto, form_manage
         Constructor.
         """
         start_folder_dlg.iqStartFolderDialogProto.__init__(self, *args, **kwargs)
+        bmp = wxbitmap_func.createIconBitmap('fatcow%sapplication_add' % os.path.sep)
+        if bmp:
+            self.SetIcon(icon=wx.Icon(bmp))
 
         self.folder_path = None
 

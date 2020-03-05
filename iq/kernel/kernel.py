@@ -102,7 +102,7 @@ class iqKernel(object):
 
         # sys.exit(DEFAULT_RETURN_CODE)
 
-    def _createByResource(self, parent=None, resource=None, context=None, *args, **kwargs):
+    def createByResource(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
         Create object by resource.
 
@@ -130,7 +130,7 @@ class iqKernel(object):
             log_func.fatal(u'Create object by resource error')
         return obj
 
-    def _createByResFile(self, parent=None, res_filename=None, context=None, *args, **kwargs):
+    def createByResFile(self, parent=None, res_filename=None, context=None, *args, **kwargs):
         """
         Create object by resource file.
 
@@ -140,10 +140,10 @@ class iqKernel(object):
         :return: New object or None if error.
         """
         resource = res_func.loadRuntimeResource(res_filename)
-        return self._createByResource(parent=parent, resource=resource,
-                                      context=context, *args, **kwargs)
+        return self.createByResource(parent=parent, resource=resource,
+                                     context=context, *args, **kwargs)
 
-    def _createByPsp(self, parent=None, psp=None, context=None, *args, **kwargs):
+    def createByPsp(self, parent=None, psp=None, context=None, *args, **kwargs):
         """
         Create object by resource file.
 
@@ -154,11 +154,11 @@ class iqKernel(object):
         """
         resource = passport.iqPassport().findObjResource(passport=psp)
         if resource:
-            return self._createByResource(parent=parent, resource=resource,
-                                          context=context, *args, **kwargs)
+            return self.createByResource(parent=parent, resource=resource,
+                                         context=context, *args, **kwargs)
         return None
 
-    def _create(self, parent=None, object_data=None, context=None, *args, **kwargs):
+    def create(self, parent=None, object_data=None, context=None, *args, **kwargs):
         """
         Create object.
 
@@ -169,11 +169,11 @@ class iqKernel(object):
         """
         psp = passport.iqPassport()
         if psp.isPassport(object_data):
-            return self._createByPsp(parent=parent, psp=psp, context=context, *args, **kwargs)
+            return self.createByPsp(parent=parent, psp=psp, context=context, *args, **kwargs)
         elif isinstance(object_data, str) and os.path.isfile(object_data):
-            return self._createByResFile(parent=parent, res_filename=object_data, context=context, *args, **kwargs)
+            return self.createByResFile(parent=parent, res_filename=object_data, context=context, *args, **kwargs)
         elif isinstance(object_data, dict):
-            return self._createByResource(parent=parent, resource=object_data, context=context, *args, **kwargs)
+            return self.createByResource(parent=parent, resource=object_data, context=context, *args, **kwargs)
         return None
 
     def findObject(self, psp, compare_guid=False):
@@ -192,7 +192,7 @@ class iqKernel(object):
 
     def getObject(self, psp, compare_guid=False, *args, **kwargs):
         """
-        Find an object in the cache, or if it is not registered, _create.
+        Find an object in the cache, or if it is not registered, create.
 
         :param psp: Object passport.
         :param compare_guid: Compare GUID?
@@ -212,7 +212,7 @@ class iqKernel(object):
         :param register: Register in object cache.
         :return: Registered object or None if error.
         """
-        obj = self._createByPsp(psp=psp, *args, **kwargs)
+        obj = self.createByPsp(psp=psp, *args, **kwargs)
         if register:
             self._object_cache[psp] = obj
         return obj

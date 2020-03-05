@@ -5,7 +5,6 @@
 Start editor dialog.
 """
 
-import sys
 import wx
 
 try:
@@ -33,6 +32,9 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto):
         Constructor.
         """
         start_editor_dlg.iqStartEditorDialogProto.__init__(self, *args, **kwargs)
+        bmp = wxbitmap_func.createIconBitmap('python')
+        if bmp:
+            self.SetIcon(icon=wx.Icon(bmp))
 
         self._project_manager = prj.iqProjectManager()
 

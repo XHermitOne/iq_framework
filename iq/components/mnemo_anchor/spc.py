@@ -30,7 +30,7 @@ MNEMOANCHOR_SPC = {
 
     'svg_pos': (0.0, 0.0),
     'svg_size': (-1, -1),
-    'style': ANCHOR_DIRECTION_FROM_LEFT_TO_RIGHT | ANCHOR_DIRECTION_FROM_TOP_TO_BOTTOM,
+    'direction': ANCHOR_DIRECTION_FROM_LEFT_TO_RIGHT | ANCHOR_DIRECTION_FROM_TOP_TO_BOTTOM,
     'min_size': (-1, -1),
     'max_size': (-1, -1),
     'attachment': None,
@@ -43,18 +43,18 @@ MNEMOANCHOR_SPC = {
     '__edit__': {
         'svg_pos': property_editor_id.POINT_EDITOR,
         'svg_size': property_editor_id.SIZE_EDITOR,
-        'style': ANCHOR_DIRECTION_FROM_LEFT_TO_RIGHT | ANCHOR_DIRECTION_FROM_TOP_TO_BOTTOM,
+        'direction': ANCHOR_DIRECTION_FROM_LEFT_TO_RIGHT | ANCHOR_DIRECTION_FROM_TOP_TO_BOTTOM,
         'min_size': property_editor_id.SIZE_EDITOR,
         'max_size': property_editor_id.SIZE_EDITOR,
         'attachment': property_editor_id.PASSPORT_EDITOR,
     },
     '__help__': {
-        'svg_pos': u'Опорная позиция якоря в единицах измерения SVG',
-        'svg_size': u'Размер ячейки якоря в единицах измерения SVG',
-        'style': u'Указание направления смещения якоря относительно опорной точки',
-        'min_size': u'Указание ограничения размера по минимуму в пикселях',
-        'max_size': u'Указание ограничения размера по максимуму в пикселях',
-        'attachment': u'Паспорт контрола мнемосхемы, прикрепленного к якорю',
+        'svg_pos': u'Anchor reference position in SVG units',
+        'svg_size': u'Anchor cell size in SVG units',
+        'direction': u'Indication of the direction of the anchor displacement relative to the anchor point',
+        'min_size': u'Specify a minimum pixel size limit',
+        'max_size': u'Specifying a maximum size limit in pixels',
+        'attachment': u'Passport control mnemonic attached to the anchor',
     },
 }
 

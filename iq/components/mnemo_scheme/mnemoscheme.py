@@ -82,10 +82,11 @@ class iqMnemoSchemeManager(object):
         log_func.error(u'The method for obtaining the list of controls of the mnemonic scheme is not defined')
         return list()
 
-    def setControlPositions(self):
+    def layoutAll(self, auto_refresh=True):
         """
         The method of arranging and dimensioning controls mnemonic diagrams according to the anchors.
 
+        :param auto_refresh: Automatically refresh the mnemoscheme object.
         :return: True/False.
         """
         log_func.error(u'The method of arrangement and dimensioning of controls of the mnemonic diagram is not defined')

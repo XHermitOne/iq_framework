@@ -50,6 +50,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :param parent: Parent window object.
         """
         resource_editor_frm.iqResourceEditorFrameProto.__init__(self, parent=parent)
+        bmp = wxbitmap_func.createIconBitmap('fatcow%splugin_edit' % os.path.sep)
+        if bmp:
+            self.SetIcon(icon=wx.Icon(bmp))
 
         self.res_filename = None
 

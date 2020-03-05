@@ -34,6 +34,9 @@ class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto):
         Constructor.
         """
         start_py_dlg.iqStartPythonEditorDialogProto.__init__(self, *args, **kwargs)
+        bmp = wxbitmap_func.createIconBitmap('python_script')
+        if bmp:
+            self.SetIcon(icon=wx.Icon(bmp))
 
         self.py_filename = None
 

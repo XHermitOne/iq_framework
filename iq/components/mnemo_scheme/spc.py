@@ -5,11 +5,10 @@
 Mnemoscheme specification module.
 """
 
-import copy
 import os.path
 
-from iq.object import object_spc
 from ...editor import property_editor_id
+from .. import wx_panel
 
 # from .. import data_column
 
@@ -35,21 +34,21 @@ MNEMOSCHEME_SPC = {
 
     '__package__': u'SCADA',
     '__icon__': 'fatcow%ssmartart_organization_chart_stand' % os.path.sep,
-    '__parent__': object_spc.OBJECT_SPC,
+    '__parent__': wx_panel.SPC,
     '__doc__': None,
-    '__content__': ('iqMnemoAnchor', ),
+    '__content__': ('iqMnemoAnchor', 'iqWxPlateButton'),
     '__edit__': {
         'svg_background': property_editor_id.FILE_EDITOR,
         'svg_width': property_editor_id.FLOAT_EDITOR,
         'svg_height': property_editor_id.FLOAT_EDITOR,
     },
     '__help__': {
-        # 'engines': u'Список движков SCADA системы',
-        # 'scan_class': u'Класс сканирования',
-        # 'auto_run': u'Признак автозапуска и автоостанова всех движков при создании/закрытии окна',
-        'svg_background': u'SVG файл фона мнемосхемы',
-        'svg_width': u'Ширина SVG в исходных единицах измерения',
-        'svg_height': u'Высота SVG в исходных единицах измерения',
+        # 'engines': u'List of SCADA system engines',
+        # 'scan_class': u'Scan class',
+        # 'auto_run': u'Sign of autostart and auto-stop of all engines when creating / closing a window',
+        'svg_background': u'Mnemoscheme background svg file',
+        'svg_width': u'SVG width in source units',
+        'svg_height': u'SVG height in source units',
     },
 }
 

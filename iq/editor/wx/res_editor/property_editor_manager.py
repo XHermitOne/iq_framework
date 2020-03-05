@@ -8,23 +8,27 @@ Property editor class module.
 import sys
 import hashlib
 import datetime
+import os.path
 import wx
 import wx.propgrid
 
 from ....util import log_func
 from ....util import spc_func
+from ....util import icon_func
 
 from ... import property_editor_id
 
 from ....engine.wx.dlg import wxdlg_func
 
 from . import passport_property_editor
+from . import libicon_property_editor
 
 __version__ = (0, 0, 0, 1)
 
 VALIDATE_ENABLE = True
 
-CUSTOM_PROPERTY_EDITORS = (passport_property_editor.iqPassportPropertyEditor,)
+CUSTOM_PROPERTY_EDITORS = (passport_property_editor.iqPassportPropertyEditor,
+                           libicon_property_editor.iqLibraryIconPropertyEditor)
 
 
 class iqPropertyEditorManager(object):
@@ -236,6 +240,11 @@ class iqPropertyEditorManager(object):
                 value = str(value)
             wx_property = wx.propgrid.StringProperty(name, value=value)
 
+        elif property_type == property_editor_id.LIBICON_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            wx_property = wx.propgrid.StringProperty(name, value=value)
+
         else:
             log_func.error(u'Property type <%s> not supported' % property_type)
 
@@ -313,6 +322,8 @@ class iqPropertyEditorManager(object):
                     add_property.SetAttribute('Password', True)
                 elif edt_type == property_editor_id.PASSPORT_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, passport_property_editor.iqPassportPropertyEditor.__name__)
+                elif edt_type == property_editor_id.LIBICON_EDITOR:
+                    property_editor.SetPropertyEditor(attr_name, libicon_property_editor.iqLibraryIconPropertyEditor.__name__)
                 # if edt_type == icDefInf.EDT_PY_SCRIPT:
                 #     self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
                 # elif edt_type == icDefInf.EDT_USER_PROPERTY:
@@ -409,7 +420,7 @@ class iqPropertyEditorManager(object):
 
         elif property_type == property_editor_id.FLOAT_EDITOR:
             try:
-                value = float(str_value)
+                value = float(str_value.replace(',', '.'))
             except:
                 log_func.fatal(u'Error casting to a real number <%s>' % str_value)
                 value = 0.0
@@ -506,6 +517,14 @@ class iqPropertyEditorManager(object):
 
         elif property_type == property_editor_id.PASSPORT_EDITOR:
             value = str_value
+
+        elif property_type == property_editor_id.LIBICON_EDITOR:
+            lib_icon_path = icon_func.getIconPath()
+            value = str_value.replace(lib_icon_path, '')
+            if value.endswith(icon_func.ICON_FILENAME_EXT):
+                value = value.replace(icon_func.ICON_FILENAME_EXT, '')
+            if value.startswith(os.path.sep):
+                value = value[1:]
 
         else:
             log_func.error(u'Not support property editor. Code [%d]' % property_type)

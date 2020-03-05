@@ -32,6 +32,9 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
         Constructor.
         """
         start_wxfb_dlg.iqStartWXFormBuilderEditorDielogProto.__init__(self, *args, **kwargs)
+        bmp = wxbitmap_func.createIconBitmap('wxformbuilder')
+        if bmp:
+            self.SetIcon(icon=wx.Icon(bmp))
 
         self.fbp_filename = None
 
