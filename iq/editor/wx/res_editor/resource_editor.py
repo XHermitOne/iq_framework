@@ -34,12 +34,17 @@ from . import property_editor_manager
 from . import select_component_menu
 from . import new_resource_dialog
 
+from ....engine.wx import stored_wx_form_manager
+from ....engine.wx import splitter_manager
+
 __version__ = (0, 0, 0, 1)
 
 
 class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                        property_editor_manager.iqPropertyEditorManager,
-                       imglib_manager.iqImageLibManager):
+                       imglib_manager.iqImageLibManager,
+                       stored_wx_form_manager.iqStoredWxFormsManager,
+                       splitter_manager.iqSplitterWindowManager):
     """
     Resource editor class.
     """
@@ -54,13 +59,29 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         if bmp:
             self.SetIcon(icon=wx.Icon(bmp))
 
+        self.initImageLib()
+
         self.res_filename = None
 
-        # self.component_imagelist = None
         self.component_icons = dict()
 
         self.item_context_menu = None
         self.component_menu = None
+
+        save_filename = os.path.join(file_func.getProfilePath(),
+                                     self.getName() + res_func.PICKLE_RESOURCE_FILE_EXT)
+        self.loadCustomProperties(save_filename)
+
+        self.Bind(wx.EVT_CLOSE, self.onClose)
+
+    def onClose(self, event):
+        """
+        Close frame handler.
+        """
+        save_filename = os.path.join(file_func.getProfilePath(),
+                                     self.getName() + res_func.PICKLE_RESOURCE_FILE_EXT)
+        self.saveCustomProperties(save_filename)
+        event.Skip()
 
     def initComponentIcons(self):
         """
@@ -68,7 +89,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         :return:
         """
-        self.initImageLib()
+        # self.initImageLib()
         self.component_icons[None] = self.getImageLibImageIdx(None)
 
         component_spc_cache = components.getComponentSpcPalette()
@@ -100,10 +121,25 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         :return:
         """
+        # self.initImages()
+        # self.editor_toolBar.ToggleTool(self.show_res_tool.GetId(), True)
+        # self.editor_toolBar.ToggleTool(self.show_obj_tool.GetId(), True)
+        self.editor_toolBar.EnableTool(self.expand_tool.GetId(), False)
+
         self.initComponentIcons()
         self.registerCustomEditors(property_editor=self.object_propertyGridManager)
 
         # self.clearProperties(self.object_propertyGridManager)
+
+    def initImages(self):
+        """
+        Init control images.
+        """
+        bmp = wxbitmap_func.createIconBitmap('fatcow%splugin' % os.path.sep)
+        self.editor_toolBar.SetToolNormalBitmap(self.show_res_tool.GetId(), bitmap=bmp)
+
+        bmp = wxbitmap_func.createIconBitmap('fatcow%sbrick' % os.path.sep)
+        self.editor_toolBar.SetToolNormalBitmap(self.show_obj_tool.GetId(), bitmap=bmp)
 
     def _loadResource(self, resource, parent_item=None):
         """
@@ -433,6 +469,22 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         else:
             log_func.warning(u'Not define DOC filename for <%s>' % item_resource.get('type', None))
 
+        event.Skip()
+
+    def onCollapseToolClicked(self, event):
+        """
+        Hide resource tool button click handler.
+        """
+        self.collapseSplitterWindowPanel(splitter=self.editor_splitter, toolbar=self.editor_toolBar,
+                                         collapse_tool=self.collapse_tool, expand_tool=self.expand_tool)
+        event.Skip()
+
+    def onExpandToolClicked(self, event):
+        """
+        Show object inspector tool button click handler.
+        """
+        self.expandSplitterWindowPanel(splitter=self.editor_splitter, toolbar=self.editor_toolBar,
+                                       collapse_tool=self.collapse_tool, expand_tool=self.expand_tool)
         event.Skip()
 
     def onResTreelistItemContextMenu(self, event):

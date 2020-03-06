@@ -12,6 +12,9 @@ import wx.adv
 import wx.lib.gizmos
 import wx.propgrid as pg
 
+import gettext
+_ = gettext.gettext
+
 ###########################################################################
 ## Class iqResourceEditorFrameProto
 ###########################################################################
@@ -19,36 +22,38 @@ import wx.propgrid as pg
 class iqResourceEditorFrameProto ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Resource editor", pos = wx.Point( 0,0 ), size = wx.Size( 447,765 ), style = wx.DEFAULT_FRAME_STYLE|wx.RESIZE_BORDER|wx.STAY_ON_TOP|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Resource editor"), pos = wx.Point( 0,0 ), size = wx.Size( 447,765 ), style = wx.DEFAULT_FRAME_STYLE|wx.RESIZE_BORDER|wx.STAY_ON_TOP|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.editor_toolBar = wx.ToolBar( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL ) 
-		self.new_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_NEW, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"New resource", u"New resource", None ) 
+		self.new_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_NEW, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"New resource"), _(u"New resource"), None ) 
 		
-		self.open_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_FILE_OPEN, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Open resource", u"Open resource", None ) 
+		self.open_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_FILE_OPEN, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Open resource"), _(u"Open resource"), None ) 
 		
-		self.save_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_FILE_SAVE, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Save resource", u"Save resource", None ) 
+		self.save_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_FILE_SAVE, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Save resource"), _(u"Save resource"), None ) 
 		
-		self.saveas_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_FILE_SAVE_AS, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Save as ...", u"Save as ...", None ) 
-		
-		self.editor_toolBar.AddSeparator()
-		
-		self.test_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Test", u"Test", None ) 
+		self.saveas_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_FILE_SAVE_AS, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Save as ..."), _(u"Save as ..."), None ) 
 		
 		self.editor_toolBar.AddSeparator()
 		
-		self.design_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( u"gtk-preferences", wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Design", u"Design", None ) 
+		self.test_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Test"), _(u"Test"), None ) 
 		
 		self.editor_toolBar.AddSeparator()
 		
-		self.script_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_HELP_SETTINGS, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Open script", u"Open script", None ) 
+		self.design_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( u"gtk-preferences", wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Design"), _(u"Design"), None ) 
 		
 		self.editor_toolBar.AddSeparator()
 		
-		self.help_tool = self.editor_toolBar.AddTool( wx.ID_ANY, u"tool", wx.ArtProvider.GetBitmap( wx.ART_HELP, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, u"Help ...", u"Help ...", None ) 
+		self.help_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_HELP, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Help ..."), _(u"Help ..."), None ) 
+		
+		self.editor_toolBar.AddSeparator()
+		
+		self.collapse_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_GO_UP, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Hide resource"), _(u"Hide resource"), None ) 
+		
+		self.expand_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_GO_DOWN, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Show resource"), _(u"Show resource"), None ) 
 		
 		self.editor_toolBar.Realize() 
 		
@@ -60,9 +65,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.resource_panel = wx.Panel( self.editor_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.resource_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.resource_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, agwStyle=wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT )
-		self.resource_treeListCtrl.AddColumn( u"Name", 200, wx.ALIGN_LEFT)
-		self.resource_treeListCtrl.AddColumn( u"Description", 300, wx.ALIGN_LEFT)
+		self.resource_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.resource_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_SINGLE )
+		self.resource_treeListCtrl.AddColumn( _(u"Name"), 200, wx.ALIGN_LEFT, wx.COL_RESIZABLE )
+		self.resource_treeListCtrl.AddColumn( _(u"Description"), 300, wx.ALIGN_LEFT, wx.COL_RESIZABLE )
 		
 		bSizer2.Add( self.resource_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		
@@ -75,11 +80,11 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		
 		self.object_propertyGridManager = pg.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE|wx.propgrid.PG_SPLITTER_AUTO_CENTER|wx.propgrid.PG_TOOLBAR)
 		
-		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( u"Attributes", wx.ArtProvider.GetBitmap( u"gtk-index", wx.ART_MENU ) );
+		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Attributes"), wx.ArtProvider.GetBitmap( u"gtk-index", wx.ART_MENU ) );
 		
-		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( u"Methods", wx.ArtProvider.GetBitmap( u"gtk-properties", wx.ART_MENU ) );
+		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Methods"), wx.ArtProvider.GetBitmap( u"gtk-properties", wx.ART_MENU ) );
 		
-		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( u"Events", wx.ArtProvider.GetBitmap( u"gtk-about", wx.ART_MENU ) );
+		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Events"), wx.ArtProvider.GetBitmap( u"gtk-about", wx.ART_MENU ) );
 		bSizer3.Add( self.object_propertyGridManager, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		
@@ -101,8 +106,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.Bind( wx.EVT_TOOL, self.onSaveAsToolClicked, id = self.saveas_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onTestToolClicked, id = self.test_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onDesignToolClicked, id = self.design_tool.GetId() )
-		self.Bind( wx.EVT_TOOL, self.onScriptToolClicked, id = self.script_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onHelpToolClicked, id = self.help_tool.GetId() )
+		self.Bind( wx.EVT_TOOL, self.onCollapseToolClicked, id = self.collapse_tool.GetId() )
+		self.Bind( wx.EVT_TOOL, self.onExpandToolClicked, id = self.expand_tool.GetId() )
 		self.resource_treeListCtrl.Bind( wx.EVT_TREE_ITEM_RIGHT_CLICK, self.onResTreelistItemContextMenu )
 		self.resource_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onResItemTreelistSelectionChanged )
 		self.object_propertyGridManager.Bind( pg.EVT_PG_CHANGED, self.onObjPropertyGridChanged )
@@ -130,10 +136,13 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 	def onDesignToolClicked( self, event ):
 		event.Skip()
 	
-	def onScriptToolClicked( self, event ):
+	def onHelpToolClicked( self, event ):
 		event.Skip()
 	
-	def onHelpToolClicked( self, event ):
+	def onCollapseToolClicked( self, event ):
+		event.Skip()
+	
+	def onExpandToolClicked( self, event ):
 		event.Skip()
 	
 	def onResTreelistItemContextMenu( self, event ):

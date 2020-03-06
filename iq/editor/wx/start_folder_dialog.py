@@ -22,10 +22,14 @@ from . import wxfb_manager
 from .res_editor import new_resource_dialog
 from .res_editor import resource_editor
 
+from ...engine.wx import stored_wx_form_manager
+
 __version__ = (0, 0, 0, 1)
 
 
-class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto, form_manager.iqFormManager):
+class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
+                          form_manager.iqFormManager,
+                          stored_wx_form_manager.iqStoredWxFormsManager):
     """
     Dialog.
     """
@@ -39,6 +43,8 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto, form_manage
             self.SetIcon(icon=wx.Icon(bmp))
 
         self.folder_path = None
+
+        self.loadCustomProperties()
 
     def init(self):
         """
@@ -111,6 +117,7 @@ def openStartFolderDialog(parent=None, folder_path=None):
         dialog.folder_path = folder_path
         dialog.init()
         result = dialog.ShowModal()
+        dialog.saveCustomProperties()
         return result == wx.ID_OK
     except:
         log_func.fatal(u'Error open dialog <iqStartFolderDialog>')

@@ -20,10 +20,13 @@ from ...dialog import dlg_func
 
 from . import wxfb_manager
 
+from ...engine.wx import stored_wx_form_manager
+
 __version__ = (0, 0, 0, 1)
 
 
-class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditorDielogProto):
+class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditorDielogProto,
+                                       stored_wx_form_manager.iqStoredWxFormsManager):
     """
     Start wxFormBuilder project editor dialog.
     """
@@ -39,6 +42,8 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
         self.fbp_filename = None
 
         self.wxformbuilder_manager = wxfb_manager.iqWXFormBuilderManager()
+
+        self.loadCustomProperties()
 
     def init(self):
         """
@@ -113,6 +118,7 @@ def openStartWXFormBuilderEditorDlg(parent=None, fbp_filename=None):
         dlg.SetTitle(new_title)
         dlg.init()
         result = dlg.ShowModal() == wx.ID_OK
+        dlg.saveCustomProperties()
         dlg.Destroy()
         return result
     except:

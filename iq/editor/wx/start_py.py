@@ -22,10 +22,13 @@ from . import wxfb_manager
 from ...script import migrate_py
 from .code_generator import gui_generator
 
+from ...engine.wx import stored_wx_form_manager
+
 __version__ = (0, 0, 0, 1)
 
 
-class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto):
+class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto,
+                                stored_wx_form_manager.iqStoredWxFormsManager):
     """
     Start python module editor dialog.
     """
@@ -39,6 +42,8 @@ class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto):
             self.SetIcon(icon=wx.Icon(bmp))
 
         self.py_filename = None
+
+        self.loadCustomProperties()
 
     def init(self):
         """
@@ -137,6 +142,7 @@ def openStartPythonEditorDlg(parent=None, py_filename=None):
         dlg.SetTitle(new_title)
         dlg.init()
         result = dlg.ShowModal() == wx.ID_OK
+        dlg.saveCustomProperties()
         dlg.Destroy()
         return result
     except:

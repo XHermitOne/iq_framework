@@ -19,11 +19,13 @@ from ...dialog import dlg_func
 from ...project import prj
 
 from ...project import prj_func
+from ...engine.wx import stored_wx_form_manager
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto):
+class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
+                          stored_wx_form_manager.iqStoredWxFormsManager):
     """
     Start editor dialog.
     """
@@ -37,6 +39,8 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto):
             self.SetIcon(icon=wx.Icon(bmp))
 
         self._project_manager = prj.iqProjectManager()
+
+        self.loadCustomProperties()
 
     def init(self):
         """
@@ -124,6 +128,7 @@ def openStartEditorDlg(parent=None):
         dlg = iqStartEditorDialog(parent=parent)
         dlg.init()
         result = dlg.ShowModal() == wx.ID_OK
+        dlg.saveCustomProperties()
         dlg.Destroy()
         return result
     except:

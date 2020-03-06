@@ -10,8 +10,6 @@ import os.path
 from ...editor import property_editor_id
 from .. import wx_panel
 
-# from .. import data_column
-
 __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqMnemoScheme'

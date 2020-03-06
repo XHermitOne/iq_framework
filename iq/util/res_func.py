@@ -127,6 +127,7 @@ def saveResourcePickle(res_filename, resource_data):
         if not os.path.exists(dir_name):
             try:
                 os.makedirs(dir_name)
+                log_func.info(u'Create directory <%s>' % dir_name)
             except:
                 log_func.fatal(u'Error create path <%s>' % dir_name)
 

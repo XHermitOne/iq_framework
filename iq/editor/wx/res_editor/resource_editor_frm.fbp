@@ -14,7 +14,7 @@
         <property name="file">resource_editor_frm</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
-        <property name="internationalize">0</property>
+        <property name="internationalize">1</property>
         <property name="name">resource_editor_frm</property>
         <property name="namespace"></property>
         <property name="path">.</property>
@@ -312,30 +312,6 @@
                             <property name="permission">protected</property>
                         </object>
                         <object class="tool" expanded="1">
-                            <property name="bitmap">Load From Art Provider; wxART_HELP_SETTINGS; wxART_MENU</property>
-                            <property name="context_menu">0</property>
-                            <property name="id">wxID_ANY</property>
-                            <property name="kind">wxITEM_NORMAL</property>
-                            <property name="label">tool</property>
-                            <property name="name">script_tool</property>
-                            <property name="permission">protected</property>
-                            <property name="statusbar">Open script</property>
-                            <property name="tooltip">Open script</property>
-                            <event name="OnAuiToolBarBeginDrag"></event>
-                            <event name="OnAuiToolBarMiddleClick"></event>
-                            <event name="OnAuiToolBarOverflowClick"></event>
-                            <event name="OnAuiToolBarRightClick"></event>
-                            <event name="OnAuiToolBarToolDropDown"></event>
-                            <event name="OnMenuSelection"></event>
-                            <event name="OnToolClicked">onScriptToolClicked</event>
-                            <event name="OnToolEnter"></event>
-                            <event name="OnToolRClicked"></event>
-                            <event name="OnUpdateUI"></event>
-                        </object>
-                        <object class="toolSeparator" expanded="1">
-                            <property name="permission">protected</property>
-                        </object>
-                        <object class="tool" expanded="1">
                             <property name="bitmap">Load From Art Provider; wxART_HELP; wxART_MENU</property>
                             <property name="context_menu">0</property>
                             <property name="id">wxID_ANY</property>
@@ -352,6 +328,51 @@
                             <event name="OnAuiToolBarToolDropDown"></event>
                             <event name="OnMenuSelection"></event>
                             <event name="OnToolClicked">onHelpToolClicked</event>
+                            <event name="OnToolEnter"></event>
+                            <event name="OnToolRClicked"></event>
+                            <event name="OnUpdateUI"></event>
+                        </object>
+                        <object class="toolSeparator" expanded="1">
+                            <property name="permission">protected</property>
+                        </object>
+                        <object class="tool" expanded="1">
+                            <property name="bitmap">Load From Art Provider; wxART_GO_UP; wxART_MENU</property>
+                            <property name="context_menu">0</property>
+                            <property name="id">wxID_ANY</property>
+                            <property name="kind">wxITEM_NORMAL</property>
+                            <property name="label">tool</property>
+                            <property name="name">collapse_tool</property>
+                            <property name="permission">protected</property>
+                            <property name="statusbar">Hide resource</property>
+                            <property name="tooltip">Hide resource</property>
+                            <event name="OnAuiToolBarBeginDrag"></event>
+                            <event name="OnAuiToolBarMiddleClick"></event>
+                            <event name="OnAuiToolBarOverflowClick"></event>
+                            <event name="OnAuiToolBarRightClick"></event>
+                            <event name="OnAuiToolBarToolDropDown"></event>
+                            <event name="OnMenuSelection"></event>
+                            <event name="OnToolClicked">onCollapseToolClicked</event>
+                            <event name="OnToolEnter"></event>
+                            <event name="OnToolRClicked"></event>
+                            <event name="OnUpdateUI"></event>
+                        </object>
+                        <object class="tool" expanded="1">
+                            <property name="bitmap">Load From Art Provider; wxART_GO_DOWN; wxART_MENU</property>
+                            <property name="context_menu">0</property>
+                            <property name="id">wxID_ANY</property>
+                            <property name="kind">wxITEM_NORMAL</property>
+                            <property name="label">tool</property>
+                            <property name="name">expand_tool</property>
+                            <property name="permission">protected</property>
+                            <property name="statusbar">Show resource</property>
+                            <property name="tooltip">Show resource</property>
+                            <event name="OnAuiToolBarBeginDrag"></event>
+                            <event name="OnAuiToolBarMiddleClick"></event>
+                            <event name="OnAuiToolBarOverflowClick"></event>
+                            <event name="OnAuiToolBarRightClick"></event>
+                            <event name="OnAuiToolBarToolDropDown"></event>
+                            <event name="OnMenuSelection"></event>
+                            <event name="OnToolClicked">onExpandToolClicked</event>
                             <event name="OnToolEnter"></event>
                             <event name="OnToolRClicked"></event>
                             <event name="OnUpdateUI"></event>
