@@ -51,9 +51,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		
 		self.editor_toolBar.AddSeparator()
 		
-		self.collapse_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_GO_UP, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Hide resource"), _(u"Hide resource"), None ) 
+		self.collapse_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_GO_DOWN, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Hide object inspector"), _(u"Hide object inspector"), None ) 
 		
-		self.expand_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_GO_DOWN, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Show resource"), _(u"Show resource"), None ) 
+		self.expand_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_GO_UP, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Show object inspector"), _(u"Show object inspector"), None ) 
 		
 		self.editor_toolBar.Realize() 
 		

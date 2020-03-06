@@ -7,6 +7,7 @@ Wx PlateButton specification module.
 
 import os.path
 import wx
+import wx.lib.platebtn
 
 from iq.object import object_spc
 from ...editor import property_editor_id
@@ -14,6 +15,16 @@ from ...editor import property_editor_id
 __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqWxPlateButton'
+
+WXPLATEBUTTON_STYLE = {
+    'PB_STYLE_DEFAULT': wx.lib.platebtn.PB_STYLE_DEFAULT,
+    'PB_STYLE_DROPARROW': wx.lib.platebtn.PB_STYLE_DROPARROW,
+    'PB_STYLE_GRADIENT': wx.lib.platebtn.PB_STYLE_GRADIENT,
+    'PB_STYLE_NOBG': wx.lib.platebtn.PB_STYLE_NOBG,
+    'PB_STYLE_SQUARE': wx.lib.platebtn.PB_STYLE_SQUARE,
+    'PB_STYLE_TOGGLE': wx.lib.platebtn.PB_STYLE_TOGGLE,
+}
+
 
 WXPLATEBUTTON_SPC = {
     'name': 'default',
@@ -44,7 +55,10 @@ WXPLATEBUTTON_SPC = {
         'foreground_colour': property_editor_id.COLOUR_EDITOR,
         'background_colour': property_editor_id.COLOUR_EDITOR,
         'label': property_editor_id.STRING_EDITOR,
-        # 'style': property_editor_id.,
+        'style': {
+            'editor': property_editor_id.FLAG_EDITOR,
+            'choices': WXPLATEBUTTON_STYLE,
+        },
         'image': property_editor_id.LIBICON_EDITOR,
     },
     '__help__': {

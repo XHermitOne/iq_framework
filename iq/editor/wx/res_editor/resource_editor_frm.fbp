@@ -336,15 +336,15 @@
                             <property name="permission">protected</property>
                         </object>
                         <object class="tool" expanded="1">
-                            <property name="bitmap">Load From Art Provider; wxART_GO_UP; wxART_MENU</property>
+                            <property name="bitmap">Load From Art Provider; wxART_GO_DOWN; wxART_MENU</property>
                             <property name="context_menu">0</property>
                             <property name="id">wxID_ANY</property>
                             <property name="kind">wxITEM_NORMAL</property>
                             <property name="label">tool</property>
                             <property name="name">collapse_tool</property>
                             <property name="permission">protected</property>
-                            <property name="statusbar">Hide resource</property>
-                            <property name="tooltip">Hide resource</property>
+                            <property name="statusbar">Hide object inspector</property>
+                            <property name="tooltip">Hide object inspector</property>
                             <event name="OnAuiToolBarBeginDrag"></event>
                             <event name="OnAuiToolBarMiddleClick"></event>
                             <event name="OnAuiToolBarOverflowClick"></event>
@@ -357,15 +357,15 @@
                             <event name="OnUpdateUI"></event>
                         </object>
                         <object class="tool" expanded="1">
-                            <property name="bitmap">Load From Art Provider; wxART_GO_DOWN; wxART_MENU</property>
+                            <property name="bitmap">Load From Art Provider; wxART_GO_UP; wxART_MENU</property>
                             <property name="context_menu">0</property>
                             <property name="id">wxID_ANY</property>
                             <property name="kind">wxITEM_NORMAL</property>
                             <property name="label">tool</property>
                             <property name="name">expand_tool</property>
                             <property name="permission">protected</property>
-                            <property name="statusbar">Show resource</property>
-                            <property name="tooltip">Show resource</property>
+                            <property name="statusbar">Show object inspector</property>
+                            <property name="tooltip">Show object inspector</property>
                             <event name="OnAuiToolBarBeginDrag"></event>
                             <event name="OnAuiToolBarMiddleClick"></event>
                             <event name="OnAuiToolBarOverflowClick"></event>

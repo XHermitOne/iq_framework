@@ -121,9 +121,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         :return:
         """
-        # self.initImages()
-        # self.editor_toolBar.ToggleTool(self.show_res_tool.GetId(), True)
-        # self.editor_toolBar.ToggleTool(self.show_obj_tool.GetId(), True)
+        self.initImages()
+
         self.editor_toolBar.EnableTool(self.expand_tool.GetId(), False)
 
         self.initComponentIcons()
@@ -135,11 +134,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         Init control images.
         """
-        bmp = wxbitmap_func.createIconBitmap('fatcow%splugin' % os.path.sep)
-        self.editor_toolBar.SetToolNormalBitmap(self.show_res_tool.GetId(), bitmap=bmp)
-
-        bmp = wxbitmap_func.createIconBitmap('fatcow%sbrick' % os.path.sep)
-        self.editor_toolBar.SetToolNormalBitmap(self.show_obj_tool.GetId(), bitmap=bmp)
+        pass
 
     def _loadResource(self, resource, parent_item=None):
         """
@@ -476,7 +471,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         Hide resource tool button click handler.
         """
         self.collapseSplitterWindowPanel(splitter=self.editor_splitter, toolbar=self.editor_toolBar,
-                                         collapse_tool=self.collapse_tool, expand_tool=self.expand_tool)
+                                         collapse_tool=self.collapse_tool, expand_tool=self.expand_tool,
+                                         resize_panel=1)
         event.Skip()
 
     def onExpandToolClicked(self, event):
@@ -484,7 +480,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         Show object inspector tool button click handler.
         """
         self.expandSplitterWindowPanel(splitter=self.editor_splitter, toolbar=self.editor_toolBar,
-                                       collapse_tool=self.collapse_tool, expand_tool=self.expand_tool)
+                                       collapse_tool=self.collapse_tool, expand_tool=self.expand_tool,
+                                       resize_panel=1)
         event.Skip()
 
     def onResTreelistItemContextMenu(self, event):

@@ -15,6 +15,25 @@ __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqWxPanel'
 
+WXPANEL_STYLE = {
+    'CAPTION': wx.CAPTION,
+    'MINIMIZE_BOX': wx.MINIMIZE_BOX,
+    'MAXIMIZE_BOX': wx.MAXIMIZE_BOX,
+    # 'THICK_FRAME': wx.THICK_FRAME,
+    'SIMPLE_BORDER': wx.SIMPLE_BORDER,
+    'DOUBLE_BORDER': wx.DOUBLE_BORDER,
+    'SUNKEN_BORDER': wx.SUNKEN_BORDER,
+    'RAISED_BORDER': wx.RAISED_BORDER,
+    'STATIC_BORDER': wx.STATIC_BORDER,
+    'TRANSPARENT_WINDOW': wx.TRANSPARENT_WINDOW,
+    'TAB_TRAVERSAL': wx.TAB_TRAVERSAL,
+    'WANTS_CHARS': wx.WANTS_CHARS,
+    'NO_FULL_REPAINT_ON_RESIZE': wx.NO_FULL_REPAINT_ON_RESIZE,
+    'VSCROLL': wx.VSCROLL,
+    'HSCROLL': wx.HSCROLL,
+    'CLIP_CHILDREN': wx.CLIP_CHILDREN,
+}
+
 WXPANEL_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
@@ -40,7 +59,10 @@ WXPANEL_SPC = {
         'size': property_editor_id.SIZE_EDITOR,
         'foreground_colour': property_editor_id.COLOUR_EDITOR,
         'background_colour': property_editor_id.COLOUR_EDITOR,
-        # 'style': property_editor_id.,
+        'style': {
+            'editor': property_editor_id.FLAG_EDITOR,
+            'choices': WXPANEL_STYLE,
+        },
     },
     '__help__': {
         'position': u'Panel position',

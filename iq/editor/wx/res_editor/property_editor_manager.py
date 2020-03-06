@@ -245,6 +245,16 @@ class iqPropertyEditorManager(object):
                 value = str(value)
             wx_property = wx.propgrid.StringProperty(name, value=value)
 
+        elif property_type == property_editor_id.FLAG_EDITOR:
+            choice_dict = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', dict())
+            choices = list(choice_dict.keys())
+
+            values = list()
+            for choice_name, code in choice_dict.items():
+                if code & value:
+                    values.append(choice_name)
+            wx_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=values)
+
         else:
             log_func.error(u'Property type <%s> not supported' % property_type)
 
@@ -525,6 +535,13 @@ class iqPropertyEditorManager(object):
                 value = value.replace(icon_func.ICON_FILENAME_EXT, '')
             if value.startswith(os.path.sep):
                 value = value[1:]
+
+        elif property_type == property_editor_id.FLAG_EDITOR:
+            choice_dict = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(attr_name, dict()).get('choices', dict())
+            values = [item.strip('"') for item in str_value.split(' ')]
+            value = 0
+            for value_name in values:
+                value |= choice_dict.get(value_name, 0)
 
         else:
             log_func.error(u'Not support property editor. Code [%d]' % property_type)
