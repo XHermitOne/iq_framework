@@ -46,6 +46,9 @@ class iqPassport(object):
         self.name = name
         self.guid = guid
 
+    def __str__(self):
+        return self.getAsStr()
+
     def set(self, prj=None, typename=None, name=None, module=None, guid=None):
         """
         Set passport.
@@ -209,6 +212,7 @@ class iqPassport(object):
                 find_res_filename = self.findResourceFilename(passport, find_path=dir_path)
                 if find_res_filename:
                     return find_res_filename
+        log_func.error(u'Resource file <%s> not found in %s' % (res_filename, file_names))
         return None
 
     def findObjResource(self, passport=None):
@@ -223,10 +227,15 @@ class iqPassport(object):
         res_filename = self.findResourceFilename(passport=passport)
         if res_filename:
             resource = res_func.loadRuntimeResource(res_filename)
-            return spc_func.findObjResource(resource,
-                                            object_type=passport.typename,
-                                            object_name=passport.name,
-                                            object_guid=passport.guid)
+            obj_resource = spc_func.findObjResource(resource,
+                                                    object_type=passport.typename,
+                                                    object_name=passport.name,
+                                                    object_guid=passport.guid)
+            if not obj_resource:
+                log_func.error(u'Object <%s> not found in resource' % str(passport))
+            return obj_resource
+        else:
+            log_func.error(u'Resource file <%s> not found' % str(passport))
         return None
 
     def setAsAny(self, passport=None):

@@ -5,7 +5,6 @@
 Kernel - general dispatcher of all program objects.
 """
 
-# import sys
 import os.path
 
 from .. import global_data
@@ -156,6 +155,8 @@ class iqKernel(object):
         if resource:
             return self.createByResource(parent=parent, resource=resource,
                                          context=context, *args, **kwargs)
+        else:
+            log_func.error(u'Resource <%s> not found' % str(psp))
         return None
 
     def create(self, parent=None, object_data=None, context=None, *args, **kwargs):
@@ -213,6 +214,7 @@ class iqKernel(object):
         :return: Registered object or None if error.
         """
         obj = self.createByPsp(psp=psp, *args, **kwargs)
+        # log_func.info(u'Create object <%s : %s>' % (str(psp), str(obj)))
         if register:
             self._object_cache[psp] = obj
         return obj
@@ -224,8 +226,13 @@ def initSettings():
     """
     if global_data.getGlobal('SETTINGS') is None:
         from ..engine import settings_access
-        global_data.setGlobal('SETTINGS',
-                              settings_access.iqSettingsDotUse())
+        settings = settings_access.iqSettingsDotUse()
+        global_data.setGlobal('SETTINGS', settings)
+
+        import iq
+        iq.SETTINGS = settings
+
+        log_func.info(u'Create SETTINGS object')
     return global_data.getGlobal('SETTINGS')
 
 
@@ -235,8 +242,13 @@ def initObjects():
     """
     if global_data.getGlobal('OBJECTS') is None:
         from ..engine import objects_access
-        global_data.setGlobal('OBJECTS',
-                              objects_access.iqObjectDotUse())
+        objects = objects_access.iqObjectDotUse()
+        global_data.setGlobal('OBJECTS', objects)
+
+        import iq
+        iq.OBJECTS = objects
+
+        log_func.info(u'Create OBJECTS object')
     return global_data.getGlobal('OBJECTS')
 
 

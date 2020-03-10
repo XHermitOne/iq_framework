@@ -69,7 +69,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         self.component_menu = None
 
         save_filename = os.path.join(file_func.getProfilePath(),
-                                     self.getName() + res_func.PICKLE_RESOURCE_FILE_EXT)
+                                     self.getClassName() + res_func.PICKLE_RESOURCE_FILE_EXT)
         self.loadCustomProperties(save_filename)
 
         self.Bind(wx.EVT_CLOSE, self.onClose)
@@ -79,7 +79,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         Close frame handler.
         """
         save_filename = os.path.join(file_func.getProfilePath(),
-                                     self.getName() + res_func.PICKLE_RESOURCE_FILE_EXT)
+                                     self.getClassName() + res_func.PICKLE_RESOURCE_FILE_EXT)
         self.saveCustomProperties(save_filename)
         event.Skip()
 
@@ -565,7 +565,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             return context_menu
         return None
 
-    def appendResourceItem(self, item=None, resource=None, expand=True):
+    def appendResourceItem(self, item=None, resource=None, expand=True, select_new=False):
         """
         Append new child resource in item.
 
@@ -573,6 +573,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             If item is None then get selected item.
         :param resource: Child resource.
         :param expand: Expand item after append?
+        :param select_new: Select new item?
         :return: True/False.
         """
         if resource is None:
@@ -598,6 +599,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 child_item = self.resource_treeListCtrl.GetMainWindow().AppendItem(parentId=item, text=name,
                                                                                    image=img_idx, data=resource)
                 self.refreshResourceItem(item=child_item, name=name, description=description, activate=activate)
+                if select_new:
+                    self.resource_treeListCtrl.GetMainWindow().SelectItem(child_item)
 
                 if resource.get(spc_func.CHILDREN_ATTR_NAME, None):
                     for child_resource in resource[spc_func.CHILDREN_ATTR_NAME]:
@@ -627,7 +630,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             component_resource = spc_func.fillResourceBySpc(dict(), component_resource)
             component_resource['name'] += str(wx.NewId())
             selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
-            self.appendResourceItem(selected_item, component_resource)
+            self.appendResourceItem(selected_item, component_resource, select_new=True)
 
             self.item_context_menu = None
             self.component_menu = None
@@ -673,7 +676,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 item_spc = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
                 item_content = item_spc.get(spc_func.CONTENT_ATTR_NAME, list())
                 if component_type in item_content:
-                    return self.appendResourceItem(item, resource_item)
+                    return self.appendResourceItem(item, resource_item, select_new=True)
                 else:
                     item_type = item_spc.get('type', 'UnknownType')
                     msg = u'Unable to add component <%s> to <%s>' % (component_type, item_type)

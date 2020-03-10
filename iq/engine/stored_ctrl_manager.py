@@ -58,9 +58,9 @@ class iqStoredCtrlManager(object):
         :return:
         """
         profile_path = file_func.getProjectProfilePath()
-        return os.path.join(profile_path, self.getName() + res_func.PICKLE_RESOURCE_FILE_EXT)
+        return os.path.join(profile_path, self.getClassName() + res_func.PICKLE_RESOURCE_FILE_EXT)
 
-    def getName(self):
+    def getClassName(self):
         """
         Get object name.
         """

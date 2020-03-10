@@ -6,6 +6,7 @@ Support for access to metadata of system resources through a point.
 """
 
 from ..util import global_func
+from ..util import log_func
 
 from ..passport import passport
 from ..object import object_context
@@ -42,6 +43,9 @@ class iqMetaDotUseProto(object):
             else:
                 context = object_context.iqContext(kernel=kernel)
             return kernel.createObject(psp=self.passport(), parent=parent, context=context, *arg, **kwarg)
+        else:
+            log_func.error(u'Kernel object not defined')
+        return None
 
     def get(self, parent=None, *arg, **kwarg):
         """
@@ -64,6 +68,9 @@ class iqMetaDotUseProto(object):
             else:
                 context = object_context.iqContext(kernel=kernel)
             return kernel.createObject(psp=self.passport(), parent=parent, context=context, *arg, **kwarg)
+        else:
+            log_func.error(u'Kernel object not defined')
+        return None
 
     def passport(self):
         """
@@ -126,9 +133,7 @@ class iqPrjDotUse(iqMetaDotUseProto):
             
         res_name = iqResNameDotUse(object.__getattribute__(self, '_cur_passport'))
         
-        if res_name._cur_passport.module:
-            res_name._cur_passport.module = res_name._cur_passport.module.replace('*.', attribute_name + '.')
-
+        res_name._cur_passport.module = attribute_name
         return res_name
 
 

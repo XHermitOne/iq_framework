@@ -28,7 +28,7 @@ def createBitmap(img_filename, mask_colour=None):
     try:
         img_filename = os.path.abspath(img_filename)
         if (not img_filename) or (not os.path.exists(img_filename)):
-            log_func.warning(u'Image file <%s> not found' % img_filename)
+            log_func.error(u'Image file <%s> not found' % img_filename)
             return None
 
         bmp = wx.Bitmap(img_filename, getImageFileType(img_filename))

@@ -319,6 +319,7 @@ class iqPropertyEditorManager(object):
         prop_page.Append(wx.propgrid.PropertyCategory(u'2 - Special'))
 
         attributes = [attr_name for attr_name in self.getResourceAttributes(resource) if attr_name not in spc_func.BASIC_ATTRIBUTES]
+        attributes.sort()
         # log_func.debug(u'Attributes: %s' % str(attributes))
         for attr_name in attributes:
             # log_func.debug(u'Attribute editor <%s> ...' % attr_name)
@@ -387,9 +388,11 @@ class iqPropertyEditorManager(object):
         :return: Method name list.
         """
         edit_section = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-        return [attr_name for attr_name,
-                              editor_type in list(edit_section.items()) if
-                editor_type == property_editor_id.METHOD_EDITOR]
+        res_methods = [attr_name for attr_name,
+                       editor_type in list(edit_section.items()) if
+                       editor_type == property_editor_id.METHOD_EDITOR]
+        res_methods.sort()
+        return res_methods
 
     def getResourceEvents(self, resource):
         """
@@ -399,9 +402,11 @@ class iqPropertyEditorManager(object):
         :return: Event name list.
         """
         edit_section = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-        return [attr_name for attr_name,
-                              editor_type in list(edit_section.items()) if
-                editor_type == property_editor_id.EVENT_EDITOR]
+        res_events = [attr_name for attr_name,
+                      editor_type in list(edit_section.items()) if
+                      editor_type == property_editor_id.EVENT_EDITOR]
+        res_events.sort()
+        return res_events
 
     def getConvertedValue(self, attr_name, str_value, property_type, spc=None):
         """

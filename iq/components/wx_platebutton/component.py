@@ -71,7 +71,7 @@ class iqWxPlateButton(object.iqObject, wx.lib.platebtn.PlateButton):
         """
         return self.getAttribute('label')
 
-    def getImageFilename(self):
+    def getImageName(self):
         """
         Button image filename.
         """
@@ -81,8 +81,8 @@ class iqWxPlateButton(object.iqObject, wx.lib.platebtn.PlateButton):
         """
         Get Bitmap object of button image.
         """
-        img_filename = self.getImageFilename()
-        return wxbitmap_func.createBitmap(img_filename)
+        img_name = self.getImageName()
+        return wxbitmap_func.createIconBitmap(img_name)
 
     def getForegroundColour(self):
         """

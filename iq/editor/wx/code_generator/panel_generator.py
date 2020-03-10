@@ -34,7 +34,7 @@ def create%s(parent=None):
 
 
 ADDPAGE_PANEL_FUNC_BODY_FMT = u'''
-def add%sPage(parent=None):
+def add%sPage(parent=None, title=\'unknown\'):
     \"\"\"
     Add page.
 
@@ -47,7 +47,7 @@ def add%sPage(parent=None):
 
         panel = create%s(parent)
         if panel:
-            parent.addPage(panel)
+            parent.addPage(panel, title=title)
         return True
     except:
         log_func.fatal(u'Error add panel page <%s>')
@@ -142,7 +142,7 @@ def genAddPageFunctionBody(class_name):
     :return: Function text body.
     """
     function_name = class_name[2:] if class_name.startswith('iq') else class_name
-    frm_body_function = ADDPAGE_PANEL_FUNC_BODY_FMT % (function_name, class_name, class_name, class_name)
+    frm_body_function = ADDPAGE_PANEL_FUNC_BODY_FMT % (function_name, function_name, class_name)
     return frm_body_function
 
 
