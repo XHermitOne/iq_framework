@@ -15,6 +15,7 @@ import wx.propgrid
 from ....util import log_func
 from ....util import spc_func
 from ....util import icon_func
+from ....util import file_func
 
 from ... import property_editor_id
 
@@ -22,13 +23,17 @@ from ....engine.wx.dlg import wxdlg_func
 
 from . import passport_property_editor
 from . import libicon_property_editor
+from . import file_property_editor
+from . import dir_property_editor
 
 __version__ = (0, 0, 0, 1)
 
 VALIDATE_ENABLE = True
 
 CUSTOM_PROPERTY_EDITORS = (passport_property_editor.iqPassportPropertyEditor,
-                           libicon_property_editor.iqLibraryIconPropertyEditor)
+                           libicon_property_editor.iqLibraryIconPropertyEditor,
+                           file_property_editor.iqFilePropertyEditor,
+                           dir_property_editor.iqDirPropertyEditor)
 
 
 class iqPropertyEditorManager(object):
@@ -217,16 +222,6 @@ class iqPropertyEditorManager(object):
             # wx_property.SetAttribute('Hint', 'This is a hint')
             # wx_property.SetAttribute('Password', True)
 
-        elif property_type == property_editor_id.FILE_EDITOR:
-            if not isinstance(value, str):
-                value = u''
-            wx_property = wx.propgrid.FileProperty(name, value=value)
-
-        elif property_type == property_editor_id.DIR_EDITOR:
-            if not isinstance(value, str):
-                value = u''
-            wx_property = wx.propgrid.DirProperty(name, value=value)
-
         elif property_type == property_editor_id.IMAGE_EDITOR:
             if not isinstance(value, str):
                 value = u''
@@ -254,6 +249,18 @@ class iqPropertyEditorManager(object):
                 if code & value:
                     values.append(choice_name)
             wx_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=values)
+
+        elif property_type == property_editor_id.FILE_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            # wx_property = wx.propgrid.FileProperty(name, value=value)
+            wx_property = wx.propgrid.StringProperty(name, value=value)
+
+        elif property_type == property_editor_id.DIR_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            # wx_property = wx.propgrid.DirProperty(name, value=value)
+            wx_property = wx.propgrid.StringProperty(name, value=value)
 
         else:
             log_func.error(u'Property type <%s> not supported' % property_type)
@@ -335,6 +342,10 @@ class iqPropertyEditorManager(object):
                     property_editor.SetPropertyEditor(attr_name, passport_property_editor.iqPassportPropertyEditor.__name__)
                 elif edt_type == property_editor_id.LIBICON_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, libicon_property_editor.iqLibraryIconPropertyEditor.__name__)
+                elif edt_type == property_editor_id.FILE_EDITOR:
+                    property_editor.SetPropertyEditor(attr_name, file_property_editor.iqFilePropertyEditor.__name__)
+                elif edt_type == property_editor_id.DIR_EDITOR:
+                    property_editor.SetPropertyEditor(attr_name, dir_property_editor.iqDirPropertyEditor.__name__)
                 # if edt_type == icDefInf.EDT_PY_SCRIPT:
                 #     self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
                 # elif edt_type == icDefInf.EDT_USER_PROPERTY:
@@ -512,12 +523,6 @@ class iqPropertyEditorManager(object):
         elif property_type == property_editor_id.PASSWORD_EDITOR:
             value = hashlib.md5(str_value.encode()).hexdigest()
 
-        elif property_type == property_editor_id.FILE_EDITOR:
-            value = str_value
-
-        elif property_type == property_editor_id.DIR_EDITOR:
-            value = str_value
-
         elif property_type == property_editor_id.IMAGE_EDITOR:
             value = str_value
 
@@ -547,6 +552,24 @@ class iqPropertyEditorManager(object):
             value = 0
             for value_name in values:
                 value |= choice_dict.get(value_name, 0)
+
+        elif property_type == property_editor_id.FILE_EDITOR:
+            framework_path = file_func.getFrameworkPath()
+            if framework_path in str_value:
+                value = str_value.replace(framework_path, '')
+                if value.startswith(os.path.sep):
+                    value = value[1:]
+            else:
+                value = str_value
+
+        elif property_type == property_editor_id.DIR_EDITOR:
+            framework_path = file_func.getFrameworkPath()
+            if framework_path in str_value:
+                value = str_value.replace(framework_path, '')
+                if value.startswith(os.path.sep):
+                    value = value[1:]
+            else:
+                value = str_value
 
         else:
             log_func.error(u'Not support property editor. Code [%d]' % property_type)
