@@ -20,6 +20,7 @@ def open%s(parent=None):
     :param parent: Parent window.
     :return: True/False.
     \"\"\"
+    dialog = None
     try:
         if parent is None:
             parent = global_func.getMainWin()
@@ -27,8 +28,11 @@ def open%s(parent=None):
         dialog = %s(parent)
         dialog.init()
         result = dialog.ShowModal()
+        dialog.Destroy()
         return result == wx.ID_OK
     except:
+        if dialog:
+            dialog.Destroy()
         log_func.fatal(u'Error open dialog <%s>')
     return False
 '''

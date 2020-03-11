@@ -43,6 +43,7 @@ WXPLATEBUTTON_SPC = {
     'foreground_colour': None,
     'background_colour': None,
     'image': None,
+    'on_button_click': None,
 
     '__package__': u'wxPython',
     '__icon__': 'fatcow%sbutton' % os.path.sep,
@@ -59,7 +60,8 @@ WXPLATEBUTTON_SPC = {
             'editor': property_editor_id.FLAG_EDITOR,
             'choices': WXPLATEBUTTON_STYLE,
         },
-        'image': property_editor_id.LIBICON_EDITOR,
+        'image': property_editor_id.ICON_EDITOR,
+        'on_button_click': property_editor_id.EVENT_EDITOR,
     },
     '__help__': {
         'position': u'Control position',
@@ -69,6 +71,7 @@ WXPLATEBUTTON_SPC = {
         'style': u'Control style',
         'label': u'Label',
         'image': u'Button library icon name',
+        'on_button_click': u'Button click event handler'
     },
 }
 

@@ -25,6 +25,7 @@ from . import passport_property_editor
 from . import libicon_property_editor
 from . import file_property_editor
 from . import dir_property_editor
+from . import script_property_editor
 
 __version__ = (0, 0, 0, 1)
 
@@ -33,7 +34,8 @@ VALIDATE_ENABLE = True
 CUSTOM_PROPERTY_EDITORS = (passport_property_editor.iqPassportPropertyEditor,
                            libicon_property_editor.iqLibraryIconPropertyEditor,
                            file_property_editor.iqFilePropertyEditor,
-                           dir_property_editor.iqDirPropertyEditor)
+                           dir_property_editor.iqDirPropertyEditor,
+                           script_property_editor.iqScriptPropertyEditor)
 
 
 class iqPropertyEditorManager(object):
@@ -178,7 +180,7 @@ class iqPropertyEditorManager(object):
             else:
                 log_func.warning(u'Attribute [%s]. Property editor <Python script> for type <%s> not supported' % (name, value.__class__.__name__))
                 value = u''
-            wx_property = wx.propgrid.LongStringProperty(name, value=value)
+            wx_property = wx.propgrid.StringProperty(name, value=value)
 
         elif property_type == property_editor_id.READONLY_EDITOR:
             if not isinstance(value, str):
@@ -235,7 +237,7 @@ class iqPropertyEditorManager(object):
                 value = str(value)
             wx_property = wx.propgrid.StringProperty(name, value=value)
 
-        elif property_type == property_editor_id.LIBICON_EDITOR:
+        elif property_type == property_editor_id.ICON_EDITOR:
             if not isinstance(value, str):
                 value = str(value)
             wx_property = wx.propgrid.StringProperty(name, value=value)
@@ -340,16 +342,14 @@ class iqPropertyEditorManager(object):
                     add_property.SetAttribute('Password', True)
                 elif edt_type == property_editor_id.PASSPORT_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, passport_property_editor.iqPassportPropertyEditor.__name__)
-                elif edt_type == property_editor_id.LIBICON_EDITOR:
+                elif edt_type == property_editor_id.ICON_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, libicon_property_editor.iqLibraryIconPropertyEditor.__name__)
                 elif edt_type == property_editor_id.FILE_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, file_property_editor.iqFilePropertyEditor.__name__)
                 elif edt_type == property_editor_id.DIR_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, dir_property_editor.iqDirPropertyEditor.__name__)
-                # if edt_type == icDefInf.EDT_PY_SCRIPT:
-                #     self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
-                # elif edt_type == icDefInf.EDT_USER_PROPERTY:
-                #     self.SetPropertyEditor(attr, icedituserproperty.icEditUserPropertyEditor.__name__)
+                elif edt_type == property_editor_id.SCRIPT_EDITOR:
+                    property_editor.SetPropertyEditor(attr_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
         bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
         methods_page = property_editor.AddPage(u'Methods', bmp)
@@ -362,7 +362,7 @@ class iqPropertyEditorManager(object):
             wx_property = self.createPropertyEditor(method_name, resource.get(method_name, None), edt_type, spc=resource)
             if wx_property is not None:
                 methods_page.Append(wx_property)
-                # self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
+                property_editor.SetPropertyEditor(method_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
         bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
         events_page = property_editor.AddPage(u'Events', bmp)
@@ -375,7 +375,7 @@ class iqPropertyEditorManager(object):
             wx_property = self.createPropertyEditor(event_name, resource.get(event_name, None), edt_type, spc=resource)
             if wx_property is not None:
                 events_page.Append(wx_property)
-                # self.SetPropertyEditor(attr, icpyscriptproperty.icPyScriptPropertyEditor.__name__)
+                property_editor.SetPropertyEditor(event_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
     def getResourceAttributes(self, resource):
         """
@@ -524,21 +524,21 @@ class iqPropertyEditorManager(object):
             value = hashlib.md5(str_value.encode()).hexdigest()
 
         elif property_type == property_editor_id.IMAGE_EDITOR:
-            value = str_value
+            value = str_value if str_value else None
 
         elif property_type == property_editor_id.SCRIPT_EDITOR:
-            value = str_value
+            value = str_value if str_value else None
 
         elif property_type == property_editor_id.METHOD_EDITOR:
-            value = str_value
+            value = str_value if str_value else None
 
         elif property_type == property_editor_id.EVENT_EDITOR:
-            value = str_value
+            value = str_value if str_value else None
 
         elif property_type == property_editor_id.PASSPORT_EDITOR:
             value = str_value
 
-        elif property_type == property_editor_id.LIBICON_EDITOR:
+        elif property_type == property_editor_id.ICON_EDITOR:
             lib_icon_path = icon_func.getIconPath()
             value = str_value.replace(lib_icon_path, '')
             if value.endswith(icon_func.ICON_FILENAME_EXT):

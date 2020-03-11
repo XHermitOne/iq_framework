@@ -2,22 +2,23 @@
 # -*- coding: utf-8 -*-
 
 """
-Passport property editor class module.
+Python script property editor class module.
 """
 
+import os.path
 import wx.propgrid
 
 from ....util import log_func
-from ....util import global_func
+from ....util import file_func
 
-from . import select_passport_dialog
+from ....engine.wx.dlg import python_script_dialog
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
+class iqScriptPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
     """
-    Passport property editor.
+    Python script property editor.
     """
     property_edit_manager = None
 
@@ -40,7 +41,7 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
         If failed, return False or (False, None). If success, return tuple
             (True, newValue).
         """
-        value = text # self.str_to_val_user_property(text, self.property_edit_manager)
+        value = text    # self.str_to_val_user_property(text, self.property_edit_manager)
         return True, value
 
     def CreateControls(self, propgrid, property, pos, sz):
@@ -54,7 +55,6 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
             editor controls, of which first is the primary one and second
             is usually a button.
         """
-        # log_func.debug(u'Create controls <%s>' % self.__class__.__name__)
         try:
             x, y = pos
             w, h = sz
@@ -87,11 +87,11 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
         eventType = event.GetEventType()
 
         if eventType == wx.wxEVT_COMMAND_BUTTON_CLICKED:
-            property_value = property.GetValue()
-            value = select_passport_dialog.selectPassportDlg(parent=None,
-                                                             prj_name=global_func.getProjectName(),
-                                                             default_psp=property_value)
-            if value is not None:
+            property_value = property.GetValue() if property.GetValue() not in (None, 'None') else ''
+            value = python_script_dialog.getPythonScriptDialog(script=property_value)
+            if value == '':
+                property.SetValueInEvent(None)
+            elif value is not None:
                 property.SetValueInEvent(value)
             return True
 
