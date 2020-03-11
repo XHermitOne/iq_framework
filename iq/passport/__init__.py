@@ -5,5 +5,6 @@
 Passport package.
 """
 
-__version__ = (0, 0, 0, 1)
+from .passport import iqPassport
 
+__version__ = (0, 0, 0, 1)

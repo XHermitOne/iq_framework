@@ -12,7 +12,7 @@ import wx.lib.agw.aui
 
 from ...util import log_func
 from ...util import file_func
-# from ..wx.dlg import wxdlg_func
+from ..wx.dlg import wxdlg_func
 from ..wx import wxbitmap_func
 
 from . import base_manager
@@ -53,7 +53,8 @@ class iqMainNotebook(wx.lib.agw.aui.AuiNotebook,
         self.SetClientSize(parent.GetClientSize())
         # self.initImageLib()
 
-    def addPage(self, page_panel, title, open_exists=False, default_page=-1):
+    def addPage(self, page_panel, title, open_exists=False, default_page=-1,
+                not_duplicate=True):
         """
         Append page in notebook.
 
@@ -62,9 +63,19 @@ class iqMainNotebook(wx.lib.agw.aui.AuiNotebook,
         :param open_exists: Allow to open a page with the same title?
         :param default_page: The index of the page to open by default.
             If -1, the current page to add opens.
+        :param not_duplicate: Not open duplicate page?
         :return: True/False.
         """
         try:
+            if not_duplicate:
+                titles = [self.GetPageText(i) for i in range(self.GetPageCount())]
+                if title in titles:
+                    msg = u'The page <%s> is already open.' % title
+                    log_func.warning(msg)
+                    page_panel.Destroy()
+                    wxdlg_func.openWarningBox(u'WARNING', msg)
+                    return False
+
             if open_exists:
                 self.openPageByTitle(title)
                 return True

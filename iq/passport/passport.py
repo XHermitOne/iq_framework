@@ -88,7 +88,7 @@ class iqPassport(object):
         assert (isinstance(passport, str) and self.isPassport(passport)), u'Error passport as string'
 
         passport_tuple = tuple(passport.split(PASSPORT_STR_DELIM))
-        log_func.debug(u'Passport as tuple %s : %s' % (str(passport_tuple), self.isPassport(passport)))
+        # log_func.debug(u'Passport as tuple %s : %s' % (str(passport_tuple), self.isPassport(passport)))
         self.setAsTuple(passport_tuple)
         return self
 

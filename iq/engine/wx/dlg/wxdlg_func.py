@@ -35,7 +35,8 @@ def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):
            parent = wx.Frame(None, -1, '')
            win_clear = True
 
-        wildcard = wildcard_filter + '|All Files (*.*)|*.*'
+        all_files_wildcard = 'All Files (*.*)|*.*'
+        wildcard = wildcard_filter + '|' + all_files_wildcard if wildcard_filter else all_files_wildcard
         dlg = wx.FileDialog(parent, title, '', '', wildcard, wx.FD_OPEN)
         if default_path:
             dlg.SetDirectory(os.path.normpath(default_path))

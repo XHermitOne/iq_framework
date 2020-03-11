@@ -6,6 +6,7 @@ Mnemoscheme anchor component.
 """
 
 from ... import object
+from ... import passport
 
 from . import spc
 from . import mnemoanchor
@@ -70,7 +71,8 @@ class iqMnemoAnchor(object.iqObject, mnemoanchor.iqMnemoAnchorManager):
         """
         Get a passport of the control object attached to the anchor.
         """
-        return self.getAttribute('attachment')
+        str_psp = self.getAttribute('attachment')
+        return passport.iqPassport().setAsStr(str_psp)
 
     def getAttachment(self):
         """
@@ -82,7 +84,7 @@ class iqMnemoAnchor(object.iqObject, mnemoanchor.iqMnemoAnchorManager):
         psp = self.getAttachmentPsp()
 
         if psp:
-            name = psp[0][1]
+            name = psp.name
             parent = self.getParent()
             if parent.hasChild(name):
                 return parent.getChild(name)

@@ -55,11 +55,11 @@ class iqMnemoSchemeManager(object):
         :return: True/False.
         """
         if not svg_filename:
-            log_func.error(u'Not defined SVG mimic background file')
+            log_func.error(u'Not defined SVG mnemoscheme background file')
             return False
 
         if not os.path.exists(svg_filename):
-            log_func.error(u'Not found SVG mimic background file <%s>' % svg_filename)
+            log_func.error(u'Not found SVG mnemoscheme background file <%s>' % svg_filename)
             return False
 
         self._svg_background = svg_filename

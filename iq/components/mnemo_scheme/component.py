@@ -5,12 +5,18 @@
 Mnemoscheme component.
 """
 
+import os.path
+import wx
+
 from . import spc
 from . import mnemoscheme
 
 from .. import mnemo_anchor
 
 from .. import wx_panel
+
+from ...util import file_func
+from ...util import log_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -29,6 +35,28 @@ class iqMnemoScheme(wx_panel.COMPONENT, mnemoscheme.iqMnemoSchemeManager):
         """
         wx_panel.COMPONENT.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
         mnemoscheme.iqMnemoSchemeManager.__init__(self, *args, **kwargs)
+
+        self.setSVGBackground(self.getSVGFilename(), auto_draw=True)
+        self.setSVGSize(self.getSVGWidth(), self.getSVGHeight())
+
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.onEraseBackground)
+        self.Bind(wx.EVT_SIZE, self.onPanelSize)
+
+    def onEraseBackground(self, event):
+        """
+        Adding a picture to the panel background through the device context.
+        """
+        self.drawDCBitmap(dc=event.GetDC(), bmp=self.getBackgroundBitmap())
+
+    def onPanelSize(self, event):
+        """
+        Overriding the mnemoscheme panel resize handler.
+        """
+        self.drawBackground()
+        self.layoutAll(False)
+
+        self.Refresh()
+        event.Skip()
 
     def getAnchors(self):
         """
@@ -58,6 +86,31 @@ class iqMnemoScheme(wx_panel.COMPONENT, mnemoscheme.iqMnemoSchemeManager):
             self.Refresh()
 
         return result
+
+    def getSVGFilename(self):
+        """
+        Get SVG filename.
+        """
+        svg_filename = self.getAttribute('svg_background')
+        if not svg_filename:
+            log_func.error(u'Not define SVG file as background in <%s>' % self.getName())
+            return None
+
+        if svg_filename.startswith(os.path.sep):
+            return svg_filename
+        return os.path.join(file_func.getFrameworkPath(), svg_filename)
+
+    def getSVGWidth(self):
+        """
+        Get SVG width in original units.
+        """
+        return self.getAttribute('svg_width')
+
+    def getSVGHeight(self):
+        """
+        Get SVG height in original units.
+        """
+        return self.getAttribute('svg_height')
 
 
 COMPONENT = iqMnemoScheme
