@@ -47,3 +47,15 @@ class iqContext(context_dict):
         Init context.
         """
         pass
+
+    def set(self, **items):
+        """
+        Append items in context.
+
+        :param items: Item dictionary.
+        :return: True/False.
+        """
+        if items:
+            self.update(items)
+            return True
+        return False

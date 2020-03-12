@@ -26,7 +26,7 @@ CONTENT_ATTR_NAME = '__content__'
 TEST_FUNC_ATTR_NAME = '__test__'
 DESIGN_FUNC_ATTR_NAME = '__design__'
 
-BASIC_ATTRIBUTES = ('name', 'type', 'description', 'activate', 'guid')
+BASIC_ATTRIBUTES = ('name', 'type', 'description', 'activate', 'guid', 'module')
 ALL_BASIC_ATTRIBUTES = list(BASIC_ATTRIBUTES) + [CHILDREN_ATTR_NAME]
 
 

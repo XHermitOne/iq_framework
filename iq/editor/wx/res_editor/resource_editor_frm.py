@@ -24,7 +24,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Resource editor"), pos = wx.Point( 0,0 ), size = wx.Size( 447,765 ), style = wx.DEFAULT_FRAME_STYLE|wx.RESIZE_BORDER|wx.STAY_ON_TOP|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 		
@@ -44,6 +44,10 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.editor_toolBar.AddSeparator()
 		
 		self.design_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( u"gtk-preferences", wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Design"), _(u"Design"), None ) 
+		
+		self.editor_toolBar.AddSeparator()
+		
+		self.module_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( u"gtk-select-all", wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Generate resource module"), _(u"Generate resource module"), None ) 
 		
 		self.editor_toolBar.AddSeparator()
 		
@@ -106,6 +110,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.Bind( wx.EVT_TOOL, self.onSaveAsToolClicked, id = self.saveas_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onTestToolClicked, id = self.test_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onDesignToolClicked, id = self.design_tool.GetId() )
+		self.Bind( wx.EVT_TOOL, self.onModuleToolClicked, id = self.module_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onHelpToolClicked, id = self.help_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onCollapseToolClicked, id = self.collapse_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onExpandToolClicked, id = self.expand_tool.GetId() )
@@ -134,6 +139,9 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		event.Skip()
 	
 	def onDesignToolClicked( self, event ):
+		event.Skip()
+	
+	def onModuleToolClicked( self, event ):
 		event.Skip()
 	
 	def onHelpToolClicked( self, event ):

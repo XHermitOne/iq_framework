@@ -12,6 +12,9 @@ from ... import object
 
 from . import spc
 
+from ...util import log_func
+from ...util import exec_func
+
 from ...engine.wx import wxbitmap_func
 
 __version__ = (0, 0, 0, 1)
@@ -46,6 +49,8 @@ class iqWxPlateButton(object.iqObject, wx.lib.platebtn.PlateButton):
         background_colour = self.getBackgroundColour()
         if background_colour is not None:
             self.SetBackgroundColour(wx.Colour(background_colour[0], background_colour[1], background_colour[2]))
+
+        self.Bind(wx.EVT_BUTTON, self.onButtonClick)
 
     def getPosition(self):
         """
@@ -95,6 +100,21 @@ class iqWxPlateButton(object.iqObject, wx.lib.platebtn.PlateButton):
         Panel background colour.
         """
         return self.getAttribute('background_colour')
+
+    def onButtonClick(self, event):
+        """
+        Button click handler.
+        """
+        on_button_click = self.getAttribute('on_button_click')
+        if on_button_click:
+            context = self.getContext()
+            if context:
+                context.set(event=event)
+            exec_func.execTxtFunction(on_button_click, context=context)
+        else:
+            log_func.warning(u'Not define button click handler function for <%s : %s>' % (self.getName(),
+                                                                                          self.getType()))
+        event.Skip()
 
 
 COMPONENT = iqWxPlateButton

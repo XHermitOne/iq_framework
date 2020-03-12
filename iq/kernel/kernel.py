@@ -16,6 +16,8 @@ from .. import components
 from ..passport import passport
 from .. import project
 
+from ..engine import objects_access
+
 __version__ = (0, 0, 0, 1)
 
 RUNTIME_MODE_STATE = 'runtime'
@@ -139,8 +141,13 @@ class iqKernel(object):
         :return: New object or None if error.
         """
         resource = res_func.loadRuntimeResource(res_filename)
-        return self.createByResource(parent=parent, resource=resource,
-                                     context=context, *args, **kwargs)
+        obj = self.createByResource(parent=parent, resource=resource,
+                                    context=context, *args, **kwargs)
+        # Set passport
+        psp = obj.getPassport()
+        psp.module = os.path.splitext(os.path.basename(res_filename))[0]
+        obj.setPassport(psp)
+        return obj
 
     def createByPsp(self, parent=None, psp=None, context=None, *args, **kwargs):
         """
@@ -153,8 +160,12 @@ class iqKernel(object):
         """
         resource = passport.iqPassport().findObjResource(passport=psp)
         if resource:
-            return self.createByResource(parent=parent, resource=resource,
-                                         context=context, *args, **kwargs)
+            obj = self.createByResource(parent=parent, resource=resource,
+                                        context=context, *args, **kwargs)
+            # Set passport
+            if obj:
+                obj.setPassport(psp)
+            return obj
         else:
             log_func.error(u'Resource <%s> not found' % str(psp))
         return None
@@ -219,6 +230,15 @@ class iqKernel(object):
             self._object_cache[psp] = obj
         return obj
 
+    @property
+    def get(self):
+        """
+        Create an object access object by point.
+
+        :return:
+        """
+        return objects_access.iqObjectDotUse()
+
 
 def initSettings():
     """
@@ -236,20 +256,20 @@ def initSettings():
     return global_data.getGlobal('SETTINGS')
 
 
-def initObjects():
-    """
-    Access to project objects.
-    """
-    if global_data.getGlobal('OBJECTS') is None:
-        from ..engine import objects_access
-        objects = objects_access.iqObjectDotUse()
-        global_data.setGlobal('OBJECTS', objects)
-
-        import iq
-        iq.OBJECTS = objects
-
-        log_func.info(u'Create OBJECTS object')
-    return global_data.getGlobal('OBJECTS')
+# def initObjects():
+#     """
+#     Access to project objects.
+#     """
+#     if global_data.getGlobal('OBJECTS') is None:
+#         from ..engine import objects_access
+#         objects = objects_access.iqObjectDotUse()
+#         global_data.setGlobal('OBJECTS', objects)
+#
+#         import iq
+#         iq.OBJECTS = objects
+#
+#         log_func.info(u'Create OBJECTS object')
+#     return global_data.getGlobal('OBJECTS')
 
 
 def createKernel():
@@ -260,9 +280,11 @@ def createKernel():
     """
     kernel = iqKernel()
     global_data.setGlobal('KERNEL', kernel)
-    log_func.info(u'Create KERNEL object')
 
     initSettings()
-    initObjects()
+    # initObjects()
 
+    import iq
+    iq.KERNEL = kernel
+    log_func.info(u'Create KERNEL object')
     return kernel

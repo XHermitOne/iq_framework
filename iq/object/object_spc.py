@@ -16,6 +16,7 @@ OBJECT_SPC = {
     'description': '',
     'activate': True,
     'guid': None,
+    'module': None,
 
     '_children_': [],
 
@@ -28,6 +29,7 @@ OBJECT_SPC = {
         'description': u'Description',
         'activate': u'Activate trigger',
         'guid': u'Global object identifier',
+        'module': u'Resource python module',
     },
     '__edit__': {
         'name': property_editor_id.STRING_EDITOR,
@@ -35,6 +37,7 @@ OBJECT_SPC = {
         'description': property_editor_id.TEXT_EDITOR,
         'activate': property_editor_id.CHECKBOX_EDITOR,
         'guid': property_editor_id.READONLY_EDITOR,
+        'module': property_editor_id.READONLY_EDITOR,
     },
     '__content__': (),
 

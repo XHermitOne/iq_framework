@@ -5,8 +5,8 @@
 Support for access to metadata of system resources through a point.
 """
 
-from ..util import global_func
 from ..util import log_func
+from ..util import global_func
 
 from ..passport import passport
 from ..object import object_context
@@ -27,12 +27,17 @@ class iqMetaDotUseProto(object):
         else:
             self._cur_passport = passport.iqPassport()
 
+        # if self._cur_passport:
+        #     log_func.debug(u'%s. Current passport <%s>' % (self.__class__.__name__, str(self._cur_passport)))
+
     def create(self, parent=None, *arg, **kwarg):
         """
         Create selected object.
         """
+        psp = self.passport()
         kernel = global_func.getKernel()
         if kernel:
+            context = None
             if 'context' in kwarg:
                 if isinstance(kwarg['context'], dict):
                     context = object_context.iqContext(kernel=kernel)
@@ -40,9 +45,8 @@ class iqMetaDotUseProto(object):
                 else:
                     context = kwarg['context']
                 del kwarg['context']
-            else:
-                context = object_context.iqContext(kernel=kernel)
-            return kernel.createObject(psp=self.passport(), parent=parent, context=context, *arg, **kwarg)
+            obj = kernel.createObject(psp=psp, parent=parent, context=context, *arg, **kwarg)
+            return obj
         else:
             log_func.error(u'Kernel object not defined')
         return None
@@ -58,6 +62,7 @@ class iqMetaDotUseProto(object):
             if obj:
                 return obj
 
+            context = None
             if 'context' in kwarg:
                 if isinstance(kwarg['context'], dict):
                     context = object_context.iqContext(kernel=kernel)
@@ -65,9 +70,8 @@ class iqMetaDotUseProto(object):
                 else:
                     context = kwarg['context']
                 del kwarg['context']
-            else:
-                context = object_context.iqContext(kernel=kernel)
-            return kernel.createObject(psp=self.passport(), parent=parent, context=context, *arg, **kwarg)
+            obj = kernel.getObject(psp=psp, parent=parent, context=context, *arg, **kwarg)
+            return obj
         else:
             log_func.error(u'Kernel object not defined')
         return None
@@ -76,6 +80,8 @@ class iqMetaDotUseProto(object):
         """
         Getting a passport of the selected object.
         """
+        # if self._cur_passport:
+        #     log_func.debug(u'Current passport <%s>' % str(self._cur_passport))
         return self._cur_passport
 
 
@@ -99,7 +105,7 @@ class iqObjectDotUse(iqMetaDotUseProto):
         try:
             return object.__getattribute__(self, attribute_name)
         except AttributeError:
-            pass            
+            pass
 
         prj = iqPrjDotUse(object.__getattribute__(self, '_cur_passport'))
 
@@ -107,7 +113,6 @@ class iqObjectDotUse(iqMetaDotUseProto):
             prj._cur_passport.prj = global_func.getProjectName()
         else:
             prj._cur_passport.prj = attribute_name
-            
         return prj
 
 

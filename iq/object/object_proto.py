@@ -5,10 +5,16 @@
 Base object class module.
 """
 
+import os.path
+
 from . import object_context
 from ..util import global_func
 from ..util import spc_func
 from ..util import log_func
+from ..util import file_func
+from ..util import imp_func
+
+from .. import passport
 
 __version__ = (0, 0, 0, 1)
 
@@ -30,9 +36,16 @@ class iqObject(object):
         """
         self._parent = parent
         self._resource = spc_func.fillResourceBySpc(resource=resource, spc=spc)
-        self._context = self.createContext(context)
+
+        default_psp = dict(prj=global_func.getProjectName(),
+                           module=self.getName(),
+                           type=self.getType(),
+                           name=self.getName())
+        self._passport = passport.iqPassport().setAsDict(default_psp)
 
         self._children = None
+
+        self._context = self.createContext(context)
 
     def getName(self):
         """
@@ -52,6 +65,22 @@ class iqObject(object):
             return res.get('type', u'Unknown')
         return u'Unknown'
 
+    def setPassport(self, psp=None):
+        """
+        Set object passport.
+
+        :param psp: Object passport in any form.
+        :return: Passport object.
+        """
+        self._passport = passport.iqPassport().setAsAny(psp)
+        return self._passport
+
+    def getPassport(self):
+        """
+        Get object passport.
+        """
+        return self._passport
+
     def getParent(self):
         """
         Get parent object.
@@ -64,10 +93,46 @@ class iqObject(object):
         """
         return self._resource
 
+    def getModuleFilename(self):
+        """
+        Get resource python module filename by passport.
+
+        :return: Resource python module filename or None if file not found.
+        """
+        psp = self.getPassport()
+        res_filename = psp.findResourceFilename()
+        if res_filename:
+            module_filename = file_func.setFilenameExt(filename=res_filename, ext='.py')
+            if os.path.exists(module_filename):
+                return module_filename
+        #     else:
+        #         log_func.warning(u'Resource python module <%s> not found' % module_filename)
+        # else:
+        #     log_func.error(u'Not define resource file of object <%s : %s>' % (self.getName(), self.getType()))
+        return None
+
+    def getModule(self, module_filename=None):
+        """
+        Get resource python module object.
+
+        :param module_filename: Resource python module filename.
+        :return: Module object or None if error.
+        """
+        if module_filename is None:
+            module_filename = self.getModuleFilename()
+        if module_filename:
+            module = imp_func.loadPyModule(name=self.getName(),
+                                           path=module_filename)
+            return module
+        return None
+
     def getContext(self):
         """
         Get context object.
         """
+        if self._context:
+            # Automatically add an object pointer to the context
+            self._context.update(dict(self=self))
         return self._context
 
     def createContext(self, context=None):
@@ -79,12 +144,21 @@ class iqObject(object):
         """
         self._context = None
         if context is None:
-            self._context = object_context.iqContext(runtime_object=self)
+            self._context = object_context.iqContext(root_obj=self,
+                                                     kernel=self.getKernel())
         elif isinstance(context, dict):
-            self._context = object_context.iqContext(runtime_object=self)
+            self._context = object_context.iqContext(root_obj=self,
+                                                     kernel=self.getKernel())
             self._context.update(context)
         elif isinstance(context, object_context.iqContext):
             self._context = context
+
+        if self._context:
+            # Add resource module name space
+            module = self.getModule()
+            if module:
+                module_dict = dict([(name, getattr(module, name)) for name in dir(module)])
+                self._context.update(module_dict)
         return self._context
 
     def getKernel(self):

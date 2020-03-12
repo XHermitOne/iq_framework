@@ -212,7 +212,7 @@ class iqPassport(object):
                 find_res_filename = self.findResourceFilename(passport, find_path=dir_path)
                 if find_res_filename:
                     return find_res_filename
-        log_func.error(u'Resource file <%s> not found in %s' % (res_filename, file_names))
+        # log_func.error(u'Resource file <%s> not found in %s' % (res_filename, file_names))
         return None
 
     def findObjResource(self, passport=None):

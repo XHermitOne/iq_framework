@@ -15,6 +15,7 @@ class iqModelNavigatorManager(object):
     def __init__(self, model=None):
         """
         Constructor.
+
         :param model: Model.
         """
         self.__model__ = model

@@ -312,6 +312,30 @@
                             <property name="permission">protected</property>
                         </object>
                         <object class="tool" expanded="1">
+                            <property name="bitmap">Load From Art Provider; gtk-select-all; wxART_MENU</property>
+                            <property name="context_menu">0</property>
+                            <property name="id">wxID_ANY</property>
+                            <property name="kind">wxITEM_NORMAL</property>
+                            <property name="label">tool</property>
+                            <property name="name">module_tool</property>
+                            <property name="permission">protected</property>
+                            <property name="statusbar">Generate resource module</property>
+                            <property name="tooltip">Generate resource module</property>
+                            <event name="OnAuiToolBarBeginDrag"></event>
+                            <event name="OnAuiToolBarMiddleClick"></event>
+                            <event name="OnAuiToolBarOverflowClick"></event>
+                            <event name="OnAuiToolBarRightClick"></event>
+                            <event name="OnAuiToolBarToolDropDown"></event>
+                            <event name="OnMenuSelection"></event>
+                            <event name="OnToolClicked">onModuleToolClicked</event>
+                            <event name="OnToolEnter"></event>
+                            <event name="OnToolRClicked"></event>
+                            <event name="OnUpdateUI"></event>
+                        </object>
+                        <object class="toolSeparator" expanded="1">
+                            <property name="permission">protected</property>
+                        </object>
+                        <object class="tool" expanded="1">
                             <property name="bitmap">Load From Art Provider; wxART_HELP; wxART_MENU</property>
                             <property name="context_menu">0</property>
                             <property name="id">wxID_ANY</property>

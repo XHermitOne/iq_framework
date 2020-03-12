@@ -18,7 +18,7 @@ PYTHON_FILE_EXT = '.py'
 
 INIT_PY_FILENAME = '__init__.py'
 
-DEFAULT_INIT_PY = '''#!/usr/bin/env python3
+DEFAULT_PY = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 \"\"\"
@@ -29,21 +29,23 @@ __version__ = (0, 0, 0, 1)
 '''
 
 
-def createInitModule(package_path, init_file_body=None):
+def createPyModule(package_path, py_modulename=None, py_file_body=None, rewrite=False):
     """
-    Create __init__.py python module file.
+    Create py_modulename.py python module file.
 
     :param package_path: Package path.
-    :param init_file_body: Text __init__.py.
-        If None then write default __init__.py file text.
+    :param py_modulename: Module filename.
+    :param py_file_body: Text python module file.
+        If None then write default python file text.
+    :param rewrite: Rewrite file if it exists?
     :return: True/False.
     """
     if not package_path:
-        log_func.warning(u'Not define package path for create __init__.py file')
+        log_func.warning(u'Not define package path for create python file')
         return False
 
-    if init_file_body is None:
-        init_file_body = DEFAULT_INIT_PY
+    if py_file_body is None:
+        py_file_body = DEFAULT_PY
 
     if not os.path.exists(package_path):
         try:
@@ -52,8 +54,22 @@ def createInitModule(package_path, init_file_body=None):
             log_func.fatal(u'Error create directory <%s>' % package_path)
             return False
 
-    init_py_filename = os.path.join(package_path, INIT_PY_FILENAME)
-    return txtfile_func.saveTextFile(init_py_filename, init_file_body)
+    py_filename = os.path.join(package_path, py_modulename)
+    return txtfile_func.saveTextFile(py_filename, py_file_body, rewrite=rewrite)
+
+
+def createInitModule(package_path, init_file_body=None, rewrite=False):
+    """
+    Create __init__.py python module file.
+
+    :param package_path: Package path.
+    :param init_file_body: Text __init__.py.
+        If None then write default __init__.py file text.
+    :param rewrite: Rewrite file if it exists?
+    :return: True/False.
+    """
+    return createPyModule(package_path=package_path, py_modulename=INIT_PY_FILENAME,
+                          py_file_body=init_file_body, rewrite=rewrite)
 
 
 def createPackage(package_path):

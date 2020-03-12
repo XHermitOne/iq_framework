@@ -22,6 +22,7 @@ from ....util import spc_func
 from ....util import global_func
 from ....util import file_func
 from ....util import exec_func
+from ....util import py_func
 from ....engine.wx import wxbitmap_func
 from ....engine.wx import imglib_manager
 from ....engine.wx.dlg import wxdlg_func
@@ -227,17 +228,29 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             log_func.fatal(u'Error resource tree list control item selection changes handler')
         event.Skip()
 
+    def getItemResource(self, item=None):
+        """
+        Get item object resource.
+
+        :param item: Tree list control item.
+            If None then get root item.
+        :return: Object resource or None if error.
+        """
+        resource = None
+        if item is None:
+            item = self.resource_treeListCtrl.GetMainWindow().GetRootItem()
+        if item and item.IsOk():
+            resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
+        return resource
+
     def getSelectedResource(self):
         """
         Get selected object resource.
 
         :return: Object resource or None if not selected.
         """
-        resource = None
         selected_item = self.resource_treeListCtrl.GetMainWindow().GetSelection()
-        if selected_item and selected_item.IsOk():
-            resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(selected_item)
-        return resource
+        return self.getItemResource(item=selected_item)
 
     def refreshResourceItem(self, item=None, name='unknown', description='', activate=True):
         """
@@ -258,9 +271,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             active_colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT if activate else wx.SYS_COLOUR_GRAYTEXT)
             self.resource_treeListCtrl.GetMainWindow().SetItemTextColour(item, active_colour)
 
-    def getResourceItem(self, item=None):
+    def collectItemResource(self, item=None):
         """
-        Get resource from editor.
+        Collect item resource from editor.
 
         :param item: Current item of resource tree control.
             If None then get root item.
@@ -276,7 +289,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 resource[spc_func.CHILDREN_ATTR_NAME] = list()
                 child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetFirstChild(item)
                 while child_item and child_item.IsOk():
-                    child_resource = self.getResourceItem(child_item)
+                    child_resource = self.collectItemResource(child_item)
                     resource[spc_func.CHILDREN_ATTR_NAME].append(child_resource)
                     child_item, cookie = self.resource_treeListCtrl.GetMainWindow().GetNextChild(item, cookie=cookie)
         except:
@@ -347,7 +360,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         <New> resoure tool button click handler.
         """
-        res_filename = new_resource_dialog.createNewResource(parent=self)
+        default_res_filename = os.path.join(os.path.dirname(self.res_filename), 'default' + res_func.RESOURCE_FILE_EXT)
+        res_filename = new_resource_dialog.createNewResource(parent=self, res_filename=default_res_filename)
         if res_filename is not None:
             self.loadResourceFile(res_filename)
         event.Skip()
@@ -356,7 +370,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         <Save> tool button click handler.
         """
-        resource = self.getResourceItem()
+        resource = self.collectItemResource()
         resource = spc_func.clearAllResourcesFromSpc(resource)
         if self.res_filename is None:
             self.res_filename = wxdlg_func.getFileDlg(parent=self, title=u'SAVE',
@@ -379,7 +393,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         <Save As...> tool button click handler.
         """
-        resource = self.getResourceItem()
+        resource = self.collectItemResource()
         resource = spc_func.clearAllResourcesFromSpc(resource)
 
         res_filename = None
@@ -449,6 +463,27 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         else:
             log_func.warning(u'Not define DESIGN function for <%s>' % item_resource.get('type', None))
 
+        event.Skip()
+
+    def onModuleToolClicked(self, event):
+        """
+        Resource module tool button click handler.
+        """
+        item_resource = self.getItemResource()
+
+        # Generate resource module file
+        package_path = os.path.dirname(self.res_filename)
+        py_modulename = file_func.setFilenameExt(os.path.basename(self.res_filename), '.py')
+        module_filename = os.path.join(package_path, py_modulename)
+        if os.path.exists(module_filename):
+            if wxdlg_func.openAskBox(title=u'SAVE', prompt_text=u'File <%s> exists. Rewrite it?' % module_filename):
+                py_func.createPyModule(package_path=package_path, py_modulename=py_modulename, rewrite=True)
+            result = os.path.exists(module_filename)
+        else:
+            result = py_func.createPyModule(package_path=package_path, py_modulename=py_modulename)
+        if result:
+            item_resource['module'] = file_func.setFilenameExt(os.path.basename(self.res_filename), '.py')
+            self.getProperty('module').SetValue(item_resource['module'])
         event.Skip()
 
     def onHelpToolClicked(self, event):
