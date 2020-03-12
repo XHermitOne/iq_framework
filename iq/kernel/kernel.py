@@ -17,6 +17,7 @@ from ..passport import passport
 from .. import project
 
 from ..engine import objects_access
+from ..engine import settings_access
 
 __version__ = (0, 0, 0, 1)
 
@@ -231,7 +232,7 @@ class iqKernel(object):
         return obj
 
     @property
-    def get(self):
+    def obj(self):
         """
         Create an object access object by point.
 
@@ -239,37 +240,14 @@ class iqKernel(object):
         """
         return objects_access.iqObjectDotUse()
 
+    @property
+    def settings(self):
+        """
+        Create an settings access object by point.
 
-def initSettings():
-    """
-    Project settings saved to file INI.
-    """
-    if global_data.getGlobal('SETTINGS') is None:
-        from ..engine import settings_access
-        settings = settings_access.iqSettingsDotUse()
-        global_data.setGlobal('SETTINGS', settings)
-
-        import iq
-        iq.SETTINGS = settings
-
-        log_func.info(u'Create SETTINGS object')
-    return global_data.getGlobal('SETTINGS')
-
-
-# def initObjects():
-#     """
-#     Access to project objects.
-#     """
-#     if global_data.getGlobal('OBJECTS') is None:
-#         from ..engine import objects_access
-#         objects = objects_access.iqObjectDotUse()
-#         global_data.setGlobal('OBJECTS', objects)
-#
-#         import iq
-#         iq.OBJECTS = objects
-#
-#         log_func.info(u'Create OBJECTS object')
-#     return global_data.getGlobal('OBJECTS')
+        :return:
+        """
+        return settings_access.iqSettingsDotUse()
 
 
 def createKernel():
@@ -280,9 +258,6 @@ def createKernel():
     """
     kernel = iqKernel()
     global_data.setGlobal('KERNEL', kernel)
-
-    initSettings()
-    # initObjects()
 
     import iq
     iq.KERNEL = kernel
