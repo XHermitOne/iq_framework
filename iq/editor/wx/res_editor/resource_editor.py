@@ -477,14 +477,13 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         if spc_func.GEN_MODULE_FUNC_ATTR_NAME in resource:
             try:
                 gen_module_func = resource.get(spc_func.GEN_MODULE_FUNC_ATTR_NAME, None)
-                result = gen_module_func(module_filename=module_filename,
-                                         resource=resource) if gen_module_func is not None else False
+                if gen_module_func:
+                    result = gen_module_func(module_filename=module_filename,
+                                             resource=resource) if gen_module_func is not None else False
+                else:
+                    log_func.warning(u'Module generation function not defined')
             except:
                 log_func.fatal(u'Error generate module function')
-        else:
-            package_path = os.path.dirname(module_filename)
-            py_modulename = file_func.setFilenameExt(os.path.basename(module_filename), '.py')
-            result = py_func.createPyModule(package_path=package_path, py_modulename=py_modulename, rewrite=True)
         return result
 
     def onModuleToolClicked(self, event):

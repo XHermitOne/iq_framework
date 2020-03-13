@@ -5,9 +5,26 @@
 Object specification module.
 """
 
+import os.path
+
+from ..util import file_func
+from ..util import py_func
+
 from ..editor import property_editor_id
 
 __version__ = (0, 0, 0, 1)
+
+def genModule(module_filename=None, resource=None):
+    """
+    Generate object module.
+
+    :param module_filename: Module filename
+    :param resource: Resource dictionary.
+    :return: True/False.
+    """
+    package_path = os.path.dirname(module_filename)
+    py_modulename = file_func.setFilenameExt(os.path.basename(module_filename), '.py')
+    return py_func.createPyModule(package_path=package_path, py_modulename=py_modulename, rewrite=True)
 
 
 OBJECT_SPC = {
@@ -21,7 +38,7 @@ OBJECT_SPC = {
     '_children_': [],
 
     '__icon__': None,
-    # '__parent__': None,
+    '__gen_module__': genModule,
     '__doc__': None,
     '__help__': {
         'name': u'Object name',
