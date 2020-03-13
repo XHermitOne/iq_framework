@@ -13,7 +13,7 @@ from . import model
 __version__ = (0, 0, 0, 1)
 
 
-class iqDataModel(object.iqObject, model.iqModelManager):
+class iqDataModel(model.iqModelManager, object.iqObject):
     """
     Data model component.
     """

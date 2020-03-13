@@ -106,6 +106,7 @@ def main(*argv):
     elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
         editor.openEditor()
     elif mode == iq.EDITOR_MODE_STATE:
+        # kernel = iq.createKernel()
         editor.openResourceEditor(res_filename=res_filename)
     else:
         log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))

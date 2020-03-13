@@ -21,7 +21,7 @@ from ...util import log_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqMnemoScheme(wx_panel.COMPONENT, mnemoscheme.iqMnemoSchemeManager):
+class iqMnemoScheme(mnemoscheme.iqMnemoSchemeManager, wx_panel.COMPONENT):
     """
     Mnemoscheme component.
     """

@@ -5,11 +5,11 @@
 Support for access to metadata of system resources through a point.
 """
 
-from ..util import log_func
-from ..util import global_func
+from iq.util import log_func
+from iq.util import global_func
 
-from ..passport import passport
-from ..object import object_context
+from iq.passport import passport
+from iq.object import object_context
 
 __version__ = (0, 0, 0, 1)
 

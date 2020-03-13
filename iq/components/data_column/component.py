@@ -13,7 +13,7 @@ from . import column
 __version__ = (0, 0, 0, 1)
 
 
-class iqDataColumn(object.iqObject, column.iqColumnManager):
+class iqDataColumn(column.iqColumnManager, object.iqObject):
     """
     Data column component.
     """

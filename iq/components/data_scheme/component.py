@@ -13,7 +13,7 @@ from . import scheme
 __version__ = (0, 0, 0, 1)
 
 
-class iqDataScheme(object.iqObject, scheme.iqSchemeManager):
+class iqDataScheme(scheme.iqSchemeManager, object.iqObject):
     """
     Data scheme component.
     """

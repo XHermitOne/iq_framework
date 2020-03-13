@@ -11,13 +11,13 @@ Project settings are stored in the * .ini project file:
 import os
 import os.path
 
-from ..util import file_func
-from ..util import global_func
-from ..util import ini_func
-from ..util import log_func
-from ..util import exec_func
+from iq.util import file_func
+from iq.util import global_func
+from iq.util import ini_func
+from iq.util import log_func
+from iq.util import exec_func
 
-from ..passport import passport
+from iq.passport import passport
 
 __version__ = (0, 0, 0, 1)
 

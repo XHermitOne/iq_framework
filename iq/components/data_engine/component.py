@@ -13,7 +13,7 @@ from . import db_engine
 __version__ = (0, 0, 0, 1)
 
 
-class iqDataEngine(object.iqObject, db_engine.iqDBEngineManager):
+class iqDataEngine(db_engine.iqDBEngineManager, object.iqObject):
     """
     Data engine component.
     """

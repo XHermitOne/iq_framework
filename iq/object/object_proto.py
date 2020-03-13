@@ -13,6 +13,7 @@ from ..util import spc_func
 from ..util import log_func
 from ..util import file_func
 from ..util import imp_func
+from ..util import py_func
 
 from .. import passport
 
@@ -81,6 +82,14 @@ class iqObject(object):
         """
         return self._passport
 
+    def newPassport(self):
+        """
+        Create new passport object.
+
+        :return: Passport object.
+        """
+        return passport.iqPassport()
+
     def getParent(self):
         """
         Get parent object.
@@ -125,6 +134,22 @@ class iqObject(object):
                                            path=module_filename)
             return module
         return None
+
+    # def genModule(self, module_filename=None):
+    #     """
+    #     Generate resource python module.
+    #
+    #     :param module_filename: Resource python module filename.
+    #     :return: True/False.
+    #     """
+    #     if not module_filename:
+    #         log_func.error(u'Not define module filename for generate')
+    #         return False
+    #
+    #     package_path = os.path.dirname(module_filename)
+    #     py_modulename = file_func.setFilenameExt(os.path.basename(module_filename), '.py')
+    #     result = py_func.createPyModule(package_path=package_path, py_modulename=py_modulename)
+    #     return result
 
     def getContext(self):
         """

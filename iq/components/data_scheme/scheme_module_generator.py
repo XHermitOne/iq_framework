@@ -32,8 +32,7 @@ import sqlalchemy.ext.declarative
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
-%s
-'''
+%s'''
 
 MODEL_TEXT_FMT = '''
 class %s(Base):
@@ -52,18 +51,31 @@ class iqSchemeModuleGenerator(object):
     """
     Scheme python module generator.
     """
+    def __init__(self):
+        """
+        Constructor.
+        """
+        self._resource = dict()
 
     def getResource(self):
         """
         Get scheme resource.
         """
-        return dict()
+        return self._resource
+
+    def setResource(self, resource):
+        """
+        Set resource.
+
+        :param resource: Resource dictionary.
+        """
+        self._resource = resource
 
     def getName(self):
         """
         Get scheme name.
         """
-        return ''
+        return self._resource.get('name', 'unknown')
 
     def genModuleFilename(self):
         """
@@ -95,6 +107,7 @@ class iqSchemeModuleGenerator(object):
             If None then generate module filename.
         :return: New module filename or None if error.
         """
+        log_func.info(u'Generate data scheme module <%s>' % module_filename)
         if module_filename is None:
             module_filename = self.genModuleFilename()
 
@@ -103,11 +116,10 @@ class iqSchemeModuleGenerator(object):
             description = resource.get('description', '')
 
             modeles_text = [self.genModelTxt(model) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list())]
-            scheme_text = SCHEME_TEXT_FMT % (description, u'\n\n'.join(modeles_text))
+            scheme_text = SCHEME_TEXT_FMT % (description, u'\n'.join(modeles_text))
 
-            rewrite = bool(dlg_func.openAskBox(title=u'SAVE',
-                                               prompt_text=u'File <%s> exists. Rewrite it?' % module_filename)) if os.path.exists(module_filename) else False
-            result = txtfile_func.saveTextFile(modeles_text, scheme_text, rewrite=rewrite)
+            result = txtfile_func.saveTextFile(txt_filename=module_filename,
+                                               txt=scheme_text, rewrite=True)
             return module_filename if result else None
         except:
             log_func.fatal(u'Error generate scheme module')
@@ -179,7 +191,7 @@ class iqSchemeModuleGenerator(object):
             column_attrs.append('primary_key=%s' % str(primary_key))
 
         server_default = resource.get('server_default', None)
-        if server_default is not None:
+        if server_default:
             column_attrs.append('server_default=%s' % str(server_default))
 
         server_onupdate = resource.get('server_onupdate', None)
@@ -201,4 +213,17 @@ class iqSchemeModuleGenerator(object):
         if description:
             column_attrs.append('doc=\'%s\'' % description)
 
-        return COLUMN_TEXT_FMT % (name, ''.join(column_attrs))
+        return COLUMN_TEXT_FMT % (name, ', '.join(column_attrs))
+
+
+def genModule(module_filename=None, resource=None):
+    """
+    Generate module file.
+
+    :param module_filename: Module filename.
+    :param resource: Resource dictionary.
+    :return: True/False.
+    """
+    generator = iqSchemeModuleGenerator()
+    generator.setResource(resource)
+    return generator.genModule(module_filename=module_filename)

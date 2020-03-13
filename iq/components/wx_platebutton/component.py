@@ -20,7 +20,7 @@ from ...engine.wx import wxbitmap_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxPlateButton(object.iqObject, wx.lib.platebtn.PlateButton):
+class iqWxPlateButton(wx.lib.platebtn.PlateButton, object.iqObject):
     """
     Wx PlateButton component.
     """

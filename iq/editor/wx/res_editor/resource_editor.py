@@ -465,6 +465,28 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         event.Skip()
 
+    def genResourceModule(self, module_filename, resource):
+        """
+        Generate resource module file.
+
+        :param module_filename: Module filename.
+        :param resource: Resource.
+        :return: True/False.
+        """
+        result = False
+        if spc_func.GEN_MODULE_FUNC_ATTR_NAME in resource:
+            try:
+                gen_module_func = resource.get(spc_func.GEN_MODULE_FUNC_ATTR_NAME, None)
+                result = gen_module_func(module_filename=module_filename,
+                                         resource=resource) if gen_module_func is not None else False
+            except:
+                log_func.fatal(u'Error generate module function')
+        else:
+            package_path = os.path.dirname(module_filename)
+            py_modulename = file_func.setFilenameExt(os.path.basename(module_filename), '.py')
+            result = py_func.createPyModule(package_path=package_path, py_modulename=py_modulename, rewrite=True)
+        return result
+
     def onModuleToolClicked(self, event):
         """
         Resource module tool button click handler.
@@ -472,18 +494,28 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         item_resource = self.getItemResource()
 
         # Generate resource module file
+        result = False
         package_path = os.path.dirname(self.res_filename)
         py_modulename = file_func.setFilenameExt(os.path.basename(self.res_filename), '.py')
         module_filename = os.path.join(package_path, py_modulename)
         if os.path.exists(module_filename):
             if wxdlg_func.openAskBox(title=u'SAVE', prompt_text=u'File <%s> exists. Rewrite it?' % module_filename):
-                py_func.createPyModule(package_path=package_path, py_modulename=py_modulename, rewrite=True)
-            result = os.path.exists(module_filename)
+                result = self.genResourceModule(module_filename=module_filename,
+                                                resource=item_resource)
         else:
-            result = py_func.createPyModule(package_path=package_path, py_modulename=py_modulename)
-        if result:
-            item_resource['module'] = file_func.setFilenameExt(os.path.basename(self.res_filename), '.py')
+            result = self.genResourceModule(module_filename=module_filename,
+                                            resource=item_resource)
+        if result and os.path.exists(module_filename):
+            item_resource['module'] = os.path.basename(module_filename)
             self.getProperty('module').SetValue(item_resource['module'])
+            msg = u'Resource module <%s> is generated' % module_filename
+            log_func.info(msg)
+            wxdlg_func.openMsgBox(title=u'MODULE', prompt_text=msg)
+        else:
+            msg = u'Resource module <%s> is not generated' % module_filename
+            log_func.error(msg)
+            wxdlg_func.openErrBox(title=u'MODULE', prompt_text=msg)
+
         event.Skip()
 
     def onHelpToolClicked(self, event):

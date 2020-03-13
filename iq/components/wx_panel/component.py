@@ -16,7 +16,7 @@ from ...util import log_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxPanel(object.iqObject, wx.Panel):
+class iqWxPanel(wx.Panel, object.iqObject):
     """
     Wx panel component.
     """

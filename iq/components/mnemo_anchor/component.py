@@ -16,7 +16,7 @@ from ...util import log_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqMnemoAnchor(object.iqObject, mnemoanchor.iqMnemoAnchorManager):
+class iqMnemoAnchor(mnemoanchor.iqMnemoAnchorManager, object.iqObject):
     """
     Mnemoscheme anchor component.
     """

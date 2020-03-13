@@ -9,6 +9,8 @@ import os.path
 from iq.object import object_spc
 from ...editor import property_editor_id
 
+from . import scheme_module_generator
+
 __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqDataScheme'
@@ -19,11 +21,13 @@ DATASCHEME_SPC = {
     'description': '',
     'activate': True,
     'uuid': None,
+    'module': None,
 
     '_children_': [],
 
     'db_engine': None,
 
+    '__gen_module__': scheme_module_generator.genModule,
     '__package__': u'Data',
     '__icon__': 'fatcow%schart_organisation' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,

@@ -112,7 +112,7 @@ def findComponentSpc(component_type):
     """
     packages = getComponentSpcPalette()
     for package_name, package in packages.items():
-        log_func.debug(u'Package <%s>' % package_name)
+        # log_func.debug(u'Package <%s>' % package_name)
         component_types = [component_spc.get('type', None) for component_spc in package]
         if component_type in component_types:
             find_spc = package[component_types.index(component_type)]

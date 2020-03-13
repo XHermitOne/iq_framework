@@ -16,8 +16,7 @@ from .. import components
 from ..passport import passport
 from .. import project
 
-from ..engine import objects_access
-from ..engine import settings_access
+from . import objects_access, settings_access
 
 __version__ = (0, 0, 0, 1)
 
