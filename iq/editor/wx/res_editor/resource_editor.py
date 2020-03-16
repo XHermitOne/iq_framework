@@ -22,7 +22,7 @@ from ....util import spc_func
 from ....util import global_func
 from ....util import file_func
 from ....util import exec_func
-from ....util import py_func
+# from ....util import py_func
 from ....engine.wx import wxbitmap_func
 from ....engine.wx import imglib_manager
 from ....engine.wx.dlg import wxdlg_func
@@ -56,6 +56,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :param parent: Parent window object.
         """
         resource_editor_frm.iqResourceEditorFrameProto.__init__(self, parent=parent)
+        # the one with the tree in it...
+        # self.resource_treeListCtrl.GetMainWindow().SetMainColumn(0)
+
         bmp = wxbitmap_func.createIconBitmap('fatcow%splugin_edit' % os.path.sep)
         if bmp:
             self.SetIcon(icon=wx.Icon(bmp))
@@ -103,9 +106,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                     if component_type:
                         icon_name = component_spc.get('__icon__', None)
                         if icon_name:
-                            # log_func.debug(u'Create icon <%s>' % icon_name)
                             component_icon_idx = self.getImageLibImageIdx(icon_name)
                             self.component_icons[component_type] = component_icon_idx
+                            log_func.debug(u'Create icon <%s : %d>' % (icon_name, component_icon_idx))
                         else:
                             log_func.warning(u'Component <%s> specification not define icon' % component_type)
                             log_func.warning(u'Verify __icon__ attribute in specification')

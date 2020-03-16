@@ -70,8 +70,8 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.resource_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.resource_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_SINGLE )
-		self.resource_treeListCtrl.AddColumn( _(u"Name"), 200, wx.ALIGN_LEFT, wx.COL_RESIZABLE )
-		self.resource_treeListCtrl.AddColumn( _(u"Description"), 300, wx.ALIGN_LEFT, wx.COL_RESIZABLE )
+		self.resource_treeListCtrl.AddColumn( _(u"Name"), 200, wx.ALIGN_LEFT)
+		self.resource_treeListCtrl.AddColumn( _(u"Description"), 300, wx.ALIGN_LEFT)
 		
 		bSizer2.Add( self.resource_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		

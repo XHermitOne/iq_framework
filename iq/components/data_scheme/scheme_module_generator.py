@@ -25,10 +25,12 @@ SCHEME_TEXT_FMT = '''#!/usr/bin/env python3
 
 # Scheme module python code generated with iqFramework
 
-import sqlalchemy
 import sqlalchemy.ext.declarative
-# import sqlalchemy.orm
 # import sqlalchemy.orm.exc
+# import sqlalchemy.orm
+import sqlalchemy
+
+__version__ = (0, 0, 0, 1)
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
