@@ -27,7 +27,18 @@ class iqModelNavigatorManager(object):
         """
         Get model.
         """
+        if not self.__model__:
+            model = self.createModel()
+            self.setModel(model)
         return self.__model__
+
+    def createModel(self):
+        """
+        Create model object.
+
+        :return: Model or None if error.
+        """
+        return None
 
     def setModel(self, model=None):
         """
@@ -36,6 +47,18 @@ class iqModelNavigatorManager(object):
         self.__model__ = model
         self.__dataset__ = list()
         self.__rec_no__ = -1
+
+    def getModelQuery(self):
+        """
+        Get model query object.
+
+        :return: Query object or None if error.
+        """
+        session = self.getScheme().getSession()
+        model = self.getModel()
+        if session and model:
+            return session.query(model)
+        return None
 
     def getFirstDatasetRec(self):
         """

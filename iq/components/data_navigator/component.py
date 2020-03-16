@@ -28,9 +28,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         :param context: Context dictionary.
         """
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
-
-        model = self.createModel()
-        model_navigator.iqModelNavigatorManager.__init__(self, model=model, *args, **kwargs)
+        model_navigator.iqModelNavigatorManager.__init__(self, *args, **kwargs)
 
     def getModelPsp(self):
         """
@@ -38,6 +36,24 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         """
         model_psp = self.getAttribute('model')
         return model_psp
+
+    def getScheme(self):
+        """
+        Get scheme object by model.
+
+        :return: Data scheme object or None if error.
+        """
+        model_psp = self.getModelPsp()
+
+        if not model_psp:
+            log_func.error(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
+            return None
+
+        psp = self.newPassport().setAsStr(model_psp)
+        psp.typename = None
+        psp.name = None
+        scheme = self.getKernel().getObject(psp=psp, register=True)
+        return scheme
 
     def createModel(self):
         """
@@ -51,11 +67,9 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
             log_func.error(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
             return None
 
-        psp = self.newPassport().setAsStr(model_psp)
-        model_name = psp.name
-        psp.typename = None
-        psp.name = None
-        scheme = self.getKernel().createByPsp(psp=psp)
+        model_name = self.newPassport().setAsStr(model_psp).name
+
+        scheme = self.getScheme()
         if scheme:
             return scheme.getModel(model_name)
         else:

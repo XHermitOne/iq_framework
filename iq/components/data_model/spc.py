@@ -22,6 +22,7 @@ ID_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 ID_COLUMN_SPC['name'] = 'id'
 ID_COLUMN_SPC['description'] = 'Identifier'
 ID_COLUMN_SPC['field_type'] = 'BigInteger'
+ID_COLUMN_SPC['primary_key'] = True
 ID_COLUMN_SPC['autoincrement'] = True
 
 

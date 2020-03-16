@@ -8,6 +8,8 @@ Data engine manager.
 import sqlalchemy
 import sqlalchemy.engine.url
 
+from ...util import log_func
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -71,11 +73,28 @@ class iqDBEngineManager(object):
         """
         return None
 
+    def getDialectDriver(self):
+        """
+        Get dialect+driver.
+        """
+        dialect = self.getDialect()
+        driver = self.getDriver()
+
+        dialect_driver = tuple([item for item in (dialect, driver) if item])
+        return '+'.join(dialect_driver)
+
     def getDBUrl(self):
         """
         Get database url.
         """
-        url = sqlalchemy.engine.url.URL(drivername=self.getDriver(),
+        log_func.info(u'Create DB URL:')
+        log_func.info(u'\tDriver: %s' % self.getDialectDriver())
+        log_func.info(u'\tHost: %s' % self.getHost())
+        log_func.info(u'\tPort: %s' % self.getPort())
+        log_func.info(u'\tDB name: %s' % self.getDBName())
+        log_func.info(u'\tUsername: %s' % self.getUsername())
+
+        url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
                                         username=self.getUsername(),
                                         password=self.getPassword(),
                                         host=self.getHost(),
