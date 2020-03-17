@@ -5,6 +5,8 @@
 Data model navigator manager.
 """
 
+from ...util import log_func
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -165,6 +167,74 @@ class iqModelNavigatorManager(object):
         :return: Sorted dataset.
         """
         return self.__dataset__
+
+    def newRec(self, record):
+        """
+        Create new record.
+
+        :param record: Record dictionary.
+        :return: New model object or None if error.
+        """
+        try:
+            if not isinstance(record, dict):
+                record = dict(record)
+
+            model = self.getModel()
+            model_rec = dict([(col_name, value) for col_name, value in record.items() if hasattr(model, col_name)])
+            new_obj = model(**model_rec)
+            return new_obj
+        except:
+            log_func.fatal(u'<%s>. Error create new record %s' % (self.getName(), str(record)))
+        return None
+
+    def addRec(self, record, auto_commit=True):
+        """
+        Add record in model.
+
+        :param record: Record dictionary.
+        :param auto_commit: Automatic commit?
+        :return: True/False.
+        """
+        session = self.getScheme().getSession()
+        try:
+            new_obj = self.newRec(record)
+
+            if session and new_obj:
+                session.add(new_obj)
+                session.commit()
+                return True
+        except:
+            if session:
+                session.rollback()
+            log_func.fatal(u'<%s>. Error add record %s' % (self.getName(), str(record)))
+        return False
+
+    def addRecs(self, records):
+        """
+        Add records in model.
+
+        :param records: Record list.
+        :return: True/False.
+        """
+        session = self.getScheme().getSession()
+        try:
+            if not isinstance(records, (list, tuple)):
+                # List casting
+                records = list(records)
+
+            for record in records:
+                new_obj = self.newRec(record)
+                if session and new_obj:
+                    session.add(new_obj)
+
+            if session:
+                session.commit()
+                return True
+        except:
+            if session:
+                session.rollback()
+            log_func.fatal(u'<%s>. Error add records' % self.getName())
+        return False
 
     def saveRec(self, id, record, id_field=None):
         """

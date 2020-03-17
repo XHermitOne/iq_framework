@@ -27,7 +27,7 @@ class iqSchemeManager(object):
         """
         self._session = None
 
-    def __del__(self):
+    def destroy(self):
         """
         Destructor.
         """
@@ -52,6 +52,7 @@ class iqSchemeManager(object):
         if module_filename is None:
             module_filename = self.getModuleFilename()
 
+        log_func.debug(u'Module filename <%s>' % module_filename)
         if os.path.exists(module_filename):
             return imp_func.loadPyModule(name=self.getName(),
                                          path=module_filename)

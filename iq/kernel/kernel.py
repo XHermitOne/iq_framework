@@ -101,7 +101,15 @@ class iqKernel(object):
         if prj:
             prj.stop()
 
-        # sys.exit(DEFAULT_RETURN_CODE)
+        # Clear cache
+        log_func.info(u'Clear object cache')
+        self.printObjCache()
+        for psp, obj in self._object_cache.items():
+            if hasattr(obj, 'destroy'):
+                try:
+                    obj.destroy()
+                except:
+                    log_func.fatal(u'Error destroy object <%s>' % psp)
 
     def createByResource(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -197,24 +205,30 @@ class iqKernel(object):
         :return: Registered object or None if not found.
         """
         obj_psp = passport.iqPassport().setAsAny(psp)
-        for psp_tuple in list(self._object_cache.keys()):
-            if obj_psp.isSamePassport(psp_tuple, compare_guid=compare_guid):
-                return self._object_cache[psp_tuple]
+        for cache_psp in self._object_cache.keys():
+            if obj_psp.isSamePassport(cache_psp, compare_guid=compare_guid):
+                return self._object_cache[cache_psp]
+        # log_func.debug(u'KERNEL. Object <%s> not found' % str(psp))
         return None
 
-    def getObject(self, psp, compare_guid=False, *args, **kwargs):
+    def getObject(self, psp, compare_guid=False, register=True, *args, **kwargs):
         """
         Find an object in the cache, or if it is not registered, create.
 
         :param psp: Object passport.
         :param compare_guid: Compare GUID?
+        :param register: Register in object cache.
         :return: Registered object or None if error.
         """
+        if not psp:
+            log_func.error(u'KERNEL. Not define object passport for getting')
+            return None
+
         find_obj = self.findObject(psp, compare_guid=compare_guid)
         if find_obj:
             return find_obj
 
-        return self.createObject(psp=psp, *args, **kwargs)
+        return self.createObject(psp=psp, register=register, *args, **kwargs)
 
     def createObject(self, psp, register=False, *args, **kwargs):
         """
@@ -224,11 +238,30 @@ class iqKernel(object):
         :param register: Register in object cache.
         :return: Registered object or None if error.
         """
+        if not psp:
+            log_func.error(u'KERNEL. Not define object passport for create')
+            return None
+
         obj = self.createByPsp(psp=psp, *args, **kwargs)
         # log_func.info(u'Create object <%s : %s>' % (str(psp), str(obj)))
         if register:
             self._object_cache[psp] = obj
         return obj
+
+    def printObjCache(self):
+        """
+        Print object cache.
+
+        :return: True/False.
+        """
+        log_func.info(u'KERNEL. Object cache:')
+        try:
+            for psp, obj in self._object_cache.items():
+                log_func.info(u'\t%s\t=\t%s' % (str(psp), str(obj)))
+            return True
+        except:
+            log_func.fatal(u'Error print object cache')
+        return False
 
     @property
     def obj(self):

@@ -25,10 +25,14 @@ SCHEME_TEXT_FMT = '''#!/usr/bin/env python3
 
 # Scheme module python code generated with iqFramework
 
+import datetime
+
 import sqlalchemy.ext.declarative
 # import sqlalchemy.orm.exc
 # import sqlalchemy.orm
 import sqlalchemy
+
+import iq
 
 __version__ = (0, 0, 0, 1)
 
@@ -135,7 +139,7 @@ class iqSchemeModuleGenerator(object):
         :return: Model text.
         """
         name = resource.get('name', 'Unknown')
-        description = resource.get('name', '')
+        description = resource.get('description', '')
         tablename = resource.get('tablename', '')
         tablename = tablename if tablename else name.lower()
         columns_text = [self.genColumnTxt(column) for column in resource.get(spc_func.CHILDREN_ATTR_NAME, list())]
@@ -149,7 +153,7 @@ class iqSchemeModuleGenerator(object):
         :return: Column text.
         """
         name = resource.get('name', 'Unknown')
-        description = resource.get('name', '')
+        description = resource.get('description', '')
         column_attrs = list()
 
         field_type = resource.get('field_type', None)

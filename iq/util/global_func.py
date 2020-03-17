@@ -161,6 +161,18 @@ def getUser():
     return global_data.getGlobal('USER')
 
 
+def getUsername():
+    """
+    Get current username.
+
+    :return: Username or None if error.
+    """
+    user = getUser()
+    if user:
+        return user.getName()
+    return None
+
+
 def getDefaultShellEncoding():
     """
     Determine the current encoding for text output.

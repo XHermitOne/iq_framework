@@ -32,7 +32,7 @@ DATASCHEME_SPC = {
     '__icon__': 'fatcow%schart_organisation' % os.path.sep,
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': ('iqDataModel', ),
+    '__content__': ('iqDataModel', 'iqDataRefObjModel'),
     '__edit__': {
         'db_engine': property_editor_id.PASSPORT_EDITOR,
     },

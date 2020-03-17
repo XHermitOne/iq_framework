@@ -10,6 +10,7 @@ from ...components import data_navigator
 # from . import spc
 from . import ref_object
 # from ...util import exec_func
+from ...util import log_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -29,23 +30,17 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
         data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, context=context)
         ref_object.iqRefObjectManager.__init__(self, *args, **kwargs)
 
-    def getCodColumnName(self):
+    def getCodLen(self):
         """
-        Get cod column name.
+        Get list of level code lengths.
         """
-        return self.getAttribute('cod_column')
-
-    def getNameColumnName(self):
-        """
-        Get name column name.
-        """
-        return self.getAttribute('name_column')
-
-    def getActiveColumnName(self):
-        """
-        Get active column name.
-        """
-        return self.getAttribute('active_column')
+        cod_len = self.getAttribute('cod_len')
+        if cod_len:
+            try:
+                print(cod_len)
+            except:
+                log_func.fatal(u'Error level code lengths format <%s>' % cod_len)
+        return ()
 
 
 COMPONENT = iqDataRefObject

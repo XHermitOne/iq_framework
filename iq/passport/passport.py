@@ -150,12 +150,13 @@ class iqPassport(object):
         """
         if isinstance(passport, dict):
             return True
-        elif isinstance(passport, tuple) and len(passport) in (4, 5):
+        elif isinstance(passport, (tuple, list)) and len(passport) in (4, 5):
             return True
         elif isinstance(passport, str) and len(passport.split(PASSPORT_STR_DELIM)) in (4, 5):
             return True
         elif issubclass(passport.__class__, self.__class__):
             return True
+        log_func.warning(u'<%s> not passport' % passport)
         return False
 
     def isSamePassport(self, passport=None, compare_guid=False):
@@ -177,13 +178,26 @@ class iqPassport(object):
                        self.name == passport.get('name', None)]
             if compare_guid:
                 compare.append(self.guid == passport.get('guid', None))
-        elif isinstance(passport, tuple) and len(passport) >= 3:
+        elif isinstance(passport, (tuple, list)) and len(passport) > 3:
             compare = [self.prj == passport[0],
                        self.module == passport[1],
                        self.typename == passport[2],
                        self.name == passport[3]]
             if compare_guid:
                 compare.append(self.guid == passport[4])
+        elif isinstance(passport, str):
+            psp = passport.split(PASSPORT_STR_DELIM)
+            return self.isSamePassport(psp, compare_guid=compare_guid)
+        elif isinstance(passport, self.__class__):
+            compare = [self.prj == passport.prj,
+                       self.module == passport.module,
+                       self.typename == passport.typename,
+                       self.name == passport.name]
+            if compare_guid:
+                compare.append(self.guid == passport.guid)
+        else:
+            log_func.error(u'Not supported passport type <%s>' % passport.__class__.__name__)
+        # log_func.debug(u'Passport compare <%s> = <%s> : %s' % (passport, str(self), compare))
         return all(compare)
 
     def findResourceFilename(self, passport=None, find_path=None):

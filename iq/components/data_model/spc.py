@@ -36,7 +36,6 @@ DATAMODEL_SPC = {
     '_children_': [ID_COLUMN_SPC],
 
     'tablename': None,
-    # 'mapper_args': None,
 
     '__package__': u'Data',
     '__icon__': 'fatcow%stable' % os.path.sep,

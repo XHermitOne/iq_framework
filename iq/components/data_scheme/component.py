@@ -10,6 +10,8 @@ from ... import object
 from . import spc
 from . import scheme
 
+from ...util import log_func
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -32,11 +34,15 @@ class iqDataScheme(scheme.iqSchemeManager, object.iqObject):
         """
         Get database engine.
 
-        :return:
+        :return: DB engine object or None if error.
         """
         psp = self.getAttribute('db_engine')
-        kernel = self.getKernel()
-        return kernel.getObject(psp)
+        if psp:
+            kernel = self.getKernel()
+            return kernel.getObject(psp, register=True)
+        else:
+            log_func.error(u'Not define DB engine in data scheme <%s>' % self.getName())
+        return None
 
 
 COMPONENT = iqDataScheme

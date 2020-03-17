@@ -8,7 +8,8 @@
 ###########################################################################
 
 import wx
-import wx.xrc
+import wx.adv
+import wx.lib.gizmos
 
 import gettext
 _ = gettext.gettext
@@ -22,7 +23,7 @@ class iqStartPythonEditorDialogProto ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Python module"), pos = wx.DefaultPosition, size = wx.Size( 438,245 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 		

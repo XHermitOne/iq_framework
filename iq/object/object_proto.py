@@ -48,6 +48,12 @@ class iqObject(object):
 
         self._context = self.createContext(context)
 
+    def destroy(self):
+        """
+        Destructor function.
+        """
+        pass
+
     def getName(self):
         """
         Object name.

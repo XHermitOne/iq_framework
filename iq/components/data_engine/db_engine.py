@@ -17,6 +17,12 @@ class iqDBEngineManager(object):
     """
     DB engine manager.
     """
+    def __init__(self):
+        """
+        Constructor.
+        """
+        self._db_url = None
+
     def getDialect(self):
         """
         Get database type/dialect.
@@ -87,21 +93,23 @@ class iqDBEngineManager(object):
         """
         Get database url.
         """
-        log_func.info(u'Create DB URL:')
-        log_func.info(u'\tDriver: %s' % self.getDialectDriver())
-        log_func.info(u'\tHost: %s' % self.getHost())
-        log_func.info(u'\tPort: %s' % self.getPort())
-        log_func.info(u'\tDB name: %s' % self.getDBName())
-        log_func.info(u'\tUsername: %s' % self.getUsername())
+        if self._db_url is None:
+            log_func.info(u'Create DB URL:')
+            log_func.info(u'\tDriver: %s' % self.getDialectDriver())
+            log_func.info(u'\tHost: %s' % self.getHost())
+            log_func.info(u'\tPort: %s' % self.getPort())
+            log_func.info(u'\tDB name: %s' % self.getDBName())
+            log_func.info(u'\tUsername: %s' % self.getUsername())
 
-        url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
-                                        username=self.getUsername(),
-                                        password=self.getPassword(),
-                                        host=self.getHost(),
-                                        port=self.getPort(),
-                                        database=self.getDBName(),
-                                        )
-        return str(url)
+            url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
+                                            username=self.getUsername(),
+                                            password=self.getPassword(),
+                                            host=self.getHost(),
+                                            port=self.getPort(),
+                                            database=self.getDBName(),
+                                            )
+            self._db_url = str(url)
+        return self._db_url
 
     def isEcho(self):
         """
