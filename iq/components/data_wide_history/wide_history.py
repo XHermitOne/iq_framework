@@ -154,7 +154,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
                     record[DEFAULT_DT_FIELDNAME] = record[dt_fieldname]
                 return record
             else:
-                log_func.warning(u'No data in historical data table <%s>' % model.getName())
+                log_func.warning(u'No data in historical data table <%s>' % model.__name__)
         else:
             log_func.error(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
         return dict()
