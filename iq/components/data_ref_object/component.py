@@ -7,9 +7,7 @@ Reference data object component.
 
 from ...components import data_navigator
 
-# from . import spc
 from . import ref_object
-# from ...util import exec_func
 from ...util import log_func
 
 __version__ = (0, 0, 0, 1)
