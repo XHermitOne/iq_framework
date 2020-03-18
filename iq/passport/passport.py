@@ -270,3 +270,14 @@ class iqPassport(object):
         elif isinstance(passport, (list, tuple)):
             passport = self.setAsTuple(passport)
         return passport
+
+
+def isPassport(passport):
+    """
+    Check whether the structure is a passport.
+
+    :param passport: Passport as not known structure.
+    :return: True - this is a passport / False - no it's not a passport.
+    """
+    psp = iqPassport()
+    return psp.isPassport(passport=passport)

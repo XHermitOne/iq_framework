@@ -402,7 +402,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
 
         for ctrl in children:
             if issubclass(ctrl.__class__, wx.Window) and ctrl.IsEnabled():
-                if issubclass(ctrl.__class__, wx.Panel) and not wxfunc.is_same_wx_object(ctrl, panel):
+                if issubclass(ctrl.__class__, wx.Panel) and not wxfunc.isSameWxObject(ctrl, panel):
                     self._clear_panel_data(ctrl)
                 else:
                     try:

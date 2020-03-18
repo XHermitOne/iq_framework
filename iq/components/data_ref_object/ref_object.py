@@ -10,6 +10,7 @@ Reference data object manager.
 from ..data_navigator import model_navigator
 
 from ...util import log_func
+from ...util import global_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -83,3 +84,16 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error get reference data object <%s> record by code' % self.getName())
         return False
 
+    def edit(self, parent=None):
+        """
+        Edit ref object.
+
+        :param parent: Parent window.
+        :return: True/False.
+        """
+        if global_func.isWXEngine():
+            from . import wx_editdlg
+            return wx_editdlg.editRefObjDlg(parent=parent, ref_obj=self)
+        else:
+            log_func.error(u'Not support edit ref object. Engine <%s>' % global_func.getEngineType())
+        return False
