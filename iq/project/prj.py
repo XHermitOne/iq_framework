@@ -14,6 +14,8 @@ from ..dialog import dlg_func
 from ..util import py_func
 from ..util import spc_func
 from ..util import res_func
+from ..util import exec_func
+from ..util import global_func
 
 from ..passport import passport
 from .. import user
@@ -155,7 +157,12 @@ class iqProjectManager(object):
         if name:
             self.setName(name)
 
-        pass
+        cmd = '''#!/bin/sh
+
+cd %s
+python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s        
+''' % (file_func.getFrameworkPath(), global_func.getEngineType(), name)
+        return exec_func.runTask(cmd, run_filename=name)
 
     def debug(self, name=None):
         """
