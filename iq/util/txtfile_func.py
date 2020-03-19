@@ -27,6 +27,9 @@ def saveTextFile(txt_filename, txt='', rewrite=True):
         if rewrite and os.path.exists(txt_filename):
             os.remove(txt_filename)
             log_func.info(u'Remove file <%s>' % txt_filename)
+        if not rewrite and os.path.exists(txt_filename):
+            log_func.warning(u'File <%s> not saved' % txt_filename)
+            return False
 
         file_obj = open(txt_filename, 'wt')
         file_obj.write(txt)
