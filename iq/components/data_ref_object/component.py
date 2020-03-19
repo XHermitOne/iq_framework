@@ -5,12 +5,21 @@
 Reference data object component.
 """
 
+import gettext
+
 from ...components import data_navigator
 
 from . import ref_object
 from ...util import log_func
 
+from ...role import component as role
+
 __version__ = (0, 0, 0, 1)
+
+_ = gettext.gettext
+
+EDIT_PERMISSION = dict(name='edit_ref_objects', description=_('Can edit ref objects'), type='DATA')
+role.addPermision(**EDIT_PERMISSION)
 
 
 class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
@@ -32,13 +41,22 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
         """
         Get list of level code lengths.
         """
-        cod_len = self.getAttribute('cod_len')
-        if cod_len:
+        cod_len = tuple()
+        cod_len_value = self.getAttribute('cod_len')
+        if cod_len_value:
             try:
-                print(cod_len)
+                if isinstance(cod_len_value, int):
+                    cod_len = (cod_len_value, )
+                elif isinstance(cod_len_value, list):
+                    cod_len = tuple(cod_len_value)
+                elif isinstance(cod_len_value, tuple):
+                    cod_len = cod_len_value
+                else:
+                    log_func.error(u'Error type cod len <%s> in ref object <%s>' % (type(cod_len_value),
+                                                                                    self.getName()))
             except:
                 log_func.fatal(u'Error level code lengths format <%s>' % cod_len)
-        return ()
+        return cod_len
 
 
 COMPONENT = iqDataRefObject

@@ -72,6 +72,15 @@ class iqObject(object):
             return res.get('type', u'Unknown')
         return u'Unknown'
 
+    def getDescription(self):
+        """
+        Object description.
+        """
+        res = self.getResource()
+        if isinstance(res, dict):
+            return res.get('description', u'')
+        return u''
+
     def setPassport(self, psp=None):
         """
         Set object passport.

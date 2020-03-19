@@ -7,9 +7,11 @@ Reference data object edit dialog_func.
 
 import sys
 import os.path
+import gettext
+import operator
 import wx
 import wx.propgrid
-import gettext
+import sqlalchemy.types
 
 from ...util import log_func
 from ...util import spc_func
@@ -17,6 +19,7 @@ from ...util import spc_func
 from ...engine.wx.dlg import wxdlg_func
 from ...engine.wx import wxbitmap_func
 from ...engine.wx import form_manager
+from ...engine.wx import treectrl_manager
 
 from . import refobj_dialogs_proto
 from . import wx_editcodeproperty
@@ -26,10 +29,36 @@ __version__ = (0, 0, 0, 1)
 _ = gettext.gettext
 
 # Readonly fields
-NOT_EDITABLE_FIELDS = ('type', 'dt_edit', 'computer', 'username')
+NOT_EDITABLE_FIELDS = ('type', 'activate', 'dt_edit', 'computer', 'username')
 
 # Tree dummy text
 TREE_ITEM_LABEL = u'...'
+
+SQLALCHEMY_TEXT_TYPES = (sqlalchemy.types.Text,
+                         sqlalchemy.types.TEXT,
+                         sqlalchemy.types.UnicodeText,
+                         )
+
+SQLALCHEMY_FLOAT_TYPES = (sqlalchemy.types.Float,
+                          sqlalchemy.types.FLOAT,
+                          sqlalchemy.types.DECIMAL,
+                          )
+
+SQLALCHEMY_INT_TYPES = (sqlalchemy.types.Integer,
+                        sqlalchemy.types.INTEGER,
+                        sqlalchemy.types.BigInteger,
+                        sqlalchemy.types.SmallInteger,
+                        sqlalchemy.types.BIGINT,
+                        sqlalchemy.types.SMALLINT,
+                        )
+
+SQLALCHEMY_DATE_TYPES = (sqlalchemy.types.Date,
+                         sqlalchemy.types.DATE,
+                         )
+
+SQLALCHEMY_DATETIME_TYPES = (sqlalchemy.types.DateTime,
+                             sqlalchemy.types.DATETIME,
+                             )
 
 
 class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
@@ -47,6 +76,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         self.record_propertyGrid.Bind(wx.propgrid.EVT_PG_CHANGED, self.onRecordPropertyGridChanged)
 
         self.ref_obj = ref_obj
+
         # Initial record
         self.record = record
         # Edited record
@@ -70,54 +100,54 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
             self.record = dict()
         return self.record
 
-    def _createProperty(self, **field):
+    def _createProperty(self, field):
         """
         Create a property object from the field description.
 
-        :param field:
+        :param field: Model column object.
         :return: Property object.
         """
-        label = field['label'] if field['label'] else (field['description'] if field['description'] else field['name'])
-        default_value = field['default']
-        if field['name'] == 'cod':
+        label = field.doc if field.doc else field.name
+        default_value = field.default
+        if field.name == 'cod':
             # Type conformity check
             if not isinstance(default_value, str):
                 try:
                     default_value = str(default_value)
                 except:
                     default_value = u''
-            property = wx_editcodeproperty.iqEditCodeProperty(label=label, name=field['name'], value=default_value)
+            property = wx_editcodeproperty.iqEditCodeProperty(label=label, name=field.name, value=default_value)
             property.setRefObj(self.ref_obj)
             property.setPropertyGrid(self.record_propertyGrid)
-        elif field['type_val'] == icsqlalchemy.TEXT_FIELD_TYPE:
+        elif field.type in SQLALCHEMY_TEXT_TYPES:
             if not isinstance(default_value, str):
                 try:
                     default_value = str(default_value)
                 except:
                     default_value = u''
             # Text field
-            property = wx.propgrid.StringProperty(label=label, name=field['name'], value=default_value)
-        elif field['type_val'] == icsqlalchemy.FLOAT_FIELD_TYPE:
+            property = wx.propgrid.StringProperty(label=label, name=field.name, value=default_value)
+        elif field.type in SQLALCHEMY_FLOAT_TYPES:
             if not isinstance(default_value, float):
                 try:
                     default_value = float(default_value)
                 except:
                     default_value = 0.0
-            property = wx.propgrid.FloatProperty(label=label, name=field['name'], value=default_value)
-        elif field['type_val'] == icsqlalchemy.INT_FIELD_TYPE:
+            property = wx.propgrid.FloatProperty(label=label, name=field.name, value=default_value)
+        elif field.type in SQLALCHEMY_INT_TYPES:
             if not isinstance(default_value, int):
                 try:
                     default_value = int(default_value)
                 except:
                     default_value = 0
-            property = wx.propgrid.IntProperty(label=label, name=field['name'], value=default_value)
-        elif field['type_val'] == icsqlalchemy.DATE_FIELD_TYPE:
+            property = wx.propgrid.IntProperty(label=label, name=field.name, value=default_value)
+        elif field.type in SQLALCHEMY_DATE_TYPES:
             py_date = datetimefunc.strDateFmt2DateTime(default_value)
             wx_date = datetimefunc.pydate2wxdate(py_date)
-            property = wx.propgrid.DateProperty(label=label, name=field['name'], value=wx_date)
-        elif field['type_val'] == icsqlalchemy.DATETIME_FIELD_TYPE:
+            property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
+        elif field.type in SQLALCHEMY_DATETIME_TYPES:
             wx_date = datetimefunc.pydate2wxdate(default_value)
-            property = wx.propgrid.DateProperty(label=label, name=field['name'], value=wx_date)
+            property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
         else:
             # If the type is not defined, then just look in text form
             if not isinstance(default_value, str):
@@ -125,36 +155,24 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
                     default_value = str(default_value)
                 except:
                     default_value = u''
-            property = wx.propgrid.StringProperty(label=label, name=field['name'], value=default_value)
+            property = wx.propgrid.StringProperty(label=label, name=field.name, value=default_value)
             property.Enable(False)
             
         return property
 
-    def getRefObjModelRes(self):
-        """
-        Get ref object model resource.
-        """
-        ref_obj = self.getRefObj()
-        if ref_obj is None:
-            log_func.error(u'Not define ref object for edit')
-            return None
-        storage = ref_obj.getStorage()
-        sprav_tab = storage.getSpravTabClass()
-        sprav_tab_res = sprav_tab.getResource()
-        return sprav_tab_res
-        
     def init(self):
         """
         Dialog initialization function.
         """
-        sprav_tab_res = self.getRefObjModelRes()
-        tab_fields = [field for field in sprav_tab_res['child'] if field['name'] not in NOT_EDITABLE_FIELDS]
+        model = self.ref_obj.getModel()
+        columns = [col for col_name, col in model.__table__.columns.items()]
+        fields = [col for col in columns if col.name != 'id' and col.name not in NOT_EDITABLE_FIELDS]
 
         rec = self.getRecord()
-        for field_spc in tab_fields:
-            field_name = field_spc['name']
-            if field_spc:
-                property = self._createProperty(**field_spc)
+        for field in fields:
+            field_name = field.name
+            if field is not None:
+                property = self._createProperty(field)
                 property.SetValue(rec[field_name])
             else:
                 # Add as line editing
@@ -187,17 +205,17 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         value = None
 
-        if property_type == icsqlalchemy.TEXT_FIELD_TYPE:
+        if property_type in SQLALCHEMY_TEXT_TYPES:
             value = str_value
-        elif property_type == icsqlalchemy.INT_FIELD_TYPE:
+        elif property_type in SQLALCHEMY_INT_TYPES:
             if str_value.strip().isdigit():
                 value = int(str_value.strip())
-        elif property_type == icsqlalchemy.FLOAT_FIELD_TYPE:
+        elif property_type in SQLALCHEMY_FLOAT_TYPES:
             if str_value.strip().isdigit():
                 value = float(str_value.strip())
-        elif property_type == icsqlalchemy.DATE_FIELD_TYPE:
+        elif property_type in SQLALCHEMY_DATE_TYPES:
             value = str_value
-        elif property_type == icsqlalchemy.DATETIME_FIELD_TYPE:
+        elif property_type in SQLALCHEMY_DATETIME_TYPES:
             value = datetimefunc.strDateTimeFmt2DateTime(str_value.strip())
         else:
             log_func.warning(u'Not supported property type <%s> ' % property_type)
@@ -252,7 +270,8 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
 
 
 class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
-                      form_manager.iqFormManager):
+                      form_manager.iqFormManager,
+                      treectrl_manager.iqTreeCtrlManager):
     """
     Ref object edit dialog box.
     """
@@ -265,7 +284,12 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         refobj_dialogs_proto.iqEditDlgProto.__init__(self, *args, **kwargs)
 
         self.ref_obj = ref_obj
-        
+
+        if self.ref_obj:
+            description = self.ref_obj.getDescription() if self.ref_obj.getDescription() else self.ref_obj.getName()
+            title = _(u'Edit') + u' <%s>' % description
+            self.SetTitle(title)
+
         # Codes found matching search string
         self.search_codes = list()
         # Current found code in the list of found codes
@@ -275,8 +299,8 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
 
         self.init()
         
-        self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.onSpravTreeItemExpanded)
-        self.Bind(wx.EVT_TREE_ITEM_COLLAPSED, self.onSpravTreeItemCollapsed)
+        self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.onRefObjTreeItemExpanded)
+        self.Bind(wx.EVT_TREE_ITEM_COLLAPSED, self.onRefObjTreeItemCollapsed)
         
     def init(self):
         """
@@ -318,8 +342,9 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         List of resource descriptions of editable table fields.
         """
-        tab = self.ref_obj.getTable()
-        fields = [field for field in tab.getResource()['child'] if field['name'] not in NOT_EDITABLE_FIELDS]
+        model = self.ref_obj.getModel()
+        columns = [col for col_name, col in model.__table__.columns.items()]
+        fields = [col for col in columns if col.name != 'id' and col.name not in NOT_EDITABLE_FIELDS]
         return fields
     
     def initCtrl(self):
@@ -332,7 +357,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         fields = self.getEditableFields()
         
         for i, field in enumerate(fields):
-            col_name = field['label'] if field['label'] else (field['description'] if field['description'] else field['name'])
+            col_name = field.doc if field.doc else field.name
             self.recs_listCtrl.InsertColumn(i, col_name, 
                                             width=wx.LIST_AUTOSIZE_USEHEADER)
            
@@ -343,17 +368,17 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param parent_item: Parent tree item.
         :param record: Record associated with an item.
         """
-        item_level = self.getItemLevel(tree_ctrl=self.refobj_treeCtrl, item=parent_item)
+        # item_level = self.getTreeCtrlItemLevelIdx(treectrl=self.refobj_treeCtrl, item=parent_item)
         # Record as dictionary
-        rec_dict = self.ref_obj.getStorage().getSpravFieldDict(record, level_idx=item_level)
-        name = str(rec_dict['name'])
+        # rec_dict = self.ref_obj.getStorage().getSpravFieldDict(record, level_idx=item_level)
+        name = str(record['name'])
         # For multi-line items, select only the first line
         name = [line.strip() for line in name.split(u'\n')][0]
         item = self.refobj_treeCtrl.AppendItem(parent_item, name)
-        self.setItemData_tree(ctrl=self.refobj_treeCtrl, item=item, data=rec_dict)
+        self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=item, data=record)
         
-        code = rec_dict['cod']
-        if self.ref_obj.isSubCodes(code):
+        code = record['cod']
+        if self.ref_obj.hasChildrenCodes(code):
             # There are subcodes. To display a tree in the control, you need to add a dummy element
             self.refobj_treeCtrl.AppendItem(item, TREE_ITEM_LABEL)
         
@@ -362,15 +387,15 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         Set tree data.
         """
         # Add root item
-        sprav_res = self.ref_obj.getResource()
-        sprav_title = sprav_res['description'] if sprav_res['description'] else sprav_res['name']
+        title = self.ref_obj.getDescription() if self.ref_obj.getDescription() else self.ref_obj.getName()
         # For multi-line items, select only the first line
-        sprav_title = [line.strip() for line in sprav_title.split(u'\n')][0]
+        title = [line.strip() for line in title.split(u'\n')][0]
 
-        self.root = self.refobj_treeCtrl.AddRoot(sprav_title)
+        self.root = self.refobj_treeCtrl.AddRoot(title)
         
         if self.ref_obj.isEmpty():
             # No need to fill
+            log_func.warning(u'Ref object is empty')
             return
         
         self.setRefObjLevelTree(self.root)
@@ -389,11 +414,10 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param code: The code associated with the tree item.
         """
         # Add first level tree
-        sprav_storage = self.ref_obj.getStorage()
-        level_data = sprav_storage.getLevelTable(code)
+        level_data = self.ref_obj.getLevelRecsByCod(code)
         # Sort
         if do_sort and isinstance(level_data, list):
-            level_data.sort()
+            sorted(level_data, key=operator.itemgetter('cod'))
 
         for record in level_data:
             self.setRefObjTreeItem(parent_item, record)
@@ -408,7 +432,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         fields = self.getEditableFields()
         list_item = -1
         for i, field in enumerate(fields):
-            value = str(record[field['name']])
+            value = str(record[field.name])
             # For multi-line items, select only the first line
             value = [line.strip() for line in value.split(u'\n')][0]
 
@@ -439,7 +463,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         
         child_item, cookie = self.refobj_treeCtrl.GetFirstChild(tree_item)
         while child_item.IsOk():
-            record = self.getItemData_tree(ctrl=self.refobj_treeCtrl, item=child_item)
+            record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=child_item)
 
             self.addRefObjListRow(record, False)
             
@@ -490,7 +514,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
 
         # Empty level filling
         if not self.refobj_treeCtrl.ItemHasChildren(item):
-            record = self.getItemData_tree(ctrl=self.refobj_treeCtrl, item=item)
+            record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=item)
             code = record['cod']
             self.setRefObjLevelTree(item, code)
         
@@ -504,7 +528,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         find_item = self.findRefObjTreeItem(parent_item, code)
         if find_item:
-            self.setItemData_tree(ctrl=self.refobj_treeCtrl, item=find_item, data=record)
+            self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=find_item, data=record)
             self.refobj_treeCtrl.SetItemText(find_item, record['name'])
 
     def refreshRefObjListItem(self, code=None, record=None):
@@ -553,7 +577,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param new_record: New record added.
         """
         item = self.refobj_treeCtrl.AppendItem(parent_item, new_record['name'])
-        self.setItemData_tree(ctrl=self.refobj_treeCtrl, item=item, data=new_record)
+        self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=item, data=new_record)
 
     def addRefObjListItem(self, new_record=None):
         """
@@ -572,7 +596,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :return: The tree item found, or None if the item is not found.
         """
         # Search code in current item
-        record = self.getItemData_tree(ctrl=self.refobj_treeCtrl, item=parent_item)
+        record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=parent_item)
         if record:
             if code == record['cod']:
                 return parent_item
@@ -581,7 +605,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         find_result = None
         child_item, cookie = self.refobj_treeCtrl.GetFirstChild(parent_item)
         while child_item.IsOk():
-            record = self.getItemData_tree(ctrl=self.refobj_treeCtrl, item=child_item)
+            record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=child_item)
             if record:
                 if code == record['cod']:
                     find_result = child_item
@@ -696,10 +720,10 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         Add new record tool handler.
         """
         # Filling a record with default values
-        tab = self.ref_obj.getTable()
-        default_record = tab.getDefaultRecDict()
+        model = self.ref_obj.getModel()
+        default_record = dict([(col_name, col.default) for col_name, col in model.__table__.columns.items() if col_name != 'id'])
         # Set default code
-        parent_rec = self.getItemData_tree(ctrl=self.refobj_treeCtrl, item=self.refobj_treeCtrl.GetSelection())
+        parent_rec = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=self.refobj_treeCtrl.GetSelection())
         struct_parent_code = self.ref_obj.StrCode2ListCode(parent_rec['cod']) if parent_rec else list()
         struct_parent_code = [sub_code for sub_code in struct_parent_code if sub_code]
         level = self.ref_obj.getLevelByIdx(len(struct_parent_code))

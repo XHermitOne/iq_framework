@@ -19,12 +19,12 @@ __version__ = (0, 0, 0, 1)
 DEFAULT_ENCODE = 'utf-8'
 
 
-class iqEditCodeProperty(wx.propgrid.PyStringProperty):
+class iqEditCodeProperty(wx.propgrid.StringProperty):
     """
     Ref object code property editor.
     """
     def __init__(self, label, name=wx.propgrid.PG_LABEL, value=u''):
-        wx.propgrid.PyStringProperty.__init__(self, label, name, value)        
+        wx.propgrid.StringProperty.__init__(self, label, name, value)
 
         self.ref_obj = None
         
@@ -51,7 +51,9 @@ class iqEditCodeProperty(wx.propgrid.PyStringProperty):
     def _getMask(self, ref_obj, code):
         """
         Identify mask by code.
+
         Masks:
+
         =========  ==========================================================
         Character   Function
         =========  ==========================================================
@@ -68,6 +70,7 @@ class iqEditCodeProperty(wx.propgrid.PyStringProperty):
                     eg: '&|###' means "field 0 = '&', field 1 = '###'", but there's
                     no fixed characters in between.
         =========  ==========================================================
+
         :param ref_obj: Ref object.
         :param code: Ref object code.
         """
