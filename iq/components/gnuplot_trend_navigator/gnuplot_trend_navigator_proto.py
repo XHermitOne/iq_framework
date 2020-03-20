@@ -14,6 +14,7 @@ from . import gnuplot_trend_navigator_panel_proto
 from ...util import log_func
 
 from ...engine.wx import listctrl_manager
+from ...engine.wx import splitter_manager
 
 __version__ = (0, 0, 0, 1)
 
@@ -24,7 +25,8 @@ VIEW_REPORT_FILE_FMT = 'evince %s &'
 
 
 class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplotTrendNavigatorPanelProto,
-                                   listctrl_manager.iqListCtrlManager):
+                                   listctrl_manager.iqListCtrlManager,
+                                   splitter_manager.iqSplitterWindowManager):
     """
     Trend navigation panel based on gnuplot utility.
     """
@@ -35,8 +37,8 @@ class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplot
         gnuplot_trend_navigator_panel_proto.iqGnuplotTrendNavigatorPanelProto.__init__(self, *args, **kwargs)
 
         # There must be at least one column in the legend
-        self.setColumns_list_ctrl(ctrl=self.legend_listCtrl,
-                                  cols=(dict(label=u'', width=self.legend_listCtrl.GetSize().GetWidth()), ))
+        self.setListCtrlColumns(listctrl=self.legend_listCtrl,
+                                cols=(dict(label=u'', width=self.legend_listCtrl.GetSize().GetWidth()), ))
 
         # Legend display switch
         self.__is_show_legend = False
@@ -112,7 +114,7 @@ class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplot
             pens = self.trend.child
 
         # Clear Legend List Lines
-        self.clear_list_ctrl(ctrl=self.legend_listCtrl)
+        self.clearListCtrl(listctrl=self.legend_listCtrl)
 
         try:
             for pen in pens:
@@ -120,15 +122,15 @@ class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplot
                 # Define the pen inscription in the legend
                 pen_label = pen.get('legend', UNKNOWN_PEN_LABEL)
                 pen_label = pen_label if pen_label else str(pen.get('description', UNKNOWN_PEN_LABEL))
-                self.appendRow_list_ctrl(ctrl=self.legend_listCtrl, row=(pen_label, ))
+                self.appendListCtrlRow(listctrl=self.legend_listCtrl, row=(pen_label, ))
 
-                row = self.getItemCount(self.legend_listCtrl) - 1
+                row = self.getListCtrlItemCount(self.legend_listCtrl) - 1
                 if isinstance(pen_colour_rgb, tuple) or isinstance(pen_colour_rgb, wx.Colour):
-                    self.setRowForegroundColour_list_ctrl(ctrl=self.legend_listCtrl,
-                                                          i_row=row, colour=pen_colour_rgb)
+                    self.setListCtrlRowForegroundColour(listctrl=self.legend_listCtrl,
+                                                        item=row, colour=pen_colour_rgb)
                 elif isinstance(pen_colour_rgb, str):
-                    self.setRowForegroundColour_list_ctrl(ctrl=self.legend_listCtrl,
-                                                          i_row=row, colour=wx.Colour(pen_colour_rgb))
+                    self.setListCtrlRowForegroundColour(listctrl=self.legend_listCtrl,
+                                                        item=row, colour=wx.Colour(pen_colour_rgb))
                 else:
                     log_func.error(u'Color setting mode not supported')
             return True
@@ -146,9 +148,9 @@ class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplot
         """
         self.__is_show_legend = is_show
         if is_show:
-            result = self.expandSplitterPanel(splitter=self.trend_splitter, redraw=redraw)
+            result = self.expandSplitterWindowPanel(splitter=self.trend_splitter, redraw=redraw)
         else:
-            result = self.collapseSplitterPanel(splitter=self.trend_splitter, redraw=redraw)
+            result = self.collapseSplitterWindowPanel(splitter=self.trend_splitter, redraw=redraw)
 
         # if redraw:
         #     self.trend_splitter.Refresh()
