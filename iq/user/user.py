@@ -84,3 +84,32 @@ class iqUserManager(object):
         :return: True/False.
         """
         return False
+
+    def canUse(self, permission_name):
+        """
+        Use rights check.
+
+        :param permission_name: Permission name.
+        :return: True - can use / False - no.
+        """
+        roles = self.getRoles()
+        for role in roles:
+            if role.isPermission(permission_name=permission_name):
+                return True
+        return False
+
+    def getRoleNames(self):
+        """
+        Get role names.
+        """
+        log_func.error(u'Not define get role names method')
+        return tuple()
+
+    def getRoles(self):
+        """
+        Get user roles.
+
+        :return: Role list.
+        """
+        log_func.error(u'Not define get roles method')
+        return tuple()

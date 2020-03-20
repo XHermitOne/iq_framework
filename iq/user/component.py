@@ -67,8 +67,25 @@ class iqUser(object.iqObject, user.iqUserManager):
         :param role_name: Role name.
         :return: True/False.
         """
-        roles = self.getAttribute('roles')
-        return role_name in roles if roles else False
+        role_names = self.getRoleNames()
+        return role_name in role_names if role_names else False
 
+    def getRoleNames(self):
+        """
+        Get role names.
+        """
+        roles_attr = self.getAttribute('roles')
+        return tuple(roles_attr) if roles_attr else tuple()
+
+    def getRoles(self):
+        """
+        Get user roles.
+
+        :return: Role list.
+        """
+        prj = self.getParent()
+        role_names = self.getRoleNames()
+        roles = [role for role in prj.getRoles() if role.getName() in role_names]
+        return tuple(roles)
 
 COMPONENT = iqUser

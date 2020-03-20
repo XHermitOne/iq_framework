@@ -269,3 +269,13 @@ class iqObject(object):
 
         log_func.warning(u'Child <%s> not found in <%s : %s>' % (name, self.getName(), self.getType()))
         return None
+
+    def filterChildrenByClass(self, child_class):
+        """
+        Filter child list by class.
+
+        :param child_class: Child class.
+        :return: Child list of child class.
+        """
+        children = self.getChildren()
+        return [child for child in children if issubclass(child.__class__, child_class)]

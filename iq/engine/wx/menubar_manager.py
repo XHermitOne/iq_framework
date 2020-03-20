@@ -16,27 +16,27 @@ class iqMenuBarManager(base_manager.iqBaseManager):
     """
     MenuBar manager.
     """
-    def enableMenuBarMenuItems(self, menubar=None, item_enable=None):
+    def enableMenuBarMenuItems(self, menubar=None, menuitem_enable=None):
         """
         Set enable menu items.
 
         :param menubar: MenuBar object.
-        :param item_enable: Dictionary
+        :param menuitem_enable: Dictionary
             {
-            item1_id: enable_True_or_False, ...
+            menuitem1_id: enable_True_or_False, ...
             }
         :return: True/False.
         """
-        assert issubclass(menubar, wx.MenuBar), u'MenuBar manager type error'
+        assert issubclass(menubar.__class__, wx.MenuBar), u'MenuBar manager type error'
 
-        if item_enable is None:
+        if menuitem_enable is None:
             return True
 
         result = True
-        for item_id in item_enable.keys():
-            item = menubar.FindItem(item_id)
-            if item and item.IsOk():
-                item.Enable(item_enable.get(item_id, True))
+        for menuitem_id in menuitem_enable.keys():
+            menuitem = menubar.FindItemById(menuitem_id)
+            if menuitem:
+                menuitem.Enable(menuitem_enable.get(menuitem_id, True))
                 result = result and True
             else:
                 result = False

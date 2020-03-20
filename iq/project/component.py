@@ -10,6 +10,9 @@ from .. import object
 from . import spc
 from . import prj
 
+from .. import user
+from .. import role
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -28,6 +31,20 @@ class iqProject(object.iqObject, prj.iqProjectManager):
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
         prj.iqProjectManager.__init__(self, *args, **kwargs)
         self.name = self.getName()
+
+        self.createChildren()
+
+    def getUsers(self):
+        """
+        Get user list.
+        """
+        return self.filterChildrenByClass(child_class=user.COMPONENT)
+
+    def getRoles(self):
+        """
+        Get role list.
+        """
+        return self.filterChildrenByClass(child_class=role.COMPONENT)
 
 
 COMPONENT = iqProject

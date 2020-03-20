@@ -13,14 +13,9 @@ import datetime
 import time
 import uuid
 
-# from ic.log import log
-# from ic.utils import filefunc
-# from ic.utils import datetimefunc
-# from ic.bitmap import bmpfunc
 from ...util import log_func
 from ...util import file_func
 
-# from ic.components import icwidget
 from . import gnuplot_manager
 
 from . import trend_proto
