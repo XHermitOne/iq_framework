@@ -364,3 +364,22 @@ def getSubDirs(dir_path):
     except:
         log_func.fatal(u'Error get subdirectories <%s>' % dir_path)
     return None
+
+
+def removeFile(filename):
+    """
+    Remove file.
+
+    :param filename: Removed filename.
+    :return: True/False.
+    """
+    try:
+        if os.path.exists(filename):
+            os.remove(filename)
+            log_func.info(u'Remove file <%s>' % filename)
+            return True
+        else:
+            log_func.error(u'File <%s> not found for removing' % filename)
+    except:
+        log_func.fatal(u'Error remove file <%s>' % filename)
+    return False
