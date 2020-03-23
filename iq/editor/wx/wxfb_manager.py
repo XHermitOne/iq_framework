@@ -36,9 +36,9 @@ ADAPTATION_REPLACES = (dict(compare=STARTSWITH_SIGNATURE, src='import wx.combo',
                        dict(compare=STARTSWITH_SIGNATURE, src='import wx.calendar', dst='# import wx.calendar'),
                        dict(compare=CONTAIN_SIGNATURE, src='wx.adv.', dst='wx.adv.'),
                        # DatePickerCtrl
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.adv.DatePickerCtrl', dst='wx.adv.DatePickerCtrl'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.adv.DP_', dst='wx.adv.DP_'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.adv.EVT_DATE_CHANGED', dst='wx.adv.EVT_DATE_CHANGED'),
+                       dict(compare=CONTAIN_SIGNATURE, src='wx.DatePickerCtrl', dst='wx.adv.DatePickerCtrl'),
+                       dict(compare=CONTAIN_SIGNATURE, src='wx.DP_', dst='wx.adv.DP_'),
+                       dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_DATE_CHANGED', dst='wx.adv.EVT_DATE_CHANGED'),
                        # Bitmap
                        dict(compare=CONTAIN_SIGNATURE, src='.IsOk()', dst='.IsOk()'),
                        # Sizers
