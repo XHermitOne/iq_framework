@@ -109,17 +109,21 @@ def openStartFolderDialog(parent=None, folder_path=None):
     :param folder_path: Folder path.
     :return: True/False.
     """
-    try:
-        if parent is None:
-            parent = global_func.getMainWin()
+    if parent is None:
+        parent = global_func.getMainWin()
 
+    dialog = None
+    try:
         dialog = iqStartFolderDialog(parent)
         dialog.folder_path = folder_path
         dialog.init()
-        result = dialog.ShowModal()
+        result = dialog.ShowModal() == wx.ID_OK
         dialog.saveCustomProperties()
-        return result == wx.ID_OK
+        dialog.Destroy()
+        return result
     except:
+        if dialog:
+            dialog.Destroy()
         log_func.fatal(u'Error open dialog <iqStartFolderDialog>')
     return False
 
