@@ -26,14 +26,14 @@ GNUPLOTTREND_SPC = {
 
     '_children_': [],
 
-    'x_format': trend_proto.DEFAULT_X_FORMAT,  # Формат представления данных оси X
-    'y_format': trend_proto.DEFAULT_Y_FORMAT,  # Формат представления данных оси Y
-    'scene_min': ('00:00:00', 0.0),  # Минимальное значение видимой сцены тренда
-    'scene_max': ('23:59:59', 100.0),  # Максимальное значение видимой сцены тренда
-    'adapt_scene': False,  # Признак адаптации сцены по данным
+    'x_format': trend_proto.DEFAULT_X_FORMAT,
+    'y_format': trend_proto.DEFAULT_Y_FORMAT,
+    'scene_min': ('00:00:00', 0.0),
+    'scene_max': ('23:59:59', 100.0),
+    'adapt_scene': False,
 
-    'x_precision': gnuplot_trend_proto.DEFAULT_X_PRECISION,  # Цена деления сетки тренда по шкале X
-    'y_precision': gnuplot_trend_proto.DEFAULT_Y_PRECISION,  # Цена деления сетки тренда по шкале Y
+    'x_precision': gnuplot_trend_proto.DEFAULT_X_PRECISION,
+    'y_precision': gnuplot_trend_proto.DEFAULT_Y_PRECISION,
 
     '__package__': u'SCADA',
     '__icon__': 'fatcow%schart_line' % os.path.sep,

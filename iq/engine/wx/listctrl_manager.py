@@ -29,7 +29,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param data_list: Data list.
         :param columns: Column list.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if data_list is None:
             data_list = list()
@@ -52,7 +52,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param do_refresh: Make a complete update control?
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if idx != wx.NOT_FOUND and idx > 0:
 
@@ -91,7 +91,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param do_refresh: Make a complete update control?
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if idx != wx.NOT_FOUND and idx < (len(data_list) - 1):
             if n_col is not None:
@@ -126,7 +126,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param align: Column text align LEFT/RIGHT/CENTRE.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         try:
             i = listctrl.GetColumnCount()
@@ -161,7 +161,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             'align': Column align}
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         result = True
         listctrl.ClearAll()
@@ -179,7 +179,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param listctrl: wx.ListCtrl object.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         for i in range(listctrl.GetColumnCount()):
             listctrl.SetColumnWidth(i, wx.LIST_AUTOSIZE)
@@ -194,7 +194,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param label: Column label.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if 0 <= column_idx < listctrl.GetColumnCount():
             column = listctrl.GetColumn(column_idx)
@@ -219,7 +219,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param auto_select: Automatically select the added row?
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if not isinstance(row, (list, tuple)):
             log_func.error(u'Row typeerror <%s> in wx.ListCtrl object' % type(row))
@@ -269,7 +269,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             If not defined, the current selected row is taken.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if item is None:
             item = self.getListCtrlSelectedRowIdx(listctrl)
@@ -296,7 +296,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param keep_pos: Keep cursor position?
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if item == -1:
             log_func.error(u'The row index to be set is not specified')
@@ -345,7 +345,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param keep_pos: Keep cursor position?
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         result = True
         cursor_pos = None
@@ -382,7 +382,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             (value 1, value 2, ..., value N), ...
             ]
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         rows = list()
         for i_row in range(listctrl.GetItemCount()):
@@ -400,7 +400,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :return: Tuple row or None if error.
             (value 1, value 2, ..., value N)
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if 0 > item or item is None:
             item = self.getListCtrlSelectedRowIdx(listctrl_or_event=listctrl)
@@ -428,7 +428,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             False - the line does not color.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if expression is None:
             log_func.warning(u'Color condition not defined')
@@ -455,7 +455,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param colour: wx.Colour object.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if colour is None:
             colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_CAPTIONTEXT)
@@ -477,7 +477,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param colour: wx.Colour object.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if colour is None:
             colour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_INACTIVECAPTION)
@@ -514,7 +514,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param deselect_prev: Unselect the previous selected item?
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if (0 > item) or (item >= listctrl.GetItemCount()):
             log_func.warning(u'Not valid row index [%d] ListCtrl object <%s>' % (item, listctrl.__class__.__name__))
@@ -534,7 +534,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param listctrl: wx.ListCtrl object.
         :return: The number of list controls.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         return listctrl.GetItemCount()
 
@@ -546,7 +546,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :return: The index of the last item in the list or
             -1 if there are no items in the list.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         item_count = self.getListCtrlItemCount(listctrl)
         return item_count - 1
@@ -559,7 +559,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param check: On/Off.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         return self.checkListCtrlItems(listctrl, check=check)
 
@@ -574,7 +574,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param end_idx: The index of the last item to be processed.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if begin_idx < 0:
             begin_idx = 0
@@ -595,7 +595,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             If not defined, then the currently selected item is taken.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if item < 0:
             item = self.getListCtrlSelectedRowIdx(listctrl)
@@ -617,7 +617,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param do_set: Label all items according to the condition.
         :return: List of indices of marked lines.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         check_list = list()
 
@@ -645,7 +645,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             no other item is marked.
         :return: A list of indices of tagged list controls or None if error.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         try:
             indexes = [i for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
@@ -670,7 +670,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             no other item is marked.
         :return: List of records of labeled list lontrols or None if error.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         try:
             check_records = [records[i] for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
@@ -695,7 +695,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param odd_background_colour: Background color of odd lines.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         for item in range(listctrl.GetItemCount()):
             if even_background_colour and not (item & 1):
@@ -720,7 +720,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param auto_select: Automatically select a line in the control.
         :return: The index of the row found, or None if the row is not found.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if expression is None:
             log_func.warning(u'Undefined condition for string search')
@@ -764,7 +764,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param image: Icon name.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         item_idx = -1
         if item is None:
@@ -797,7 +797,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param listctrl: wx.ListCtrl object.
         :return: True/False.
         """
-        assert issubclass(listctrl, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         listctrl.DeleteAllItems()
         return True

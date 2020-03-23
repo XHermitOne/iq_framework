@@ -32,7 +32,8 @@ class iqTrendPen(object.iqObject):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         # Passport of the current historical data object
         self.current_history_psp = None
@@ -114,9 +115,9 @@ class iqTrendPen(object.iqObject):
             trend = self.getParent()
             start_dt = trend.getStartDT()
             stop_dt = trend.getStopDT()
-            data = history_obj.get_tag_data(tag_name=tag_name,
-                                            start_dt=start_dt,
-                                            stop_dt=stop_dt)
+            data = history_obj.getValues(col_name=tag_name,
+                                         start_dt=start_dt,
+                                         stop_dt=stop_dt)
         return data
 
 

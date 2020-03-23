@@ -25,7 +25,8 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         column.iqColumnManager.__init__(self, *args, **kwargs)
 
 

@@ -14,7 +14,7 @@ class iqModelNavigatorManager(object):
     """
     Data model navigator manager.
     """
-    def __init__(self, model=None):
+    def __init__(self, model=None, *args, **kwargs):
         """
         Constructor.
 

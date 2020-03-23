@@ -43,7 +43,7 @@ DEFAULT_X_PRECISION = '01:00:00'
 DEFAULT_Y_PRECISION = '1.0'
 
 
-class iqGnuplotTrendProto(wx.Panel, trend_proto.iqTrendProto):
+class iqGnuplotTrendProto(trend_proto.iqTrendProto):
     """
     The base class of historical graphics. The trend.
     """
@@ -51,7 +51,7 @@ class iqGnuplotTrendProto(wx.Panel, trend_proto.iqTrendProto):
         """
         Constructor.
         """
-        wx.Panel.__init__(self, *args, **kwargs)
+        # wx.Panel.__init__(self, *args, **kwargs)
 
         # Each trend has its own identifier so that displays
         # do not overlap with other trends

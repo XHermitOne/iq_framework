@@ -10,7 +10,8 @@
 import wx
 import wx.adv
 import wx.lib.gizmos
-from .. import gnuplot_trend
+import wx.aui
+from ..gnuplot_trend import component
 
 import gettext
 _ = gettext.gettext
@@ -35,7 +36,7 @@ class iqGnuplotTrendNavigatorPanelProto ( wx.Panel ):
 		bSizer2.Add( self.print_bpButton, 0, wx.ALL, 5 )
 		
 		
-		bSizer2.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		bSizer2.AddStretchSpacer()
 		
 		self.legend_bpButton = wx.BitmapButton( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-justify-fill", wx.ART_TOOLBAR ), wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
 		bSizer2.Add( self.legend_bpButton, 0, wx.ALL, 5 )
@@ -65,7 +66,7 @@ class iqGnuplotTrendNavigatorPanelProto ( wx.Panel ):
 		self.trend_panel = wx.Panel( self.trend_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.trend = gnuplot_trend.iqGnuplotTrend(parent=self.trend_panel, id=wx.NewId())
+		self.trend = component.iqGnuplotTrend(parent=self.trend_panel)
 		bSizer5.Add( self.trend, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		bSizer7 = wx.BoxSizer( wx.VERTICAL )
@@ -74,7 +75,7 @@ class iqGnuplotTrendNavigatorPanelProto ( wx.Panel ):
 		bSizer7.Add( self.up_bpButton, 0, wx.ALL, 5 )
 		
 		
-		bSizer7.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		bSizer7.AddStretchSpacer()
 		
 		self.zoom_in_bpButton = wx.BitmapButton( self.trend_panel, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-zoom-in", wx.ART_TOOLBAR ), wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
 		bSizer7.Add( self.zoom_in_bpButton, 0, wx.ALL, 5 )
@@ -83,7 +84,7 @@ class iqGnuplotTrendNavigatorPanelProto ( wx.Panel ):
 		bSizer7.Add( self.zoom_out_bpButton, 0, wx.ALL, 5 )
 		
 		
-		bSizer7.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		bSizer7.AddStretchSpacer()
 		
 		self.down_bpButton = wx.BitmapButton( self.trend_panel, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-go-down", wx.ART_TOOLBAR ), wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
 		bSizer7.Add( self.down_bpButton, 0, wx.ALL, 5 )
@@ -110,7 +111,7 @@ class iqGnuplotTrendNavigatorPanelProto ( wx.Panel ):
 		bSizer4.Add( self.prev_bpButton, 0, wx.ALL, 5 )
 		
 		
-		bSizer4.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		bSizer4.AddStretchSpacer()
 		
 		self.time_zoom_out_bpButton = wx.BitmapButton( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-zoom-out", wx.ART_TOOLBAR ), wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
 		bSizer4.Add( self.time_zoom_out_bpButton, 0, wx.ALL, 5 )
@@ -119,7 +120,7 @@ class iqGnuplotTrendNavigatorPanelProto ( wx.Panel ):
 		bSizer4.Add( self.time_zoom_in_bpButton, 0, wx.ALL, 5 )
 		
 		
-		bSizer4.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		bSizer4.AddStretchSpacer()
 		
 		self.next_bpButton = wx.BitmapButton( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-go-forward", wx.ART_TOOLBAR ), wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
 		bSizer4.Add( self.next_bpButton, 0, wx.ALL, 5 )

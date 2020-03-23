@@ -32,7 +32,8 @@ class iqWxPlateButton(wx.lib.platebtn.PlateButton, object.iqObject):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         wx.lib.platebtn.PlateButton.__init__(self, parent, wx.NewId(),
                                              label=self.getLabel(),

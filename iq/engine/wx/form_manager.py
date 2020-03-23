@@ -23,26 +23,39 @@ class iqFormManager(stored_ctrl_manager.iqStoredCtrlManager):
     """
     Frame and dialog manager.
     """
-    def saveFormData(self):
+    def saveFormData(self, name=None, data=None):
         """
         Save position and size of frame/dialog object.
 
+        :param name: Object name.
+            If None then get class name.
+        :param data: Saving data.
+            If None then get data from controls.
         :return: True/False.
         """
+        if name is None:
+            name = self.__class__.__name__
+
         res_filename = os.path.join(file_func.getProfilePath(),
                                     global_func.getProjectName(),
-                                    self.__class__.__name__)
-        data = self._getCtrlData()
+                                    name)
+        if data is None:
+            data = self._getCtrlData()
         return res_func.saveResourcePickle(res_filename, data)
 
-    def loadFormData(self):
+    def loadFormData(self, name=None):
         """
         Load position and size of frame/dialog object.
 
-        :return: True/False.
+        :param name: Object name.
+            If None then get class name.
+        :return: Saved data dictionary.
         """
+        if name is None:
+            name = self.__class__.__name__
+
         res_filename = os.path.join(file_func.getProfilePath(),
                                     global_func.getProjectName(),
-                                    self.__class__.__name__)
+                                    name)
         data = res_func.loadResourcePickle(res_filename)
         return self._setCtrlData(data)

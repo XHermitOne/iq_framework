@@ -33,7 +33,8 @@ class iqMnemoScheme(mnemoscheme.iqMnemoSchemeManager, wx_panel.COMPONENT):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        wx_panel.COMPONENT.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        wx_panel.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         mnemoscheme.iqMnemoSchemeManager.__init__(self, *args, **kwargs)
 
         self.setSVGBackground(self.getSVGFilename(), auto_draw=True)

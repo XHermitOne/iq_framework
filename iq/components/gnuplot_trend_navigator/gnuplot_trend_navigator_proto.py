@@ -15,6 +15,7 @@ from ...util import log_func
 
 from ...engine.wx import listctrl_manager
 from ...engine.wx import splitter_manager
+from ...engine.wx import form_manager
 
 __version__ = (0, 0, 0, 1)
 
@@ -26,7 +27,8 @@ VIEW_REPORT_FILE_FMT = 'evince %s &'
 
 class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplotTrendNavigatorPanelProto,
                                    listctrl_manager.iqListCtrlManager,
-                                   splitter_manager.iqSplitterWindowManager):
+                                   splitter_manager.iqSplitterWindowManager,
+                                   form_manager.iqFormManager):
     """
     Trend navigation panel based on gnuplot utility.
     """

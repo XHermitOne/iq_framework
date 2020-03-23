@@ -26,7 +26,8 @@ class iqDataRefObjModel(data_model.COMPONENT):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        data_model.COMPONENT.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context, *args, **kwargs)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        data_model.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context, *args, **kwargs)
 
 
 COMPONENT = iqDataRefObjModel

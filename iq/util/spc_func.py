@@ -66,6 +66,8 @@ def fillResourceBySpc(resource=None, spc=None):
     :return: Qualified resource filled or None if error.
     """
     if resource is None:
+        resource = copy.deepcopy(spc)
+    if resource is None:
         resource = dict()
 
     if spc is None:

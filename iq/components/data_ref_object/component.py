@@ -9,6 +9,7 @@ import gettext
 
 from ...components import data_navigator
 
+from . import spc
 from . import ref_object
 from ...util import log_func
 
@@ -34,7 +35,8 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, context=context)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         ref_object.iqRefObjectManager.__init__(self, *args, **kwargs)
 
     def getCodLen(self):

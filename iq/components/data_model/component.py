@@ -25,7 +25,8 @@ class iqDataModel(model.iqModelManager, object.iqObject):
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=spc.SPC, context=context)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         model.iqModelManager.__init__(self, *args, **kwargs)
 
 

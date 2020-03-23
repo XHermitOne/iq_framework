@@ -861,7 +861,7 @@
                                                     <property name="center_pane">0</property>
                                                     <property name="class"></property>
                                                     <property name="close_button">1</property>
-                                                    <property name="construction">self.trend = gnuplot_trend.iqGnuplotTrend(parent=self.trend_panel, id=wx.NewId())</property>
+                                                    <property name="construction">self.trend = component.iqGnuplotTrend(parent=self.trend_panel)</property>
                                                     <property name="context_help"></property>
                                                     <property name="context_menu">1</property>
                                                     <property name="declaration"></property>
@@ -876,7 +876,7 @@
                                                     <property name="gripper">0</property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="include">from .. import gnuplot_trend</property>
+                                                    <property name="include">from ..gnuplot_trend import component</property>
                                                     <property name="max_size"></property>
                                                     <property name="maximize_button">0</property>
                                                     <property name="maximum_size"></property>

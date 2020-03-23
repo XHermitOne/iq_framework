@@ -26,7 +26,8 @@ class iqDataWideHistory(wide_history.iqWideHistoryManager, data_navigator.COMPON
         :param resource: Object resource dictionary.
         :param context: Context dictionary.
         """
-        data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, context=context)
+        component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
+        data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         wide_history.iqWideHistoryManager.__init__(self, *args, **kwargs)
 
     def getDTColumnName(self):
