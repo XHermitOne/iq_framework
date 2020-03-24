@@ -41,6 +41,19 @@ GNUPLOTTREND_SPC = {
     '__doc__': None,
     '__content__': ('iqTrendPen', ),
     '__edit__': {
+        'adapt_scene': property_editor_id.CHECKBOX_EDITOR,
+        'scene_min': property_editor_id.SCRIPT_EDITOR,
+        'scene_max': property_editor_id.SCRIPT_EDITOR,
+        'x_format': {
+            'editor': property_editor_id.CHOICE_EDITOR,
+            'choices': trend_proto.DEFAULT_X_FORMATS,
+        },
+        'y_format': {
+            'editor': property_editor_id.CHOICE_EDITOR,
+            'choices': trend_proto.DEFAULT_Y_FORMATS,
+        },
+        'x_precision': property_editor_id.STRING_EDITOR,
+        'y_precision': property_editor_id.STRING_EDITOR,
     },
     '__help__': {
         'x_format': u'X axis data presentation format',
