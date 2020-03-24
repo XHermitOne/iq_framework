@@ -82,7 +82,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
         model = self.getModel()
         if model:
             dt_field = getattr(model, self.getDTColumnName())
-            recordset = self.getModelQuery().filter_by(dt_field.between(start_dt, stop_dt))
+            recordset = self.getModelQuery().filter(dt_field.between(start_dt, stop_dt))
             records = [vars(record) for record in recordset]
 
             if rec_filter:

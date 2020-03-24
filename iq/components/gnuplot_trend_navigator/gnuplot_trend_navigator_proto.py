@@ -195,9 +195,9 @@ class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplot
         try:
             width, height = self.getTrend().GetSize()
             line_data = self.getTrend().getPenData()
-            frame_filename = self.getTrend().report_frame(size=(width, height),
-                                                          scene=self.getTrend().getCurScene(),
-                                                          points=line_data)
+            frame_filename = self.getTrend().reportFrame(size=(width, height),
+                                                         scene=self.getTrend().getCurScene(),
+                                                         points=line_data)
             return frame_filename
         except:
             log_func.fatal(u'Error receiving report')

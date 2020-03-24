@@ -16,6 +16,8 @@ from ...util import log_func
 
 __version__ = (0, 0, 0, 1)
 
+DEFAULT_RGB_STR_COLOUR = '#0000FF'
+
 
 class iqTrendPen(object.iqObject):
     """
@@ -51,6 +53,15 @@ class iqTrendPen(object.iqObject):
         """
         colour = self.getAttribute('colour')
         return wx.Colour(*colour) if colour else wx.Colour(0, 0, 255)
+
+    def getColourStr(self):
+        """
+        Цвет пера в строковом виде RGB. Например #FF0000.
+        """
+        wx_colour = self.getColour()
+        if wx_colour:
+            return wx_colour.GetAsString(wx.C2S_HTML_SYNTAX)
+        return DEFAULT_RGB_STR_COLOUR
 
     def getHistoryPsp(self):
         """

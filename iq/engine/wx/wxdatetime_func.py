@@ -11,7 +11,7 @@ import wx
 __version__ = (0, 0, 0, 1)
 
 
-def date2wxdatetime(date):
+def date2wxDateTime(date):
     """
     Convert <datetime.date> to <wx.DateTime>.
 
@@ -27,7 +27,7 @@ def date2wxdatetime(date):
     return wx.DateTime.FromDMY(*dmy)
 
 
-def wxdatetime2date(date):
+def wxDateTime2date(date):
     """
     Convert <wx.DateTime> to <datetime.date>.
 
@@ -44,7 +44,7 @@ def wxdatetime2date(date):
     return None
 
 
-def datetime2wxdatetime(dt):
+def datetime2wxDateTime(dt):
     """
     Convert <datetime.datetime> to <wx.DateTime>.
 
@@ -65,7 +65,7 @@ def datetime2wxdatetime(dt):
     return result
 
 
-def wxdatetime2datetime(dt):
+def wxDateTime2datetime(dt):
     """
     Convert <wx.DateTime> to <datetime>.
 

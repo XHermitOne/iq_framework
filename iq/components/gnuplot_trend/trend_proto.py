@@ -173,7 +173,7 @@ class iqTrendProto(object):
         """
         pass
 
-    def draw_empty(self):
+    def drawEmpty(self):
         """
         Drawing an empty trend.
         """

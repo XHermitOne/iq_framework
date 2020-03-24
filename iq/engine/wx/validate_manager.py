@@ -183,7 +183,7 @@ class iqValidateManager(object):
                 value = ctrl.GetValue()
             elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
                 wx_dt = ctrl.GetValue()
-                value = wxdatetime_func.wxdatetime2datetime(wx_dt)
+                value = wxdatetime_func.wxDateTime2datetime(wx_dt)
             elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
                 value = ctrl.GetPath()
             elif issubclass(ctrl.__class__, wx.SpinCtrl):

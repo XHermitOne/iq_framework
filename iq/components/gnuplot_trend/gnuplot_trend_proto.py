@@ -15,6 +15,7 @@ import uuid
 
 from ...util import log_func
 from ...util import file_func
+from ...engine.wx import wxbitmap_func
 
 from . import gnuplot_manager
 
@@ -199,9 +200,9 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         then you need to use the wx.EVT_WINDOW_DESTROY event.
         """
         frame_filename = self.getFrameFileName(PNG_FILE_TYPE)
-        self.del_frame(frame_filename)
+        self.delFrameFile(frame_filename)
         frame_filename = self.getFrameFileName(PDF_FILE_TYPE)
-        self.del_frame(frame_filename)
+        self.delFrameFile(frame_filename)
         dat_filename = os.path.splitext(frame_filename)[0] + DATA_FILE_EXT
         file_func.removeFile(dat_filename)
         event.Skip()
@@ -255,7 +256,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             except:
                 log_func.error(u'Error make directory <%s>' % DEFAULT_GNUPLOT_FRAME_PATH)
 
-    def del_frame(self, frame_filename=None):
+    def delFrameFile(self, frame_filename=None):
         """
         Delete frame file.
 
@@ -274,8 +275,8 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
                          'datetime': 'DT',
                          'exponent': 'E'}
 
-    def draw_frame(self, size=(0, 0), x_format='time', y_format='numeric',
-                   scene=None, points=None):
+    def drawFrame(self, size=(0, 0), x_format='time', y_format='numeric',
+                  scene=None, points=None):
         """
         Drawing a frame of trend data.
 
@@ -291,14 +292,14 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             if scene is None:
                 scene = self._cur_scene
 
-            return self._draw_frame(size=size, x_format=x_format, y_format=y_format,
-                                    scene=scene, points=points, file_type=PNG_FILE_TYPE)
+            return self._drawFrame(size=size, x_format=x_format, y_format=y_format,
+                                   scene=scene, points=points, file_type=PNG_FILE_TYPE)
         except:
             log_func.fatal(u'Frame rendering error')
         return None
 
-    def report_frame(self, size=(0, 0), x_format='time', y_format='numeric',
-                     scene=None, points=None):
+    def reportFrame(self, size=(0, 0), x_format='time', y_format='numeric',
+                    scene=None, points=None):
         """
         Rendering a trend data frame as a PDF report.
 
@@ -313,14 +314,14 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             if scene is None:
                 scene = self._cur_scene
 
-            return self._draw_frame(size=size, x_format=x_format, y_format=y_format,
-                                    scene=scene, points=points, file_type=PDF_FILE_TYPE)
+            return self._drawFrame(size=size, x_format=x_format, y_format=y_format,
+                                   scene=scene, points=points, file_type=PDF_FILE_TYPE)
         except:
             log_func.fatal(u'Report rendering frame error')
         return None
 
-    def _draw_frame(self, size=(0, 0), x_format='time', y_format='numeric', scene=None,
-                    points=None, file_type=PNG_FILE_TYPE):
+    def _drawFrame(self, size=(0, 0), x_format='time', y_format='numeric', scene=None,
+                   points=None, file_type=PNG_FILE_TYPE):
         """
         Drawing a frame of trend data.
 
@@ -343,7 +344,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             return None
 
         # log_func.debug(u'Frame filename: %s' % frame_filename)
-        self.del_frame(frame_filename)
+        self.delFrameFile(frame_filename)
 
         dt_format = self._get_dt_format(x_format)
         self.__gnuplot_manager.setTimeFormat()
@@ -398,7 +399,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             log_func.error(u'Frame file <%s> Gnuplot trend not found' % frame_filename)
         return None
 
-    def draw_empty(self, size=None):
+    def drawEmpty(self, size=None):
         """
         Drawing an empty trend.
         """
@@ -406,10 +407,10 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             # size = self.canvas.GetSize()
             size = self.GetSize()
         log_func.debug(u'Drawing an empty trend. Size %s' % str(size))
-        frame_filename = self.draw_frame(size=tuple(size))
-        self.set_frame(frame_filename)
+        frame_filename = self.drawFrame(size=tuple(size))
+        self.setFrame(frame_filename)
 
-    def set_frame(self, frame_filename=None):
+    def setFrame(self, frame_filename=None):
         """
         Set frame.
 
@@ -419,11 +420,14 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         if frame_filename is None:
             frame_filename = self.getFrameFileName()
 
-        if frame_filename and os.path.exists(frame_filename) and frame_filename.endswith(PNG_FILE_TYPE.lower()):
-            bmp = bmpfunc.createBitmap(frame_filename)
-            self.canvas.SetBitmap(bmp)
-            self.canvas.Refresh()
-            return True
+        try:
+            if frame_filename and os.path.exists(frame_filename) and frame_filename.endswith(PNG_FILE_TYPE.lower()):
+                bmp = wxbitmap_func.createBitmap(frame_filename)
+                self.canvas.SetBitmap(bmp)
+                self.canvas.Refresh()
+                return True
+        except:
+            log_func.fatal(u'Error set frame <%s> in trend <%s>' % (frame_filename, self.getName()))
         return False
 
     def _saveGraphDataFile(self, graph_filename=None):
@@ -506,11 +510,11 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
 
         if not_empty:
             if redraw:
-                self.draw_frame(size=size, points=graph_filename, scene=self._cur_scene)
-            self.set_frame()
+                self.drawFrame(size=size, points=graph_filename, scene=self._cur_scene)
+            self.setFrame()
         else:
             # If the trend is empty, then draw an empty trend
-            self.draw_empty(size=size)
+            self.drawEmpty(size=size)
 
     def adaptScene(self, graph_data=None):
         """

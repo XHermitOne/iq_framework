@@ -53,7 +53,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             ctrl.SetValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
-            wx_dt = wxdatetime_func.datetime2wxdatetime(value)
+            wx_dt = wxdatetime_func.datetime2wxDateTime(value)
             ctrl.SetValue(wx_dt)
             result = True
         elif issubclass(ctrl.__class__, wx.DirPickerCtrl):

@@ -122,6 +122,7 @@ class iqSchemeModuleGenerator(object):
             description = resource.get('description', '')
 
             modeles_text = [self.genModelTxt(model) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list())]
+            modeles_text = [model_body for model_body in modeles_text if model_body]
             scheme_text = SCHEME_TEXT_FMT % (description, u'\n'.join(modeles_text))
 
             result = txtfile_func.saveTextFile(txt_filename=module_filename,
@@ -138,11 +139,15 @@ class iqSchemeModuleGenerator(object):
         :param resource: Model resource.
         :return: Model text.
         """
+        if not resource.get('activate', True):
+            return ''
+
         name = resource.get('name', 'Unknown')
         description = resource.get('description', '')
         tablename = resource.get('tablename', '')
         tablename = tablename if tablename else name.lower()
         columns_text = [self.genColumnTxt(column) for column in resource.get(spc_func.CHILDREN_ATTR_NAME, list())]
+        columns_text = [column_line for column_line in columns_text if column_line]
         return MODEL_TEXT_FMT % (name, description, tablename, os.linesep.join(columns_text))
 
     def genColumnTxt(self, resource):
@@ -152,8 +157,11 @@ class iqSchemeModuleGenerator(object):
         :param resource: Column resource.
         :return: Column text.
         """
+        if not resource.get('activate', True):
+            return ''
+
         name = resource.get('name', 'Unknown')
-        description = resource.get('description', '')
+        description = resource.get('description', '').replace('\'', '\\\'')
         column_attrs = list()
 
         field_type = resource.get('field_type', None)
