@@ -50,8 +50,11 @@ def buildComponentSpcCache():
         prj_pkg = project.SPC['__package__']
         result[prj_pkg] = list()
         result[prj_pkg].append(project.SPC)
+        log_func.info(u'Component <%s> is registered' % project.SPC.get('type'))
         result[prj_pkg].append(user.SPC)
+        log_func.info(u'Component <%s> is registered' % user.SPC.get('type'))
         result[prj_pkg].append(role.SPC)
+        log_func.info(u'Component <%s> is registered' % role.SPC.get('type'))
 
         components_dirname = os.path.dirname(__file__)
         component_names = file_func.getDirectoryNames(components_dirname)
@@ -64,6 +67,7 @@ def buildComponentSpcCache():
                 if pkg_name not in result:
                     result[pkg_name] = list()
                 result[pkg_name].append(component_spc)
+                log_func.info(u'Component <%s> is registered' % component_spc.get('type'))
             else:
                 py_pkg_path = os.path.join(components_dirname, py_pkg, DEFAULT_SPC_PY)
                 component_spc = getComponentSpc(py_pkg, py_pkg_path)
@@ -72,6 +76,7 @@ def buildComponentSpcCache():
                     if pkg_name not in result:
                         result[pkg_name] = list()
                     result[pkg_name].append(component_spc)
+                    log_func.info(u'Component <%s> is registered' % component_spc.get('type'))
                 else:
                     log_func.error(u'Error find component <%s> SPC' % py_pkg)
 
@@ -154,17 +159,17 @@ def buildComponents():
         prj_type = project.COMPONENT_TYPE
         prj_component = project.COMPONENT
         result[prj_type] = prj_component
-        log_func.info(u'Component <%s> registered' % prj_type)
+        log_func.info(u'Component <%s> is registered' % prj_type)
 
         user_type = user.COMPONENT_TYPE
         user_component = user.COMPONENT
         result[user_type] = user_component
-        log_func.info(u'Component <%s> registered' % user_type)
+        log_func.info(u'Component <%s> is registered' % user_type)
 
         role_type = role.COMPONENT_TYPE
         role_component = role.COMPONENT
         result[role_type] = role_component
-        log_func.info(u'Component <%s> registered' % role_type)
+        log_func.info(u'Component <%s> is registered' % role_type)
 
         components_dirname = os.path.dirname(__file__)
         component_names = file_func.getDirectoryNames(components_dirname)
@@ -198,7 +203,7 @@ def buildComponents():
                 log_func.error(u'Not find component class in <%s>' % py_pkg)
             if component_type and component_class:
                 result[component_type] = component_class
-                log_func.info(u'Component <%s> registered' % component_type)
+                log_func.info(u'Component <%s> is registered' % component_type)
 
         return result
     except:

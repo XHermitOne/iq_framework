@@ -68,6 +68,9 @@ pip3 install JayDeBeApi
 # pip3 install dbfpy
 pip3 install dbfread
 
+# xmltodict
+pip3 install xmltodict
+
 
 # Office
 sudo apt install --assume-yes unoconv

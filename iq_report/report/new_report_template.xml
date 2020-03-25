@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Shurik</Author>
+  <LastAuthor>XHermit</LastAuthor>
+  <LastPrinted>2004-02-26T09:50:21Z</LastPrinted>
+  <Created>2003-07-09T03:38:17Z</Created>
+  <LastSaved>2004-03-23T03:39:41Z</LastSaved>
+  <Company>InfoCentre</Company>
+  <Version>11.6360</Version>
+ </DocumentProperties>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>4605</WindowHeight>
+  <WindowWidth>9330</WindowWidth>
+  <WindowTopX>405</WindowTopX>
+  <WindowTopY>75</WindowTopY>
+  <RefModeR1C1/>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Arial Cyr" x:CharSet="204"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s21">
+   <Borders/>
+   <Font x:CharSet="204" x:Family="Swiss" ss:Size="8"/>
+   <Interior/>
+  </Style>
+  <Style ss:ID="s22">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Top"/>
+   <Font x:CharSet="204" x:Family="Swiss"/>
+   <Interior ss:Color="#99CCFF" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s23">
+   <Borders/>
+   <Font x:CharSet="204" x:Family="Swiss" ss:Size="8"/>
+   <Interior ss:Color="#99CCFF" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s24">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Courier createNew" x:CharSet="204" x:Family="Modern"/>
+   <Interior ss:Color="#666699" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s25">
+   <Alignment ss:Vertical="Distributed"/>
+   <Borders/>
+   <Font x:CharSet="204" x:Family="Swiss" ss:Size="8"/>
+   <Interior ss:Color="#99CCFF" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s26">
+   <Alignment ss:Vertical="Distributed" ss:WrapText="1"/>
+   <Borders/>
+   <Font x:CharSet="204" x:Family="Swiss" ss:Size="14"/>
+   <Interior/>
+  </Style>
+  <Style ss:ID="s27">
+   <Alignment ss:Vertical="Center"/>
+   <Borders/>
+   <Font x:CharSet="204" x:Family="Swiss" ss:Size="8"/>
+   <Interior/>
+  </Style>
+  <Style ss:ID="s28">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:CharSet="204" x:Family="Swiss" ss:Size="8"/>
+   <Interior/>
+  </Style>
+  <Style ss:ID="s29">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:CharSet="204" x:Family="Swiss"/>
+   <Interior/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="rep_tmpl">
+  <Names>
+   <NamedRange ss:Name="Print_Area" ss:RefersTo="=rep_tmpl!R1C1:R7C6"/>
+  </Names>
+  <Table ss:ExpandedColumnCount="256" ss:ExpandedRowCount="7" x:FullColumns="1"
+   x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="13.5">
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="107.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="65.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="75.75"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="59.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="37.5"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="98.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="28.5"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="41.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="45.75" ss:Span="247"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s22"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">[description]</Data><NamedCell
+      ss:Name="Print_Area"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">[generator]</Data><NamedCell
+      ss:Name="Print_Area"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s23"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">[data_source]</Data><NamedCell
+      ss:Name="Print_Area"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="17.25">
+    <Cell ss:StyleID="s25"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s25"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s25"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s25"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s25"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">[query]</Data><NamedCell
+      ss:Name="Print_Area"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="23.25">
+    <Cell ss:StyleID="s26"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s26"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s26"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s26"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s26"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">[header]</Data><NamedCell
+      ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s27"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="20.25">
+    <Cell ss:StyleID="s28"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s29"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s29"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s29"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s29"><NamedCell ss:Name="Print_Area"/></Cell>
+    <Cell ss:StyleID="s24"><Data ss:Type="String">[detail]</Data><NamedCell
+      ss:Name="Print_Area"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="19.5">
+    <Cell ss:Index="6" ss:StyleID="s24"><Data ss:Type="String">[footer]</Data><NamedCell
+      ss:Name="Print_Area"/></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <PageMargins x:Bottom="0.984251969" x:Left="0.78740157499999996"
+     x:Right="0.78740157499999996" x:Top="0.984251969"/>
+   </PageSetup>
+   <Unsynced/>
+   <Print>
+    <ValidPrinterInfo/>
+    <PaperSizeIndex>10</PaperSizeIndex>
+    <HorizontalResolution>300</HorizontalResolution>
+    <VerticalResolution>300</VerticalResolution>
+   </Print>
+   <ShowPageBreakZoom/>
+   <PageBreakZoom>100</PageBreakZoom>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>6</ActiveRow>
+     <ActiveCol>5</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

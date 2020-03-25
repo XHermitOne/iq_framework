@@ -93,3 +93,122 @@ def data2txt(data, level=0):
     except:
         log_func.fatal(u'Error transform data to text. Level <%d>' % level)
     return txt
+
+
+RU_ENCODINGS = {'UTF-8': 'utf-8',
+                'CP1251': 'windows-1251',
+                'KOI8-R': 'koi8-r',
+                'IBM866': 'ibm866',
+                'ISO-8859-5': 'iso-8859-5',
+                'MAC': 'mac',
+                }
+
+
+def getCodepage(text=None):
+    """
+    Definition of text encoding.
+
+    Function call example:
+    print(RU_ENCODINGS[getCodepage(file('test.txt').read())])
+    There is an alternative encoding definition (using chardet):
+    a = 'sdfds'
+    import chardet
+    print(chardet.detect(a))
+    {'confidence': 1.0, 'encoding': 'ascii'}
+    a = 'any text'
+    print(chardet.detect(a))
+    {'confidence': 0.99, 'encoding': 'utf-8'}
+    """
+    uppercase = 1
+    lowercase = 3
+    utfupper = 5
+    utflower = 7
+    codepages = {}
+    for enc in RU_ENCODINGS.keys():
+        codepages[enc] = 0
+    if text is not None and len(text) > 0:
+        last_simb = 0
+        for simb in text:
+            simb_ord = ord(simb)
+
+            # non-russian characters
+            if simb_ord < 128 or simb_ord > 256:
+                continue
+
+            # UTF-8
+            if last_simb == 208 and (143 < simb_ord < 176 or simb_ord == 129):
+                codepages['UTF-8'] += (utfupper * 2)
+            if (last_simb == 208 and (simb_ord == 145 or 175 < simb_ord < 192)) \
+               or (last_simb == 209 and (127 < simb_ord < 144)):
+                codepages['UTF-8'] += (utflower * 2)
+
+            # CP1251
+            if 223 < simb_ord < 256 or simb_ord == 184:
+                codepages['CP1251'] += lowercase
+            if 191 < simb_ord < 224 or simb_ord == 168:
+                codepages['CP1251'] += uppercase
+
+            # KOI8-R
+            if 191 < simb_ord < 224 or simb_ord == 163:
+                codepages['KOI8-R'] += lowercase
+            if 222 < simb_ord < 256 or simb_ord == 179:
+                codepages['KOI8-R'] += uppercase
+
+            # IBM866
+            if 159 < simb_ord < 176 or 223 < simb_ord < 241:
+                codepages['IBM866'] += lowercase
+            if 127 < simb_ord < 160 or simb_ord == 241:
+                codepages['IBM866'] += uppercase
+
+            # ISO-8859-5
+            if 207 < simb_ord < 240 or simb_ord == 161:
+                codepages['ISO-8859-5'] += lowercase
+            if 175 < simb_ord < 208 or simb_ord == 241:
+                codepages['ISO-8859-5'] += uppercase
+
+            # MAC
+            if 221 < simb_ord < 255:
+                codepages['MAC'] += lowercase
+            if 127 < simb_ord < 160:
+                codepages['MAC'] += uppercase
+
+            last_simb = simb_ord
+
+        idx = ''
+        max_cp = 0
+        for item in codepages:
+            if codepages[item] > max_cp:
+                max_cp = codepages[item]
+                idx = item
+        return idx
+
+
+def recodeText(txt, src_codepage='cp1251', dst_codepage='utf-8'):
+    """
+    Transcode text from one encoding to another.
+
+    :param txt: Source text.
+    :param src_codepage: Source code page.
+    :param dst_codepage: Destination code page.
+    :return: Recoded text in a new encoding.
+    """
+    unicode_txt = toUnicode(txt, src_codepage)
+    if isinstance(unicode_txt, str):
+        return unicode_txt.encode(dst_codepage)
+
+    log_func.error(u'Error recode text <%s>' % str(txt))
+    return None
+
+
+def toUnicode(value, code_page='utf-8'):
+    """
+    Convert any value to unicode.
+
+    :param value: Value.
+    :param code_page: Code page.
+    """
+    if isinstance(value, str):
+        return value
+    elif isinstance(value, bytes):
+        return value.decode(code_page)
+    return str(value)

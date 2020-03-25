@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+  <Styles>
+    <Style ss:ID="ce1">
+      <Alignment ss:Horizontal="Left" ss:Vertical="Top"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="12" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior ss:Color="#99ccff"/>
+    </Style>
+    <Style ss:ID="ce2">
+      <Alignment/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="12" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior ss:Color="#99ccff"/>
+    </Style>
+    <Style ss:ID="ce3">
+      <Alignment ss:Vertical="Center"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="12" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior ss:Color="#99ccff"/>
+    </Style>
+    <Style ss:ID="ce14">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="14" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce15">
+      <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="14" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce16">
+      <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
+      <Borders>
+        <Border ss:Position="Left" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+        <Border ss:Position="Right" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+        <Border ss:Position="Top" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+        <Border ss:Position="Bottom" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+      </Borders>
+      <Font ss:Size="14" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior ss:Color="#999999"/>
+    </Style>
+    <Style ss:ID="ce17">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="14" ss:FontName="Courier New"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce18">
+      <Alignment/>
+      <Borders>
+        <Border ss:Position="Top" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+      </Borders>
+      <Font ss:Size="8"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce7">
+      <Alignment/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="8"/>
+      <Interior ss:Color="#99ccff"/>
+    </Style>
+    <Style ss:ID="ce8">
+      <Alignment ss:Vertical="Center"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="8"/>
+      <Interior ss:Color="#99ccff"/>
+    </Style>
+    <Style ss:ID="ce21">
+      <Alignment ss:Vertical="Center" ss:WrapText="1"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="14"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce22">
+      <Alignment ss:Vertical="Center" ss:WrapText="1"/>
+      <Borders>
+        <Border ss:Position="Left" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+        <Border ss:Position="Right" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+        <Border ss:Position="Top" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+        <Border ss:Position="Bottom" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+      </Borders>
+      <Font ss:Size="14" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior ss:Color="#999999"/>
+    </Style>
+    <Style ss:ID="ce23">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="14" ss:FontName="Courier New"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce24">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Borders>
+        <Border ss:Position="Top" ss:Color="#000000" ss:LineStyle="Continuous" ss:Weight="0.74"/>
+      </Borders>
+      <Font ss:Size="8"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce26">
+      <Alignment ss:Vertical="Center" ss:WrapText="1"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="12" ss:FontName="Courier New"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce28">
+      <Alignment ss:Vertical="Center" ss:WrapText="1"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="12" ss:Bold="1" ss:FontName="Courier New"/>
+      <Interior/>
+    </Style>
+    <Style ss:ID="ce10">
+      <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="10" ss:FontName="Courier New1"/>
+      <Interior ss:Color="#666699"/>
+    </Style>
+    <Style ss:ID="ce30">
+      <Alignment ss:Horizontal="Left" ss:Vertical="Top"/>
+      <Borders>
+      </Borders>
+      <Font ss:Size="10" ss:FontName="Courier New1"/>
+      <Interior ss:Color="#666699"/>
+    </Style>
+    <Style ss:ID="ce6">
+      <Font ss:Size="8"/>
+    </Style>
+    <Style ss:ID="Default">
+      <Font/>
+    </Style>
+  </Styles>
+  <Worksheet ss:Name="rep_tmpl">
+    <Table>
+      <Column ss:Width="121.996" ss:StyleID="ce2"/>
+      <Column ss:Width="76.74799999999999" ss:StyleID="ce7"/>
+      <Column ss:Width="119.952" ss:StyleID="ce7"/>
+      <Column ss:Width="122.472" ss:StyleID="ce7"/>
+      <Column ss:Width="127.064" ss:StyleID="ce7"/>
+      <Column ss:Width="87.416" ss:StyleID="ce10"/>
+      <Column ss:Width="63.22399999999999" ss:Span="249" ss:StyleID="ce6"/>
+      <Row ss:Height="14.812">
+        <Cell ss:StyleID="ce1">
+          <Data ss:Type="String">Журнал загрузки данных о вторичных продажах дилера</Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String">[description]</Data>
+        </Cell>
+      </Row>
+      <Row ss:Height="14.812">
+        <Cell>
+          <Data ss:Type="String">.ODS</Data>
+        </Cell>
+        <Cell>
+          <Data ss:Type="String">[generator]</Data>
+        </Cell>
+      </Row>
+      <Row ss:Height="14.812">
+        <Cell>
+          <Data ss:Type="String">[data_source]</Data>
+        </Cell>
+      </Row>
+      <Row ss:Height="14.812">
+        <Cell ss:StyleID="ce3">
+          <Data ss:Type="String">PY: list()</Data>
+        </Cell>
+        <Cell ss:StyleID="ce8"/>
+        
+        <Cell ss:StyleID="ce8"/>
+        
+        <Cell ss:StyleID="ce8"/>
+        
+        <Cell ss:StyleID="ce8"/>
+        
+        <Cell>
+          <Data ss:Type="String">[query]</Data>
+        </Cell>
+      </Row>
+      <Row ss:Height="17.276">
+        <Cell ss:StyleID="ce14" ss:MergeAcross="4" ss:MergeDown="0">
+          <Data ss:Type="String">Журнал загрузки данных о вторичных продажах дилера</Data>
+        </Cell>
+        <Cell ss:Index="6" ss:StyleID="ce30" ss:MergeAcross="0" ss:MergeDown="3">
+          <Data ss:Type="String">[header]</Data>
+        </Cell>
+        <Cell ss:StyleID="Default"/>
+        
+      </Row>
+      <Row ss:Height="17.668">
+        <Cell ss:StyleID="ce15" ss:MergeAcross="2" ss:MergeDown="0">
+          <Data ss:Type="String">Дилер: [%dealer_name%]</Data>
+        </Cell>
+        <Cell ss:Index="4" ss:StyleID="ce26">
+          <Data ss:Type="String">Дата загрузки:</Data>
+        </Cell>
+        <Cell ss:StyleID="ce28">
+          <Data ss:Type="String">[&amp;amp;load_date&amp;amp;]</Data>
+        </Cell>
+        <Cell ss:Index="7" ss:StyleID="Default"/>
+        
+      </Row>
+      <Row ss:Height="17.136">
+        <Cell ss:StyleID="ce15"/>
+        
+        <Cell ss:StyleID="ce21"/>
+        
+        <Cell ss:StyleID="ce21"/>
+        
+        <Cell ss:StyleID="ce26"/>
+        
+        <Cell ss:StyleID="ce28"/>
+        
+        <Cell ss:Index="7" ss:StyleID="Default"/>
+        
+      </Row>
+      <Row ss:Height="17.668">
+        <Cell ss:StyleID="ce16">
+          <Data ss:Type="String">Период</Data>
+        </Cell>
+        <Cell ss:StyleID="ce22">
+          <Data ss:Type="String">Тип</Data>
+        </Cell>
+        <Cell ss:StyleID="ce16" ss:MergeAcross="2" ss:MergeDown="0">
+          <Data ss:Type="String">Сообщение</Data>
+        </Cell>
+        <Cell ss:Index="7" ss:StyleID="Default"/>
+        
+      </Row>
+      <Row ss:Height="17.136">
+        <Cell ss:StyleID="ce17"/>
+        
+        <Cell ss:StyleID="ce17"/>
+        
+        <Cell ss:StyleID="ce23" ss:MergeAcross="2" ss:MergeDown="0"/>
+        
+        <Cell ss:Index="6">
+          <Data ss:Type="String">[detail]</Data>
+        </Cell>
+      </Row>
+      <Row ss:Height="12.655999999999999">
+        <Cell ss:StyleID="ce18"/>
+        
+        <Cell ss:StyleID="ce18"/>
+        
+        <Cell ss:StyleID="ce24" ss:MergeAcross="2" ss:MergeDown="0"/>
+        
+        <Cell ss:Index="6">
+          <Data ss:Type="String">[footer]</Data>
+        </Cell>
+      </Row>
+    </Table>
+    <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+      <PageSetup>
+        <Layout x:Orientation="Portrait"/>
+        <PageMargins x:Left="0.787401575" x:Right="0.787401575" x:Top="0.787401575" x:Bottom="0.787401575"/>
+      </PageSetup>
+      <Print>
+        <PaperSizeIndex>9</PaperSizeIndex>
+      </Print>
+    </WorksheetOptions>
+  </Worksheet>
+</Workbook>
