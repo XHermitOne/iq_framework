@@ -3,15 +3,10 @@
 
 import copy
 
-try:
-    from . import v_prototype
-    from . import v_cell
-except ImportError:
-    # Для запуска тестов
-    import icprototype
-    import iccell
+from . import v_prototype
+from . import v_cell
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 0, 0, 1)
 
 RANGE_ROW_IDX = 0
 RANGE_COL_IDX = 1
@@ -21,11 +16,11 @@ RANGE_WIDTH_IDX = 3
 
 class iqVRange(v_prototype.iqVPrototype):
     """
-    Диапазон ячеек. Необходим для групповых операций над ячейками.
+    Range of cells. Required for group operations on cells.
     """
     def __init__(self, parent, row=0, col=0, height=0, width=0, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
 
@@ -38,15 +33,15 @@ class iqVRange(v_prototype.iqVPrototype):
         self._address = []
         self.setAddress(row, col, height, width)
 
-        # Текущее смещение для функции относительной индексации ячеек
+        # Current offset for relative cell indexing function
         self._cur_span_offset = (0, 0)
 
-        # Базисная строка
+        # Basis row
         self._basis_row = None
 
     def setAddress(self, row, column, height, width):
         """
-        Установить адрес.
+        Set address.
         """
         self.row = max(row, 1)
         self.col = max(column, 1)
@@ -59,7 +54,7 @@ class iqVRange(v_prototype.iqVPrototype):
 
     def setValues(self, values=None):
         """
-        Установить значения в диапазоне.
+        Set value in range.
         """
         for i_row, row in enumerate(values):
             if i_row < self.height:
@@ -73,7 +68,7 @@ class iqVRange(v_prototype.iqVPrototype):
                  borders=None, font=None, interior=None,
                  number_format=None):
         """
-        Установить стиль в диапазоне.
+        Set style in range.
         """
         my_workbook = self.getParentByName('Workbook')
         find_style = my_workbook.getStyles().findStyle(alignment, borders, font, interior, number_format)
@@ -93,13 +88,13 @@ class iqVRange(v_prototype.iqVPrototype):
                     number_format=None,
                     style_auto_create=True):
         """
-        Установить стиль в диапазоне.
+        Set style in range.
         """
         for i_row in range(self.height):
             for i_col in range(self.width):
                 cell = self._parent.getCell(self.row+i_row, self.col+i_col)
                 cell_style = cell.getStyle()
-                # Если стиль ячейки не определен, то пропустить ее обработку
+                # If the cell style is not defined, then skip its processing
                 if cell_style is None:
                     continue
 
@@ -128,17 +123,17 @@ class iqVRange(v_prototype.iqVPrototype):
 
                     cell.setStyleID(style.getID())
 
-    def _is_border_position(self, style, border_position):
+    def _isBorderPosition(self, style, border_position):
         """
-        Проверить есть ли в стиле в описании обрамления указанная граница.
+        Check if the specified border is in the style in the description of the frame.
         """
         return bool([border for border in style['children'] if border['Position'] == border_position])
 
-    def _get_cell_border_attr_idx(self, old_borders, i_row, i_col,
-                                  border_left=None, border_top=None, border_right=None, border_bottom=None):
+    def _getCellBorderAttrIdx(self, old_borders, i_row, i_col,
+                              border_left=None, border_top=None, border_right=None, border_bottom=None):
         """
-        Определить атрибуты стиля в диапазоне в зависимости
-        от координат текущей ячейки.
+        Define style attributes in a range depending
+        from the coordinates of the current cell.
         """
         if old_borders and 'children' in old_borders:
             attrs = {'borders': {'name': 'Borders', 'children': copy.deepcopy(old_borders['children'])}}
@@ -146,67 +141,67 @@ class iqVRange(v_prototype.iqVPrototype):
             attrs = {'borders': {'name': 'Borders', 'children': []}}
 
         if i_row == 0:
-            # Ячейка верхней границы
+            # Upper border cell
             if border_top:
-                if not self._is_border_position(attrs['borders'], 'Top'):
+                if not self._isBorderPosition(attrs['borders'], 'Top'):
                     cur_border = border_top
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Top'
                     attrs['borders']['children'].append(cur_border)
             if i_col == 0:
-                # Левая верхняя ячейка
+                # Upper left cell
                 if border_left:
-                    if not self._is_border_position(attrs['borders'], 'Left'):
+                    if not self._isBorderPosition(attrs['borders'], 'Left'):
                         cur_border = border_left
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Left'
                         attrs['borders']['children'].append(cur_border)
             if i_col == self._width_1:
-                # Правая верхняя ячейка
+                # Upper right cell
                 if border_right:
-                    if not self._is_border_position(attrs['borders'], 'Right'):
+                    if not self._isBorderPosition(attrs['borders'], 'Right'):
                         cur_border = border_right
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Right'
                         attrs['borders']['children'].append(cur_border)
 
         if i_row == self._height_1:
-            # Ячейка нижней границы
+            # Bottom border cell
             if border_bottom:
-                if not self._is_border_position(attrs['borders'], 'Bottom'):
+                if not self._isBorderPosition(attrs['borders'], 'Bottom'):
                     cur_border = border_bottom
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Bottom'
                     attrs['borders']['children'].append(cur_border)
             if i_col == 0:
-                # Левая нижняя ячейка
+                # Lower left cell
                 if border_left:
-                    if not self._is_border_position(attrs['borders'],'Left'):
+                    if not self._isBorderPosition(attrs['borders'], 'Left'):
                         cur_border = border_left
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Left'
                         attrs['borders']['children'].append(cur_border)
             if i_col == self._width_1:
-                # Правая нижняя ячейка
+                # Bottom right cell
                 if border_right:
-                    if not self._is_border_position(attrs['borders'], 'Right'):
+                    if not self._isBorderPosition(attrs['borders'], 'Right'):
                         cur_border = border_right
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Right'
                         attrs['borders']['children'].append(cur_border)
 
         if i_col == 0:
-            # Ячейка левой границы
+            # Left border cell
             if border_left:
-                if not self._is_border_position(attrs['borders'], 'Left'):
+                if not self._isBorderPosition(attrs['borders'], 'Left'):
                     cur_border = border_left
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Left'
                     attrs['borders']['children'].append(cur_border)
         if i_col == self._width_1:
-            # Ячейка правой границы
+            # Right border cell
             if border_right:
-                if not self._is_border_position(attrs['borders'], 'Right'):
+                if not self._isBorderPosition(attrs['borders'], 'Right'):
                     cur_border = border_right
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Right'
@@ -217,21 +212,21 @@ class iqVRange(v_prototype.iqVPrototype):
     def setBorderOn(self, border_left=None,
                     border_top=None, border_right=None, border_bottom=None):
         """
-        Обрамление диапазона ячеек.
+        Framing a range of cells.
         """
         my_workbook = self.getParentByName('Workbook')
 
         for i_row in range(self.height):
             for i_col in range(self.width):
-                # Обрабатывать только ячейки по периметру
+                # Only process cells around the perimeter
                 if (i_row == 0) or (i_col == 0) or \
                    (i_row == self._height_1) or (i_col == self._width_1):
 
-                    # Ячейка
+                    # Cell
                     cell = self._parent.getCell(self.row+i_row, self.col+i_col)
-                    # Идентификатор стиля ячейки
+                    # Cell style id
                     style_id = cell.getStyleID()
-                    # Определение стиля
+                    # Define style
                     if style_id is not None:
                         style = my_workbook.getStyles().getStyle(style_id)
                         if style:
@@ -244,19 +239,19 @@ class iqVRange(v_prototype.iqVPrototype):
                     if 'borders' not in style_attrs:
                         style_attrs['borders'] = {'name': 'Borders', 'children': []}
 
-                    cur_style_borders = self._get_cell_border_attr_idx(style_attrs['borders'],
-                                                                       i_row, i_col,
-                                                                       border_left, border_top,
-                                                                       border_right, border_bottom)
+                    cur_style_borders = self._getCellBorderAttrIdx(style_attrs['borders'],
+                                                                   i_row, i_col,
+                                                                   border_left, border_top,
+                                                                   border_right, border_bottom)
                     style_attrs['borders'] = cur_style_borders['borders']
 
-                    # Установить стиль у ячейки
+                    # Set cell style
                     cell.setStyle(**style_attrs)
         return True
 
     def _limitOffset(self, offset_row, offset_col):
         """
-        Ограничение смещения.
+        Offset limit.
         """
         row_offset = max(min(offset_row, 0), self._height_1)
         col_offset = max(min(offset_col, 0), self._width_1)
@@ -264,7 +259,7 @@ class iqVRange(v_prototype.iqVPrototype):
 
     def spanColumn(self, step=1):
         """
-        Взять ячейку в диапазоне по смещению колонки.
+        Take a cell in the range by column offset.
         """
         self._cur_span_offset = self._limitOffset(self._cur_span_offset[0],
                                                   self._cur_span_offset[1] + step)
@@ -272,7 +267,7 @@ class iqVRange(v_prototype.iqVPrototype):
 
     def spanRow(self, step=1):
         """
-        Взять ячейку в диапазоне по смещению строки.
+        Take a cell in a range by line offset.
         """
         self._cur_span_offset = self._limitOffset(self._cur_span_offset[0] + step,
                                                   self._cur_span_offset[1])
@@ -280,23 +275,23 @@ class iqVRange(v_prototype.iqVPrototype):
 
     def getCellOffset(self, offset_row=0, offset_column=0):
         """
-        Получить ячейку в диапазоне по относительным координатам диапазона.
+        Get a cell in a range by the relative coordinates of the range.
         """
-        # Ограничение смещения
+        # Offset limit
         row_offset, col_offset = self._limitOffset(offset_row, offset_column)
         return self._parent.getCell(self.row+row_offset, self.col+col_offset)
 
     def _getBasisRow(self):
         """
-        Базисная строка, относительно которой происходит работа с индексами строк.
+        The base row relative to which work with row indices occurs.
         """
         if self._basis_row is None:
-            self._basis_row = icVRow(self)
+            self._basis_row = iqVRow(self)
         return self._basis_row
 
     def copy(self):
         """
-        Получить копию атрибутов объекта.
+        Get a copy of the attributes of the object.
         """
         copy_result = {'name': 'Range',
                        'width': self.width,
@@ -314,22 +309,22 @@ class iqVRange(v_prototype.iqVPrototype):
                 cur_row['children'].append(cell_attrs)
 
             if cell:
-                # Переиндексировать все ячейки строки
+                # Re-index all cells in a row
                 cell._reIndexAllElements(('Cell',))
 
-        # Переиндексировать все строки диапазона ячеек
+        # Re-index all rows in a cell range
         self._getBasisRow()._reIndexAllElements(('Row',))
 
         return copy_result
 
 
-class icVColumn(v_prototype.iqVIndexedPrototype, iqVRange):
+class iqVColumn(v_prototype.iqVIndexedPrototype, iqVRange):
     """
-    Колонка.
+    Column.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVIndexedPrototype.__init__(self, parent, *args, **kwargs)
         iqVRange.__init__(self, parent, *args, **kwargs)
@@ -337,104 +332,103 @@ class icVColumn(v_prototype.iqVIndexedPrototype, iqVRange):
 
     def setCaption(self, caption):
         """
-        Заголовок колонки.
+        Set column caption.
         """
         self._attributes['Caption'] = caption
 
     def setWidth(self, width):
         """
-        Ширина колонки.
+        Set column width.
         """
         self._attributes['Width'] = str(width)
 
     def setCharacterWidth(self, character_count, font=None):
         """
-        Установка ширины колонки по количеству символов в колонке.
+        Setting the column width by the number of characters in the column.
 
-        :param character_count: Количество символов в колонке.
-        :param font: Указание шрифта, если не указано то
-        берется Arial размера 10.
+        :param character_count: The number of characters in the column.
+        :param font: Specifying the font, if not specified, then take Arial size 10.
         """
         width = self._calcWidthByCharacter(character_count, font)
         self.setWidth(width)
 
     def _calcWidthByCharacter(self, character_count, font=None):
         """
-        Функция преобразования количества символов в колонке в ширину.
+        The function of converting the number of characters in the column in width.
         """
         return int(character_count * 6)
 
-    def setHidden(self, bHidden=True):
+    def setHidden(self, hidden=True):
         """
-        Скрытие колонки.
+        Hiding the column.
         """
-        if bHidden:
-            self._attributes['Hidden'] = str(int(bHidden))
+        if hidden:
+            self._attributes['Hidden'] = str(int(hidden))
         else:
             if 'Hidden' in self._attributes:
                 del self._attributes['Hidden']
 
-    def setAutoFitWidth(self, bAutoFitWidth=True):
+    def setAutoFitWidth(self, auto_fit_width=True):
         """
-        Установить авторазмер по ширине.
+        Set auto size to width.
 
-        :param bAutoFitWidth: Признак автообразмеривания колонки.
+        :param auto_fit_width: A sign of autosizing a column.
         """
-        if bAutoFitWidth:
-            self._attributes['AutoFitWidth'] = str(int(bAutoFitWidth))
+        if auto_fit_width:
+            self._attributes['AutoFitWidth'] = str(int(auto_fit_width))
         else:
             if 'AutoFitWidth' in self._attributes:
                 del self._attributes['AutoFitWidth']
 
 
-class icVRow(v_prototype.iqVIndexedPrototype, iqVRange):
+class iqVRow(v_prototype.iqVIndexedPrototype, iqVRange):
     """
-    Строка.
+    Row.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVIndexedPrototype.__init__(self, parent, *args, **kwargs)
         iqVRange.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Row', 'children': []}
 
-        # Базисная ячейка
+        # Basis cell
         self._basis_cell = None
 
 #     def setIndex(self,index):
 #         """
-#         Индекс строки в таблице.
+#         The row index in the table.
 #         """
 #         self._attributes['Index']=text(index)
 
     def setHeight(self, height):
         """
-        Высота строки.
+        Set row height.
         """
         self._attributes['Height'] = str(height)
 
-    def setHidden(self, bHidden=True):
+    def setHidden(self, hidden=True):
         """
-        Скрытие строки.
+        Hiding a row.
         """
-        if bHidden:
-            self._attributes['Hidden'] = str(int(bHidden))
+        if hidden:
+            self._attributes['Hidden'] = str(int(hidden))
         else:
             if 'Hidden' in self._attributes:
                 del self._attributes['Hidden']
 
     def createCell(self):
         """
-        Создать/Добавить в строку ячейку.
+        Create / Add to row cell.
         """
-        cell = v_cell.icVCell(self)
+        cell = v_cell.iqVCell(self)
         attrs = cell.create()
         return cell
 
     def insertCellIdx(self, cell, idx):
         """
-        Вставить ячейку в строку по индексу.
+        Insert a cell in a row by index.
         """
         indexes, cell_attr = self._findCellIdxAttr(idx)
         ins_i = max(0, len([i for i in indexes if i < idx]))
@@ -446,49 +440,49 @@ class icVRow(v_prototype.iqVIndexedPrototype, iqVRange):
 
     def createCellIdx(self, idx):
         """
-        Создать/Добавить в строку ячейку.
+        Create / Add to row cell.
         """
         cell = self.createCell()
         self._attributes['children'] = self._attributes['children'][:-1]
 
-        # Переместить ячейку по индексу
+        # Move cell by index
         cell = self.insertCellIdx(cell, idx)
         return cell
 
     def _getBasisCell(self):
         """
-        Базисная фчейка, относительно которой происходит работа с индексами ячеек.
+        The base cell with respect to which work with cell indices occurs.
         """
         if self._basis_cell is None:
-            self._basis_cell = v_cell.icVCell(self)
+            self._basis_cell = v_cell.iqVCell(self)
         return self._basis_cell
 
     def _findCellIdxAttr(self, idx):
         """
-        Найти атрибуты ячеки в строке по индексу.
-        ВНИМАНИЕ! В этой функции индексация начинается с 0.
+        Find cell attributes in a row by index.
+        Indexing starts at 0.
         """
         return self._getBasisCell()._findElementIdxAttr(idx, 'Cell')
 
     def getCellIdx(self, idx):
         """
-        Получить ячейку из строки по номеру.
+        Get a cell from a row by number.
         """
         indexes, cell_attr = self._findCellIdxAttr(idx)
 
         if cell_attr is None:
             cell = self.createCellIdx(idx)
         else:
-            cell = v_cell.icVCell(self)
+            cell = v_cell.iqVCell(self)
             cell.setAttributes(cell_attr)
         return cell
 
     def delCell(self, idx):
         """
-        Удалить ячейку из строки.
+        Remove cell from row.
         """
         cell = self.getCellIdx(idx - 1)
         if cell:
-            # Удалить ячейку из строки
+            # Remove cell from row
             return cell._delElementIdxAttr(idx - 1, 'Cell')
         return False

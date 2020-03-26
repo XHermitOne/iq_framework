@@ -3,33 +3,29 @@
 
 import hashlib
 
-try:
-    from . import v_prototype
-except ImportError:
-    # Для запуска тестов
-    import icprototype
+from . import v_prototype
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 0, 0, 1)
 
 COLOR_ENUM = ('#000000',)
 
 
 class iqVStyles(v_prototype.iqVPrototype):
     """
-    Стили ячеек.
+    Cell styles.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Styles', 'children': []}
         self._style_dict = {}
         
-        # Словарь контрольная сумма содержания стиля:словарь атрибутов стиля
+        # Vocabulary checksum style content: vocabulary style attributes
         self._md5_styles_dict = {}
         
-        # Максимальный идентификатор стиля (введен для оптимизации)
+        # Maximum style ID (entered for optimization)
         self.max_style_id = None
         
     def getMaxStyleID(self):
@@ -41,63 +37,63 @@ class iqVStyles(v_prototype.iqVPrototype):
                 self.max_style_id = 's0'
         return self.max_style_id
 
-    def get_style_dict(self):
+    def getStyleDict(self):
         """
-        Словарь стилей по их идентификаторам.
+        Dictionary of styles by their identifiers.
         """
         return self._style_dict
 
-    def init_style_dict(self):
+    def initStyleDict(self):
         """
-        Инициализация словаря стилей.
+        Initialization of the style dictionary.
         """
         self._style_dict = dict([(style['ID'], style) for style in self._attributes['children']])
         return self._style_dict
 
-    style_dict = property(get_style_dict)
+    style_dict = property(getStyleDict)
 
     def createStyle(self):
         """
-        Создать стиль.
+        Create style.
         """
         style = iqVStyle(self)
         attrs = style.create()
 
         if self._style_dict is None:
-            self.init_style_dict()
+            self.initStyleDict()
         else:
-            # Просто добавить стиль с словарь стилей (для увеличения производительности)
+            # Just add a style with the style dictionary (for increased performance)
             self._style_dict[attrs['ID']] = attrs
         return style
 
     def getStyle(self, style_id):
         """
-        Поиск стиля по идентификатору.
+        Searching for a style by ID.
         """
         style = None
         if style_id in self._style_dict:
             style = iqVStyle(self)
             style.setAttributes(self._style_dict[style_id])
         else:
-            # Попробовать поискать в списке
+            # Try searching in the list
             find_style = [style_attr for style_attr in self._attributes['children']
                           if style_attr['name'] == 'Style' and style_attr['ID'] == style_id]
             if find_style:
                 style = iqVStyle(self)
                 style.setAttributes(find_style[0])
-                # Блин рассинхронизация произошла со словарем
-                self.init_style_dict()
+                # The dictionary was out of sync
+                self.initStyleDict()
 
-        # Если такой стиль не найден, тогда вернуть стиль по умолчанию
+        # If this style is not found, then return the default style
         if style is None and style_id != 'Default':
             return self.getStyle('Default')
         return style
 
     def _equalStyleElement(self, style_element_attr1, style_element_attr2):
         """
-        Сравнение элементов стилей.
+        Comparison of style elements.
 
-        :return: True - элементы равны, False - не равны.
+        :return: True - elements are equal, False - not equal.
         """
         if ((style_element_attr1 is None) and (style_element_attr2 is not None)) or \
            ((style_element_attr1 is not None) and (style_element_attr2 is None)):
@@ -110,7 +106,7 @@ class iqVStyles(v_prototype.iqVPrototype):
             try:
                 if item[1] == attrs2[item[0]]:
                     pass
-                elif type(item[1]) != type(attrs2[item[0]]):
+                elif not isinstance(item[1], type(attrs2[item[0]])):
                     value1 = item[1]
                     if isinstance(value1, bool):
                         value1 = int(value1)
@@ -126,7 +122,7 @@ class iqVStyles(v_prototype.iqVPrototype):
             if equal is False:
                 break
 
-        # Если определены дочерние елементы, то рекурсивно проверить и их
+        # If child elements are defined, then recursively check them as well
         if equal:
             if ('children' in style_element_attr1 and style_element_attr1['children']) or \
                ('children' in style_element_attr2 and style_element_attr2['children']):
@@ -146,9 +142,9 @@ class iqVStyles(v_prototype.iqVPrototype):
                 
         return equal
 
-    def _compare_style_element(self, element, element_name, style):
+    def _compareStyleElement(self, element, element_name, style):
         """
-        Сравнение елемента стиля.
+        Comparison of the style element.
         """
         if element:
             elements = [el for el in style['children'] if el['name'] == element_name]
@@ -160,25 +156,25 @@ class iqVStyles(v_prototype.iqVPrototype):
             equal = True
         return equal
 
-    def _compare_style_elements(self, style,
-                                alignment=None,
-                                borders=None, font=None, interior=None,
-                                number_format=None):
+    def _compareStyleElements(self, style,
+                              alignment=None,
+                              borders=None, font=None, interior=None,
+                              number_format=None):
         """
-        Сравнение элементов стиля.
+        Comparison of style elements.
         """
-        equal_align = self._compare_style_element(alignment, 'Alignment', style)
-        equal_border = self._compare_style_element(borders, 'Borders', style)
-        equal_font = self._compare_style_element(font, 'Font', style)
-        equal_interior = self._compare_style_element(interior, 'Interior', style)
-        equal_n_fmt = self._compare_style_element(number_format, 'NumberFormat', style)
+        equal_align = self._compareStyleElement(alignment, 'Alignment', style)
+        equal_border = self._compareStyleElement(borders, 'Borders', style)
+        equal_font = self._compareStyleElement(font, 'Font', style)
+        equal_interior = self._compareStyleElement(interior, 'Interior', style)
+        equal_n_fmt = self._compareStyleElement(number_format, 'NumberFormat', style)
         return equal_align and equal_border and equal_font and equal_interior and equal_n_fmt
 
     def findStyle(self, alignment=None,
                   borders=None, font=None, interior=None,
                   number_format=None):
         """
-        Поиск стиля по его содержанию.
+        Search for a style by its content.
         """
         find_style = None
 
@@ -186,44 +182,45 @@ class iqVStyles(v_prototype.iqVPrototype):
 
         find_result = md5_style in self._md5_styles_dict
         if not find_result:
-            # Надо поискать стиль
+            # Find style
             for i in range(len(self._attributes['children'])):
                 style = self._attributes['children'][-i]
-                # Если количество элементов стиля не совпадает с количеством
-                # искомых элементов, то эти стили не равны
+                # If the number of style elements does not match
+                # the number of elements you are looking for,
+                # then these styles are not equal
                 if len(style['children']) != len([element for element in [alignment, borders, font, interior,
                                                                           number_format] if element is not None]):
                     find_result = False
                     continue
             
-                find_result = self._compare_style_elements(style, alignment, borders, font, interior, number_format)
+                find_result = self._compareStyleElements(style, alignment, borders, font, interior, number_format)
 
                 if find_result:
                     find_style = style
                     break
         else:
-            # Искомый стиль есть в хеше
+            # The desired style is in the hash
             find_style = self._md5_styles_dict[md5_style]
 
         if find_result:
             style = iqVStyle(self)
             if find_style:
                 style.setAttributes(find_style)
-                # Прописать в хэшэ
+                # Register in hash
                 self._md5_styles_dict[md5_style] = find_style
             return style
         return None
 
     def _getCrcElementStr(self, element):
         """
-        Представить в строковом виде элемент без дополнительных полей.
+        Present an element in string form without additional fields.
         """
         return str(dict([(key, element[key]) for key in element.keys() \
                          if key not in v_prototype.PROTOTYPE_ATTR_NAMES]))
         
     def _getCrcAlignmentStr(self, style):
         """
-        Выравнивание в строковом представлении (для вычисления контрольной суммы).
+        Alignment in the string view (for calculating the checksum).
         """
         align = [element for element in style['children'] if element['name'] == 'Alignment']
         if align:
@@ -232,7 +229,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         
     def _getCrcBordersStr(self, style):
         """
-        Обрамление в строковом представлении (для вычисления контрольной суммы).
+        Framing in a string view (for calculating the checksum).
         """
         borders = [element for element in style['children'] if element['name'] == 'Borders']
         if borders:
@@ -244,7 +241,7 @@ class iqVStyles(v_prototype.iqVPrototype):
 
     def _getCrcFontStr(self, style):
         """
-        Шрифт в строковом представлении (для вычисления контрольной суммы).
+        Font in the string view (for calculating the checksum).
         """
         font = [element for element in style['children'] if element['name'] == 'Font']
         if font:
@@ -253,7 +250,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         
     def _getCrcInteriorStr(self, style):
         """
-        Интерьер в строковом представлении (для вычисления контрольной суммы).
+        Interior in a string view (for calculating the checksum).
         """
         interior = [element for element in style['children'] if element['name'] == 'Interior']
         if interior:
@@ -262,7 +259,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         
     def _getCrcNumberFormatStr(self, style):
         """
-        Формат чисел в строковом представлении (для вычисления контрольной суммы).
+        Format of numbers in a string representation (for calculating the checksum).
         """
         num_fmt = [element for element in style['children'] if element['name'] == 'NumberFormat']
         if num_fmt:
@@ -273,7 +270,7 @@ class iqVStyles(v_prototype.iqVPrototype):
                           borders=None, font=None, interior=None,
                           number_format=None):
         """
-        Вычислить контрольную сумму по атрибутам.
+        To calculate the checksum for the attributes.
         """
         new_style_attr = {'children': []}
         if alignment:
@@ -295,7 +292,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         
     def _getCrcStyle(self, style):
         """
-        Контрольная сумма содержания стиля.
+        The checksum of the contents of the style.
         """
         style_str = ''
         # Alignment
@@ -312,17 +309,17 @@ class iqVStyles(v_prototype.iqVPrototype):
 
     def _delCrcStyle(self, crc_style):
         """
-        Удалить стиль из кеша.
+        Delete a style from the cache.
         """
         if crc_style in self._md5_styles_dict:
             del self._md5_styles_dict[crc_style]
             
     def _isCrcStyleID(self, style_id):
         """
-        Есть ли в кеше стиль с таким идентификатором?
+        Is there a style with this ID in the cache?
 
-        :return: Возвращает контрольную сумму стиля в кеше или None,
-            если стиль не найден.
+        :return: Returns the checksum of the style in the cache,
+            or None if the style is not found.
         """
         result = [i_style for i_style in self._md5_styles_dict.items() if i_style[1]['ID'] == style_id]
         if result:
@@ -331,16 +328,15 @@ class iqVStyles(v_prototype.iqVPrototype):
         
     def getStylesID(self):
         """
-        Список идентификаторов стилей.
+        A list of the IDs of the styles.
         """
         return [style['ID'] for style in self._attributes['children']]
 
     def _createDefaultStyle(self):
         """
-        Создать стиль по умолчанию, если его нет.
+        Create the default style if there is none.
 
-        :return: Возвращает True-если стиль Default создан,
-        и False-если нет.
+        :return: Returns True if the Default style was created, and False if not.
         """
         styles_id = [style_element['ID'] for style_element in self._attributes['children']]
         if 'Default' not in styles_id:
@@ -353,16 +349,16 @@ class iqVStyles(v_prototype.iqVPrototype):
     
     def clearUnUsedStyles(self):
         """
-        Удаление не используемых стилей.
+        Deleting unused styles.
 
-        :return: Возвращает список идентификаторов удаленных стилей.
+        :return: Returns a list of IDs of deleted styles.
         """
-        # Создать стиль по умолчанию если он создан
+        # Create the default style if it is created
         self._createDefaultStyle()
         
         del_styles_id = []
         styles_id = self.getStylesID()
-        # Определение идентификаторов используемых стилей
+        # Defining the IDs of the styles used
         used_styles_id = ['Default']
         work_sheets = [element for element in self._parent._attributes['children'] if element['name'] == 'Worksheet']
         for work_sheet in work_sheets:
@@ -394,7 +390,7 @@ class iqVStyles(v_prototype.iqVPrototype):
                 
     def delStyleByID(self, style_id):
         """
-        Удалить стиль по идентификатору.
+        Delete a style by ID.
         """
         try:
             style_idx = self.getStylesID().index(style_id)
@@ -409,11 +405,11 @@ class iqVStyles(v_prototype.iqVPrototype):
 
 class iqVStyle(v_prototype.iqVPrototype):
     """
-    Стиль ячеек.
+    Cell style.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         # self._attributes = dict(DEFAULT_STYLE_ATTR.items()+[('ID', self.newID())])
@@ -421,34 +417,34 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def getID(self):
         """
-        Идентификатор стиля.
+        Style id.
         """
         return self._attributes['ID']
     
     def setID(self, id_name):
         """
-        Идентификатор стиля.
+        Set style id.
 
-        :param id_name: Имя идентификатора.
+        :param id_name: Id name.
         """
         self._attributes['ID'] = str(id_name)
     
     def newID(self):
         """
-        Генерация нового идетификатора стиля.
+        The generation of a new ID style.
         """
         max_style_id = self._parent.getMaxStyleID()
         max_str_i = ''.join([symb for symb in max_style_id if symb.isdigit()])
         i = int(max_str_i)+1 if max_str_i else 0
         new_id = 'text' + str(i)
 
-        # Запомнить максимальный идентификатор стиля
+        # Remember the maximum style ID
         self._parent.max_style_id = new_id
         return new_id
 
     def newID_depricated(self):
         """
-        Генерация нового идетификатора стиля.
+        The generation of a new ID style.
         """
         styles_id = self._parent.getStylesID()
         i = 1
@@ -459,7 +455,7 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def _delAttr(self, name):
         """
-        Удалить из содержания стиля атрибут по имени.
+        Delete an attribute by name from the style content.
         """
         try:
             idx = [attr['name'] for attr in self._attributes['children']].index(name)
@@ -473,7 +469,7 @@ class iqVStyle(v_prototype.iqVPrototype):
                  borders=None, font=None, interior=None,
                  number_format=None):
         """
-        Заполнение содержания стиля.
+        Filling in the style content.
         """
         self._attributes['children'] = []
         return self.updateAttrs(alignment, borders, font, interior, number_format)
@@ -482,7 +478,7 @@ class iqVStyle(v_prototype.iqVPrototype):
                     borders=None, font=None, interior=None,
                     number_format=None, update_attrs=None):
         """
-        Заполнение содержания стиля.
+        Filling in the style content.
         """
         if update_attrs is None:
             style_attrs = self._attributes['children']
@@ -519,9 +515,9 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def getAttrs(self):
         """
-        Содержание стиля.
+        Style attributes.
 
-        :return: Словарь внутреннего содержания стиля.
+        :return: Dictionary of internal style content.
         """
         attrs = {}
         for element in self._attributes['children']:
@@ -539,7 +535,7 @@ class iqVStyle(v_prototype.iqVPrototype):
         
     def createAlignment(self):
         """
-        Создать выравнивание.
+        Create alignment.
         """
         align = iqVAlignment(self)
         attrs = align.create()
@@ -547,7 +543,7 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def createBorders(self):
         """
-        Создать обрамление.
+        Create borders.
         """
         borders = iqVBorders(self)
         attrs = borders.create()
@@ -555,7 +551,7 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def createFont(self):
         """
-        Создать шрифт.
+        Create font.
         """
         font = iqVFont(self)
         attrs = font.create()
@@ -563,7 +559,7 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def createInterior(self):
         """
-        Создать заливку.
+        Create interior.
         """
         interior = iqVInterior(self)
         attrs = interior.create()
@@ -571,7 +567,7 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def createNumberFormat(self):
         """
-        Создать формат.
+        Create number format.
         """
         fmt = iqVNumberFormat(self)
         attrs = fmt.create()
@@ -596,11 +592,11 @@ ALIGNMENT_SPC = {'Horizontal': HORIZONTAL_ENUM[0],
 
 class iqVAlignment(v_prototype.iqVPrototype):
     """
-    Выравнивание.
+    Alignment.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Alignment'}
@@ -608,11 +604,11 @@ class iqVAlignment(v_prototype.iqVPrototype):
 
 class iqVBorders(v_prototype.iqVPrototype):
     """
-    Обрамление.
+    Borders.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Borders', 'children': []}
@@ -631,11 +627,11 @@ BORDER_SPC = {'Position': POSITION_ENUM[0],
 
 class iqVBorder(v_prototype.iqVPrototype):
     """
-    Обрамление.
+    Border.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Border'}
@@ -664,11 +660,11 @@ FONT_SPC = {'Bold': False,
 
 class iqVFont(v_prototype.iqVPrototype):
     """
-    Шрифт.
+    Font.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Font'}
@@ -689,11 +685,11 @@ INTERIOR_SPC = {'Color': COLOR_ENUM[0],
 
 class iqVInterior(v_prototype.iqVPrototype):
     """
-    Заливка.
+    Interior.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Interior'}
@@ -710,11 +706,11 @@ NUMBERFORMAT_SPC = {'Format': FORMAT_ENUM[0]}
 
 class iqVNumberFormat(v_prototype.iqVPrototype):
     """
-    Формат.
+    Number format.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'NumberFormat'}

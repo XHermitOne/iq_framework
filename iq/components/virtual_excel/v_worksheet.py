@@ -2,33 +2,24 @@
 # -*- coding: utf-8 -*-
 
 import copy
-# import sys
 
-try:
-    from . import v_prototype
-    from . import v_range
-    from . import paper_size
-    from . import config
-    from . import exceptions
-except ImportError:
-    # Для запуска тестов
-    import icprototype
-    import icrange
-    import paper_size
-    import config
-    import icexceptions
+from . import v_prototype
+from . import v_range
+from . import paper_size
+from . import config
+from . import exceptions
 
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 0, 0, 1)
 
 
 class iqVWorksheet(v_prototype.iqVPrototype):
     """
-    Лист.
+    Worksheet.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Worksheet', 'Name': 'default',
@@ -39,59 +30,59 @@ class iqVWorksheet(v_prototype.iqVPrototype):
                                                                       'Top': 0.984251969, 'Right': 0.787401575,
                                                                       'children': []}]}]}]}
 
-        # Таблица листа
-        # ВНИМАНИЕ! Кэшируется для увеличения производительности
+        # Worksheet table
+        # Cached to increase performance
         self._table = None
 
-    def _is_worksheets_name(self, worksheets, name):
+    def _isWorksheetsName(self, worksheets, name):
         """
-        Существуют листы с именем name?
+        Are there sheets with the name?
         """
         for sheet in worksheets:
             if not isinstance(sheet['Name'], str):
-                sheet_name = str(sheet['Name'])   # 'utf-8')
+                sheet_name = str(sheet['Name'])
             else:
                 sheet_name = sheet['Name']
             if sheet_name == name:
                 return True
         return False
 
-    def _create_new_name(self):
+    def _createNewName(self):
         """
-        Создать новое имя для листа.
+        Create a new name for the sheet.
         """
         work_sheets = [element for element in self._parent.getAttributes()['children'] if element['name'] == 'Worksheet']
         i = 1
         new_name = u'Лист%d' % i
-        while self._is_worksheets_name(work_sheets, new_name):
+        while self._isWorksheetsName(work_sheets, new_name):
             i += 1
             new_name = u'Лист%d' % i
         return new_name
 
     def create(self):
         """
-        Создать.
+        Create worksheet.
         """
         attrs = self._parent.getAttributes()
-        self._attributes['Name'] = self._create_new_name()
+        self._attributes['Name'] = self._createNewName()
         attrs['children'].append(self._attributes)
         return self._attributes
 
     def getName(self):
         """
-        Имя листа.
+        Get worksheet name.
         """
         return self._attributes['Name']
 
     def setName(self, Name_):
         """
-        Установить имя листа.
+        Set worksheet name.
         """
         self._attributes['Name'] = Name_
 
     def createTable(self):
         """
-        Создать таблицу.
+        Create table.
         """
         self._table = iqVTable(self)
         attrs = self._table.create()
@@ -99,7 +90,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def getTable(self):
         """
-        Таблица.
+        Get table.
         """
         if self._table:
             return self._table
@@ -115,13 +106,13 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def getCell(self, row, col):
         """
-        Получить ячейку.
+        Get cell.
         """
         return self.getTable().getCell(row, col)
 
     def getRange(self, row, col, height, width):
         """
-        Диапазон ячеек.
+        Get cell range.
         """
         new_range = v_range.iqVRange(self)
         new_range.setAddress(row, col, height, width)
@@ -129,20 +120,20 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def getUsedRange(self):
         """
-        Весь диапазон таблицы.
+        Get table range.
         """
         used_height, used_width = self.getTable().getUsedSize()
         return self.getRange(1, 1, used_height, used_width)
 
     def clearWorksheet(self):
         """
-        Очистка листа.
+        Clear worksheet.
         """
         return self.getTable().clearTab()
 
     def getWorksheetOptions(self):
         """
-        Параметры листа.
+        Get worksheet options.
         """
         options_attr = [element for element in self._attributes['children'] if element['name'] == 'WorksheetOptions']
         if options_attr:
@@ -154,7 +145,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def createWorksheetOptions(self):
         """
-        Параметры листа.
+        Create worksheet options.
         """
         options = iqVWorksheetOptions(self)
         attrs = options.create()
@@ -162,7 +153,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def getPrintNumberofCopies(self):
         """
-        Количество копий припечати листа.
+        Get print number of copies.
         """
         options = self.getWorksheetOptions()
         if options:
@@ -174,7 +165,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def setPrintNumberofCopies(self, number_of_copies=1):
         """
-        Количество копий припечати листа.
+        Set print number of copies.
         """
         options = self.getWorksheetOptions()
         if options:
@@ -185,8 +176,9 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def clone(self, new_name):
         """
-        Создать клон листа и добавить его в книгу.
-        param new_name: Новое имя листа.
+        Create a clone of a sheet and add it to the workbook.
+
+        :param new_name: New worksheet name.
         """
         new_attributes = copy.deepcopy(self._attributes)
         new_attributes['Name'] = new_name
@@ -197,28 +189,28 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def delColumn(self, idx=-1):
         """
-        Удалить колонку.
+        Delete column.
         """
         return self.getTable().delColumn(idx)
 
     def delRow(self, idx=-1):
         """
-        Удалить строку.
+        Delete row.
         """
         return self.getTable().delRow(idx)
 
     def getColumns(self, start_idx=0, stop_idx=None):
         """
-        Список объектов колонок.
+        Get column list.
 
-        :param start_idx: Индекс первой колонки. По умолчанию с первой.
-        :param stop_idx: Индекс последней колонки. По умолчанию до последней.
+        :param start_idx: First column index.
+        :param stop_idx: Last column index.
         """
         return self.getTable().getColumns(start_idx, stop_idx)
 
     def getPageBreaks(self):
         """
-        Разрывы страниц.
+        Get page breaks.
         """
         page_breaks_attr = [element for element in self._attributes['children'] if element['name'] == 'PageBreaks']
         if page_breaks_attr:
@@ -230,7 +222,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
     def createPageBreaks(self):
         """
-        Разрывы страниц.
+        Create page breaks.
         """
         page_breaks = iqVPageBreaks(self)
         attrs = page_breaks.create()
@@ -239,25 +231,25 @@ class iqVWorksheet(v_prototype.iqVPrototype):
 
 class iqVTable(v_prototype.iqVPrototype):
     """
-    Таблица.
+    Table.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Table', 'children': []}
 
-        # Базисные строка и колонка
+        # Basic row and column
         self._basis_row = None
         self._basis_col = None
 
-        # Словарь объединенных ячеек
+        # Dictionary of merged cells
         self._merge_cells = None
 
     def getUsedSize(self):
         """
-        Используемый размер таблицы.
+        Get used size.
         """
         n_cols = self._maxColIdx()+1
         n_rows = self._maxRowIdx()+1
@@ -265,53 +257,53 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def createColumn(self):
         """
-        Создать колонку.
+        Create column.
         """
-        col = v_range.icVColumn(self)
+        col = v_range.iqVColumn(self)
         attrs = col.create()
         return col
 
     def getColumns(self, start_idx=0, stop_idx=None):
         """
-        Список объектов колонок.
+        Get column list.
 
-        :param start_idx: Индекс первой колонки. По умолчанию с первой.
-        :param stop_idx: Индекс последней колонки. По умолчанию до последней.
+        :param start_idx: First column index.
+        :param stop_idx: Last column index.
         """
         col_count = self.getColumnCount()
         if stop_idx is None:
             stop_idx = col_count
-        # Защита от не корректных входных данных
+        # Protection against incorrect input data
         if start_idx > stop_idx:
             start_idx = stop_idx
         return [self.getColumn(idx) for idx in range(start_idx, stop_idx)]
 
     def getColumnsAttrs(self):
         """
-        Список колонок. Данные.
+        column list. Attributes.
         """
         return [element for element in self._attributes['children'] if element['name'] == 'Column']
 
     def getColumnCount(self):
         """
-        Количество колонок.
+        Get number of columns.
         """
         return self._maxColIdx()+1
 
     def _reIndexCol(self, column, index, idx):
         """
-        Переиндексирование колонки в таблице.
+        Re-indexing of the columns in the table.
         """
         return self._getBasisCol()._reIndexElement('Column', column, index, idx)
 
     def _createColIdx(self, index, idx):
         """
-        Создать колонку с индексом.
+        Create a column with an index.
 
-        :param index: Индекс Excel.
-        :param idx: Индекс в списке children.
+        :param index: Excel index.
+        :param idx: Index in children list.
         """
-        col = v_range.icVColumn(self)
+        col = v_range.iqVColumn(self)
         idx = 0
         for i, child in enumerate(self._attributes['children']):
             if child['name'] == 'Column':
@@ -326,12 +318,12 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def getColumn(self, idx=-1):
         """
-        Взять колонку по индексу.
+        Bet column by index.
         """
         col = None
         idxs, _i, col_data = self._findColIdxAttr(idx)
         if col_data is not None:
-            col = v_range.icVColumn(self)
+            col = v_range.iqVColumn(self)
             col.setAttributes(col_data)
         elif _i >= 0 and col_data is None:
             for i in idxs:
@@ -342,33 +334,34 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def createRow(self):
         """
-        Создать строку.
+        Create row.
         """
-        row = v_range.icVRow(self)
+        row = v_range.iqVRow(self)
         attrs = row.create()
         return row
 
-    def cloneRow(self, bClearCell=True, row=-1):
+    def cloneRow(self, clear_cell=True, row=-1):
         """
-        Клонировать строку таблицы.
+        Clone table row.
 
-        :param bClearCell: Очистить значения в ячейках.
-        :param row: Индекс(Начинаяется с 0) клонируемой ячейки. -1 - Последняя.
-        :return: Возвращает объект клонированной строки. Если строк в таблице нет, то возвращает None.
+        :param clear_cell: To clear the values in the cells.
+        :param row: Index (Starting with 0) of the cloned cell. -1 is the last one.
+        :return: Returns an object of the cloned string.
+            If there are no rows in the table, it returns None.
         """
         if self._attributes['children']:
             row_attr = copy.deepcopy(self._attributes['children'][row])
-            if bClearCell:
+            if clear_cell:
                 row_attr['children'] = [dict(cell.items()+[('value', None)]) for cell in row_attr['children']]
 
-            row_obj = v_range.icVRow(self)
+            row_obj = v_range.iqVRow(self)
             row_obj.setAttributes(row_attr)
             return row_obj
         return None
 
     def _reIndexRow(self, row, index, idx):
         """
-        Переиндексирование строки в таблице.
+        A re-index of the row in the table.
         """
         return self._getBasisRow()._reIndexElement('Row', row, index, idx)
 
@@ -376,7 +369,7 @@ class iqVTable(v_prototype.iqVPrototype):
         """
         Создать строку с индексом.
         """
-        row = v_range.icVRow(self)
+        row = v_range.iqVRow(self)
         for i, child in enumerate(self._attributes['children']):
             if child['name'] == 'Row':
                 if i >= idx:
@@ -406,7 +399,7 @@ class iqVTable(v_prototype.iqVPrototype):
         row = None
         idxs, _i, row_data = self._findRowIdxAttr(idx)
         if row_data is not None:
-            row = v_range.icVRow(self)
+            row = v_range.iqVRow(self)
             row.setAttributes(row_data)
         else:
             for i in idxs:
@@ -581,7 +574,7 @@ class iqVTable(v_prototype.iqVPrototype):
         Базисная строка, относительно которой происходит работа с индексами строк.
         """
         if self._basis_row is None:
-            self._basis_row = v_range.icVRow(self)
+            self._basis_row = v_range.iqVRow(self)
         return self._basis_row
 
     def _getBasisCol(self):
@@ -589,7 +582,7 @@ class iqVTable(v_prototype.iqVPrototype):
         Базисная колонка, относительно которой происходит работа с индексами колонок.
         """
         if self._basis_col is None:
-            self._basis_col = v_range.icVColumn(self)
+            self._basis_col = v_range.iqVColumn(self)
         return self._basis_col
 
     def getMergeCells(self):

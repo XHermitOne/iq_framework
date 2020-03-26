@@ -3,105 +3,99 @@
 
 import os.path
 
-try:
-    from . import v_prototype
-    from . import v_worksheet
-    from . import v_style
-except ImportError:
-    # Для запуска тестов
-    import icprototype
-    import icworksheet
-    import icstyle
+from . import v_prototype
+from . import v_worksheet
+from . import v_style
 
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 0, 0, 1)
 
 
 class iqVWorkbook(v_prototype.iqVPrototype):
     """
-    Книга.
+    Workbook.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Workbook', 'children': []}
-        # Словарь листов по именам
+        # Dictionary of sheets by name
         self._worksheet_dict = {}
 
         self.Name = None
         
-        # Управление стилями
+        # Managing styles
         self.styles = None
 
     def load(self, name):
         """
-        Загрузить.
+        Load workbook.
         """
-        self.Name=os.path.abspath(name.strip())
+        self.Name = os.path.abspath(name.strip())
         return self._parent.load(name)
 
     def save(self):
         """
-        Сохранить книгу.
+        Save workbook.
         """
         return self._parent.save()
 
     def saveAs(self, name):
         """
-        Сохранить как...
+        Save as...
         """
         self.Name = os.path.abspath(name.strip())
         return self._parent.saveAs(self.Name)
     
-    def get_worksheet_dict(self):
+    def getWorksheetDict(self):
         """
-        Словарь листов по именам.
+        Dictionary of sheets by name.
         """
         return self._worksheet_dict
 
-    def init_worksheet_dict(self):
+    def initWorksheetDict(self):
         """
-        Инициализация словаря листов.
+        Initializing the dictionary of sheets.
         """
         self._worksheet_dict = dict([(worksheet['Name'], worksheet) for worksheet in \
                                     [element for element in self._attributes['children'] if element['name'] == 'Worksheet']])
         return self._worksheet_dict
         
-    worksheet_dict = property(get_worksheet_dict)
+    worksheet_dict = property(getWorksheetDict)
 
     def create(self):
         """
-        Создать.
+        Create workbook.
         """
         attrs = self._parent.getAttributes()
-        # Т.к. в XML файле м.б. только одна книга, то здесь нельзя добавять
-        # а только заменять описание книги
+        # Since there is only one book in the XML file m. b.,
+        # you can not add it here, but only replace the description of the book
         attrs['children'] = [self._attributes]
         return self._attributes
 
     def createWorksheet(self):
         """
-        Создать лист.
+        Create worksheet.
         """
         work_sheet = v_worksheet.iqVWorksheet(self)
         attrs = work_sheet.create()
-        self.init_worksheet_dict()
+        self.initWorksheetDict()
         return work_sheet
 
-    def _find_worksheet_attr_name(self, worksheets, name):
+    def _findWorksheetAttrName(self, worksheets, name):
         """
-        Найти лист в списке по имени.
+        Find a sheet in the list by name.
         """
         work_sheet_attr = None
 
         if not isinstance(name, str):
-            name = str(name)  # 'utf-8')
+            name = str(name)
             
         for sheet in worksheets:
             if not isinstance(sheet['Name'], str):
-                sheet_name = str(sheet['Name'])   #  'utf-8')
+                sheet_name = str(sheet['Name'])
             else:
                 sheet_name = sheet['Name']
             if sheet_name == name:
@@ -111,26 +105,26 @@ class iqVWorkbook(v_prototype.iqVPrototype):
             
     def findWorksheet(self, name):
         """
-        Поиск листа по имени.
+        Search for a sheet by name.
         """
         work_sheet = None
         if name in self._worksheet_dict:
             work_sheet = v_worksheet.iqVWorksheet(self)
             work_sheet.setAttributes(self._worksheet_dict[name])
         else:
-            # Попробовать поискать в списке
-            find_worksheet = self._find_worksheet_attr_name([element for element in self._attributes['children'] \
-                                                             if element['name'] == 'Worksheet'], name)
+            # Try searching in the list
+            find_worksheet = self._findWorksheetAttrName([element for element in self._attributes['children'] \
+                                                          if element['name'] == 'Worksheet'], name)
             if find_worksheet:
                 work_sheet = v_worksheet.iqVWorksheet(self)
                 work_sheet.setAttributes(find_worksheet)
-                # Блин рассинхронизация произошла со словарем
-                self.init_worksheet_dict()
+                # The dictionary was out of
+                self.initWorksheetDict()
         return work_sheet
 
     def getWorksheetIdx(self, idx=0):
         """
-        Лист по индексу.
+        Get sheet by index.
         """    
         work_sheets = [element for element in self._attributes['children'] if element['name'] == 'Worksheet']
         try:
@@ -144,7 +138,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
     
     def createStyles(self):
         """
-        Создать стили.
+        Create styles.
         """
         styles = v_style.iqVStyles(self)
         attrs = styles.create()
@@ -152,7 +146,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
 
     def getStylesAttrs(self):
         """
-        Стили.
+        Get styles attributes.
         """
         styles = [element for element in self._attributes['children'] if element['name'] == 'Styles']
         if styles:
@@ -161,7 +155,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
 
     def getStyles(self):
         """
-        Объект стилей.
+        Get styles.
         """
         if self.styles:
             return self.styles
@@ -176,6 +170,6 @@ class iqVWorkbook(v_prototype.iqVPrototype):
 
     def getWorksheetNames(self):
         """
-        Список имен листов книги.
+        List of sheet names in the book.
         """
         return [work_sheet['Name'] for work_sheet in self._attributes['children'] if work_sheet['name'] == 'Worksheet']
