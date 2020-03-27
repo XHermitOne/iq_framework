@@ -16,7 +16,7 @@ from ...util import log_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqVExcel(v_prototype.iqVPrototype):
+class iqVSpreadsheet(v_prototype.iqVPrototype):
     """
     A virtual representation of the Excel object model.
     """
