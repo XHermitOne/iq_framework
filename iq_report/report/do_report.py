@@ -2,86 +2,83 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль функций запуска генератора отчетов.
+Report generator launch function module.
 """
 
 import os
 import os.path
-import wx
 
-# from ic.std.log import log
-# from ic.std.utils import resfunc
-# from ic.std.utils import textfunc
-# from ic.std.utils import filefunc
-#
-# from ic.report import icreportbrowser
-# from ic.report import report_generator
-# from ic.report import icstylelib
+from iq.util import log_func
+from iq.util import res_func
+from iq.util import str_func
+from iq.util import file_func
+
+from . import report_browser
+from . import report_gen_func
+from . import style_library
 
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 0, 0, 1)
 
 DEFAULT_REPORT_FILE_EXT = '.rprt'
 
 
-# Функции управления
 def getReportResourceFilename(report_filename='', report_dir=''):
     """
-    Получить полное имя файла шаблона отчета.
+    Get the full file name of the report template.
 
-    :param report_filename: Имя файла отчета в кратком виде.
-    :param report_dir: Папка отчетов.
-    :return: Полное имя файла отчета.
+    :param report_filename:The name of the report file in short form.
+    :param report_dir: Report folder.
+    :return: The full name of the report file.
     """
-    # Проверить расширение
+    # Check extension
     rprt_filename = report_filename
     if not rprt_filename.endswith(DEFAULT_REPORT_FILE_EXT):
         rprt_filename = os.path.splitext(rprt_filename)[0]+DEFAULT_REPORT_FILE_EXT
 
-    # Проверить актуальность шаблона
+    # Check the relevance of the template
     full_src_filename = getPathFilename(report_filename, report_dir)
     full_rprt_filename = getPathFilename(rprt_filename, report_dir)
     if isNewReportTemplateFile(full_src_filename, full_rprt_filename):
-        # Если исходный шаблон изменен позже чем рабочий файл шаблона <rprt>
-        # то необходимо сделать изменения
+        # If the original template is changed later than the working
+        # template file <rprt> then you need to make changes
         updateReportTemplateFile(full_src_filename, full_rprt_filename)
 
     if os.path.exists(rprt_filename):
-        # Проверить может быть задано абсолютное имя файла
+        # Check can be given an absolute file name
         filename = rprt_filename
     else:
-        # Задано скорее всего относительное имя файла
-        # относительно папки отчетов
+        # The relative file name relative to the report
+        # folder is most likely set
         filename = full_rprt_filename
         if not os.path.exists(filename):
-            # Нет такого файла
-            log.warning(u'Файл шаблона отчета <%s> не найден' % textfunc.toUnicode(filename))
+            log_func.error(u'Report template file <%s> not found' % str(filename))
             filename = createReportResourceFile(filename)
-    log.debug(u'Полное имя файла шаблона <%s>' % textfunc.toUnicode(filename))
+    log_func.debug(u'Report te,plate filename <%s>' % str(filename))
     return filename
 
 
 def getPathFilename(filename='', report_dir=''):
     """
-    Получить полное имя файла отчета.
+    Get absolute report template filename.
 
-    :param filename: Имя файла отчета в кратком виде.
-    :param report_dir: Папка отчетов.
-    :return: Полное имя файла отчета.
+    :param filename: Short report file name.
+    :param report_dir: Report folder.
+    :return: Absolute report template filename.
     """
-    return filefunc.normal_path(os.path.join(report_dir, filename))
+    return file_func.getAbsolutePath(os.path.join(report_dir, filename))
 
 
 def isNewReportTemplateFile(src_filename, rprt_filename):
     """
-    Проверить актуальность шаблона.
-    Если исходный шаблон изменен позже чем рабочий файл шаблона *.rprt
-    то необходимо сделать изменения.
+    Check the relevance of the template.
+    If the original template is changed later than the working * .rprt
+    template file, then you need to make changes.
 
-    :return: True-внесены измененияв исходный шаблон/False-изменений нет.
+    :return: True-changes to the original template/False-no changes.
     """
-    src_modify_dt = filefunc.file_modify_dt(src_filename)
-    rprt_modify_dt = filefunc.file_modify_dt(rprt_filename)
+    src_modify_dt = file_func.getFileModifyDatetime(src_filename)
+    rprt_modify_dt = file_func.getFileModifyDatetime(rprt_filename)
     if src_modify_dt and rprt_modify_dt:
         return src_modify_dt > rprt_modify_dt
     return False
@@ -89,21 +86,21 @@ def isNewReportTemplateFile(src_filename, rprt_filename):
 
 def updateReportTemplateFile(src_filename, rprt_filename):
     """
-    Произвести обновления шаблона отчета.
+    Update the report template.
 
-    :param src_filename: Имя файла шаблона источника.
-    :param rprt_filename: Имя результирующего файла шаблона *.rprt.
-    :return: Скорректированное имя созданного файла шаблона или None в случае ошибки.
+    :param src_filename: The name of the source template file.
+    :param rprt_filename: The name of the resulting template file is * .rprt.
+    :return: Corrected name of the created template file or None in case of error.
     """
-    # Удаляем результирующий файл
-    filefunc.remove_file(rprt_filename)
-    # Удаляем все промежуточные файлы
-    for ext in report_generator.SRC_REPORT_EXT:
+    # Delete destination file
+    file_func.removeFile(rprt_filename)
+    # Delete all intermediate files
+    for ext in report_gen_func.SRC_REPORT_EXT:
         src_ext = os.path.splitext(src_filename)[1].lower()
         if src_ext != ext:
             filename = os.path.splitext(src_filename)[0] + ext
             if os.path.exists(filename):
-                filefunc.remove_file(filename)
+                file_func.removeFile(filename)
     # Пересоздаем шаблон
     return createReportResourceFile(rprt_filename)
 
@@ -121,7 +118,7 @@ def createReportResourceFile(template_filename):
     base_filename = textfunc.rus2lat(base_filename) if textfunc.isRUSText(base_filename) else base_filename
     norm_tmpl_filename = os.path.join(dir_name, base_filename)
 
-    log.info(u'Создание нового файла шаблона <%s>' % norm_tmpl_filename)
+    log_func.info(u'Создание нового файла шаблона <%s>' % norm_tmpl_filename)
     # Последовательно проверяем какой файл можно взять за основу для шаблона
     for ext in report_generator.SRC_REPORT_EXT:
         src_filename = os.path.splitext(template_filename)[0] + ext
@@ -129,15 +126,15 @@ def createReportResourceFile(template_filename):
         if os.path.exists(src_filename):
             # Да такой файл есть и он может выступать
             # в качестве источника для шаблона
-            log.info(u'Найден источник шаблона отчета <%s>' % unicode_src_filename)
+            log_func.info(u'Найден источник шаблона отчета <%s>' % unicode_src_filename)
             try:
                 rep_generator = report_generator.createReportGeneratorSystem(ext)
                 return rep_generator.update(src_filename)
             except:
-                log.fatal(u'Ошибка конвертации шаблона отчета <%s> -> <%s>' % (unicode_src_filename, norm_tmpl_filename))
+                log_func.fatal(u'Ошибка конвертации шаблона отчета <%s> -> <%s>' % (unicode_src_filename, norm_tmpl_filename))
             return None
 
-    log.warning(u'Не найдены источники шаблонов отчета в папке <%s> для <%s>' % (dir_name,
+    log_func.warning(u'Не найдены источники шаблонов отчета в папке <%s> для <%s>' % (dir_name,
                                                                                  textfunc.toUnicode(os.path.basename(template_filename))))
     return None
 
@@ -178,7 +175,7 @@ def openReportBrowser(parent_form=None, report_dir='', mode=icreportbrowser.IC_R
         dlg.Destroy()
         return True
     except:
-        log.fatal(u'Ошибка запуска браузера отчетов')
+        log_func.fatal(u'Ошибка запуска браузера отчетов')
         if dlg:
             dlg.Destroy()
     return False
@@ -238,7 +235,7 @@ def printReport(parent_form=None, report_filename='', report_dir='',
                                        stylelib=stylelib,
                                        variables=variables)
     except:
-        log.fatal(u'Ошибка печати отчета <%s>' % report_filename)
+        log_func.fatal(u'Ошибка печати отчета <%s>' % report_filename)
     return False
 
 
@@ -272,7 +269,7 @@ def previewReport(parent_form=None, report_filename='', report_dir='',
                                          stylelib=stylelib,
                                          variables=variables)
     except:
-        log.fatal(u'Ошибка предварительного просмотра отчета <%s>' % report_filename)
+        log_func.fatal(u'Ошибка предварительного просмотра отчета <%s>' % report_filename)
     return False
 
 
@@ -306,7 +303,7 @@ def exportReport(parent_form=None, report_filename='', report_dir='',
                                          stylelib=stylelib,
                                          variables=variables)
     except:
-        log.fatal(u'Ошибка экспорта отчета <%s>' % report_filename)
+        log_func.fatal(u'Ошибка экспорта отчета <%s>' % report_filename)
     return False
 
 
@@ -340,7 +337,7 @@ def selectReport(parent_form=None, report_filename='', report_dir='',
                                               stylelib=stylelib,
                                               variables=variables)
     except:
-        log.fatal(u'Ошибка генерации отчета с выбором действия <%s>' % report_filename)
+        log_func.fatal(u'Ошибка генерации отчета с выбором действия <%s>' % report_filename)
     return False
 
 
@@ -390,12 +387,12 @@ def doReport(parent_form=None, report_filename='', report_dir='', db_url='', sql
                 elif command == DO_COMMAND_SELECT:
                     repgen_system.doSelectAction(data)
                 else:
-                    log.warning(u'Не обрабатываемая команда запуска <%s>' % command)
+                    log_func.warning(u'Не обрабатываемая команда запуска <%s>' % command)
             else:
                 repgen_system.save(data)
         return True
     except:
-        log.fatal(u'Ошибка запуска генератора отчета <%s>' % report_filename)
+        log_func.fatal(u'Ошибка запуска генератора отчета <%s>' % report_filename)
 
 
 if __name__ == '__main__':

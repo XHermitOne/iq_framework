@@ -383,3 +383,25 @@ def removeFile(filename):
     except:
         log_func.fatal(u'Error remove file <%s>' % filename)
     return False
+
+
+def getFileModifyDatetime(filename):
+    """
+    Date-time of file modification.
+
+    :param filename: Full filename.
+    :return: Date-time of file change or None in case of error.
+    """
+    if not os.path.exists(filename):
+        log_func.error(u'File <%s> not found' % filename)
+        return None
+
+    try:
+        if platform.system() == 'Windows':
+            return os.path.getmtime(filename)
+        else:
+            stat = os.stat(filename)
+            return stat.st_mtime
+    except:
+        log_func.fatal(u'Error determining date-time of file modification <%s>' % filename)
+    return None
