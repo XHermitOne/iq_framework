@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ 
-Диалоговые функции для генератора отчетов.
+Dialog functions for the report generator.
 """
 
-__version__ = (0, 1, 1, 1)
-
+__version__ = (0, 0, 0, 1)

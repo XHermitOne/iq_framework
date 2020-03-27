@@ -2,14 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """
-Диалоговое окно выбора действия над отчетом.
+Dialog box for selecting an action on a report.
 """
 
 import wx
-from . import report_dlg_proto
-from ic.std.utils import textfunc
 
-__version__ = (0, 1, 1, 1)
+from . import report_dlg_proto
+
+from iq.util import str_func
+from iq.util import log_func
+
+__version__ = (0, 0, 0, 1)
 
 DEFAULT_UNICODE = 'utf-8'
 
@@ -18,44 +21,43 @@ PREVIEW_ACTION_ID = 'preview'
 EXPORT_ACTION_ID = 'export'
 
 
-class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
+class iqReportActionDialog(report_dlg_proto.iqReportActionDialogProto):
     """
-    Диалоговое окно выбора действия над отчетом.
+    Dialog box for selecting an action on a report.
     """
-
     def __init__(self, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
-        report_dlg_proto.icReportActionDialogProto.__init__(self, *args, **kwargs)
+        report_dlg_proto.iqReportActionDialogProto.__init__(self, *args, **kwargs)
 
-        # Выбранное действие
+        # Selected action
         self._selected_action = None
 
     def setReportNameTitle(self, report_name):
         """
-        Установить наименование отчета в заголовке диалогового окна.
+        Set the name of the report in the title of the dialog box.
 
-        :param report_name: Имя отчета
+        :param report_name: Report name.
         :return: True/False.
         """
         if not isinstance(report_name, str):
-            report_name = textfunc.toUnicode(report_name, DEFAULT_UNICODE)
-        title = u'Отчет: %s' % report_name
+            report_name = str_func.toUnicode(report_name, DEFAULT_UNICODE)
+        title = u'Report: %s' % report_name
         self.SetLabel(title)
         return True
 
     def getSelectedAction(self):
         """
-        Выбранное действие.
+        Get selected action.
 
-        :return: Строка-идентификатор выбранного действия.
+        :return: Selected action identifier.
         """
         return self._selected_action
 
     def isSelectedPrintAction(self):
         """
-        Выбрано действие ПЕЧАТЬ?
+        Select PRINT action?
 
         :return: True/False.
         """
@@ -63,7 +65,7 @@ class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
 
     def isSelectedPreviewAction(self):
         """
-        Выбрано действие ПРЕДВАРИТЕЛЬНЫЙ ПРОСМОТР?
+        Selec PREVIEW action?
 
         :return: True/False.
         """
@@ -71,7 +73,7 @@ class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
 
     def isSelectedExportAction(self):
         """
-        Выбрано действие ЭКСПОРТ В ОФИС ПО?
+        Selec EXPORT action?
 
         :return: True/False.
         """
@@ -79,7 +81,7 @@ class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
 
     def onPrintButtonClick(self, event):
         """
-        Обработчик нажатия на кнопку <Печать>.
+        Button click handler <Print>.
         """
         self._selected_action = PRINT_ACTION_ID
         self.EndModal(wx.ID_OK)
@@ -87,7 +89,7 @@ class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
 
     def onPreviewButtonClick(self, event):
         """
-        Обработчик нажатия на кнопку <Предварительный просмотр>.
+        Button click handler <Preview>.
         """
         self._selected_action = PREVIEW_ACTION_ID
         self.EndModal(wx.ID_OK)
@@ -95,7 +97,7 @@ class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
 
     def onExportButtonClick(self, event):
         """
-        Обработчик нажатия на кнопку <Экспорт в Office>.
+        Button click handler <Export>.
         """
         self._selected_action = EXPORT_ACTION_ID
         self.EndModal(wx.ID_OK)
@@ -103,7 +105,7 @@ class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
 
     def onCancelButtonClick(self, event):
         """
-        Обработчик нажатия на кнопку <Отмена>.
+        Button click handler <Cancel>.
         """
         self._selected_action = None
         self.EndModal(wx.ID_CANCEL)
@@ -112,10 +114,10 @@ class icReportActionDialog(report_dlg_proto.icReportActionDialogProto):
 
 def getReportActionDlg(parent=None, title=''):
     """
-    Запустить диалоговое окно выбора действия над отчетом.
+    Open the dialog box for selecting an action on the report.
 
-    :param parent: Родительское wxWindow окно.
-    :param title: Заголовок диалогового окна. Обычно это имя отчета.
+    :param parent: Parent window.
+    :param title: Dialog title.
     """
     result = None
     if parent is None:
@@ -123,33 +125,13 @@ def getReportActionDlg(parent=None, title=''):
 
     dlg = None
     try:
-        dlg = icReportActionDialog(None)
+        dlg = iqReportActionDialog(None)
         dlg.setReportNameTitle(title)
         dlg.ShowModal()
         result = dlg.getSelectedAction()
         dlg.Destroy()
     except:
+        log_func.fatal(u'Error report action dialog')
         if dlg:
             dlg.Destroy()
-            raise
     return result
-
-
-def test():
-    """
-    Тестирование.
-    """
-    app = wx.PySimpleApp()
-
-    dlg = icReportActionDialog(None)
-
-    dlg.ShowModal()
-
-    print((u'ACTION <%s>' % dlg.getSelectedAction()))
-
-    dlg.Destroy()
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    test()

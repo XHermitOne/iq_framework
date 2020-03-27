@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ 
-Пакет системы генерации отчетов.
+Report generate system package.
 """
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 0, 0, 1)

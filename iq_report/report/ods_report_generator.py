@@ -10,7 +10,7 @@ import copy
 import os 
 import os.path
 
-from .dlg import icreportactiondlg
+from .dlg import report_action_dlg
 from ic.std.log import log
 from ic.std.dlg import dlg
 from ic.std.utils import textfunc
@@ -103,12 +103,12 @@ class icODSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
 
         :param data: Данные об отчете.
         """
-        action = icreportactiondlg.getReportActionDlg(title=self.getReportDescription())
-        if action == icreportactiondlg.PRINT_ACTION_ID:
+        action = report_action_dlg.getReportActionDlg(title=self.getReportDescription())
+        if action == report_action_dlg.PRINT_ACTION_ID:
             return self.PrintOffice(data)
-        elif action == icreportactiondlg.PREVIEW_ACTION_ID:
+        elif action == report_action_dlg.PREVIEW_ACTION_ID:
             return self.PreviewOffice(data)
-        elif action == icreportactiondlg.EXPORT_ACTION_ID:
+        elif action == report_action_dlg.EXPORT_ACTION_ID:
             return self.OpenOffice(data)
         else:
             log.warning(u'Не определено действие над отчетом')

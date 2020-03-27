@@ -9,15 +9,14 @@ import os
 import os.path
 import wx
 
-# Подключение библиотек
-from ic.std.log import log
-from ic.std.utils import resfunc
-from ic.std.utils import textfunc
-from ic.std.utils import filefunc
-
-from ic.report import icreportbrowser
-from ic.report import report_generator
-from ic.report import icstylelib
+# from ic.std.log import log
+# from ic.std.utils import resfunc
+# from ic.std.utils import textfunc
+# from ic.std.utils import filefunc
+#
+# from ic.report import icreportbrowser
+# from ic.report import report_generator
+# from ic.report import icstylelib
 
 
 __version__ = (0, 1, 1, 2)

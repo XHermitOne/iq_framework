@@ -1257,9 +1257,9 @@ class icExcelXMLReportTemplate(icReportTemplate):
         :param parse_row: Разбираемая строка шаблона отчета в виде списка.
         """
         try:
-            from . import icstylelib
+            from . import style_library
             xml_style_lib_file_name = parse_row[0]['children'][0]['value']
-            report['style_lib'] = icstylelib.icXMLRepStyleLib().convert(xml_style_lib_file_name)
+            report['style_lib'] = style_library.icXMLRepStyleLib().convert(xml_style_lib_file_name)
         except:
             log.fatal(u'Ошибка в функции _parseStyleLibTag')
             
