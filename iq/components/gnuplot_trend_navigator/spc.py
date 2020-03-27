@@ -38,7 +38,7 @@ GNUPLOTTRENDNAVIGATOR_SPC = {
     'show_legend': True,
 
     '__package__': u'SCADA',
-    '__icon__': 'fatcow%schart_line' % os.path.sep,
+    '__icon__': 'fatcow/chart_line',
     '__parent__': wx_panel.SPC,
     '__doc__': None,
     '__content__': ('iqTrendPen', ),

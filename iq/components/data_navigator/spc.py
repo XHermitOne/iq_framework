@@ -26,7 +26,7 @@ DATANAVIGATOR_SPC = {
     'model': None,
 
     '__package__': u'Data',
-    '__icon__': 'fatcow%scompass' % os.path.sep,
+    '__icon__': 'fatcow/compass',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

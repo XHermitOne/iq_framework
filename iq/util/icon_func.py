@@ -15,6 +15,8 @@ __version__ = (0, 0, 0, 1)
 
 ICON_FILENAME_EXT = '.png'
 
+ICON_NAME_SEPARATOR = '/'
+
 
 def getIconPath():
     """
@@ -35,6 +37,8 @@ def getIconFilename(icon_filename):
     if not isinstance(icon_filename, str):
         log_func.error(u'Error type icon filename <%s>' % icon_filename)
         return None
+
+    icon_filename = icon_filename.replace(ICON_NAME_SEPARATOR, os.path.sep)
 
     if os.path.sep in icon_filename:
         if icon_filename.count(os.path.sep) == 1:

@@ -22,7 +22,7 @@ PROJECT_SPC = {
     '_children_': [],
 
     '__package__': u'Project',
-    '__icon__': 'fatcow%sbricks' % os.path.sep,
+    '__icon__': 'fatcow/bricks',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': ('iqUser', 'iqRole'),

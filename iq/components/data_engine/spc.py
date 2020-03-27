@@ -90,7 +90,7 @@ DATAENGINE_SPC = {
     # 'label_length': 0,
 
     '__package__': u'Data',
-    '__icon__': 'fatcow%sdatabase_gear' % os.path.sep,
+    '__icon__': 'fatcow/database_gear',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

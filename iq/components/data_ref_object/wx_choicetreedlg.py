@@ -136,8 +136,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
             img_list = wx.ImageList(wxbitmap_func.DEFAULT_ICON_WIDTH,
                                     wxbitmap_func.DEFAULT_ICON_WIDTH)
 
-            self.sort_ascending_img = img_list.Add(wxbitmap_func.createIconBitmap('fatcow%sbullet_arrow_up' % os.path.sep))
-            self.sort_descending_img = img_list.Add(wxbitmap_func.createIconBitmap('fatcow%bullet_arrow_down' % os.path.sep))
+            self.sort_ascending_img = img_list.Add(wxbitmap_func.createIconBitmap('fatcow/bullet_arrow_up'))
+            self.sort_descending_img = img_list.Add(wxbitmap_func.createIconBitmap('fatcow%bullet_arrow_down'))
 
             self.refobj_treeListCtrl.SetImageList(img_list)
 

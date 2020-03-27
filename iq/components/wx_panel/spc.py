@@ -50,7 +50,7 @@ WXPANEL_SPC = {
     'style': wx.TAB_TRAVERSAL,
 
     '__package__': u'wxPython',
-    '__icon__': 'fatcow%spanel_blank' % os.path.sep,
+    '__icon__': 'fatcow/panel_blank',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

@@ -38,7 +38,7 @@ DATAMODEL_SPC = {
     'tablename': None,
 
     '__package__': u'Data',
-    '__icon__': 'fatcow%stable' % os.path.sep,
+    '__icon__': 'fatcow/table',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': ('iqDataColumn', ),

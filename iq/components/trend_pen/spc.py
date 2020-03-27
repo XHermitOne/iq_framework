@@ -29,7 +29,7 @@ TRENDPEN_SPC = {
     'history': None,
 
     '__package__': u'SCADA',
-    '__icon__': 'fatcow%schart_line_edit' % os.path.sep,
+    '__icon__': 'fatcow/chart_line_edit',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

@@ -44,7 +44,7 @@ MNEMOANCHOR_SPC = {
     'svg_size': (-1, -1),
 
     '__package__': u'SCADA',
-    '__icon__': 'fatcow%sanchor' % os.path.sep,
+    '__icon__': 'fatcow/anchor',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

@@ -46,7 +46,7 @@ WXPLATEBUTTON_SPC = {
     'on_button_click': None,
 
     '__package__': u'wxPython',
-    '__icon__': 'fatcow%sbutton' % os.path.sep,
+    '__icon__': 'fatcow/button',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

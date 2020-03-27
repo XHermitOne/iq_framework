@@ -67,7 +67,7 @@ DATAWIDEHISTORY_SPC = {
     'dt_column': None,
 
     '__package__': u'Data',
-    '__icon__': 'fatcow%sclock_history_frame' % os.path.sep,
+    '__icon__': 'fatcow/clock_history_frame',
     '__parent__': data_navigator.SPC,
     '__doc__': None,
     '__content__': (),

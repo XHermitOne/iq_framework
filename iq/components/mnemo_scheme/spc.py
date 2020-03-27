@@ -31,7 +31,7 @@ MNEMOSCHEME_SPC = {
     'svg_height': 0.0,
 
     '__package__': u'SCADA',
-    '__icon__': 'fatcow%ssmartart_organization_chart_stand' % os.path.sep,
+    '__icon__': 'fatcow/smartart_organization_chart_stand',
     '__parent__': wx_panel.SPC,
     '__doc__': None,
     '__content__': ('iqMnemoAnchor', 'iqWxPlateButton'),

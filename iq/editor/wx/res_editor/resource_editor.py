@@ -59,7 +59,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         # the one with the tree in it...
         # self.resource_treeListCtrl.GetMainWindow().SetMainColumn(0)
 
-        bmp = wxbitmap_func.createIconBitmap('fatcow%splugin_edit' % os.path.sep)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/plugin_edit')
         if bmp:
             self.SetIcon(icon=wx.Icon(bmp))
 

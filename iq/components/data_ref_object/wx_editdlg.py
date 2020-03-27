@@ -315,7 +315,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         Initialization of control images.
         """
         # <wx.Tool>
-        bmp = wxbitmap_func.createIconBitmap('fatcow%smagnifier' % os.path.sep)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/magnifier')
         tool_id = self.search_tool.GetId()
         # Not use <tool.SetNormalBitmap(bmp)>
         # Use <toolbar.SetToolNormalBitmap(tool_id, bmp)>
@@ -323,15 +323,15 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         # After changing tool images call <Realize>
         self.search_toolBar.Realize()        
 
-        bmp = wxbitmap_func.createIconBitmap('fatcow%splus' % os.path.sep)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/plus')
         tool_id = self.add_tool.GetId()
         self.ctrl_toolBar.SetToolNormalBitmap(tool_id, bmp)
 
-        bmp = wxbitmap_func.createIconBitmap('fatcow%spencil' % os.path.sep)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/pencil')
         tool_id = self.edit_tool.GetId()
         self.ctrl_toolBar.SetToolNormalBitmap(tool_id, bmp)
         
-        bmp = wxbitmap_func.createIconBitmap('fatcow%sminus' % os.path.sep)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/minus')
         tool_id = self.del_tool.GetId()
         self.ctrl_toolBar.SetToolNormalBitmap(tool_id, bmp)
 

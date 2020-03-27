@@ -44,7 +44,7 @@ ROLE_SPC = {
     'permissions': '',
 
     '__package__': u'Project',
-    '__icon__': 'fatcow%skey_go' % os.path.sep,
+    '__icon__': 'fatcow/key_go',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

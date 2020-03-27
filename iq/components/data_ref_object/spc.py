@@ -33,7 +33,7 @@ DATAREFOBJECT_SPC = {
     'cod_len': None,
 
     '__package__': u'Data',
-    '__icon__': 'fatcow%sbook_addresses' % os.path.sep,
+    '__icon__': 'fatcow/book_addresses',
     '__parent__': data_navigator.SPC,
     '__doc__': None,
     '__content__': (),

@@ -68,7 +68,7 @@ REF_OBJ_DATAMODEL_SPC = {
                    DT_EDIT_COLUMN_SPC],
 
     '__package__': u'Data',
-    '__icon__': 'fatcow%stable' % os.path.sep,
+    '__icon__': 'fatcow/table',
     '__parent__': spc.DATAMODEL_SPC,
     '__doc__': None,
     '__content__': ('iqDataColumn', ),

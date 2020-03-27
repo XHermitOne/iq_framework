@@ -44,7 +44,7 @@ USER_SPC = {
     'do_main': None,
 
     '__package__': u'Project',
-    '__icon__': 'fatcow%suser' % os.path.sep,
+    '__icon__': 'fatcow/user',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

@@ -42,7 +42,7 @@ DATACOLUMN_SPC = {
     'system': False,
 
     '__package__': u'Data',
-    '__icon__': 'fatcow%stable_select_column' % os.path.sep,
+    '__icon__': 'fatcow/table_select_column',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),
