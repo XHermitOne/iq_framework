@@ -135,7 +135,7 @@ class iqVExcel(v_prototype.iqVPrototype):
         if ods_filename:
             self.SpreadsheetFileName = os.path.abspath(ods_filename)
         
-            ods = v_ods.icODS()
+            ods = v_ods.iqODS()
             self._data = ods.load(ods_filename)
         
             # Register an open book
@@ -208,7 +208,7 @@ class iqVExcel(v_prototype.iqVPrototype):
             # If the file exists, delete it
             os.remove(ods_filename)
             
-        ods = v_ods.icODS()
+        ods = v_ods.iqODS()
         return ods.save(ods_filename, self._data)
 
     def saveODS(self):

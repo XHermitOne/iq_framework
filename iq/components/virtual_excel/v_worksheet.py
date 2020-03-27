@@ -6,11 +6,12 @@ import copy
 from . import v_prototype
 from . import v_range
 from . import paper_size
-from . import config
 from . import exceptions
 
 
 __version__ = (0, 0, 0, 1)
+
+DETECT_MERGE_CELL_ERROR = False
 
 
 class iqVWorksheet(v_prototype.iqVPrototype):
@@ -367,7 +368,7 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def _createRowIdx(self, index, idx):
         """
-        Создать строку с индексом.
+        Create row with index.
         """
         row = v_range.iqVRow(self)
         for i, child in enumerate(self._attributes['children']):
@@ -382,19 +383,19 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def getRowsAttrs(self):
         """
-        Список строк. Данные.
+        Get row attributes list.
         """
         return [element for element in self._attributes['children'] if element['name'] == 'Row']
 
     def getRowCount(self):
         """
-        Количество строк.
+        Get number of rows.
         """
         return self._maxRowIdx()+1
 
     def getRow(self, idx=-1):
         """
-        Взять строку по индексу.
+        Get row by index.
         """
         row = None
         idxs, _i, row_data = self._findRowIdxAttr(idx)
@@ -410,7 +411,7 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def createCell(self, row, col):
         """
-        Создать ячейку (row,col).
+        Create cell (row, col).
         """
         col_count = self.getColumnCount()
         if col > col_count:
@@ -422,7 +423,7 @@ class iqVTable(v_prototype.iqVPrototype):
             for i in range(row - row_count):
                 self.createRow()
 
-        # Проверка на попадание в объединенную ячейку
+        # Check for getting into the merged cell
         if self.isInMergeCell(row, col):
             sheet_name = self.getParentByName('Worksheet').getName()
             err_txt = 'Getting new_cell (sheet: %s, row: %d, column: %d) into merge new_cell!' % (sheet_name, row, col)
@@ -434,15 +435,15 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def getCell(self, row, col):
         """
-        Получить ячейку (row,col).
+        Get cell (row, col).
         """
-        # Если координаты недопустимы, тогда ошибка
+        # If the coordinates are not valid, then an error
         if row <= 0:
             raise IndexError
         if col <= 0:
             raise IndexError
 
-        # Ограничение по индексам строк и колонок
+        # Limit on row and column indices
         if row > 65535:
             return None
         if col > 256:
@@ -458,9 +459,9 @@ class iqVTable(v_prototype.iqVPrototype):
             for i in range(row-row_count):
                 self.createRow()
 
-        # Проверка на попадание в объединенную ячейку
+        # Check for getting into the merged cell
         if self.isInMergeCell(row, col):
-            if config.DETECT_MERGE_CELL_ERROR:
+            if DETECT_MERGE_CELL_ERROR:
                 sheet_name = self.getParentByName('Worksheet').getName()
                 err_txt = 'Getting new_cell (sheet: %s, row: %d, column: %d) into merge new_cell!' % (sheet_name, row, col)
                 raise exceptions.iqMergeCellError((100, err_txt))
@@ -470,48 +471,48 @@ class iqVTable(v_prototype.iqVPrototype):
 
         cur_row = self.getRow(row)
         cell = cur_row.getCellIdx(col)
-        # Установить координаты ячейки
+        # Set cell coordinates
         cell._row_idx = row
         cell._col_idx = col
         return cell
 
     def clearTab(self):
         """
-        Очистка таблицы.
+        Clear table.
         """
         return self.clear()
 
     def _findColIdxAttr(self, idx):
         """
-        Найти атрибуты колонки в таблице по индексу.
-        ВНИМАНИЕ! В этой функции индексация начинается с 0.
+        Find the attributes of a column in a table by index.
+        Indexing starts at 0.
         """
         return self._getBasisCol()._findElementIdxAttr(idx, 'Column')
 
     def _findRowIdxAttr(self, idx):
         """
-        Найти атрибуты строки в таблице по индексу.
-        ВНИМАНИЕ! В этой функции индексация начинается с 0.
+        Find row attributes in a table by index.
+        Indexing starts at 0.
         """
         return self._getBasisRow()._findElementIdxAttr(idx, 'Row')
 
     def _maxColIdx(self):
         """
-        Максимальный индекс колонок в таблице.
-        ВНИМАНИЕ! В этой функции индексация начинается с 0.
+        The maximum column index in the table.
+        Indexing starts at 0.
         """
         return self._getBasisCol()._maxElementIdx(elements=self.getColumnsAttrs())
 
     def _maxRowIdx(self):
         """
-        Максимальный индекс строк в таблице.
-        ВНИМАНИЕ! В этой функции индексация начинается с 0.
+        The maximum row index in the table.
+        Indexing starts at 0.
         """
         return self._getBasisRow()._maxElementIdx(elements=self.getRowsAttrs())
 
     def setExpandedRowCount(self, expanded_row_count=None):
         """
-        Вычисление максимального количества строк таблицы.
+        Calculation of the maximum number of rows in a table.
         """
         if expanded_row_count:
             self._attributes['ExpandedRowCount'] = expanded_row_count
@@ -519,15 +520,14 @@ class iqVTable(v_prototype.iqVPrototype):
             if 'ExpandedRowCount' in self._attributes:
                 cur_count = int(self._attributes['ExpandedRowCount'])
                 calc_count = self._maxRowIdx()+1
-                # Если расчетное количество больше текущего, то
-                # генератор добавил строки и значение ExpandedRowCount
-                # надо увеличить
-                # Ограничение количества строк 65535
+                # If the calculated amount is greater than the current one,
+                # the generator added rows and the ExpandedRowCount
+                # value must be increased. Line limit 65535.
                 self._attributes['ExpandedRowCount'] = min(max(calc_count, cur_count), 65535)
 
     def setExpandedColCount(self, expanded_col_count=None):
         """
-        Вычисление максимального количества колонок в строке.
+        Calculation of the maximum number of columns per row.
         """
         if expanded_col_count:
             self._attributes['ExpandedColumnCount'] = expanded_col_count
@@ -535,16 +535,16 @@ class iqVTable(v_prototype.iqVPrototype):
             if 'ExpandedColumnCount' in self._attributes:
                 cur_count = int(self._attributes['ExpandedColumnCount'])
                 calc_count = self._maxColIdx()+1
-                # Если расчетное количество больше текущего, то
-                # генератор добавил колонки и значение ExpandedColumnCount
-                # надо увеличить
-                # Ограничение количества колонок 256
+                # If the calculated amount is greater than the current one,
+                # the generator has added columns and the value of ExpandedColumnCount
+                # must be increased. The limit on the number of columns is 256
                 self._attributes['ExpandedColumnCount'] = min(max(calc_count, cur_count), 256)
 
     def paste(self, paste, to=None):
         """
-        Вставить копию атрибутов Past_ объекта внутрь текущего объекта
-        по адресу to. Если to None, тогда происходит замена.
+        Insert a copy of the attributes of the object inside the current object
+        by the address.
+        If to None, then a replacement occurs.
         """
         if paste['name'] == 'Range':
             return self._pasteRange(paste, to)
@@ -554,11 +554,11 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def _pasteRange(self, paste, to):
         """
-        Вставить Range в таблицу по адресу ячейки.
+        Insert a range into the table at the cell address.
         """
         if isinstance(to, tuple) and len(to) == 2:
             to_row, to_col = to
-            # Адресация ячеек задается как (row,col)
+            # Cell address (row, col)
             for i_row in range(paste['height']):
                 for i_col in range(paste['width']):
                     cell_attrs = paste['children'][i_row][i_col]
@@ -571,7 +571,7 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def _getBasisRow(self):
         """
-        Базисная строка, относительно которой происходит работа с индексами строк.
+        The base row relative to which work with row indices occurs.
         """
         if self._basis_row is None:
             self._basis_row = v_range.iqVRow(self)
@@ -579,7 +579,7 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def _getBasisCol(self):
         """
-        Базисная колонка, относительно которой происходит работа с индексами колонок.
+        The base column relative to which the column indices work.
         """
         if self._basis_col is None:
             self._basis_col = v_range.iqVColumn(self)
@@ -587,7 +587,7 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def getMergeCells(self):
         """
-        Словарь объединенных ячеек. В качестве ключа - кортеж координаты ячейки.
+        Dictionary of merged cells. As a key, a tuple of the cell coordinate.
         """
         merge_cells = {}
         rows = [element for element in self._attributes['children'] if element['name'] == 'Row']
@@ -605,23 +605,23 @@ class iqVTable(v_prototype.iqVPrototype):
                     if 'MergeAcross' in cell or 'MergeDown' in cell:
                         cur_row = self.getRow(i_row+1)
                         cell_obj = cur_row.getCellIdx(i_col)
-                        # Установить координаты ячейки
+                        # Set cell coordinates
                         cell_obj._row_idx = i_row+1
                         cell_obj._col_idx = i_col
                         merge_cells[cell_obj.getRegion()] = cell_obj
                     if 'MergeAcross' in cell:
-                        # Учет объекдиненных ячеек ДЕЛАТЬ ОБЯЗАТЕЛЬНО!!!
-                        # иначе не происходит учет предыдущих объединенных ячеек
+                        # Accounting of the unified cells DO MANDATORY !!!
+                        # Otherwise, the previous merged cells are not counted
                         i_col += int(cell['MergeAcross'])-1
 
         return merge_cells
 
     def isInMergeCell(self, row, column):
         """
-        Попадает указанная ячейка в объединенную?
+        Does the specified cell get in the merged?
         """
-        # Кеширование объединенных ячеек на случай попадания
-        # в них при создании новой ячейки
+        # Caching merged cells in case of a hit
+        # in them when creating a new cell
         if self._merge_cells is None:
             self._merge_cells = self.getMergeCells()
 
@@ -635,10 +635,10 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def getInMergeCell(self, row, column):
         """
-        Получить объединенную ячейку на которую указывают координаты.
+        Get the combined cell indicated by the coordinates.
         """
-        # Кеширование объединенных ячеек на случай попадания
-        # в них при создании новой ячейки
+        # Caching merged cells in case of a hit
+        # in them when creating a new cell
         if self._merge_cells is None:
             self._merge_cells = self.getMergeCells()
 
@@ -652,13 +652,13 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def delColumn(self, idx=-1):
         """
-        Удалить колонку.
+        Delete column.
         """
         col = self.getColumn(idx)
         if col:
-            # Удалить колонку из таблицы
+            # Delete column from table
             result = col._delElementIdxAttr(idx - 1, 'Column')
-            # Кроме этого удалить ячейку, соответствующую текущей колонке
+            # In addition, delete the cell corresponding to the current column
             for i_row in range(self.getRowCount()):
                 row = self.getRow(i_row+1)
                 if row:
@@ -668,30 +668,30 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def delRow(self, idx=-1):
         """
-        Удалить строку.
+        Delete row.
         """
         row = self.getRow(idx)
 
         if row:
-            # Удалить строку из таблицы
+            # Delete row from table
             return row._delElementIdxAttr(idx - 1, 'Row')
         return False
 
 
 class iqVWorksheetOptions(v_prototype.iqVPrototype):
     """
-    Параметры листа.
+    Worsheet options.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'WorksheetOptions', 'children': []}
 
     def getPageSetup(self):
         """
-        Параметры печати.
+        Page setup.
         """
         page_setup_attr = [element for element in self._attributes['children'] if element['name'] == 'PageSetup']
         if page_setup_attr:
@@ -703,7 +703,7 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
 
     def createPageSetup(self):
         """
-        Параметры печати.
+        Create page setup.
         """
         page_setup = iqVPageSetup(self)
         attrs = page_setup.create()
@@ -711,7 +711,7 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
 
     def getPrint(self):
         """
-        Параметры принтера.
+        Print setup.
         """
         print_attr = [element for element in self._attributes['children'] if element['name'] == 'Print']
         if print_attr:
@@ -723,7 +723,7 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
 
     def createPrint(self):
         """
-        Параметры принтера.
+        Create print setup.
         """
         print_section = iqVPrint(self)
         attrs = print_section.create()
@@ -731,7 +731,7 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
 
     def isFitToPage(self):
         """
-        Масштаб по размещению страниц.
+        Page layout scale.
         """
         fit_to_page = [element for element in self._attributes['children'] if element['name'] == 'FitToPage']
         return bool(fit_to_page)
@@ -739,18 +739,18 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
 
 class iqVPageSetup(v_prototype.iqVPrototype):
     """
-    Параметры печати.
+    Page setup.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'PageSetup', 'children': []}
 
     def getLayout(self):
         """
-        Размещение листа.
+        Layout page.
         """
         layout = [element for element in self._attributes['children'] if element['name'] == 'Layout']
         if layout:
@@ -759,18 +759,18 @@ class iqVPageSetup(v_prototype.iqVPrototype):
 
     def getOrientation(self):
         """
-        Ориентация листа.
+        Orientation page.
         """
         layout = self.getLayout()
         if layout:
             if 'Orientation' in layout:
                 return layout['Orientation']
-        # По умолчанию портретная ориентация
+        # Default portrait orientation
         return 'Portrait'
 
     def getCenter(self):
         """
-        Центрирование по горизонтали/вертикали.
+        Centering horizontally / vertically.
         """
         layout = self.getLayout()
         if layout:
@@ -782,12 +782,11 @@ class iqVPageSetup(v_prototype.iqVPrototype):
                 c_vert = layout['CenterVertical']
             return bool(c_horiz == '1'), bool(c_vert == '1')
 
-        # По умолчанию портретная ориентация
         return False, False
 
     def getPageMargins(self):
         """
-        Поля.
+        Page margins.
         """
         margins = [element for element in self._attributes['children'] if element['name'] == 'PageMargins']
         if margins:
@@ -796,7 +795,7 @@ class iqVPageSetup(v_prototype.iqVPrototype):
 
     def getMargins(self):
         """
-        Поля.
+        Get margins.
         """
         margins = self.getPageMargins()
         if margins:
@@ -823,28 +822,28 @@ class iqVPageSetup(v_prototype.iqVPrototype):
 
 class iqVPrint(v_prototype.iqVPrototype):
     """
-    Параметры принтера.
+    Print setup.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Print', 'children': []}
 
     def getPaperSizeIndex(self):
         """
-        Код размера бумаги.
+        Paper size.
         """
         paper_size_lst = [element for element in self._attributes['children'] if element['name'] == 'PaperSizeIndex']
         if paper_size_lst:
             return int(paper_size_lst[0]['value'])
-        # По умолчанию размер A4
+        # Default A4 size
         return paper_size.xlPaperA4
 
     def getPaperSize(self):
         """
-        Размер бумаги в 0.01 мм.
+        The paper size is 0.01 mm.
         """
         paper_size_i = self.getPaperSizeIndex()
         if paper_size_i > 0:
@@ -853,17 +852,17 @@ class iqVPrint(v_prototype.iqVPrototype):
 
     def getScale(self):
         """
-        Масштаб бумаги.
+        Paper scale.
         """
         scale = [element for element in self._attributes['children'] if element['name'] == 'Scale']
         if scale:
             return int(scale[0]['value'])
-        # По умолчанию масштаб 100%
+        # The default scale is 100%.
         return 100
 
     def getFitWidth(self):
         """
-        Масштаб. Разместить не более чем на X стр. в ширину.
+        Scale. Place no more than X pages wide.
         """
         fit_width = [element for element in self._attributes['children'] if element['name'] == 'FitWidth']
         if fit_width:
@@ -871,12 +870,12 @@ class iqVPrint(v_prototype.iqVPrototype):
                 return int(fit_width[0]['value'])
             except:
                 pass
-        # По умолчанию 1
+        # Default 1
         return 1
 
     def getFitHeight(self):
         """
-        Масштаб. Разместить не более чем на X стр. в высоту.
+        Scale. Place no more than X pages high.
         """
         fit_height = [element for element in self._attributes['children'] if element['name'] == 'FitHeight']
         if fit_height:
@@ -884,18 +883,18 @@ class iqVPrint(v_prototype.iqVPrototype):
                 return int(fit_height[0]['value'])
             except:
                 pass
-        # По умолчанию 1
+        # Default 1
         return 1
 
     def getFit(self):
         """
-        Масштаб в размещенных страницах.
+        Scale in hosted pages.
         """
         return self.getFitWidth(), self.getFitHeight()
 
     def getNumberofCopies(self):
         """
-        Количество копий листа.
+        The number of copies of the sheet.
         """
         n_copies = [element for element in self._attributes['children'] if element['name'] == 'NumberofCopies']
         if n_copies:
@@ -903,12 +902,12 @@ class iqVPrint(v_prototype.iqVPrototype):
                 return int(n_copies[0]['value'])
             except:
                 pass
-        # По умолчанию 1
+        # Default 1
         return 1
 
     def setNumberofCopies(self, number_of_copies=1):
         """
-        Количество копий листа.
+        The number of copies of the sheet.
         """
         number_of_copies = min(max(int(number_of_copies), 1), 256)
         n_copies = {'name': 'NumberofCopies', 'value': number_of_copies}
@@ -918,20 +917,20 @@ class iqVPrint(v_prototype.iqVPrototype):
 
 class iqVPageBreaks(v_prototype.iqVPrototype):
     """
-    Разрывы страниц.
+    Page breaks.
     """
     def __init__(self, parent, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'PageBreaks', 'children': [{'name': 'RowBreaks', 'children': []}]}
 
     def addRowBreak(self, row):
         """
-        Добавить разрыв страницы по строке.
+        Add page break line by line.
 
-        :param row: Номер строки.
+        :param row: Row number.
         """
         row_break = {'name': 'RowBreak', 'children': [{'name': 'Row', 'value': row}]}
         self._attributes['children'][0]['children'].append(row_break)

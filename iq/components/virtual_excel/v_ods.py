@@ -1,31 +1,19 @@
-# !/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os.path
 import re
 import uuid
 
-# from . import config
+import odf.opendocument
+import odf.style
+import odf.number
+import odf.text
+import odf.table
 
-try:
-    # Если Virtual Excel работает в окружении icReport
-    from ic.std.log import log
-except ImportError:
-    # Если Virtual Excel работает в окружении DEFIS
-    from ic.log import log
+from ...util import log_func
 
-# log.init(config)
-    
-try:
-    import odf.opendocument
-    import odf.style
-    import odf.number
-    import odf.text
-    import odf.table
-except ImportError:
-    log.error(u'Ошибка импорта ODFpy')
-
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 0, 0, 1)
 
 DIMENSION_CORRECT = 35
 DEFAULT_STYLE_ID = 'Default'
@@ -49,43 +37,43 @@ A3_PAPER_FORMAT = 'A3'
 
 DEFAULT_ENCODE = 'utf-8'
 
-# Поля страницы по умолчанию
+# Default page margins
 DEFAULT_XML_MARGIN_TOP = 0.787401575
 DEFAULT_XML_MARGIN_BOTTOM = 0.787401575
 DEFAULT_XML_MARGIN_LEFT = 0.787401575
 DEFAULT_XML_MARGIN_RIGHT = 0.787401575
 
 
-class icODS(object):
+class iqODS(object):
     """
-    Класс конвертации представления VirtualExcel в ODS файл.
+    Class for converting a VirtualExcel view to an ODS file.
     """
     def __init__(self):
         """
-        Конструктор.
+        Constructor.
         """
         self._styles_ = {}
         self.ods_document = None
 
-        # Внутренние данные в xmlss представлении
+        # Internal data in xmlss representation
         self.xmlss_data = None
         
-        # Стили числовых форматов в виде словаря
+        # Dictionary number styles
         self._number_styles_ = {}
 
-        # Индекс генерации имен стилей
+        # Style name generation index
         self._style_name_idx = 0
         
     def save(self, filename, data_dict=None):
         """
-        Сохранить в ODS файл.
+        Save to ODS file.
 
-        :param filename: Имя ODS файла.
-        :param data_dict: Словарь данных.
+        :param filename: ODS filename.
+        :param data_dict: Data dictionary.
         :return: True/False.
         """
         if data_dict is None:
-            log.warning(u'ODS. Не определены данные для сохранения')
+            log_func.error(u'ODS. No save data defined')
 
         self.ods_document = None
         self._styles_ = {}
@@ -100,11 +88,9 @@ class icODS(object):
         
         if self.ods_document:
             # if isinstance(filename, text):
-            #    # ВНИМАНИЕ! Перед сохранением надо имя файла сделать
-            #    # Юникодной иначе падает по ошибке в функции save
             #    filename = unicode(filename, DEFAULT_ENCODE)
-            # Добавлять автоматически расширение-+
-            # к имени файла (True - да)          |
+
+            # Add extension automatically to file name (True - yes)
             #                                    V
             self.ods_document.save(filename, addsuffix=False)
             self.ods_document = None
@@ -113,18 +99,18 @@ class icODS(object):
     
     def getChildrenByName(self, data_dict, name):
         """
-        Дочерние элементы по имени.
+        Get children by name.
 
-        :param data_dict: Словарь данных.
-        :param name: Имя дочернего элемента.
+        :param data_dict: Data dictionary.
+        :param name: Child item name.
         """
         return [item for item in data_dict.get('children', []) if item['name'] == name]
         
     def setWorkbook(self, data_dict):
         """
-        Заполнить книгу.
+        Set workbook.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         self.ods_document = odf.opendocument.OpenDocumentSpreadsheet()
         
@@ -141,12 +127,10 @@ class icODS(object):
 
     def setStyles(self, data_dict):
         """
-        Заполнить стили.
+        Set styles.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.info(u'Стили <%s>' % data_dict)
-        
         styles = data_dict.get('children', [])
         for style in styles:
             ods_style = self.setStyle(style)
@@ -154,11 +138,10 @@ class icODS(object):
 
     def setFont(self, data_dict):
         """
-        Заполнить шрифт стиля.
+        Set style font.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.debug(u'Установка шрифта <%s>' % data_dict)
         font = {}
         font_name = data_dict.get('FontName', 'Arial')
         font_size = data_dict.get('Size', '10')
@@ -184,7 +167,7 @@ class icODS(object):
 
     def _genNumberStyleName(self):
         """
-        Генерация имени стиля формата числового представления.
+        Generating a style name for a numeric representation format.
         """
         # from services.ic_std.utils import uuid
         # return uuid.get_uuid()
@@ -193,14 +176,14 @@ class icODS(object):
 
     def setNumberFormat(self, data_dict):
         """
-        Заполнить формат числового представления.
+        Fill in the format of the numeric representation.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         number_format = {}
         format = data_dict.get('Format', '0')
 
-        # Не анализировать знак %
+        # Do not analyze sign %
         format = format.replace('%', '')
         decimalplaces = len(format[format.find(',')+1:]) if format.find(',') >= 0 else 0
         minintegerdigits = len([i for i in list(format[:format.find(',')]) if i == '0']) if format.find(',') >= 0 else len([i for i in list(format) if i == '0'])
@@ -210,35 +193,34 @@ class icODS(object):
         number_format['minintegerdigits'] = str(minintegerdigits)
         number_format['grouping'] = str(grouping)
         
-        # log.debug(u'Установка числового формата <%s>' % number_format)
         return number_format
 
-    _lineStyles_SpreadsheetML2ODS = {None: 'solid',
-                                     'Continuous': 'solid',
-                                     'Double': 'double',
-                                     'Dot': 'dotted',
-                                     'Dash': 'dashed',
-                                     'DashDot': 'dotted',
-                                     'DashDotDot': 'dashed',
-                                     'solid': 'solid'}
-    _lineStyles_ODS2SpreadsheetML = {None: 'Continuous',
-                                     'solid': 'Continuous',
-                                     'double': 'Double',
-                                     'dotted': 'Dot',
-                                     'dashed': 'Dash'}
+    _LINESTYLE_SPREADSHEETML2ODS = {None: 'solid',
+                                    'Continuous': 'solid',
+                                    'Double': 'double',
+                                    'Dot': 'dotted',
+                                    'Dash': 'dashed',
+                                    'DashDot': 'dotted',
+                                    'DashDotDot': 'dashed',
+                                    'Solid': 'solid'}
+    _LINESTYLE_ODS2SPREADSHEETML = {None: 'Continuous',
+                                    'solid': 'Continuous',
+                                    'double': 'Double',
+                                    'dotted': 'Dot',
+                                    'dashed': 'Dash'}
 
     def setBorders(self, data_dict):
         """
-        Заполнить бордеры.
+        Set borders.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         borders = {}
         for border in data_dict['children']:
             if border:
                 border_weight = border.get('Weight', '1')
                 color = border.get('Color', '#000000')
-                line_style = self._lineStyles_SpreadsheetML2ODS.get(border.get('LineStyle', 'solid'), 'solid')
+                line_style = self._LINESTYLE_SPREADSHEETML2ODS.get(border.get('LineStyle', 'solid'), 'solid')
                 if border['Position'] == 'Left':
                     borders['borderleft'] = '%spt %s %s' % (border_weight, line_style, color)
                 elif border['Position'] == 'Right':
@@ -250,12 +232,12 @@ class icODS(object):
                 
         return borders
         
-    _alignHorizStyle_SpreadsheetML2ODS = {'Left': 'start',
+    _ALIGNHORIZSTYLE_SPREADSHEETML2ODS = {'Left': 'start',
                                           'Right': 'end',
                                           'Center': 'center',
                                           'Justify': 'justify',
                                           }
-    _alignVertStyle_SpreadsheetML2ODS = {'Top': 'top',
+    _ALIGNVERTSTYLE_SPREADSHEETML2ODS = {'Top': 'top',
                                          'Bottom': 'bottom',
                                          'Center': 'middle',
                                          'Justify': 'justify',
@@ -263,27 +245,27 @@ class icODS(object):
 
     def setAlignmentParagraph(self, data_dict):
         """
-        Заполнить выравнивания текста стиля.
+        Fill text alignment style.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         align = {}
         horiz = data_dict.get('Horizontal', None)
         vert = data_dict.get('Vertical', None)
 
         if horiz:
-            align['textalign'] = self._alignHorizStyle_SpreadsheetML2ODS.get(horiz, 'start')
+            align['textalign'] = self._ALIGNHORIZSTYLE_SPREADSHEETML2ODS.get(horiz, 'start')
             
         if vert:
-            align['verticalalign'] = self._alignVertStyle_SpreadsheetML2ODS.get(vert, 'top')
+            align['verticalalign'] = self._ALIGNVERTSTYLE_SPREADSHEETML2ODS.get(vert, 'top')
 
         return align
 
     def setAlignmentCell(self, data_dict):
         """
-        Заполнить выравнивания текста стиля.
+        Fill text alignment style.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         align = {}
         wrap_txt = data_dict.get('WrapText', 0)
@@ -291,7 +273,7 @@ class icODS(object):
         vert = data_dict.get('Vertical', None)
         
         if vert:
-            align['verticalalign'] = self._alignVertStyle_SpreadsheetML2ODS.get(vert, 'top')
+            align['verticalalign'] = self._ALIGNVERTSTYLE_SPREADSHEETML2ODS.get(vert, 'top')
         
         if wrap_txt:
             align['wrapoption'] = 'wrap'
@@ -303,9 +285,9 @@ class icODS(object):
 
     def setInteriorCell(self, data_dict):
         """
-        Заполнить интерьер ячейки стиля.
+        Fill the cell style interior.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         interior = {}
         color = data_dict.get('Color', None)
@@ -317,22 +299,19 @@ class icODS(object):
 
     def setStyle(self, data_dict):
         """
-        Заполнить стиль.
+        Set style.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.info(u'Установка стиля <%s>' % data_dict)
-
         properties_args = {}
         number_format = self.getChildrenByName(data_dict, 'NumberFormat')
         if number_format:
-            # Заполнениние формата числового представления
+            # Filling in a numeric representation format
             number_properties = self.setNumberFormat(number_format[0])
             number_style_name = self._genNumberStyleName()
             properties_args['datastylename'] = number_style_name
             
             format = number_format[0].get('Format', '0')
-            # log.debug(u'Установка числового формата <%s>' % format)
             if '%' in format:
                 ods_number_style = odf.number.PercentageStyle(name=number_style_name)
                 ods_number_style.addElement(odf.number.Number(**number_properties))
@@ -350,11 +329,10 @@ class icODS(object):
 
         properties_args = {}
         fonts = self.getChildrenByName(data_dict, 'Font')
-        # log.warning('Set font <%s>' % fonts)
+        # log_func.warning('Set font <%s>' % fonts)
         if fonts:
-            # Заполнениние шрифта
+            # Set font
             properties_args = self.setFont(fonts[0])
-            # log.debug(u'Шрифт. Аргументы <%s>' % properties_args)
 
         if properties_args:
             ods_properties = odf.style.TextProperties(**properties_args)
@@ -363,24 +341,21 @@ class icODS(object):
         properties_args = {}
         borders = self.getChildrenByName(data_dict, 'Borders')
         if borders:
-            # Заполнение бордеров
+            # Set borders
             args = self.setBorders(borders[0])
             properties_args.update(args)
-            # log.debug(u'Обрамление. Аргументы <%s>' % args)
 
         alignments = self.getChildrenByName(data_dict, 'Alignment')
         if alignments:
-            # Заполнение выравнивания текста
+            # Set alignment
             args = self.setAlignmentCell(alignments[0])
             properties_args.update(args)
-            # log.debug(u'Выравнивание. Аргументы %s' % args)
 
         interiors = self.getChildrenByName(data_dict, 'Interior')
         if interiors:
-            # Заполнение интерьера
+            # Set interior
             args = self.setInteriorCell(interiors[0])
             properties_args.update(args)
-            # log.debug(u'Интеръер. Аргументы %s' % args)
 
         if properties_args:
             ods_properties = odf.style.TableCellProperties(**properties_args)
@@ -388,27 +363,24 @@ class icODS(object):
             
         properties_args = {}
         if alignments:
-            # Заполнение выравнивания текста
+            # Set alignment
             args = self.setAlignmentParagraph(alignments[0])
             properties_args.update(args)
-            # log.debug(u'Выравнивание параграфа. Аргументы <%s>' % args)
 
         if properties_args:
             ods_properties = odf.style.ParagraphProperties(**properties_args)
             ods_style.addElement(ods_properties)            
 
-        # Зарегистрировать стиль в кеше по имени
+        # Register style in cache by name
         self._styles_[style_id] = ods_style
         return ods_style
 
     def setWorksheet(self, data_dict):
         """
-        Заполнить лист.
+        Set worksheet.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.info(u'Установка листа <%s>' % data_dict)
-        # log.debug(u'Установка листа <%s : %s>' % (type(data_dict.get('Name', None)), data_dict.get('Name', None)))
         sheet_name = data_dict.get('Name', 'Лист')
         if not isinstance(sheet_name, str):
             sheet_name = str(sheet_name)    # DEFAULT_ENCODE)
@@ -417,23 +389,23 @@ class icODS(object):
         if tables:
             self.setTable(tables[0], ods_table)
             
-        # Установка параметров страницы
+        # Set worksheet options
         worksheet_options = self.getChildrenByName(data_dict, 'WorksheetOptions')
         if worksheet_options:
             self.setWorksheetOptions(worksheet_options[0])
 
-        # Установка разрывов страницы
+        # Set page breaks
         page_breaks = self.getChildrenByName(data_dict, 'PageBreaks')
         if page_breaks:
             self.setPageBreaks(page_breaks[0], ods_table)
         return ods_table
 
-    def _set_row_break(self, row, ods_table):
+    def _setRowBreak(self, row, ods_table):
         """
-        Установить разрыв по строке.
+        Set line break.
 
-        :param row: Номер строки.
-        :param ods_table: Объект ODS таблицы.
+        :param row: Row number.
+        :param ods_table: ODS table object.
         """
         if ods_table:
             rows = ods_table.getElementsByType(odf.table.TableRow)
@@ -447,24 +419,22 @@ class icODS(object):
 
     def setPageBreaks(self, data_dict, ods_table):
         """
-        Установить разрывы страниц.
+        Set page breaks.
 
-        :param data_dict: Словарь данных.
-        :param ods_table: Объект ODS таблицы.
+        :param data_dict: Data dictionary.
+        :param ods_table: ODS table object.
         """
         row_breaks = data_dict['children'][0]['children']
         for row_break in row_breaks:
             i_row = row_break['children'][0]['value']
-            # log.debug(u'Разрыв страницы <%s>' % i_row)
-            self._set_row_break(i_row, ods_table)
+            self._setRowBreak(i_row, ods_table)
 
     def setWorksheetOptions(self, data_dict):
         """
-        Установить параметры страницы.
+        Set worksheet options.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.debug(u'Параметры листа <%s>' % data_dict)
         page_setup = self.getChildrenByName(data_dict, 'PageSetup')
         print_setup = self.getChildrenByName(data_dict, 'Print')
         fit_to_page = self.getChildrenByName(data_dict, 'FitToPage')
@@ -483,15 +453,15 @@ class icODS(object):
             margin_left = page_margins[0].get('Left', DEFAULT_XML_MARGIN_LEFT) if page_margins else DEFAULT_XML_MARGIN_LEFT
             margin_right = page_margins[0].get('Right', DEFAULT_XML_MARGIN_RIGHT) if page_margins else DEFAULT_XML_MARGIN_RIGHT
             if margin_top:
-                ods_properties['margintop'] = self._dimension_inch2cm(margin_top, True)
+                ods_properties['margintop'] = self._dimensionInch2Cm(margin_top, True)
             if margin_bottom:
-                ods_properties['marginbottom'] = self._dimension_inch2cm(margin_bottom, True)
+                ods_properties['marginbottom'] = self._dimensionInch2Cm(margin_bottom, True)
             if margin_left:
-                ods_properties['marginleft'] = self._dimension_inch2cm(margin_left, True)
+                ods_properties['marginleft'] = self._dimensionInch2Cm(margin_left, True)
             if margin_right:
-                ods_properties['marginright'] = self._dimension_inch2cm(margin_right, True)
+                ods_properties['marginright'] = self._dimensionInch2Cm(margin_right, True)
         else:
-            log.warning(u'Параметры страницы не определены')
+            log_func.warning(u'Параметры страницы не определены')
         if print_setup:
             paper_size_idx = self.getChildrenByName(print_setup[0], 'PaperSizeIndex')
             if paper_size_idx:
@@ -500,17 +470,16 @@ class icODS(object):
                     variable = height
                     height = width
                     width = variable
-                # Преобразовать к строковому типу
+                # Convert to string type
                 ods_properties['pagewidth'] = '%scm' % str(width)
                 ods_properties['pageheight'] = '%scm' % str(height)
         else:
-            log.warning(u'Параметры печати не определены')
+            log_func.error(u'Worksheet options not defined')
 
         if fit_to_page:
             ods_properties['scaletopages'] = '1'
 
         ods_pagelayout = odf.style.PageLayout(name='MyPageLayout')
-        # log.debug(u'[ODS] Свойства ориентации страницы <%s>' % ods_properties)
         ods_pagelayoutproperties = odf.style.PageLayoutProperties(**ods_properties)
         ods_pagelayout.addElement(ods_pagelayoutproperties)
         if self.ods_document:
@@ -519,15 +488,15 @@ class icODS(object):
             masterpage = odf.style.MasterPage(name=DEFAULT_STYLE_ID, pagelayoutname=ods_pagelayout)
             self.ods_document.masterstyles.addElement(masterpage)
         else:
-            log.warning(u'Не определен ODS документ')
+            log_func.error(u'ODS document not defined')
         return ods_pagelayout
 
     def _getPageSizeByExcelIndex(self, paper_size_idx):
         """
-        Получить размер листа по его индуксу в Excel.
+        Get sheet size by its index in Excel.
 
-        :param paper_size_idx: Индекс 9-A4 8-A3.
-        :return: Кортеж (Ширина в см, Высота в см).
+        :param paper_size_idx: Index 9-A4 8-A3.
+        :return: Tuple (Width in cm, Height in cm).
         """
         if type(paper_size_idx) != int:
             paper_size_idx = int(paper_size_idx)
@@ -544,18 +513,16 @@ class icODS(object):
 
     def setTable(self, data_dict, ods_table):
         """
-        Заполнить таблицу.
+        Set table.
 
-        :param data_dict: Словарь данных.
-        :param ods_table: Объект таблицы ODS файла.
+        :param data_dict: Data dictionary.
+        :param ods_table: ODS table object.
         """
-        # log.info('table: <%s>' % data_dict)
-
-        # колонки
+        # Columns
         i = 1
         columns = self.getChildrenByName(data_dict, 'Column')
         for column in columns:
-            # Учет индекса колонки
+            # Column index accounting
             idx = int(column.get('Index', i))
             if idx > i:
                 for ii in range(idx-i):
@@ -571,11 +538,11 @@ class icODS(object):
             if span:
                 i += int(span)
         
-        # строки
+        # Rows
         i = 1
         rows = self.getChildrenByName(data_dict, 'Row')
         for row in rows:
-            # Учет индекса строки
+            # Row index accounting
             idx = int(row.get('Index', i))
             if idx > i:
                 for ii in range(idx-i):
@@ -594,31 +561,29 @@ class icODS(object):
 
     def _genColumnStyleName(self):
         """
-        Генерация имени стиля колонки.
+        Generating a column style name.
         """
         return str(uuid.uuid4())
 
     def _genRowStyleName(self):
         """
-        Генерация имени стиля cтроки.
+        Generating a row style name.
         """
         return str(uuid.uuid4())
 
     def setColumn(self, data_dict):
         """
-        Заполнить колонку.
+        Set column.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.info('column: <%s>' % data_dict)
-        
         kwargs = {}
         
         width = data_dict.get('Width', None)
 
         if width:
-            width = self._dimension_xml2ods(width)
-            # Создать автоматические стили дбя ширин колонок
+            width = self._dimensionXML2ODS(width)
+            # Create automatic styles for column widths
             ods_col_style = odf.style.Style(name=self._genColumnStyleName(), family='table-column')
             ods_col_properties = odf.style.TableColumnProperties(columnwidth=width, breakbefore='auto')
             ods_col_style.addElement(ods_col_properties)
@@ -626,7 +591,7 @@ class icODS(object):
             
             kwargs['stylename'] = ods_col_style
         else:
-            # Ширина колонки не определена
+            # Column width not defined
             ods_col_style = None
 
         cell_style = data_dict.get('StyleID', None)
@@ -646,19 +611,17 @@ class icODS(object):
 
     def setRow(self, data_dict):
         """
-        Заполнить строку.
+        Set row.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.info(u'Установка строки <%s>' % data_dict)
-        
         kwargs = dict()
         height = data_dict.get('Height', None)
 
         style_name = u''
         if height:
-            height = self._dimension_xml2ods(height)
-            # Создать автоматические стили дбя высот строк
+            height = self._dimensionXML2ODS(height)
+            # Create automatic styles for line heights
             style_name = self._genRowStyleName()
             ods_row_style = odf.style.Style(name=style_name, family='table-row')
             ods_row_properties = odf.style.TableRowProperties(rowheight=height, breakbefore='auto')
@@ -667,7 +630,7 @@ class icODS(object):
             
             kwargs['stylename'] = ods_row_style
         else:
-            # Высота строки не определена
+            # Line height not defined
             ods_row_style = None
 
         # repeated=data_dict.get('Span',None)
@@ -684,23 +647,22 @@ class icODS(object):
         if hidden:
             kwargs['visibility'] = 'collapse'
 
-        # Зарегистрировать стиль
+        # Register style
         if ods_row_style:
             self._styles_[style_name] = ods_row_style
 
         ods_row = odf.table.TableRow(**kwargs)
         
-        # Ячейки
+        # Cells
         i = 1
         cells = self.getChildrenByName(data_dict, 'Cell')
         for i_cell, cell in enumerate(cells):
-            # Учет индекса ячейки
             idx = int(cell.get('Index', i))
             if idx > i:
                 kwargs = dict()
                 kwargs['numbercolumnsrepeated'] = (idx-i)
 
-                style_id = self._find_prev_style(cells[:i_cell])
+                style_id = self._findPrevStyle(cells[:i_cell])
                 if style_id:
                     kwargs['stylename'] = self._styles_.get(style_id, None)
                     
@@ -715,13 +677,13 @@ class icODS(object):
             if ods_cell:
                 ods_row.addElement(ods_cell)
 
-            # Учет объединенных ячеек
+            # Combined cell accounting
             merge = int(cell.get('MergeAcross', 0))
             if merge > 0:
                 kwargs = dict()
                 kwargs['numbercolumnsrepeated'] = merge
 
-                style_id = self._find_prev_style(cells[:i_cell])
+                style_id = self._findPrevStyle(cells[:i_cell])
                 if style_id:
                     kwargs['stylename'] = self._styles_.get(style_id, None)
                 
@@ -731,12 +693,12 @@ class icODS(object):
             
         return ods_row
 
-    def _find_prev_style(self, cells):
+    def _findPrevStyle(self, cells):
         """
-        Поиск стиля определенного в предыдущей ячейке.
+        Search for the style defined in the previous cell.
 
-        :param cells: Список предыдущих ячеек.
-        :return: Идентификатор исокмого стиля или None если стиль не определен.
+        :param cells: List of previous cells.
+        :return: The identifier of the current style or None if the style is not defined.
         """
         for cell in reversed(cells):
             if 'StyleID' in cell:
@@ -745,9 +707,9 @@ class icODS(object):
         
     def getCellValue(self, data_dict):
         """
-        Получить значение ячейки.
+        Get cell value.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         type = self.getCellType(data_dict)
         
@@ -761,9 +723,9 @@ class icODS(object):
         
     def getCellType(self, data_dict):
         """
-        Тип значения ячейки.
+        Get cell type.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         dates = self.getChildrenByName(data_dict, 'Data')
         type = 'string'
@@ -773,22 +735,21 @@ class icODS(object):
         if type == 'number':
             type = 'float'
         elif type == 'percentage':
-            # ВНИМЕНИЕ! Здесь необходимо сделать проверку
-            # на соответствие данных процентному типу
+            # It is necessary to check the compliance of the data with the percentage type
             str_value = dates[0].get('value', 'None')
             try:
                 value = float(str_value)
             except:
-                log.warning(u'Значение <%s> не [percentage] типа' % str_value)
+                log_func.warning(u'Value <%s> not [percentage] type' % str_value)
                 type = 'string'
         return type            
     
-    # Имена колонок Excel в формате A1
+    # Excel column names in A1 format
     COLS_A1 = None
 
     def _getColsA1(self):
         """
-        Имена колонок Excel в формате A1.
+        Excel column names in A1 format.
         """
         if self.COLS_A1:
             return self.COLS_A1
@@ -808,7 +769,7 @@ class icODS(object):
 
     def _getA1(self, r1c1):
         """
-        Преабразовать адрес из формата R1C1 в A1.
+        Convert an address from the format R1C1 to A1.
         """
         parse = re.findall(self.R1_FORMAT, r1c1)
         row = 1
@@ -826,7 +787,7 @@ class icODS(object):
 
     def _getR1C1(self, a1):
         """
-        Преабразовать адрес из формата A1 в R1C1.
+        Convert an address from A1 format to R1C1.
         """
         parse = re.findall(self.DIGIT_FORMAT, a1)
         row = 1
@@ -846,25 +807,25 @@ class icODS(object):
 
     def _R1C1Fmt2A1Fmt(self, formula):
         """
-        Перевод формулы из формата R1C1 в формат A1.
+        Transfer formulas from R1C1 format to A1 format.
 
-        :param formula: Формула в строковом представлении.
-        :return: Строка транслированной формулы.
+        :param formula: The formula in a string.
+        :return: String of translated formula.
         """
         parse_all = re.findall(self.R1C1_FORMAT, formula)
         for replace_addr in parse_all:
             a1 = self._getA1(replace_addr)
-            if self._is_sheetAddress(replace_addr, formula):
+            if self._isSheetAddress(replace_addr, formula):
                 a1 = '.'+a1
             formula = formula.replace(replace_addr, a1)
         return formula
 
-    def _is_sheetAddress(self, address, formula):
+    def _isSheetAddress(self, address, formula):
         """
-        Адресация ячейки с указанием листа? Например Лист1.A1
+        Addressing a cell indicating a sheet? For example, Sheet1.A1
 
-        :param address: Адресс ячейки.
-        :param formula: Формула в строковом представлении.
+        :param address: Cell address.
+        :param formula: The formula in a string.
         :return: True/False.
         """
         if address in formula:
@@ -879,10 +840,10 @@ class icODS(object):
 
     def _A1Fmt2R1C1Fmt(self, formula):
         """
-        Перевод формулы из формата A1 в формат R1C1.
+        Translation of a formula from A1 format to R1C1 format.
 
-        :param formula: Формула в строковом представлении.
-        :return: Строка транслированной формулы.
+        :param formula: The formula as a string.
+        :return: String of translated formula.
         """
         parse_all = re.findall(self.A1_FORMAT, formula)
         for replace_addr in parse_all:
@@ -892,30 +853,28 @@ class icODS(object):
         
     def _translateR1C1Formula(self, formula):
         """
-        Перевод формулы из формата R1C1 в формат ODS файла.
+        Transfer formulas from R1C1 format to ODS file format.
 
-        :param formula: Формула в строковом представлении.
-        :return: Строка транслированной формулы.
+        :param formula: The formula as a string.
+        :return: String of translated formula.
         """
         return self._R1C1Fmt2A1Fmt(formula)
 
     def _translateA1Formula(self, formula):
         """
-        Перевод формулы из формата ODS(A1) в формат R1C1.
+        Translation of a formula from ODS (A1) format to R1C1 format.
 
-        :param formula: Формула в строковом представлении.
-        :return: Строка транслированной формулы.
+        :param formula: The formula as a string.
+        :return: String of translated formula.
         """
         return self._A1Fmt2R1C1Fmt(formula)
         
     def setCell(self, data_dict):
         """
-        Заполнить ячейку.
+        Set cell.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
-        # log.info('new_cell: <%s>' % data_dict)
-
         properties = {}
         ods_type = self.getCellType(data_dict)
         properties['valuetype'] = ods_type
@@ -940,13 +899,10 @@ class icODS(object):
         else:
             value = self.getCellValue(data_dict)
             properties['value'] = value
-        # log.debug(u'Ячейка. Свойства <%s>' % properties)
         ods_cell = odf.table.TableCell(**properties)
             
         dates = self.getChildrenByName(data_dict, 'Data')
-        # Разбить на строки
         values = self.getDataValues(data_dict)
-        # log.info(u'Ячейка. Значение <%s>' % values)
         for data in dates:
             for val in values:
                 ods_data = self.setData(data, style_id, val)
@@ -957,9 +913,9 @@ class icODS(object):
         
     def getDataValues(self, data_dict):
         """
-        Получить значение ячейки с разбитием по строкам.
+        Get the value of a row-wise cell.
 
-        :param data_dict: Словарь данных.
+        :param data_dict: Data dictionary.
         """
         dates = self.getChildrenByName(data_dict, 'Data')
         value = ''
@@ -969,21 +925,19 @@ class icODS(object):
     
     def setData(self, data_dict, style_id=None, value=None):
         """
-        Заполнить ячейку данными.
+        Set cell data.
 
-        :param data_dict: Словарь данных.
-        :param style_id: Идентификатор стиля.
-        :param value: Значение строки.
+        :param data_dict: Data dictionary.
+        :param style_id: Style id.
+        :param value: Value.
         """
-        # log.info(u'Установка данных <%s>. Стиль <%s>' % (data_dict, style_id))
-        
         ods_style = None
         if style_id:
             ods_style = self._styles_.get(style_id, None)
 
         ods_data = None
         if value:
-            # Просто текст
+            # Text
             if style_id and style_id != DEFAULT_STYLE_ID:
                 ods_data = odf.text.P()
                 style_span = odf.text.Span(stylename=ods_style, text=value)
@@ -994,28 +948,28 @@ class icODS(object):
         
     def load(self, filename):
         """
-        Загрузить из ODS файла.
+        Load from ODS file.
 
-        :param filename: Имя ODS файла.
-        :return: Словарь данных или None в случае ошибки.
+        :param filename: ODS filename.
+        :return: Data dictionary or None if error.
         """
         if not os.path.exists(filename):
-            # Если файл не существует то верноть None
-            log.warning(u'Файл <%s> не существует' % filename)
+            # If the file does not exist then return None
+            log_func.error(u'File <%s> not found' % filename)
             return None
         else:
             try:
                 return self._loadODS(filename)
             except:
-                log.fatal(u'Ошибка открытия файла <%s>' % filename)
+                log_func.fatal(u'Error file open <%s>' % filename)
                 raise                
         
     def _loadODS(self, filename):
         """
-        Загрузить из ODS файла.
+        Load from ODS file.
 
-        :param filename: Имя ODS файла.
-        :return: Словарь данных или None в случае ошибки.
+        :param filename: ODS filename.
+        :return: Data dictionary or None if error.
         """
         self.ods_document = odf.opendocument.load(filename)
         
@@ -1028,9 +982,9 @@ class icODS(object):
     
     def readWorkbook(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о книге.
+        Read workbook data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий книги Excel.
+        :param ods_element: ODS element corresponding to an Excel workbook.
         """
         data = {'name': 'Workbook', 'children': []}
         
@@ -1047,12 +1001,12 @@ class icODS(object):
 
     def readNumberStyles(self, *ods_styles):
         """
-        Прочитать данные о стилях числовых форматов.
+        Read data on number format styles.
 
-        :param ods_styles: Список стилей.
+        :param ods_styles: Style list.
         """
         if not ods_styles:
-            log.warning(u'Не определены ODS стили для чтения числовых стилей')
+            log_func.error(u'ODS styles not defined')
             return {}
             
         result = {}
@@ -1064,26 +1018,23 @@ class icODS(object):
                 for style in styles:
                     result[style.getAttribute('name')] = style
     
-        # log.debug(u'Числовые стили <%s>' % result)
         return result
         
     def readStyles(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о стилях.
+        Read styles data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий стилям книги Excel.
+        :param ods_element: An ODS element that matches the styles of an Excel workbook.
         """
         data = {'name': 'Styles', 'children': []}
         ods_styles = self.ods_document.automaticstyles.getElementsByType(odf.style.Style) + \
             self.ods_document.styles.getElementsByType(odf.style.Style) + \
             self.ods_document.masterstyles.getElementsByType(odf.style.Style)
 
-        # Стили числовых форматов
+        # Number format styles
         self._number_styles_ = self.readNumberStyles(self.ods_document.automaticstyles,
                                                      self.ods_document.styles,
                                                      self.ods_document.masterstyles)
-        
-        # log.debug('STYLES <%s>' % ods_styles)
         
         for ods_style in ods_styles:
             style = self.readStyle(ods_style)
@@ -1093,9 +1044,9 @@ class icODS(object):
 
     def readStyle(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о стиле.
+        Read style data ODS from file.
 
-        :param ods_element: ODS элемент соответствующий стилю Excel.
+        :param ods_element: ODS element corresponding to the style of Excel.
         """
         data = {'name': 'Style', 'children': []}
         id = ods_element.getAttribute('name')
@@ -1109,27 +1060,27 @@ class icODS(object):
                 if number_format_data:
                     data['children'].append(number_format_data)
 
-        # Чтение шрифта
+        # Read font
         txt_properties = ods_element.getElementsByType(odf.style.TextProperties)
         if txt_properties:
             font_data = self.readFont(txt_properties[0])
             if font_data:
                 data['children'].append(font_data)
 
-        # Чтение бордеров
+        # Read borders
         tab_cell_properties = ods_element.getElementsByType(odf.style.TableCellProperties)
         if tab_cell_properties:
             borders_data = self.readBorders(tab_cell_properties[0])
             if borders_data:
                 data['children'].append(borders_data)
 
-        # Чтение интерьера
+        # Read interior
         if tab_cell_properties:
             interior_data = self.readInterior(tab_cell_properties[0])
             if interior_data:
                 data['children'].append(interior_data)
 
-        # Чтение выравнивания
+        # Read align
         align_data = {}
         paragraph_properties = ods_element.getElementsByType(odf.style.ParagraphProperties)
         if paragraph_properties:
@@ -1145,23 +1096,21 @@ class icODS(object):
         if align_data:
             data['children'].append(align_data)
         
-        # log.debug(u'Чтение стиля %s : %s : %s' % (style_id, txt_properties, tab_cell_properties))
-        
-        return data        
+        return data
     
     def readNumberFormat(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о формате числового представления.
+        Read number format data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий стилю числового представления.
+        :param ods_element: ODS element corresponding to the style of numerical representation.
         """
         if ods_element is None:
-            log.warning('Not define ods_element <%s>' % ods_element)
+            log_func.error('Not define ods_element <%s>' % ods_element)
             return None
         
         numbers = ods_element.getElementsByType(odf.number.Number)
         if not numbers:
-            log.warning('Not define numbers in ods_element <%s>' % ods_element)
+            log_func.error('Not define numbers in ods_element <%s>' % ods_element)
             return None
         else:
             number = numbers[0]
@@ -1192,25 +1141,25 @@ class icODS(object):
         else:
             number_format = minintegerdigits_format + decimalplaces_format + percentage_format
             
-        # log.debug('NUMBER FORMAT %s' % (number_format))
+        # log_func.debug('NUMBER FORMAT %s' % (number_format))
         data = {'name': 'NumberFormat', 'children': [], 'Format': number_format}
         return data
         
     def readFont(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о шрифте.
+        Read font data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий ствойствам текста стиля.
+        :param ods_element: ODS element corresponding to style text properties.
         """
         name = ods_element.getAttribute('fontname')
         name = name if name else ods_element.getAttribute('fontfamily')
         size = ods_element.getAttribute('fontsize')
         bold = ods_element.getAttribute('fontweight')
         italic = ods_element.getAttribute('fontstyle')
-        # Зачеркивание
+        # Through
         through_style = ods_element.getAttribute('textlinethroughstyle')
         # through_type = ods_element.getAttribute('textlinethroughtype')
-        # Подчеркивание
+        # Underline
         underline_style = ods_element.getAttribute('textunderlinestyle')
         # underline_width = ods_element.getAttribute('textunderlinewidth')
 
@@ -1232,21 +1181,21 @@ class icODS(object):
         if underline_style and (underline_style not in ('None', 'none', 'NONE', 'normal')):
             data['Underline'] = 'Single'
 
-        # log.debug('Read FONT: %s : %s : %s : %s : %s : %s' % (name, size, bold, italic, through_style, underline_style))
+        # log_func.debug('Read FONT: %s : %s : %s : %s : %s : %s' % (name, size, bold, italic, through_style, underline_style))
         
         return data
         
     def readInterior(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о бордерах.
+        Read interior data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий ствойствам ячейки таблицы стиля.
+        :param ods_element: An ODS element corresponding to the properties of a style sheet cell.
         """
         data = {'name': 'Interior', 'children': []}
 
         color = ods_element.getAttribute('backgroundcolor')
 
-        # log.debug('Read INTERIOR: color <%s>' % color)
+        # log_func.debug('Read INTERIOR: color <%s>' % color)
 
         if color and (color not in ('None', 'none', 'NONE')):
             data['Color'] = color.strip()
@@ -1255,9 +1204,9 @@ class icODS(object):
 
     def readBorders(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о бордерах.
+        Read borders data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий ствойствам ячейки таблицы стиля.
+        :param ods_element: An ODS element corresponding to the properties of a style sheet cell.
         """
         data = {'name': 'Borders', 'children': []}
         
@@ -1267,7 +1216,7 @@ class icODS(object):
         top = ods_element.getAttribute('bordertop')
         bottom = ods_element.getAttribute('borderbottom')
         
-        # log.debug('BORDERS: border %s Left: %s Right: %s Top: %s Bottom: %s' % (all_border, left, right, top, bottom))
+        # log_func.debug('BORDERS: border %s Left: %s Right: %s Top: %s Bottom: %s' % (all_border, left, right, top, bottom))
         
         if all_border and (all_border not in ('None', 'none', 'NONE')):
             border = self.parseBorder(all_border, 'Left')
@@ -1307,9 +1256,9 @@ class icODS(object):
         
     def readAlignmentParagraph(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о выравнивании текста.
+        Read alignment data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий ствойствам параграфа.
+        :param ods_element: ODS element corresponding to the properties of the paragraph.
         """
         data = {'name': 'Alignment', 'children': []}
 
@@ -1334,15 +1283,15 @@ class icODS(object):
         elif vert_align == 'justify':
             data['Vertical'] = 'Justify'
             
-        # log.debug('ALIGNMENT PARAGRAPH: %s:%s' % (text_align, vert_align))
+        # log_func.debug('ALIGNMENT PARAGRAPH: %s:%s' % (text_align, vert_align))
         
         return data
         
     def readAlignmentCell(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о выравнивании текста.
+        Read alignment cell text data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий ствойствам ячейки.
+        :param ods_element: ODS element corresponding to the properties of the cell.
         """
         data = {'name': 'Alignment', 'children': []}
 
@@ -1359,17 +1308,17 @@ class icODS(object):
         if wrap_txt and wrap_txt == 'wrap':
             data['WrapText'] = '1'
             
-        # log.debug('ALIGNMENT CELL: %s' % vert_align)
+        # log_func.debug('ALIGNMENT CELL: %s' % vert_align)
         
         return data
         
     def parseBorder(self, data_string, position=None):
         """
-        Распарсить бордер.
+        Parse border.
 
-        :param data_string: Строка данных в виде <1pt solid #000000>.
-        :param position: Позиция бордера.
-        :return: Заполненный словарь бордера.
+        :param data_string: Data text as <1pt solid #000000>.
+        :param position: Border position.
+        :return: Border data dictionary.
         """
         border = None
         if data_string:
@@ -1377,18 +1326,18 @@ class icODS(object):
             if border_data:
                 border = {'name': 'Border', 'Position': position,
                           'Weight': border_data.get('weight', '1'),
-                          'LineStyle': self._lineStyles_ODS2SpreadsheetML.get(border_data.get('line', None), 'Continuous'),
+                          'LineStyle': self._LINESTYLE_ODS2SPREADSHEETML.get(border_data.get('line', None), 'Continuous'),
                           'Color': border_data.get('color', '000000')}
-            # log.debug('PARSE BORDER: %s : %s' % (data_string, border))
+            # log_func.debug('PARSE BORDER: %s : %s' % (data_string, border))
             
         return border
             
     def parseBorderData(self, data_string):
         """
-        Распарсить данные бордера.
+        Parse border data.
 
-        :param data_string: Строка данных в виде <1pt solid #000000>.
-        :return: Словарь {'weight':1,'line':'solid','color':'#000000'}.
+        :param data_string: Data text as <1pt solid #000000>.
+        :return: Dictionary {'weight':1,'line':'solid','color':'#000000'}.
         """
         if data_string in ('None', 'none', 'NONE'):
             return None
@@ -1405,7 +1354,7 @@ class icODS(object):
         if weight_pt:
             result['weight'] = weight_pt[0]
         elif weight_cm:
-            # Ширина может задаватся в см поэтому нужно преобразовать в пт
+            # The width can be set in cm, so you need to convert to pt
             result['weight'] = str(float(weight_cm[0])*CM2PT_CORRECT)
             
         line_style = re.findall(line_style_pattern, data_string)
@@ -1420,26 +1369,26 @@ class icODS(object):
 
     def readWorksheet(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о листе.
+        Read worksheet data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий листу.
+        :param ods_element: ODS element corresponding to the sheet.
         """
         data = {'name': 'Worksheet', 'children': []}
         name = ods_element.getAttribute('name')
 
-        # log.debug('WORKSHEET: <%s : %s>' % (type(name), name))
+        # log_func.debug('WORKSHEET: <%s : %s>' % (type(name), name))
         
         data['Name'] = name
         
         table = {'name': 'Table', 'children': []}
         
-        # Колонки
+        # Columns
         ods_columns = ods_element.getElementsByType(odf.table.TableColumn)
         for ods_column in ods_columns:
             column_data = self.readColumn(ods_column)
             table['children'].append(column_data)
             
-        # Строки
+        # Rows
         ods_rows = ods_element.getElementsByType(odf.table.TableRow)
         for i, ods_row in enumerate(ods_rows):
             row_data = self.readRow(ods_row, table, data, i)
@@ -1447,7 +1396,7 @@ class icODS(object):
       
         data['children'].append(table)
         
-        # Параметры страницы
+        # Worksheet options
         ods_pagelayouts = self.ods_document.automaticstyles.getElementsByType(odf.style.PageLayout)
         worksheet_options = self.readWorksheetOptions(ods_pagelayouts)
         if worksheet_options:
@@ -1457,16 +1406,15 @@ class icODS(object):
     
     def readWorksheetOptions(self, ods_page_layouts):
         """
-        Прочитать из ODS файла данные о параметрах страницы.
+        Read worksheet options from ODS file.
 
-        :param ods_page_layouts: Список найденных параметров страницы.
+        :param ods_page_layouts: List of found page parameters.
         """
-        # log.debug(u'Чтение данных параметров страницы из ODS')
         if not ods_page_layouts:
-            log.warning(u'Not define page layout')
+            log_func.error(u'Not define page layout')
             return None
 
-        # log.debug(u'Set default worksheet options')
+        # log_func.debug(u'Set default worksheet options')
         options = {'name': 'WorksheetOptions',
                    'children': [{'name': 'PageSetup',
                                  'children': [{'name': 'Layout',
@@ -1486,72 +1434,68 @@ class icODS(object):
                                 ]
                    }
         
-        # for pagelayout in ods_page_layouts:
-        #    log.debug(u'Чтение значения параметров страницы <%s> : %s' % (text(pagelayout.getAttribute('name')),
-        #                                                                  text(pagelayout.getAttribute('pageusage'))))
         for pagelayout in ods_page_layouts:
-            # log.debug(u'Чтение значения параметров страницы <%s>' % text(pagelayout.getAttribute('name')))
             properties = pagelayout.getElementsByType(odf.style.PageLayoutProperties)
-            # log.debug(u'Properties: %s' % text(properties))
+            # log_func.debug(u'Properties: %s' % text(properties))
             if properties:
                 properties = properties[0]
                 orientation = properties.getAttribute('printorientation')
                 margin = properties.getAttribute('margin')
-                # log.debug(u'Margin: %s' % margin)
+                # log_func.debug(u'Margin: %s' % margin)
                 margin_top = properties.getAttribute('margintop')
-                # log.debug(u'Margin Top: %s' % margin_top)
+                # log_func.debug(u'Margin Top: %s' % margin_top)
                 margin_bottom = properties.getAttribute('marginbottom')
-                # log.debug(u'Margin Bottom: %s' % margin_bottom)
+                # log_func.debug(u'Margin Bottom: %s' % margin_bottom)
                 margin_left = properties.getAttribute('marginleft')
-                # log.debug(u'Margin Left: %s' % margin_left)
+                # log_func.debug(u'Margin Left: %s' % margin_left)
                 margin_right = properties.getAttribute('marginright')
-                # log.debug(u'Margin Right: %s' % margin_right)
+                # log_func.debug(u'Margin Right: %s' % margin_right)
                 page_width = properties.getAttribute('pagewidth')
-                # log.debug(u'Page Width: %s' % page_width)
+                # log_func.debug(u'Page Width: %s' % page_width)
                 page_height = properties.getAttribute('pageheight')
-                # log.debug(u'Page Height: %s' % page_height)
+                # log_func.debug(u'Page Height: %s' % page_height)
                 fit_to_page = properties.getAttribute('scaletopages')
-                # log.debug(u'Fit To Pages: %s' % fit_to_page)
+                # log_func.debug(u'Fit To Pages: %s' % fit_to_page)
                 scale_to = properties.getAttribute('scaleto')
-                # log.debug(u'Scale To: %s' % scale_to)
+                # log_func.debug(u'Scale To: %s' % scale_to)
 
                 if orientation:
                     options['children'][0]['children'][0]['Orientation'] = orientation.title()
                 if margin:
-                    options['children'][0]['children'][1]['Top'] = self._dimension_cm2inch(margin)
-                    options['children'][0]['children'][1]['Bottom'] = self._dimension_cm2inch(margin)
-                    options['children'][0]['children'][1]['Left'] = self._dimension_cm2inch(margin)
-                    options['children'][0]['children'][1]['Right'] = self._dimension_cm2inch(margin)
+                    options['children'][0]['children'][1]['Top'] = self._dimensionCm2Inch(margin)
+                    options['children'][0]['children'][1]['Bottom'] = self._dimensionCm2Inch(margin)
+                    options['children'][0]['children'][1]['Left'] = self._dimensionCm2Inch(margin)
+                    options['children'][0]['children'][1]['Right'] = self._dimensionCm2Inch(margin)
                 if margin_top:
-                    options['children'][0]['children'][1]['Top'] = self._dimension_cm2inch(margin_top)
+                    options['children'][0]['children'][1]['Top'] = self._dimensionCm2Inch(margin_top)
                 if margin_bottom:
-                    options['children'][0]['children'][1]['Bottom'] = self._dimension_cm2inch(margin_bottom)
+                    options['children'][0]['children'][1]['Bottom'] = self._dimensionCm2Inch(margin_bottom)
                 if margin_left:
-                    options['children'][0]['children'][1]['Left'] = self._dimension_cm2inch(margin_left)
+                    options['children'][0]['children'][1]['Left'] = self._dimensionCm2Inch(margin_left)
                 if margin_right:
-                    options['children'][0]['children'][1]['Right'] = self._dimension_cm2inch(margin_right)
+                    options['children'][0]['children'][1]['Right'] = self._dimensionCm2Inch(margin_right)
                 if fit_to_page or (scale_to == (1, 1)):
                     options['children'].append({'name': 'FitToPage'})
 
                 if page_width and page_height:
-                    # Установить размер листа
+                    # Set page size
                     options['children'][1]['children'][0]['value'] = self._getExcelPaperSizeIndex(page_width, page_height)
-                # ВНИМАНИЕ! Обычно параметры печати указанные в начале и являются
-                # параметрами по умолчанию. Поэтому пропускаем все остальные
+                # Typically, the print options indicated at the beginning are
+                # the default settings. Therefore, we skip all the others
                 break
             else:
-                # log.debug(u'Not define worksheet options')
+                # log_func.debug(u'Not define worksheet options')
                 continue
         return options
 
     def _getExcelPaperSizeIndex(self, page_width, page_height):
         """
-        Определить по размеру листа его индекс в списке Excel.
+        Determine its index in the Excel list by the size of the sheet.
         """
         paper_format = self._getPaperSizeFormat(page_width, page_height)
         
         if paper_format is None:
-            # По умолчанию A4
+            # Default A4
             return '9'
         elif paper_format == A4_PAPER_FORMAT:
             return '9'
@@ -1561,11 +1505,11 @@ class icODS(object):
         
     def _getPaperSizeFormat(self, page_width, page_height):
         """
-        Определить по размеру листа его формат.
+        Determine the size of the sheet format.
 
-        :param page_width: Ширина листа в см.
-        :param page_height: Высота листа в см.
-        :return: A4 или A3.
+        :param page_width: Page width in cm.
+        :param page_height: Page height in cm.
+        :return: A4 or A3.
         """
         if isinstance(page_width, str):
             page_width_txt = page_width.replace('cm', '').replace('mm', '')
@@ -1574,7 +1518,7 @@ class icODS(object):
             page_height_txt = page_height.replace('cm', '').replace('mm', '')
             page_height = float(page_height_txt)
 
-        # Если задается в сантиметрах
+        # If in cm
         if round(page_width, 1) == 21.0 and round(page_height, 1) == 29.7:
             return A4_PAPER_FORMAT
         elif round(page_width, 1) == 29.7 and round(page_height, 1) == 21.0:
@@ -1583,7 +1527,7 @@ class icODS(object):
             return A3_PAPER_FORMAT
         elif round(page_width, 1) == 42.0 and round(page_height, 1) == 29.7:
             return A3_PAPER_FORMAT
-        # Если задается в миллиметрах
+        # If in mm
         elif round(page_width, 1) == 210.0 and round(page_height, 1) == 297.0:
             return A4_PAPER_FORMAT
         elif round(page_width, 1) == 297.0 and round(page_height, 1) == 210.0:
@@ -1596,9 +1540,9 @@ class icODS(object):
         
     def readColumn(self, ods_element=None):
         """
-        Прочитать из ODS файла данные о колонке.
+        Read column data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий колонке.
+        :param ods_element: ODS item corresponding column.
         """
         data = {'name': 'Column', 'children': []}
         style_name = ods_element.getAttribute('stylename')
@@ -1607,7 +1551,7 @@ class icODS(object):
         hidden = ods_element.getAttribute('visibility')
 
         if style_name:
-            # Определение ширины колонки
+            # Column width
             column_width = None
             ods_styles = self.ods_document.automaticstyles.getElementsByType(odf.style.Style)
             find_style = [ods_style for ods_style in ods_styles if ods_style.getAttribute('name') == style_name]
@@ -1616,10 +1560,10 @@ class icODS(object):
                 ods_column_properties = ods_style.getElementsByType(odf.style.TableColumnProperties)
                 if ods_column_properties:
                     ods_column_property = ods_column_properties[0]
-                    column_width = self._dimension_ods2xml(ods_column_property.getAttribute('columnwidth'))
+                    column_width = self._dimensionODS2XML(ods_column_property.getAttribute('columnwidth'))
                     if column_width:
                         data['Width'] = column_width
-            # log.debug('COLUMN: %s Width: %s Cell style: %s' % (style_name, column_width, default_cell_style_name))
+            # log_func.debug('COLUMN: %s Width: %s Cell style: %s' % (style_name, column_width, default_cell_style_name))
         
         if default_cell_style_name and (default_cell_style_name not in ('Default', 'None', 'none', 'NONE')):
             data['StyleID'] = default_cell_style_name
@@ -1633,65 +1577,65 @@ class icODS(object):
 
         return data
     
-    def _dimension_ods2xml(self, dimension):
+    def _dimensionODS2XML(self, dimension):
         """
-        Перевод размеров из представления ODS в XML.
+        Translating dimensions from an ODS view to XML.
 
-        :param dimension: Строковое представление размера.
+        :param dimension: Dimension as string.
         """
         if not dimension:
             return None
         elif (len(dimension) > 2) and (dimension[-2:] == 'cm'):
-            # Размер указан в сентиметрах?
+            # Is the size in centimeters?
             return str(float(dimension[:-2]) * 28)
         elif (len(dimension) > 2) and (dimension[-2:] == 'mm'):
-            # Размер указан в миллиметрах?
+            # Size in millimeters?
             return str(float(dimension[:-2]) * 2.8)
         else:
-            # Размер указан в точках
+            # Size indicated in points
             return str(float(dimension) / DIMENSION_CORRECT)
 
-    def _dimension_xml2ods(self, dimension):
+    def _dimensionXML2ODS(self, dimension):
         """
-        Перевод размеров из представления XML в ODS.
+        Translating dimensions from an XML view into ODS.
 
-        :param dimension: Строковое представление размера в дюймах.
+        :param dimension: String representation of the size in inches.
         """
         return str(float(dimension) * DIMENSION_CORRECT)
 
-    def _dimension_inch2cm(self, sDimension, is_postfix=False):
+    def _dimensionInch2Cm(self, dimension, is_postfix=False):
         """
-        Перевод размеров из представления в дюймах в сантиментры.
+        Convert dimensions from representation in inches to centimeters.
 
-        :param sDimension: Строковое представление размера в дюймах.
-        :param is_postfix: Добавить cm в качестве постфикса в строке?
+        :param dimension: String representation of the size in inches.
+        :param is_postfix: Add cm as a postfix in a string?
         """
-        return str(float(sDimension) * INCH2CM) + (' cm' if is_postfix else '')
+        return str(float(dimension) * INCH2CM) + (' cm' if is_postfix else '')
 
-    def _dimension_cm2inch(self, dimension):
+    def _dimensionCm2Inch(self, dimension):
         """
-        Перевод размеров из представления в сантиментрах/мм в дюймы.
+        Convert dimensions from view in centimeters / mm to inches.
 
-        :param dimension: Строковое представление размера в сантиметрах/мм.
+        :param dimension: String representation of the size in centimeters / mm.
         """
         if not dimension:
             return None
         elif (len(dimension) > 2) and (dimension[-2:] == 'cm'):
-            # Размер указан в сентиметрах?
+            # Is the size in centimeters?
             return str(float(dimension[:-2]) / INCH2CM)
         elif (len(dimension) > 2) and (dimension[-2:] == 'mm'):
-            # Размер указан в миллиметрах?
+            # Size in millimeters?
             return str(float(dimension[:-2]) / 10.0 / INCH2CM)
         else:
-            # Размер указан в точках
+            # Size indicated in points
             return str(float(dimension) / DIMENSION_CORRECT)
 
-    def _add_page_break(self, worksheet, row):
+    def _addPageBreak(self, worksheet, row):
         """
-        Добавить разрыв страницы.
+        Add page break.
 
-        :param worksheet: Словарь, описывающий лист.
-        :param row: Номер строки.
+        :param worksheet: Worksheet data dictionary.
+        :param row: Row number.
         """
         find_page_breaks = [child for child in worksheet['children'] if child['name'] == 'PageBreaks']
         if find_page_breaks:
@@ -1706,12 +1650,12 @@ class icODS(object):
 
     def readRow(self, ods_element=None, table=None, worksheet=None, row=-1):
         """
-        Прочитать из ODS файла данные о строке.
+        Read row data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий строке.
-        :param table: Словарь, описывающий таблицу.
-        :param worksheet: Словарь, описывающий лист.
-        :param row: Номер строки.
+        :param ods_element: ODS element corresponding to the string.
+        :param table: Table data dictionary.
+        :param worksheet: Worksheet data dictionary.
+        :param row: Row number.
         """
         data = {'name': 'Row', 'children': []}
         style_name = ods_element.getAttribute('stylename')
@@ -1719,7 +1663,7 @@ class icODS(object):
         hidden = ods_element.getAttribute('visibility')
 
         if style_name:
-            # Определение высоты строки
+            # Row height
             row_height = None
             ods_styles = self.ods_document.automaticstyles.getElementsByType(odf.style.Style)
             find_style = [ods_style for ods_style in ods_styles if ods_style.getAttribute('name') == style_name]
@@ -1728,21 +1672,21 @@ class icODS(object):
                 ods_row_properties = ods_style.getElementsByType(odf.style.TableRowProperties)
                 if ods_row_properties:
                     ods_row_property = ods_row_properties[0]
-                    row_height = self._dimension_ods2xml(ods_row_property.getAttribute('rowheight'))
+                    row_height = self._dimensionODS2XML(ods_row_property.getAttribute('rowheight'))
                     if row_height:
                         data['Height'] = row_height
-                    # Разрывы страниц
+                    # Page breaks
                     page_break = ods_row_property.getAttribute('breakbefore')
                     if page_break and page_break == 'page' and worksheet:
-                        self._add_page_break(worksheet, row)
-                    # log.debug('ROW: %s \tHeight: %s \tPageBreak: %s \tStyle: %s' % (style_name, row_height, page_break, style_name))
+                        self._addPageBreak(worksheet, row)
+                    # log_func.debug('ROW: %s \tHeight: %s \tPageBreak: %s \tStyle: %s' % (style_name, row_height, page_break, style_name))
         
         if repeated and (repeated not in ('None', 'none', 'NONE')):
-            # Дополниетельное условие необходимо для
-            # исключения ошибочной ситуации когда параметры строки
-            # дублируются на все последующие строки
-            # (в LibreOffice это сделано для дублирования стиля ячеек
-            # построчно в конце листа)
+            # An additional condition is necessary to eliminate
+            # an error situation when the row parameters are duplicated
+            # on all subsequent lines (in LibreOffice this is done
+            # to duplicate the style of cells line by line at
+            # the end of the sheet)
             i_repeated = int(repeated)
             if i_repeated <= LIMIT_ROWS_REPEATED:
                 repeated = i_repeated-1
@@ -1755,22 +1699,19 @@ class icODS(object):
         if hidden and hidden == 'collapse':
             data['Hidden'] = True
 
-        # Обработка ячеек
+        # Cells
         ods_cells = ods_element.childNodes
         
         i = 1
         set_idx = False
-        # log.debug(u'Количество ячеек строки [%d]' % len(ods_cells))
         for ods_cell in ods_cells:
-            # log.debug(u'Обработка ячейки <%s>' % ods_cell.qname[-1])
             if ods_cell.qname[-1] == 'covered-table-cell':
                 repeated = ods_cell.getAttribute('numbercolumnsrepeated')
                 if repeated and (repeated not in ('None', 'none', 'NONE')):
-                    # Учет индекса и пропущенных ячеек
+                    # Accounting for index and missing cells
                     i += int(repeated)  # +1
                     set_idx = True
                 else:
-                    # Стоит просто ячейка и ее надо учесть
                     i += 1
                     set_idx = True
             elif ods_cell.qname[-1] == 'table-cell':
@@ -1781,14 +1722,14 @@ class icODS(object):
 
                 repeated = ods_cell.getAttribute('numbercolumnsrepeated')
                 if repeated and (repeated not in ('None', 'none', 'NONE')):
-                    # Учет индекса и пропущенных ячеек
+                    # Accounting for index and missing cells
                     i_repeated = int(repeated)
                     if i_repeated < LIMIT_COLUMNS_REPEATED:
                         for ii in range(i_repeated-1):
                             cell_data = self.readCell(ods_cell)
                             data['children'].append(cell_data)
                             i += 1
-                        # ВНИМАНИЕ! Здесь необходимо добавить 1 иначе таблицы/штампы могут "плыть"
+                        # Here you need to add 1 otherwise the tables / stamps can "float"
                         i += 1
                     else:
                         i += i_repeated     # +1
@@ -1800,21 +1741,21 @@ class icODS(object):
     
     def hasODSAttribute(self, ods_element, attr_name):
         """
-        Имеется в ODS элементе атрибут с таким именем?
+        Does an ODS element have an attribute with that name?
 
-        :param ods_element: ODS элемент.
-        :param attr_name: Имя атрибута.
+        :param ods_element: ODS element.
+        :param attr_name: Attribute name.
         :return: True/False.
         """
         return attr_name in [attr[-1].replace('-', '') for attr in ods_element.attributes.keys()]
         
     def readCell(self, ods_element=None, index=None):
         """
-        Прочитать из ODS файла данные о ячейке.
+        Read cell data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий ячейке.
+        :param ods_element: ODS element corresponding to the cell.
         :type index: C{int}
-        :param index: Индекс ячейки, если необходимо указать.
+        :param index: Cell index, if necessary.
         """
         data = {'name': 'Cell', 'children': []}
         if index:
@@ -1846,7 +1787,6 @@ class icODS(object):
         if ods_data:
             value = ods_element.getAttribute('value')
             valuetype = ods_element.getAttribute('valuetype')
-            # log.debug(u'Значение ячейки <%s : %s>' % (value, valuetype))
             cur_data = None
             for i, ods_txt in enumerate(ods_data):
                 data_data = self.readData(ods_txt, value, valuetype)
@@ -1856,17 +1796,17 @@ class icODS(object):
                     cur_data['value'] += SPREADSHEETML_CR+data_data['value']
             data['children'].append(cur_data)
         
-        # log.debug('CELL Style: %s MergeAcross: %s MergeDown: %s' % (style_name, merge_across, merge_down))
+        # log_func.debug('CELL Style: %s MergeAcross: %s MergeDown: %s' % (style_name, merge_across, merge_down))
         
         return data
    
     def readData(self, ods_element=None, value=None, value_type=None):
         """
-        Прочитать из ODS файла данные.
+        Reade data from ODS file.
 
-        :param ods_element: ODS элемент соответствующий данным ячейки.
-        :param value: Строковое значение ячейки.
-        :param value_type: Строковое представление типа значения ячейки.
+        :param ods_element: ODS element corresponding to cell data.
+        :param value: Value as string.
+        :param value_type: Cell value type as string.
         """
         data = {'name': 'Data', 'children': []}
         if value and value != 'None':
@@ -1879,73 +1819,5 @@ class icODS(object):
         if value_type:
             data['Type'] = str(value_type).title()
         
-        # log.debug('DATA: %s' % value_type)
+        # log_func.debug('DATA: %s' % value_type)
         return data
-
-
-def test_save(xml_filename):
-    """
-    Функция тестирования.
-    """
-    from . import v_excel
-    excel = v_excel.iqVExcel()
-    excel.load(xml_filename)
-    data = excel.getData()
-    
-    ods = icODS()
-    ods.save('./testfiles/test.ods', data)
-
-
-def test_load(ods_filename):
-    """
-    Функция тестирования.
-    """
-    ods = icODS()
-    ods.load(ods_filename)
-
-
-def test_complex(src_ods_filename, dst_ods_filename):
-    """
-    Функция тестирования чтения/записи ODS файла.
-    """
-    ods = icODS()
-    data = ods.load(src_ods_filename)
-    
-    from . import v_excel
-    excel = v_excel.iqVExcel()
-    excel._data = data
-    excel.saveAs(dst_ods_filename)
-
-
-def test_1(src_ods_filename, dst_ods_filename):
-    """
-    Функция тестирования чтения/записи ODS файла.
-    """
-    ods = icODS()
-    data = ods.load(src_ods_filename)
-    
-    if data:
-        ods.save(dst_ods_filename, data)
-
-
-def test_2(src_ods_filename, dst_xml_filename, dst_ods_filename):
-    """
-    Функция тестирования чтения/записи ODS файла.
-    """
-    ods = icODS()
-    data = ods.load(src_ods_filename)
-
-    if data:
-        import icexcel
-        excel = icexcel.icVExcel()
-        excel._data = data
-        cell = excel.getWorkbook().getWorksheetIdx().getTable().getCell(40, 61)
-        # log.debug('Cell: %s : %s' % (new_cell.getAddress(), new_cell.getRegion()))
-        cell.setValue('123456')
-
-        excel.saveAs(dst_xml_filename)
-        ods.save(dst_ods_filename, data)
-
-
-if __name__ == '__main__':
-    test_complex('./testfiles/test.ods', './testfiles/result.ods')
