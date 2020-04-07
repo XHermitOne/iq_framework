@@ -20,7 +20,7 @@ IC_REP_STYLE = {'font': None,   # Шрифт Структура типа ic.comp
                 'color': None,  # Цвет
                 # 'border':None, #Обрамление
                 # 'align':None, #Расположение текста
-                # 'format': None, #Формат ячейки
+                # 'num_format': None, #Формат ячейки
                 }
 
 
@@ -157,5 +157,5 @@ class icXMLRepStyleLib(icRepStyleLib):
             style['color'] = self._getColorStyle(styles[style_id])
             # style['border']=self._getBordersStyle(styles[style_id])
             # style['align']=self._getAlignStyle(styles[style_id])
-            # style['format']=self._getFmtStyle(styles[style_id])
+            # style['num_format']=self._getFmtStyle(styles[style_id])
         return style

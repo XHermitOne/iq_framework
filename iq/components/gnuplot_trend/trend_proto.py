@@ -23,7 +23,7 @@ DEFAULT_DT_FORMATS = (DEFAULT_TIME_FMT,
                       DEFAULT_DATETIME_FMT,
                       DEFAULT_DATE_FMT)
 
-# Default scale format
+# Default scale num_format
 DEFAULT_X_FORMAT = 'time'
 DEFAULT_Y_FORMAT = 'numeric'
 
@@ -70,10 +70,10 @@ class iqTrendProto(object):
 
     def _dt2str(self, dt_value=None, time_format=DEFAULT_X_FORMAT):
         """
-        Convert datetime to string according to format.
+        Convert datetime to string according to num_format.
 
         :param dt_value: The value is datetime.datetime or datetime.timedelta.
-        :param time_format: Presentation format.
+        :param time_format: Presentation num_format.
         :return: A formatted string of datetime values.
         """
         if time_format == 'time':
@@ -96,7 +96,7 @@ class iqTrendProto(object):
         Converting a string representation of timeline values to a datetime view.
 
         :param time_value: String representation of date-time.
-        :param time_format: Presentation format.
+        :param time_format: Presentation num_format.
         :param bToTimeDelta: Convert to datetime.timedelta?
         :return: datetime.datetime/datetime.timedelta, corresponding to the string representation.
         """
@@ -125,9 +125,9 @@ class iqTrendProto(object):
 
     def _get_dt_format(self, time_format=DEFAULT_X_FORMAT):
         """
-        Make the format of temporary values uniform.
+        Make the num_format of temporary values uniform.
 
-        :param time_format: Presentation format.
+        :param time_format: Presentation num_format.
         :return: Format.
         """
         dt_format = time_format

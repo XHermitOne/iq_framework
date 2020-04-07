@@ -27,7 +27,7 @@ def wxColour2StrHex(colour):
     elif isinstance(colour, str) and colour not in ('default',):
         return colour
 
-    log_func.error(u'It is not possible to convert colour <%s> to format #RRGGBB. Black colour used' % str(colour))
+    log_func.error(u'It is not possible to convert colour <%s> to num_format #RRGGBB. Black colour used' % str(colour))
     return '#000000'
 
 

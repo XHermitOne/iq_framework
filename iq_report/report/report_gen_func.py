@@ -2,108 +2,96 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль функций общего интерфейса к системе генерации.
+Module of functions of the general interface to the generation system.
 """
 
-# Подключение библиотек
-from ic.std.log import log
-from ic.std.utils import resfunc
+from iq.util import log_func
+from iq.util import res_func
 
-from ic.report import icxmlreportgenerator
-from ic.report import icodsreportgenerator
-from ic.report import icxlsreportgenerator
-# from ic.report import icreportmangenerator
-from ic.report import icrtfreportgenerator
+from . import xml_report_generator
+from . import ods_report_generator
+# from . import xls_report_generator
+# from . import reportman_generator
+from . import rtf_report_generator
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 0, 0, 1)
 
-# Константы подсистемы
-REP_GEN_SYS = None
+REPORT_GEN_SYSTEM = None
 
-# Спецификации
-_ReportGeneratorSystemTypes = {'.xml': icxmlreportgenerator.icXMLReportGeneratorSystem,         # Мой XMLSS генератор
-                               '.ods': icodsreportgenerator.icODSReportGeneratorSystem,         # Мой ODS генератор
-                               '.xls': icxlsreportgenerator.icXLSReportGeneratorSystem,         # Мой XLS генератор
-                               # '.rep': icreportmangenerator.icReportManagerGeneratorSystem,     # Report Manager
-                               '.rtf': icrtfreportgenerator.icRTFReportGeneratorSystem,         # RTF генератор
-                               }
+REPORT_GENERATOR_SYSTEM_TYPES = {'.xml': xml_report_generator.icXMLReportGeneratorSystem,  # XMLSS generator
+                                 '.ods': ods_report_generator.icODSReportGeneratorSystem,  # ODS generator
+                                 # '.xls': icxlsreportgenerator.icXLSReportGeneratorSystem,  # XLS generator
+                                 # '.rep': reportman_generator.icReportManagerGeneratorSystem,     # Report Manager
+                                 '.rtf': rtf_report_generator.icRTFReportGeneratorSystem,  # RTF generator
+                                 }
 
-# Список расширений источников шаблонов
-SRC_REPORT_EXT = _ReportGeneratorSystemTypes.keys()
+# List of template source extensions
+SRC_REPORT_EXT = REPORT_GENERATOR_SYSTEM_TYPES.keys()
 
 
-# Функции управления
-def getReportGeneratorSystem(rep_filename, parent=None, bRefresh=True):
+def getReportGeneratorSystem(rep_filename, parent=None, refresh=True):
     """
-    Получить объект системы генерации отчетов.
+    Get the object of the reporting system.
 
-    :param rep_filename: Имя файла шаблона отчета.
-    :param parent: Родительская форма, необходима для вывода сообщений.
-    :param bRefresh: Указание обновления данных шаблона отчета в генераторе.
-    :return: Функция возвращает объект-наследник класса icReportGeneratorSystem.
-        None - в случае ошибки.
+    :param rep_filename: Report template filename.
+    :param parent: Parent window.
+    :param refresh: Update report template data in the generator.
+    :return: Report generator system object or None if error.
     """
     try:
-        # Прочитать шаблон отчета
-        rep = resfunc.loadResourceFile(rep_filename, bRefresh=True)
+        rep = res_func.loadRuntimeResource(rep_filename)
         
-        global REP_GEN_SYS
+        global REPORT_GEN_SYSTEM
 
-        # Создание системы ренерации отчетов
-        if REP_GEN_SYS is None:
-            REP_GEN_SYS = createReportGeneratorSystem(rep['generator'], rep, parent)
-            REP_GEN_SYS.RepTmplFileName = rep_filename
-        elif not REP_GEN_SYS.sameGeneratorType(rep['generator']):
-            REP_GEN_SYS = createReportGeneratorSystem(rep['generator'], rep, parent)
-            REP_GEN_SYS.RepTmplFileName = rep_filename
+        if REPORT_GEN_SYSTEM is None:
+            REPORT_GEN_SYSTEM = createReportGeneratorSystem(rep['generator'], rep, parent)
+            REPORT_GEN_SYSTEM.RepTmplFileName = rep_filename
+        elif not REPORT_GEN_SYSTEM.sameGeneratorType(rep['generator']):
+            REPORT_GEN_SYSTEM = createReportGeneratorSystem(rep['generator'], rep, parent)
+            REPORT_GEN_SYSTEM.RepTmplFileName = rep_filename
         else:
-            if bRefresh:
-                # Просто установить обновление
-                REP_GEN_SYS.setRepData(rep)
-                REP_GEN_SYS.RepTmplFileName = rep_filename
+            if refresh:
+                REPORT_GEN_SYSTEM.setRepData(rep)
+                REPORT_GEN_SYSTEM.RepTmplFileName = rep_filename
 
-        # Если родительская форма не определена у системы генерации,
-        # то установить ее
-        if REP_GEN_SYS and REP_GEN_SYS.getParentForm() is None:
-            REP_GEN_SYS.setParentForm(parent)
+        if REPORT_GEN_SYSTEM and REPORT_GEN_SYSTEM.getParentForm() is None:
+            REPORT_GEN_SYSTEM.setParentForm(parent)
             
-        return REP_GEN_SYS
+        return REPORT_GEN_SYSTEM
     except:
-        log.error(u'Ошибка определения объекта системы генерации отчетов. Отчет <%s>.' % rep_filename)
-        raise
+        log_func.fatal(u'Error defining a reporting system object. Report <%s>.' % rep_filename)
     return None
 
 
 def createReportGeneratorSystem(repgen_sys_type, report=None, parent=None):
     """
-    Создать объект системы генерации отчетов.
+    Create report generator system.
 
-    :param repgen_sys_type: Указание типа системы генерации отчетов.
-        Тип задается расширением файла источника шаблона.
-        В нашем случае один из SRC_REPORT_EXT.
-    :param report: Словарь отчета.
-    :param parent: Родительская форма, необходима для вывода сообщений.
-    :return: Функция возвращает объект-наследник класса icReportGeneratorSystem.
-        None - в случае ошибки.
+    :param repgen_sys_type: Indication of the type of reporting system.
+         The type is specified by the template source file extension.
+         In our case, one of SRC_REPORT_EXT.
+    :param report: Report data dictionary.
+    :param parent: Parent window.
+    :return: Report generator system object or None if error.
     """
     rep_gen_sys_type = repgen_sys_type[-4:].lower() if isinstance(repgen_sys_type, str) else None
     rep_gen_sys = None
     if rep_gen_sys_type:
-        rep_gen_sys_class = _ReportGeneratorSystemTypes.setdefault(rep_gen_sys_type, None)
+        rep_gen_sys_class = REPORT_GENERATOR_SYSTEM_TYPES.setdefault(rep_gen_sys_type, None)
         if rep_gen_sys_class is not None:
             rep_gen_sys = rep_gen_sys_class(report, parent)
         else:
-            log.warning(u'Не известный тип генератора <%s>' % rep_gen_sys_type)
+            log_func.error(u'Unknown generator type <%s>' % rep_gen_sys_type)
     else:
-        log.warning(u'Не корректный тип генератора <%s>' % repgen_sys_type)
+        log_func.error(u'Invalid generator type <%s>' % repgen_sys_type)
     return rep_gen_sys
 
 
 def getCurReportGeneratorSystem(report_browser_dialog=None):
     """
-    Возвратить текущую систему генерации.
+    Return current generation system.
     """
-    global REP_GEN_SYS
-    if REP_GEN_SYS is None:
-        REP_GEN_SYS = icodsreportgenerator.icODSReportGeneratorSystem(parent=report_browser_dialog)
-    return REP_GEN_SYS
+    global REPORT_GEN_SYSTEM
+    if REPORT_GEN_SYSTEM is None:
+        REPORT_GEN_SYSTEM = ods_report_generator.icODSReportGeneratorSystem(parent=report_browser_dialog)
+    return REPORT_GEN_SYSTEM

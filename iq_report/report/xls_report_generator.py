@@ -140,7 +140,7 @@ class icXLSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
             except:
                 log.error(u'Ошибка удаления файла <%s>' % pdf_filename)
 
-        cmd = 'unoconv --format=pdf %s' % xls_filename
+        cmd = 'unoconv --num_format=pdf %s' % xls_filename
         log.info(u'UNOCONV. Выполнения комманды ОС <%s>' % cmd)
         os.system(cmd)
 

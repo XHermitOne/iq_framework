@@ -567,7 +567,7 @@ class iqVStyle(v_prototype.iqVPrototype):
 
     def createNumberFormat(self):
         """
-        Create number format.
+        Create number num_format.
         """
         fmt = iqVNumberFormat(self)
         attrs = fmt.create()
@@ -706,7 +706,7 @@ NUMBERFORMAT_SPC = {'Format': FORMAT_ENUM[0]}
 
 class iqVNumberFormat(v_prototype.iqVPrototype):
     """
-    Number format.
+    Number num_format.
     """
     def __init__(self, parent, *args, **kwargs):
         """

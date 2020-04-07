@@ -142,7 +142,7 @@ IC_REP_CELL = {'merge_row': 0,      # Кол-во строк для объеди
                'align': None,       # Расположение текста
                'sum': None,         # Список сумм
                'visible': True,     # Видимость ячейки
-               'format': None,      # Формат ячейки
+               'num_format': None,      # Формат ячейки
                }
 
 # Данные сумм

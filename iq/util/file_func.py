@@ -106,7 +106,7 @@ def getProjectPath():
         framework_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         return os.path.join(framework_path, prj_name)
     else:
-        log_func.warning(u'Error get project path')
+        log_func.error(u'Error get project path')
     return None
 
 
@@ -404,4 +404,20 @@ def getFileModifyDatetime(filename):
             return stat.st_mtime
     except:
         log_func.fatal(u'Error determining date-time of file modification <%s>' % filename)
+    return None
+
+
+def getProjectSettingsFilename():
+    """
+    Get project settings filename.
+
+    :return: Project settings file name or None if error.
+    """
+    prj_path = getProfilePath()
+    prj_name = global_func.getProjectName()
+
+    if prj_path and prj_name:
+        return os.path.join(prj_path, '%s.ini' % prj_name)
+    else:
+        log_func.error(u'Not define project')
     return None

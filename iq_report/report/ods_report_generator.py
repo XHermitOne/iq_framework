@@ -142,7 +142,7 @@ class icODSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
             except:
                 log.error(u'Delete file <%s>' % pdf_filename)
 
-        cmd = 'unoconv --format=pdf %s' % ods_filename
+        cmd = 'unoconv --num_format=pdf %s' % ods_filename
         log.info(u'UNOCONV. Выполнение комманды <%s>' % cmd)
         os.system(cmd)
 
@@ -331,7 +331,7 @@ class icODSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
             else:
                 # ВНИМАНИЕ! UNOCONV транслирует не все стили и атрибуты ячеек
                 # Поэтому сначала используется Virtual Excel
-                cmd = 'unoconv --format=ods %s' % xml_rep_file_name
+                cmd = 'unoconv --num_format=ods %s' % xml_rep_file_name
                 log.info(u'UNOCONV. Конвертация отчета <%s> в файл <%s>. (%s)' % (textfunc.toUnicode(xml_rep_file_name),
                                                                                   textfunc.toUnicode(rep_file_name),
                                                                                   textfunc.toUnicode(cmd)))

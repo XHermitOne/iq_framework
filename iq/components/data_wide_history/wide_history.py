@@ -73,7 +73,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             There is a RECORD variable in the namespace that points to the current record.
             The function returns True for the record that falls into the resulting list,
             False - if missed.
-        :return: List of dictionaries for wide format entries of the specified range.
+        :return: List of dictionaries for wide num_format entries of the specified range.
              Or None in case of an error.
         """
         if rec_filter is None:
@@ -130,7 +130,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             The function returns True for the record that falls into the resulting list,
             False - if missed.
         :param rec_limit: Limit the number of entries.
-        :return: The last registered wide format entry in the form of a dictionary.
+        :return: The last registered wide num_format entry in the form of a dictionary.
              Or an empty dictionary in case of an error.
         """
         if rec_filter is None:
@@ -194,7 +194,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             The function returns True for the record that falls into the resulting list,
             False - if missed.
         :param rec_limit: Limit the number of entries.
-        :return: The first registered wide format entry in the form of a dictionary.
+        :return: The first registered wide num_format entry in the form of a dictionary.
              Or an empty dictionary in case of an error.
         """
         if rec_filter is None:

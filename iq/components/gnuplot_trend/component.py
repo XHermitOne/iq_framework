@@ -127,7 +127,7 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
             try:
                 scene_min = eval(scene_min)
             except:
-                log_func.fatal(u'Scene minimum value format error')
+                log_func.fatal(u'Scene minimum value num_format error')
                 log_func.error(u'Minimum values must be specified by a tuple. For example (\'00:00:00\', 0.0)')
                 scene_min = ('00:00:00', 0.0)
         elif scene_min and isinstance(scene_min, (list, tuple)):
@@ -165,7 +165,7 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
             try:
                 scene_max = eval(scene_max)
             except:
-                log_func.fatal(u'Scene maximum value format error')
+                log_func.fatal(u'Scene maximum value num_format error')
                 log_func.error(u'Maximum values must be specified by a tuple. For example (\'00:00:00\', 0.0)')
                 scene_max = ('23:59:59', 100.0)
         elif scene_max and isinstance(scene_max, (list, tuple)):
@@ -193,9 +193,9 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
 
     def setXFormat(self, x_format=None):
         """
-        Set X-axis data presentation format.
+        Set X-axis data presentation num_format.
 
-        :param x_format: X axis data presentation format.
+        :param x_format: X axis data presentation num_format.
             If not defined, then taken from the resource description of the object.
         :return:
         """
@@ -205,9 +205,9 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
 
     def setYFormat(self, y_format=None):
         """
-        Set Y-axis data presentation format.
+        Set Y-axis data presentation num_format.
 
-        :param y_format: Y axis data presentation format.
+        :param y_format: Y axis data presentation num_format.
             If not defined, then taken from the resource description of the object.
         :return:
         """

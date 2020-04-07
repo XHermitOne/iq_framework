@@ -1035,7 +1035,7 @@ class icExcelXMLReportTemplate(icReportTemplate):
             cell['align'] = self._getAlignStyle(cell_style)
     
             # Формат вывода текста
-            cell['format'] = self._getFmtStyle(cell_style)
+            cell['num_format'] = self._getFmtStyle(cell_style)
             # Генерация текста ячейки
             # Перенести все ячейки из шаблона в выходной отчет
             if template_cell:
@@ -1317,7 +1317,7 @@ class icXLSReportTemplate(icODSReportTemplate):
         """
         try:
             ods_filename = os.path.splitext(tmpl_filename)[0] + '.ods'
-            cmd = 'unoconv --format=ods %s' % tmpl_filename
+            cmd = 'unoconv --num_format=ods %s' % tmpl_filename
             log.info(u'Выполнение комманды ОС <%s>' % cmd)
             os.system(cmd)
 

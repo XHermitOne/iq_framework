@@ -871,7 +871,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         """
         Run script - a list of commands.
 
-        :param cmd_script: List of format commands
+        :param cmd_script: List of num_format commands
         [
         ('CommandName', (tuple of unnamed arguments), {dictionary of named arguments}),
         ...

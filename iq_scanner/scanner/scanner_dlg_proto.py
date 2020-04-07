@@ -212,7 +212,7 @@ class iqScannerDlgProto ( wx.Dialog ):
 		
 		bSizer16 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.m_staticText13 = wx.StaticText( self.extend_panel, wx.ID_ANY, _(u"File name format:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText13 = wx.StaticText( self.extend_panel, wx.ID_ANY, _(u"File name num_format:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText13.Wrap( -1 )
 		self.m_staticText13.SetFont( wx.Font( 14, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "Sans" ) )
 		
@@ -228,7 +228,7 @@ class iqScannerDlgProto ( wx.Dialog ):
 		
 		bSizer6 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.m_staticText6 = wx.StaticText( self.extend_panel, wx.ID_ANY, _(u"Result file format:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText6 = wx.StaticText( self.extend_panel, wx.ID_ANY, _(u"Result file num_format:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText6.Wrap( -1 )
 		self.m_staticText6.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 		

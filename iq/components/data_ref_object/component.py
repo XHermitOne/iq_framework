@@ -57,7 +57,7 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
                     log_func.error(u'Error type cod len <%s> in ref object <%s>' % (type(cod_len_value),
                                                                                     self.getName()))
             except:
-                log_func.fatal(u'Error level code lengths format <%s>' % cod_len)
+                log_func.fatal(u'Error level code lengths num_format <%s>' % cod_len)
         return cod_len
 
 

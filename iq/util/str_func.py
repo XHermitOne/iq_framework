@@ -9,6 +9,8 @@ import encodings.aliases
 
 from . import log_func
 
+from .. import global_data
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -212,3 +214,49 @@ def toUnicode(value, code_page='utf-8'):
     elif isinstance(value, bytes):
         return value.decode(code_page)
     return str(value)
+
+
+RUS2LAT = {u'а': 'a', u'б': 'b', u'в': 'v', u'г': 'g', u'д': 'd', u'е': 'e', u'ё': 'yo', u'ж': 'j',
+           u'з': 'z', u'и': 'idx', u'й': 'y', u'к': 'k', u'л': 'l', u'м': 'm', u'н': 'n', u'о': 'o', u'п': 'p',
+           u'р': 'r', u'с': 'text', u'т': 't', u'у': 'u', u'ф': 'f', u'х': 'h', u'ц': 'c', u'ч': 'ch',
+           u'ш': 'sh', u'щ': 'sch', u'ь': '', u'ы': 'y', u'ъ': '', u'э': 'e', u'ю': 'yu', u'я': 'ya',
+           u'А': 'A', u'Б': 'B', u'В': 'V', u'Г': 'G', u'Д': 'D', u'Е': 'E', u'Ё': 'YO', u'Ж': 'J',
+           u'З': 'Z', u'И': 'I', u'Й': 'Y', u'К': 'K', u'Л': 'L', u'М': 'M', u'Н': 'N', u'О': 'O', u'П': 'P',
+           u'Р': 'R', u'С': 'S', u'Т': 'T', u'У': 'U', u'Ф': 'F', u'Х': 'H', u'Ц': 'C', u'Ч': 'CH',
+           u'Ш': 'SH', u'Щ': 'SCH', u'Ь': '', u'Ы': 'Y', u'Ъ': '', u'Э': 'E', u'Ю': 'YU', u'Я': 'YA'}
+
+
+def rus2lat(text, translate_dict=RUS2LAT):
+    """
+    Translation of Russian letters into Latin according to the dictionary of substitutions.
+    """
+    if isinstance(text, bytes):
+        # To unicode
+        text = text.decode(global_data.DEFAULT_ENCODING)
+
+    txt_list = list(text)
+    txt_list = [translate_dict.setdefault(ch, ch) for ch in txt_list]
+    return ''.join(txt_list)
+
+
+def isLATText(text):
+    """
+    The text is written in Latin?
+    """
+    if isinstance(text, str):
+        rus_chr = [c for c in text if ord(c) > 128]
+        return not bool(rus_chr)
+    # This is not a string
+    return False
+
+
+def isRUSText(text):
+    """
+    String with Russian letters?
+    """
+    if isinstance(text, str):
+        rus_chr = [c for c in text if ord(c) > 128]
+        return bool(rus_chr)
+    # This is not a string
+    return False
+

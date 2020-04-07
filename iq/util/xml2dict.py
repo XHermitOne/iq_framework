@@ -27,7 +27,7 @@ VALUE_KEY = '__value__'
 
 def XmlFile2Dict(xml_filename, encoding='utf-8'):
     """
-    The function of converting Excel files in xml format to the Python dictionary.
+    The function of converting Excel files in xml num_format to the Python dictionary.
 
     :param xml_filename: xml file name.
     :return: The function returns a completed dictionary,

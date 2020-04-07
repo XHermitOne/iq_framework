@@ -20,7 +20,7 @@ from . import style_library
 
 __version__ = (0, 0, 0, 1)
 
-DEFAULT_REPORT_FILE_EXT = '.rprt'
+DEFAULT_REPORT_FILE_EXT = report_browser.REPORT_FILENAME_EXT
 
 
 def getReportResourceFilename(report_filename='', report_dir=''):
@@ -101,127 +101,120 @@ def updateReportTemplateFile(src_filename, rprt_filename):
             filename = os.path.splitext(src_filename)[0] + ext
             if os.path.exists(filename):
                 file_func.removeFile(filename)
-    # Пересоздаем шаблон
+    # Recreate template
     return createReportResourceFile(rprt_filename)
 
 
 def createReportResourceFile(template_filename):
     """
-    Создать ресурсный файл шаблона по имени запрашиваемого.
+    Create a resource file for the template by the name of the requested.
 
-    :param template_filename: Имя запрашиваемого файла шаблона.
-    :return: Скорректированное имя созданного файла шаблона или None в случае ошибки.
+    :param template_filename: The name of the requested template file.
+    :return: Corrected name of created template file or None in case of error.
     """
-    # Коррекция имени файла с учетом русских букв в имени файла
     dir_name = os.path.dirname(template_filename)
     base_filename = os.path.basename(template_filename).replace(' ', '_')
-    base_filename = textfunc.rus2lat(base_filename) if textfunc.isRUSText(base_filename) else base_filename
+    base_filename = str_func.rus2lat(base_filename) if str_func.isRUSText(base_filename) else base_filename
     norm_tmpl_filename = os.path.join(dir_name, base_filename)
 
-    log_func.info(u'Создание нового файла шаблона <%s>' % norm_tmpl_filename)
-    # Последовательно проверяем какой файл можно взять за основу для шаблона
-    for ext in report_generator.SRC_REPORT_EXT:
+    log_func.info(u'Create new template file <%s>' % norm_tmpl_filename)
+    # We consistently check which file can be taken as the basis for the template
+    for ext in report_gen_func.SRC_REPORT_EXT:
         src_filename = os.path.splitext(template_filename)[0] + ext
-        unicode_src_filename = textfunc.toUnicode(src_filename)
+        unicode_src_filename = str_func.toUnicode(src_filename)
         if os.path.exists(src_filename):
-            # Да такой файл есть и он может выступать
-            # в качестве источника для шаблона
-            log_func.info(u'Найден источник шаблона отчета <%s>' % unicode_src_filename)
+            # Yes, there is such a file and it can act as a source for the template
+            log_func.info(u'Report template source found <%s>' % unicode_src_filename)
             try:
-                rep_generator = report_generator.createReportGeneratorSystem(ext)
+                rep_generator = report_gen_func.createReportGeneratorSystem(ext)
                 return rep_generator.update(src_filename)
             except:
-                log_func.fatal(u'Ошибка конвертации шаблона отчета <%s> -> <%s>' % (unicode_src_filename, norm_tmpl_filename))
+                log_func.fatal(u'Error converting report template <%s> -> <%s>' % (unicode_src_filename,
+                                                                                   norm_tmpl_filename))
             return None
 
-    log_func.warning(u'Не найдены источники шаблонов отчета в папке <%s> для <%s>' % (dir_name,
-                                                                                 textfunc.toUnicode(os.path.basename(template_filename))))
+    log_func.error(u'Report template sources not found in folder <%s> for <%s>' % (dir_name,
+                                                                                   str_func.toUnicode(os.path.basename(template_filename))))
     return None
 
 
 def loadStyleLib(stylelib_filename=None):
     """
-    Загрузить библиотеку стилей из файла.
+    Download style library from file.
 
-    :param stylelib_filename: Файл библиотеки стилей.
-    :return: Библиотека стилей.
+    :param stylelib_filename: Style library file.
+    :return: Style library.
     """
-    # Загрузить библлиотеку стилей из файла
     stylelib = None
     if stylelib_filename:
         stylelib_filename = os.path.abspath(stylelib_filename)
         if os.path.exists(stylelib_filename):
-            xml_stylelib = icstylelib.icXMLRepStyleLib()
+            xml_stylelib = style_library.icXMLRepStyleLib()
             stylelib = xml_stylelib.convert(stylelib_filename)
     return stylelib
 
 
-def openReportBrowser(parent_form=None, report_dir='', mode=icreportbrowser.IC_REPORT_EDITOR_MODE):
+def openReportBrowser(parent_form=None, report_dir='', mode=report_browser.REPORT_EDITOR_MODE):
     """
-    Запуск браузера отчетов.
+    Launch report browser.
 
-    :param parent_form: Родительская форма, если не указана, 
-        то создается новое приложение.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :return: Возвращает результат выполнения операции True/False.
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_dir: Directory where reports are stored.
+    :return: True/False.
     """
     dlg = None
     try:
-        # Иначе вывести окно выбора отчета
-        dlg = icreportbrowser.icReportBrowserDialog(parent=parent_form, mode=mode,
-                                                    report_dir=report_dir)
+        dlg = report_browser.iqReportBrowserDialog(parent=parent_form, mode=mode,
+                                                   report_dir=report_dir)
         dlg.ShowModal()
-
         dlg.Destroy()
         return True
     except:
-        log_func.fatal(u'Ошибка запуска браузера отчетов')
         if dlg:
             dlg.Destroy()
+        log_func.fatal(u'Error starting report browser')
     return False
 
 
 def openReportEditor(parent_form=None, report_dir=''):
     """
-    Запуск редактора отчетов. Редактор - режим работы браузера.
+    Starting the report editor. Editor - browser mode.
 
-    :param parent_form: Родительская форма, если не указана, 
-        то создается новое приложение.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :return: Возвращает результат выполнения операции True/False.
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_dir: Directory where reports are stored.
+    :return: True/False.
     """
-    return openReportBrowser(parent_form, report_dir, icreportbrowser.IC_REPORT_EDITOR_MODE)
+    return openReportBrowser(parent_form, report_dir, report_browser.REPORT_EDITOR_MODE)
 
 
 def openReportViewer(parent_form=None, report_dir=''):
     """
-    Запуск просмотрщика отчетов. Просмотрщик - режим работы браузера.
+    Starting the report viewer. Viewer - browser mode.
 
-    :param parent_form: Родительская форма, если не указана, 
-        то создается новое приложение.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :return: Возвращает результат выполнения операции True/False.
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_dir: Directory where reports are stored.
+    :return: True/False.
     """
-    return openReportBrowser(parent_form, report_dir, icreportbrowser.IC_REPORT_VIEWER_MODE)
+    return openReportBrowser(parent_form, report_dir, report_browser.REPORT_VIEWER_MODE)
 
 
 def printReport(parent_form=None, report_filename='', report_dir='',
                 db_url=None, sql=None, command=None,
                 stylelib_filename=None, variables=None):
     """
-    Функция запускает генератор отчетов и вывод на печать.
+    The function starts the report generator and print output.
 
-    :param parent_form: Родительская форма, если не указана,
-        то создается новое приложение.
-    :param report_filename: Файл отчета.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :param db_url: Connection string в виде url. Например
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_filename: Report filename.
+    :param report_dir: Directory where reports are stored.
+    :param db_url: URL Connection string.
+        For example:
         postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-    :param sql: Запрос SQL.
-    :param command: Комманда после генерации. print/preview/export.
-    :param stylelib_filename: Файл библиотеки стилей.
-    :param variables: Словарь переменных для заполнения отчета.
-    :return: Возвращает результат выполнения операции True/False.
+    :param sql: SQL query text.
+    :param command: After generation command. print/preview/export.
+    :param stylelib_filename: Style library filename.
+    :param variables: A dictionary of variables to populate the report.
+    :return: True/False.
     """
     report_filename = getReportResourceFilename(report_filename, report_dir)
     try:
@@ -229,13 +222,12 @@ def printReport(parent_form=None, report_filename='', report_dir='',
             return openReportViewer(parent_form, report_dir)
         else:
             stylelib = loadStyleLib(stylelib_filename)
-            # Если определен отчет, то запустить на выполнение
-            repgen_system = report_generator.getReportGeneratorSystem(report_filename, parent_form)
-            return repgen_system.Print(resfunc.loadResourceFile(report_filename),
+            repgen_system = report_gen_func.getReportGeneratorSystem(report_filename, parent_form)
+            return repgen_system.Print(res_func.loadResource(report_filename),
                                        stylelib=stylelib,
                                        variables=variables)
     except:
-        log_func.fatal(u'Ошибка печати отчета <%s>' % report_filename)
+        log_func.fatal(u'Report printing error <%s>' % report_filename)
     return False
 
 
@@ -243,19 +235,19 @@ def previewReport(parent_form=None, report_filename='', report_dir='',
                   db_url=None, sql=None, command=None,
                   stylelib_filename=None, variables=None):
     """
-    Функция запускает генератор отчетов и вывод на экран предварительного просмотра.
+    The function starts the report generator and displays the preview screen.
 
-    :param parent_form: Родительская форма, если не указана,
-        то создается новое приложение.
-    :param report_filename: Файл отчета.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :param db_url: Connection string в виде url. Например
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_filename: Report filename.
+    :param report_dir: Directory where reports are stored.
+    :param db_url: URL Connection string.
+        For example:
         postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-    :param sql: Запрос SQL.
-    :param command: Комманда после генерации. print/preview/export.
-    :param stylelib_filename: Файл библиотеки стилей.
-    :param variables: Словарь переменных для заполнения отчета.
-    :return: Возвращает результат выполнения операции True/False.
+    :param sql: SQL query text.
+    :param command: After generation command. print/preview/export.
+    :param stylelib_filename: Style library filename.
+    :param variables: A dictionary of variables to populate the report.
+    :return: True/False.
     """
     report_filename = getReportResourceFilename(report_filename, report_dir)
     try:
@@ -263,13 +255,12 @@ def previewReport(parent_form=None, report_filename='', report_dir='',
             return openReportViewer(parent_form, report_dir)
         else:
             stylelib = loadStyleLib(stylelib_filename)
-            # Если определен отчет, то запустить на выполнение
-            repgen_system = report_generator.getReportGeneratorSystem(report_filename, parent_form)
-            return repgen_system.preview(resfunc.loadResourceFile(report_filename),
+            repgen_system = report_gen_func.getReportGeneratorSystem(report_filename, parent_form)
+            return repgen_system.preview(res_func.loadResource(report_filename),
                                          stylelib=stylelib,
                                          variables=variables)
     except:
-        log_func.fatal(u'Ошибка предварительного просмотра отчета <%s>' % report_filename)
+        log_func.fatal(u'Report preview error <%s>' % report_filename)
     return False
 
 
@@ -277,19 +268,19 @@ def exportReport(parent_form=None, report_filename='', report_dir='',
                  db_url=None, sql=None, command=None,
                  stylelib_filename=None, variables=None):
     """
-    Функция запускает генератор отчетов и вывод в Office.
+    The function launches the report generator and output in Office.
 
-    :param parent_form: Родительская форма, если не указана,
-        то создается новое приложение.
-    :param report_filename: Файл отчета.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :param db_url: Connection string в виде url. Например
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_filename: Report filename.
+    :param report_dir: Directory where reports are stored.
+    :param db_url: URL Connection string.
+        For example:
         postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-    :param sql: Запрос SQL.
-    :param command: Комманда после генерации. print/preview/export.
-    :param stylelib_filename: Файл библиотеки стилей.
-    :param variables: Словарь переменных для заполнения отчета.
-    :return: Возвращает результат выполнения операции True/False.
+    :param sql: SQL query text.
+    :param command: After generation command. print/preview/export.
+    :param stylelib_filename: Style library filename.
+    :param variables: A dictionary of variables to populate the report.
+    :return: True/False.
     """
     report_filename = getReportResourceFilename(report_filename, report_dir)
     try:
@@ -297,13 +288,12 @@ def exportReport(parent_form=None, report_filename='', report_dir='',
             return openReportViewer(parent_form, report_dir)
         else:
             stylelib = loadStyleLib(stylelib_filename)
-            # Если определен отчет, то запустить на выполнение
-            repgen_system = report_generator.getReportGeneratorSystem(report_filename, parent_form)
-            return repgen_system.convert(resfunc.loadResourceFile(report_filename),
+            repgen_system = report_gen_func.getReportGeneratorSystem(report_filename, parent_form)
+            return repgen_system.convert(res_func.loadResource(report_filename),
                                          stylelib=stylelib,
                                          variables=variables)
     except:
-        log_func.fatal(u'Ошибка экспорта отчета <%s>' % report_filename)
+        log_func.fatal(u'Report export error <%s>' % report_filename)
     return False
 
 
@@ -311,19 +301,19 @@ def selectReport(parent_form=None, report_filename='', report_dir='',
                  db_url=None, sql=None, command=None,
                  stylelib_filename=None, variables=None):
     """
-    Функция запускает генератор отчетов с последующим выбором действия.
+    The function starts the report generator with the subsequent choice of action.
 
-    :param parent_form: Родительская форма, если не указана,
-        то создается новое приложение.
-    :param report_filename: Файл отчета.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :param db_url: Connection string в виде url. Например
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_filename: Report filename.
+    :param report_dir: Directory where reports are stored.
+    :param db_url: URL Connection string.
+        For example:
         postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-    :param sql: Запрос SQL.
-    :param command: Комманда после генерации. print/preview/export.
-    :param stylelib_filename: Файл библиотеки стилей.
-    :param variables: Словарь переменных для заполнения отчета.
-    :return: Возвращает результат выполнения операции True/False.
+    :param sql: SQL query text.
+    :param command: After generation command. print/preview/export.
+    :param stylelib_filename: Style library filename.
+    :param variables: A dictionary of variables to populate the report.
+    :return: True/False.
     """
     report_filename = getReportResourceFilename(report_filename, report_dir)
     try:
@@ -331,17 +321,16 @@ def selectReport(parent_form=None, report_filename='', report_dir='',
             return openReportViewer(parent_form, report_dir)
         else:
             stylelib = loadStyleLib(stylelib_filename)
-            # Если определен отчет, то запустить на выполнение
-            repgen_system = report_generator.getReportGeneratorSystem(report_filename, parent_form)
-            return repgen_system.selectAction(resfunc.loadResourceFile(report_filename),
+            repgen_system = report_gen_func.getReportGeneratorSystem(report_filename, parent_form)
+            return repgen_system.selectAction(res_func.loadResource(report_filename),
                                               stylelib=stylelib,
                                               variables=variables)
     except:
-        log_func.fatal(u'Ошибка генерации отчета с выбором действия <%s>' % report_filename)
+        log_func.fatal(u'Error generating report with action selection <%s>' % report_filename)
     return False
 
 
-# Комманды пост обработки сгенерированног отчета
+# Post-processing commands for the generated report
 DO_COMMAND_PRINT = 'print'
 DO_COMMAND_PREVIEW = 'preview'
 DO_COMMAND_EXPORT = 'export'
@@ -351,29 +340,28 @@ DO_COMMAND_SELECT = 'select'
 def doReport(parent_form=None, report_filename='', report_dir='', db_url='', sql='', command=None,
              stylelib_filename=None, variables=None):
     """
-    Функция запускает генератор отчетов.
+    The function starts the report generator.
 
-    :param parent_form: Родительская форма, если не указана,
-        то создается новое приложение.
-    :param report_filename: Файл отчета.
-    :param report_dir: Директорий, где хранятся отчеты.
-    :param db_url: Connection string в виде url. Например
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_filename: Report filename.
+    :param report_dir: Directory where reports are stored.
+    :param db_url: URL Connection string.
+        For example:
         postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-    :param sql: Запрос SQL.
-    :param command: Комманда после генерации. print/preview/export.
-    :param stylelib_filename: Файл библиотеки стилей.
-    :param variables: Словарь переменных для заполнения отчета.
-    :return: Возвращает результат выполнения операции True/False.
+    :param sql: SQL query text.
+    :param command: After generation command. print/preview/export.
+    :param stylelib_filename: Style library filename.
+    :param variables: A dictionary of variables to populate the report.
+    :return: True/False.
     """
     try:
         if not report_filename:
             return openReportViewer(parent_form, report_dir)
         else:
-            # Если определен отчет, то запустить на выполнение
-            repgen_system = report_generator.getReportGeneratorSystem(report_filename, parent_form)
+            repgen_system = report_gen_func.getReportGeneratorSystem(report_filename, parent_form)
             stylelib = loadStyleLib(stylelib_filename)
 
-            data = repgen_system.generate(resfunc.loadResourceFile(report_filename), db_url, sql,
+            data = repgen_system.generate(res_func.loadResource(report_filename), db_url, sql,
                                           stylelib=stylelib, vars=variables)
 
             if command:
@@ -387,13 +375,9 @@ def doReport(parent_form=None, report_filename='', report_dir='', db_url='', sql
                 elif command == DO_COMMAND_SELECT:
                     repgen_system.doSelectAction(data)
                 else:
-                    log_func.warning(u'Не обрабатываемая команда запуска <%s>' % command)
+                    log_func.error(u'Not processed start command <%s>' % command)
             else:
                 repgen_system.save(data)
         return True
     except:
-        log_func.fatal(u'Ошибка запуска генератора отчета <%s>' % report_filename)
-
-
-if __name__ == '__main__':
-    doReport()
+        log_func.fatal(u'Error starting report generator <%s>' % report_filename)

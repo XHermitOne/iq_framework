@@ -38,7 +38,7 @@ def loadResource(res_filename):
                                                                                   RESOURCE_FILE_EXT))
 
     if struct is None:
-        log_func.warning(u'Resource file format error: <%s>.' % res_filename)
+        log_func.warning(u'Resource file num_format error: <%s>.' % res_filename)
     return struct
 
 

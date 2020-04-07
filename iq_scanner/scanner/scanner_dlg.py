@@ -711,7 +711,7 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
         """
         A handler for selecting the type of scan file.
              If you select a scan file type
-             not pdf / picture format then it turns off
+             not pdf / picture num_format then it turns off
              multi-page scanning.
         """
         if event.GetSelection():

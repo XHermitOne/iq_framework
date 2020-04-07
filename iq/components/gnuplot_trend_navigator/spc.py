@@ -61,8 +61,8 @@ GNUPLOTTRENDNAVIGATOR_SPC = {
     '__help__': {
         'show_legend': u'Show legend?',
 
-        'x_format': u'X axis data presentation format',
-        'y_format': u'Y axis data presentation format',
+        'x_format': u'X axis data presentation num_format',
+        'y_format': u'Y axis data presentation num_format',
         'scene_min': u'The minimum value of the visible trend scene',
         'scene_max': u'The maximum value of the visible trend scene',
         'adapt_scene': u'Sign of scene adaptation according to',

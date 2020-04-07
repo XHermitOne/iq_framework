@@ -2,98 +2,91 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль файла отчета.
-    Файл отчета преставляет собой XML файл формата Excel xmlss.
-    Документация по данному формату находится:
-    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnexcl2k2/html/odc_xmlss.asp.
+Report file module.
+The report file is an XML num_format file Excel xmlss.
+The documentation for this num_format is located:
+http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnexcl2k2/html/odc_xmlss.asp.
 """
 
-# Подключение библиотек
 import time
 import copy
 from xml.sax import saxutils
 
-from ic.std.log import log
-from ic.std.utils import textfunc
+from iq.util import log_func
+from iq.util import str_func
 
-from ic.report import icrepgen
+from . import report_generator
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 0, 0, 1)
 
-# Спецификации и структуры
-# Спецификация стиля ячеек
-SPC_IC_XML_STYLE = {'style_id': '',                                           # Идентификатор стиля
-                    'align': {'align_txt': (0, 0), 'wrap_txt': False},  # Выравнивание
-                    'font': None,                                       # Шрифт
-                    'border': (0, 0, 0, 0),                             # Обрамление
-                    'format': None,                                     # Формат ячейки
-                    'color': {},                                        # Цвет
+SPC_IC_XML_STYLE = {'style_id': '',                                     # Style ID
+                    'align': {'align_txt': (0, 0), 'wrap_txt': False},  # Alignment
+                    'font': None,                                       # Font
+                    'border': (0, 0, 0, 0),                             # Borders
+                    'num_format': None,                                     # Cell num_format
+                    'color': {},                                        # Colour
                     }
 
 
-class icReportFile:
+class iqReportFile(object):
     """
-    Класс файла отчета.
+    Report file class.
     """
     def __init__(self):
         """
-        Конструктор класса.
+        Constructor.
         """
         pass
         
     def write(self, rep_filename, rec_data):
         """
-        Сохранить заполненный отчет в файле.
+        Save the completed report to a file.
 
-        :param rep_filename: Имя файла отчета.
-        :param rec_data: Данные отчета.
-        :return: Функция возвращает имя созданного xml файла,
-            или None в случае ошибки.
+        :param rep_filename: Report filename.
+        :param rec_data: Report data.
+        :return: Created xml filename or None if error.
         """
         pass
 
 
-class icExcelXMLReportFile(icReportFile):
+class iqXMLSpreadSheetReportFile(iqReportFile):
     """
-    Файл *.XML отчета, в формат Excel XMLSS.
+    XML report file in Excel XMLSS num_format.
     """
-    
     def __init__(self):
         """
-        Конструктор.
+        Constructor.
         """
-        icReportFile.__init__(self)
+        iqReportFile.__init__(self)
         
     def write(self, rep_filename, rec_data):
         """
-        Сохранить заполненный отчет в файле.
+        Save the completed report to a file.
 
-        :param rep_filename: Имя файла отчета XML.
-        :param rec_data: Данные отчета.
-        :return: Функция возвращает имя созданного xml файла,
-            или None в случае ошибки.
+        :param rep_filename: Report filename.
+        :param rec_data: Report data.
+        :return: Created xml filename or None if error.
         """
         xml_file = None
         try:
-            # Начать запись
             xml_file = open(rep_filename, 'wt')
-            xml_gen = icXMLSSGenerator(xml_file)
+            xml_gen = iqXMLSSGenerator(xml_file)
             xml_gen.startDocument()
             xml_gen.startBook()
 
-            # Параметры страницы
+            # Page setup
             # xml_gen.savePageSetup(rep_name,report)
         
-            # Стили
+            # Styles
             xml_gen.scanStyles(rec_data['sheet'])
             xml_gen.saveStyles()
         
-            # Данные
+            # Data
             xml_gen.startSheet(rec_data['name'], rec_data)
             xml_gen.saveColumns(rec_data['sheet'])
             for i_row in range(len(rec_data['sheet'])):
                 xml_gen.startRow(rec_data['sheet'][i_row])
-                # Сбросить индекс ячейки
+                # Reset cell index
                 xml_gen.cell_idx = 1
                 for i_col in range(len(rec_data['sheet'][i_row])):
                     cell = rec_data['sheet'][i_row][i_col]
@@ -102,7 +95,6 @@ class icExcelXMLReportFile(icReportFile):
             
             xml_gen.endSheet(rec_data)
        
-            # Закончить запись
             xml_gen.endBook()
             xml_gen.endDocument()
             xml_file.close()
@@ -111,39 +103,36 @@ class icExcelXMLReportFile(icReportFile):
         except:
             if xml_file:
                 xml_file.close()
-            log.error(u'Ошибка сохранения отчета <%s>.' % textfunc.toUnicode(rep_filename))
-            raise
+            log_func.fatal(u'Error report write <%s>' % str_func.toUnicode(rep_filename))
         return None
 
     def write_book(self, rep_filename, *rep_sheet_data):
         """
-        Сохранить список листов заполненного отчета в файле.
+        Save the list of sheets of the completed report in a file.
 
-        :param rep_filename: Имя файла отчета XML.
-        :param rep_sheet_data: Данные отчета, разобранные по листам.
-        :return: Функция возвращает имя созданного xml файла,
-            или None в случае ошибки.
+        :param rep_filename: Report XML filename.
+        :param rep_sheet_data: Report data sorted by sheets.
+        :return: Report xml filename or None if error.
         """
         xml_file = None
         try:
-            # Начать запись
             xml_file = open(rep_filename, 'wt')
-            xml_gen = icXMLSSGenerator(xml_file)
+            xml_gen = iqXMLSSGenerator(xml_file)
             xml_gen.startDocument()
             xml_gen.startBook()
         
             for rep_sheet_data in rep_sheet_data:
-                # Стили
+                # Styles
                 xml_gen.scanStyles(rep_sheet_data['sheet'])
             xml_gen.saveStyles()
         
             for rep_sheet_data in rep_sheet_data:
-                # Данные
+                #
                 xml_gen.startSheet(rep_sheet_data['name'], rep_sheet_data)
                 xml_gen.saveColumns(rep_sheet_data['sheet'])
                 for i_row in range(len(rep_sheet_data['sheet'])):
                     xml_gen.startRow(rep_sheet_data['sheet'][i_row])
-                    # Сбросить индекс ячейки
+
                     xml_gen.cell_idx = 1
                     for i_col in range(len(rep_sheet_data['sheet'][i_row])):
                         cell = rep_sheet_data['sheet'][i_row][i_col]
@@ -152,7 +141,6 @@ class icExcelXMLReportFile(icReportFile):
             
                 xml_gen.endSheet(rep_sheet_data)
        
-            # Закончить запись
             xml_gen.endBook()
             xml_gen.endDocument()
             xml_file.close()
@@ -161,58 +149,55 @@ class icExcelXMLReportFile(icReportFile):
         except:
             if xml_file:
                 xml_file.close()
-            log.error(u'Ошибка сохранения отчета %s.' % rep_filename)
-            raise
+            log_func.fatal(u'Error report write <%s>' % rep_filename)
         return None
 
 
-class icXMLSSGenerator(saxutils.XMLGenerator):
+class iqXMLSSGenerator(saxutils.XMLGenerator):
     """
-    Класс генератора конвертора отчетов в xml представление.
+    Report converter generator class in xml representation.
     """
     def __init__(self, out=None, encoding='utf-8'):
         """
-        Конструктор.
+        Constructor.
         """
         saxutils.XMLGenerator.__init__(self, out, encoding)
 
         self._encoding = encoding
         
-        # Отступ, определяющий вложение тегов
+        # Indentation for tagging
         self.break_line = ''
         
-        # Стили ячеек
+        # Cell styles
         self._styles = []
         
-        # Текущий индекс ячейки в строке
+        # Current cell index in row
         self.cell_idx = 0
-        # Флаг установки индекса в строке
+        # Index setting flag in row
         self._idx_set = False
 
-        # Время начала создания файла
+        # Create file start time
         self.time_start = 0
 
     def startElementLevel(self, name, attrs):
         """
-        Начало тега.
+        Start element.
 
-        :param name: Имя тега.
-        :param attrs: Атрибуты тега (словарь).
+        :param name: Element name.
+        :param attrs: Element attributes (dictionary).
         """
-        # Дописать новый отступ
-        self._write(u'\n' + str(self.break_line))    # self._encoding
+        self._write(u'\n' + str(self.break_line))
 
         saxutils.XMLGenerator.startElement(self, name, attrs)
         self.break_line += ' '
 
     def endElementLevel(self, name):
         """
-        Конец тега.
+        End element.
 
-        :param name: Имя, закрываемого тега.
+        :param name: Element name.
         """
-        # Дописать новый отступ
-        self._write(u'\n' + str(self.break_line))    # self._encoding
+        self._write(u'\n' + str(self.break_line))
 
         saxutils.XMLGenerator.endElement(self, name)
 
@@ -221,52 +206,51 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
 
     def startElement(self, name, attrs):
         """
-        Начало тега.
+        Start element.
 
-        :param name: Имя тега.
-        :param attrs: Атрибуты тега (словарь).
+        :param name: Element name.
+        :param attrs: Element attributes (dictionary).
         """
-        # Дописать новый отступ
-        self._write(u'\n' + str(self.break_line))    # self._encoding
+        self._write(u'\n' + str(self.break_line))
 
         saxutils.XMLGenerator.startElement(self, name, attrs)
 
     def endElement(self, name):
         """
-        Конец тега.
+        End element.
 
-        :param name: Имя, закрываемого тега.
+        :param name: Element name.
         """
         saxutils.XMLGenerator.endElement(self, name)
 
         if self.break_line:
             self.break_line = self.break_line[:-1]
 
-    _orientationRep2XML = {0: 'Portrait',
-                           1: 'Landscape',
-                           '0': 'Portrait',
-                           '1': 'Landscape',
-                           }
+    _REPORT_ORIENTATION2XML = {0: 'Portrait',
+                               1: 'Landscape',
+                               '0': 'Portrait',
+                               '1': 'Landscape',
+                               }
 
     def savePageSetup(self, report):
         """
-        Записать в xml файле параметры страницы.
+        Write page parameters in the xml file.
 
-        :param report: Тело отчета.
+        :param report: Report data.
         """
         self.startElementLevel('WorksheetOptions', {'xmlns': 'urn:schemas-microsoft-com:office:excel'})
         if 'page_setup' in report:
-            # Параметры страницы
+            # Page setup
             self.startElementLevel('PageSetup', {})
 
-            # Ориентация листа
+            # Page orientation
             if 'orientation' in report['page_setup']:
                 self.startElementLevel('Layout',
-                                       {'x:Orientation': self._orientationRep2XML[report['page_setup']['orientation']],
+                                       {'x:Orientation': self._REPORT_ORIENTATION2XML[report['page_setup']['orientation']],
                                         'x:StartPageNum': str(report['page_setup'].setdefault('start_num', 1))})
                 self.endElementLevel('Layout')
 
-            # Поля
+            # Page margins
             if 'page_margins' in report['page_setup']:
                 self.startElementLevel('PageMargins',
                                        {'x:Left': str(report['page_setup']['page_margins'][0]),
@@ -275,7 +259,7 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
                                         'x:Bottom': str(report['page_setup']['page_margins'][3])})
                 self.endElementLevel('PageMargins')
         
-            # Обработка верхнего колонтитула
+            # Upper
             if 'data' in report['upper']:
                 data = str(report['upper']['data'])   # , 'CP1251').encode('UTF-8')
                 self.startElementLevel('Header', 
@@ -283,7 +267,7 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
                                         'x:Data': data})
                 self.endElementLevel('Header')
                 
-            # Обработка нижнего колонтитула
+            # Under
             if 'data' in report['under']:
                 data = str(report['under']['data'])  # , 'CP1251').encode('UTF-8')
                 self.startElementLevel('Footer', 
@@ -293,7 +277,7 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
                 
             self.endElementLevel('PageSetup')
 
-            # Параметры печати
+            # Print options
             self.startElementLevel('Print', {})
 
             if 'paper_size' in report['page_setup']:
@@ -328,14 +312,10 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
 
     def startBook(self):
         """
-        Начало книги.
+        Start workbook.
         """
-        # Время начала создания фала
         self.time_start = time.time()
 
-        # ВНИМАНИЕ! Неоходимо наличие следующих ключей
-        # иначе некоторыетеги не будут пониматься библиотекой
-        # и будет генерироваться ошибка чтения файла
         # <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
         # xmlns:o="urn:schemas-microsoft-com:office:office"
         # xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -348,20 +328,20 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
             
     def endBook(self):
         """
-        Конец книги.
+        End workbook.
         """
         self.endElementLevel('Workbook')
 
     def startSheet(self, rep_name, report):
         """
-        Теги начала страницы.
+        Start worksheet.
 
-        :param rep_name: Имя отчета.
-        :param report: Тело отчета.
+        :param rep_name: Report name.
+        :param report: Report data.
         """
-        rep_name = str(rep_name)    # , self._encoding)
+        rep_name = str(rep_name)
         self.startElementLevel('Worksheet', {'ss:Name': rep_name})
-        # Диапазон ячеек верхнего колонтитула
+
         try:
             if report['upper']:
                 refers_to = self._getUpperRangeStr(report['upper'])
@@ -372,24 +352,23 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
                 self.endElementLevel('NamedRange')
                 self.endElementLevel('Names')
         except:
-            log.error('Names SAVE <%s>' % report['upper'])
+            log_func.fatal('Names SAVE <%s>' % report['upper'])
             raise
-        
-        # Начало таблицы
+
         self.startElementLevel('Table', {})
 
     def _getUpperRangeStr(self, upper):
         """
-        Представить диапазон ячеек верхнего колонтитула в виде строки.
+        Present a range of header cells as a string.
         """
         return '=C%d:C%d,R%d:R%d' % (upper['col'] + 1, upper['col'] + upper['col_size'],
                                      upper['row'] + 1, upper['row'] + upper['row_size'])
         
     def endSheet(self, report):
         """
-        Теги начала страницы.
+        End worksheet.
 
-        :param report: Тело отчета.
+        :param report: Report data.
         """
         self.endElementLevel('Table')
         self.savePageSetup(report)
@@ -397,7 +376,7 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
     
     def scanStyles(self, sheet):
         """
-        Сканирование стилей на листе.
+        Worksheet styles scan.
         """
         for i_row in range(len(sheet)):
             for i_col in range(len(sheet[i_row])):
@@ -408,23 +387,23 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
         
     def setStyle(self, cell):
         """
-        Определить стиль ячейки.
+        Set cell style.
 
-        :param cell: Атрибуты ячейки.
-        :return: Возвращает индекс стиля в списке стилей.
+        :param cell: Cell attributes.
+        :return: Style index in style list.
         """
         cell_style_idx = self.getStyle(cell)
         if cell_style_idx is None:
-            # Создать новый стиль
+            # Create style
             new_idx = len(self._styles)
             cell_style = copy.deepcopy(SPC_IC_XML_STYLE)
             cell_style['align'] = cell['align']
             cell_style['font'] = cell['font']
             cell_style['border'] = cell['border']
-            cell_style['format'] = cell['format']
+            cell_style['num_format'] = cell['num_format']
             cell_style['color'] = cell['color']
             cell_style['style_id'] = 'x'+str(new_idx)
-            # Прописать в ячейке идентификатор стиля
+            # Set style in cell
             cell['style_id'] = cell_style['style_id']
             self._styles.append(cell_style)
             return new_idx
@@ -432,15 +411,13 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
       
     def getStyle(self, cell):
         """
-        Определить стиль ячейки из уже имеющихся.
+        Define a cell style from existing ones.
 
-        :param cell: Атрибуты ячейки.
-        :return: Возвращает индекс стиля в списке стилей.
+        :param cell: Cell attributes.
+        :return: Style index in style list.
         """
-        # сначала поискать в списке стилей
         find_style = [style for style in self._styles if self._equalStyles(style, cell)]
 
-        # Если такой стиль найден, то вернуть его
         if find_style:
             cell['style_id'] = find_style[0]['style_id']
             return self._styles.index(find_style[0])
@@ -448,51 +425,51 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
         
     def _equalStyles(self, style1, style2):
         """
-        Функция проверки равенства стилей.
+        The function of checking the equality of styles.
         """
         return bool(self._equalAlign(style1['align'], style2['align']) and
                     self._equalFont(style1['font'], style2['font']) and
                     self._equalBorder(style1['border'], style2['border']) and
-                    self._equalFormat(style1['format'], style2['format']) and
+                    self._equalFormat(style1['num_format'], style2['num_format']) and
                     self._equalColor(style1['color'], style2['color']))
 
     def _equalAlign(self, align1, align2):
         """
-        Равенство выравниваний.
+        Equal alignments.
         """
         return bool(align1 == align2)
         
     def _equalFont(self, font1, font2):
         """
-        Равенство шрифтов.
+        Equal fonts.
         """
         return bool(font1 == font2)
         
     def _equalBorder(self, border1, border2):
         """
-        Равенство обрамлений.
+        Equal border.
         """
         return bool(border1 == border2)
         
     def _equalFormat(self, format1, format2):
         """
-        Равенство форматов.
+        Equal num_format.
         """
         return bool(format1 == format2)
         
     def _equalColor(self, color1, color2):
         """
-        Равенство цветов.
+        Equal color.
         """
         return bool(color1 == color2)
         
     def saveStyles(self):
         """
-        Записать стили.
+        Save styles.
         """
         self.startElementLevel('Styles', {})
         
-        # Стиль по умолчанию
+        # Default style
         self.startElementLevel('Style', {'ss:ID': 'Default', 'ss:Name': 'Normal'})
         self.startElement('Alignment', {'ss:Vertical': 'Bottom'})
         self.endElement('Alignment')    
@@ -508,25 +485,25 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
         self.endElement('Protection')    
         self.endElementLevel('Style')
         
-        # Дополнительные стили
+        # Additional styles
         for style in self._styles:
             self.startElementLevel('Style', {'ss:ID': style['style_id']})
-            # Выравнивание
-            align = {}
-            h_align = self._alignRep2XML[style['align']['align_txt'][icrepgen.IC_REP_ALIGN_HORIZ]]
-            v_align = self._alignRep2XML[style['align']['align_txt'][icrepgen.IC_REP_ALIGN_VERT]]
+            # Alignment
+            align = dict()
+            h_align = self._REPORT_ALIGNMENT2XML[style['align']['align_txt'][report_generator.IC_REP_ALIGN_HORIZ]]
+            v_align = self._REPORT_ALIGNMENT2XML[style['align']['align_txt'][report_generator.IC_REP_ALIGN_VERT]]
             if h_align:
                 align['ss:Horizontal'] = h_align
             if v_align:
                 align['ss:Vertical'] = v_align
-            # Перенос по словам
+            # Word wrap
             if style['align']['wrap_txt']:
                 align['ss:WrapText'] = '1'
             
             self.startElement('Alignment', align)
             self.endElement('Alignment')
             
-            # Обрамление
+            # Borders
             self.startElementLevel('Borders', {})
             for border_pos in range(4):
                 border = self._borderRep2XML(style['border'], border_pos)
@@ -537,8 +514,8 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
                     self.endElement('Border')
             self.endElementLevel('Borders')
                
-            # Шрифт
-            font = {}
+            # Font
+            font = dict()
             font['ss:FontName'] = style['font']['name']
             font['ss:Size'] = str(int(style['font']['size']))
             if style['font']['style'] == 'bold' or style['font']['style'] == 'boldItalic':
@@ -552,8 +529,8 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
             self.startElement('Font', font)
             self.endElement('Font')
             
-            # Интерьер
-            interior = {}
+            # Interior
+            interior = dict()
             if style['color']:
                 if 'background' in style['color'] and style['color']['background']:
                     interior['ss:Color'] = self._getRGBColor(style['color']['background'])
@@ -562,10 +539,10 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
             self.startElement('Interior', interior)
             self.endElement('Interior')
 
-            # Формат
-            fmt = {}
-            if style['format']:
-                fmt['ss:Format'] = self._getNumFmt(style['format'])
+            # Format
+            fmt = dict()
+            if style['num_format']:
+                fmt['ss:Format'] = self._getNumFmt(style['num_format'])
                 self.startElement('NumberFormat', fmt)
                 self.endElement('NumberFormat')
 
@@ -575,78 +552,71 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
         
     def _getRGBColor(self, color):
         """
-        Преобразование цвета из (R,G,B) в #RRGGBB.
+        Convert (R,G,B) color to #RRGGBB color.
         """
         if type(color) in (list, tuple):
             return '#%02X%02X%02X' % (color[0], color[1], color[2])
-        # ВНИМАНИЕ! Если цвет задается не RGB форматом, тогда оставить его без изменения
+        # If the color is specified in a non-RGB num_format, then leave it unchanged
         return color
 
-    def _getNumFmt(self, format):
+    def _getNumFmt(self, num_format):
         """
-        Формат чисел.
+        Number format.
         """
-        if format[0] == icrepgen.REP_FMT_EXCEL:
-            return format[1:]
-        elif format[0] == icrepgen.REP_FMT_STR:
+        if num_format[0] == report_generator.REP_FMT_EXCEL:
+            return num_format[1:]
+        elif num_format[0] == report_generator.REP_FMT_STR:
             return '@'
-        elif format[0] == icrepgen.REP_FMT_NUM:
+        elif num_format[0] == report_generator.REP_FMT_NUM:
             return '0'
-        elif format[0] == icrepgen.REP_FMT_FLOAT:
+        elif num_format[0] == report_generator.REP_FMT_FLOAT:
             return '0.'
         return '0'
 
-    # Преобразование выравнивания из нашего представления
-    # в xml представление.
-    _alignRep2XML = {icrepgen.IC_HORIZ_ALIGN_LEFT: 'Left',
-                     icrepgen.IC_HORIZ_ALIGN_CENTRE: 'Center',
-                     icrepgen.IC_HORIZ_ALIGN_RIGHT: 'Right',
-                     icrepgen.IC_VERT_ALIGN_TOP: 'Top',
-                     icrepgen.IC_VERT_ALIGN_CENTRE: 'Center',
-                     icrepgen.IC_VERT_ALIGN_BOTTOM: 'Bottom',
-                     }
+    _REPORT_ALIGNMENT2XML = {report_generator.IC_HORIZ_ALIGN_LEFT: 'Left',
+                             report_generator.IC_HORIZ_ALIGN_CENTRE: 'Center',
+                             report_generator.IC_HORIZ_ALIGN_RIGHT: 'Right',
+                             report_generator.IC_VERT_ALIGN_TOP: 'Top',
+                             report_generator.IC_VERT_ALIGN_CENTRE: 'Center',
+                             report_generator.IC_VERT_ALIGN_BOTTOM: 'Bottom',
+                             }
         
     def _borderRep2XML(self, border, position):
         """
-        Преобразование обрамления из нашего представления
-            в xml представление.
+        Convert framing to xml representation.
         """
         if border[position]:
-            return {'Position': self._positionRep2XML.setdefault(position, 'Left'),
+            return {'Position': self._REPORT_POSITION2XML.setdefault(position, 'Left'),
                     'Color': self._colorRep2XML(border[position].setdefault('color', None)),
-                    'LineStyle': self._lineRep2XML.setdefault(border[position].setdefault('style', icrepgen.IC_REP_LINE_TRANSPARENT), 'Continuous'),
+                    'LineStyle': self._REPORT_LINE2XML.setdefault(border[position].setdefault('style', report_generator.IC_REP_LINE_TRANSPARENT), 'Continuous'),
                     'Weight': str(border[position].setdefault('weight', 1)),
                     }
 
-    # Преобразование позиции линии обрамления из нашего представления
-    # в xml представление.
-    _positionRep2XML = {icrepgen.IC_REP_BORDER_LEFT: 'Left',
-                        icrepgen.IC_REP_BORDER_RIGHT: 'Right',
-                        icrepgen.IC_REP_BORDER_TOP: 'Top',
-                        icrepgen.IC_REP_BORDER_BOTTOM: 'Bottom',
-                        }
+    _REPORT_POSITION2XML = {report_generator.IC_REP_BORDER_LEFT: 'Left',
+                            report_generator.IC_REP_BORDER_RIGHT: 'Right',
+                            report_generator.IC_REP_BORDER_TOP: 'Top',
+                            report_generator.IC_REP_BORDER_BOTTOM: 'Bottom',
+                            }
         
-    _lineRep2XML = {icrepgen.IC_REP_LINE_SOLID: 'Continuous',
-                    icrepgen.IC_REP_LINE_SHORT_DASH: 'Dash',
-                    icrepgen.IC_REP_LINE_DOT_DASH: 'DashDot',
-                    icrepgen.IC_REP_LINE_DOT: 'Dot',
-                    icrepgen.IC_REP_LINE_TRANSPARENT: None,
-                    }
+    _REPORT_LINE2XML = {report_generator.IC_REP_LINE_SOLID: 'Continuous',
+                        report_generator.IC_REP_LINE_SHORT_DASH: 'Dash',
+                        report_generator.IC_REP_LINE_DOT_DASH: 'DashDot',
+                        report_generator.IC_REP_LINE_DOT: 'Dot',
+                        report_generator.IC_REP_LINE_TRANSPARENT: None,
+                        }
     
     def _colorRep2XML(self, color):
         """
-        Преобразование цвета из нашего представления
-            в xml представление.
+        Convert color to xml representation.
         """
         return None
 
     def saveColumns(self, sheet):
         """
-        Запись атрибутов колонок.
+        Save column attributes.
         """
         width_cols = self.getWidthColumns(sheet)
         for width_col in width_cols:
-            # Если ширина колонки определена
             if width_col is not None:
                 self.startElement('Column', {'ss:Width': str(width_col), 'ss:AutoFitWidth': '0'})
             else:
@@ -655,7 +625,7 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
             
     def getColumnCount(self, sheet):
         """
-        Определить количество колонок.
+        Get column number.
         """
         if sheet:
             return max([len(row) for row in sheet])
@@ -663,45 +633,44 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
 
     def getWidthColumns(self, sheet):
         """
-        Ширины колонок.
+        Get column width list.
         """
         col_count = self.getColumnCount(sheet)
         col_width = []
-        # Выбрать строку по которой будыт выставяться ширины колонок
         row = [row for row in sheet if len(row) == col_count][0] if sheet else list()
         for cell in row:
             if cell:
-                # log.debug('Column width <%s>' % new_cell['width'])
+                # log_func.debug('Column width <%s>' % new_cell['width'])
                 col_width.append(cell['width'])
             else:
-                # log.debug('Column default width')
+                # log_func.debug('Column default width')
                 col_width.append(8.43)
         return col_width
 
     def getRowHeight(self, row):
         """
-        Высота строки.
+        Get row height.
         """
         return min([cell['height'] for cell in [cell_ for cell_ in row if type(cell_) == dict and 'height' in cell_]])
             
     def startRow(self, row):
         """
-        Начало строки.
+        Start row.
         """
         height_row = self.getRowHeight(row)
         self.startElementLevel('Row', {'ss:Height': str(height_row)})
-        self._idx_set = False       # Сбросить флаг установки индекса
+        self._idx_set = False       # Clear the index setting flag
         self.cell_idx = 1
             
     def endRow(self):
         """
-        Конец строки.
+        End row.
         """
         self.endElementLevel('Row')
         
     def _saveCellStyleID(self, cell):
         """
-        Определить идентификатор стиля ячейки для записи.
+        Cell style id for save.
         """
         if 'style_id' in cell:
             return cell['style_id']
@@ -715,21 +684,21 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
         
     def saveCell(self, row, column, cell, sheet=None):
         """
-        Записать ячейку.
+        Save cell.
 
-        :param row: НОмер строки.
-        :param column: Номер колонки.
-        :param cell: Атрибуты ячейки.
+        :param row: Row data.
+        :param column: Column data.
+        :param cell: Cell attributes.
         """
         if cell is None:
-            self._idx_set = False   # Сбросить флаг установки индекса
+            self._idx_set = False   # Clear the index setting flag
             self.cell_idx += 1
             return 
 
         if 'hidden' in cell and cell['hidden']:
-            self._idx_set = False   # Сбросить флаг установки индекса
-            # ВНИМАНИЕ!!! Здесь надо увеличивать индекс на 1
-            # потому что в Excel индексирование начинается с 1 !!!
+            self._idx_set = False   # Clear the index setting flag
+            # Here you need to increase the index by 1
+            # because in Excel indexing starts at 1
             self.cell_idx += 1
             return 
 
@@ -737,27 +706,27 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
         if self.cell_idx > 1:
             if not self._idx_set:
                 cell_attr = {'ss:Index': str(self.cell_idx)}
-                self._idx_set = True    # Установить флаг установки индекса
+                self._idx_set = True    # Set the index setting flag
 
-        # Объединение ячеек
+        # Merge cells
         if cell['merge_col'] > 1:
             cell_attr['ss:MergeAcross'] = str(cell['merge_col'] - 1)
-            # Обработать верхнюю строку области объединения
-            self._setCellmerge_across(row, column, cell['merge_col'], sheet)
+            # Process top row of join area
+            self._setCellMergeAcross(row, column, cell['merge_col'], sheet)
             if cell['merge_row'] > 1:
-                # Обработать дополнительную область объединения
+                # Process additional join area
                 self._setCellMerge(row, column, cell['merge_col'], cell['merge_row'], sheet)
-            self._idx_set = False   # Сбросить флаг установки индекса
-        # ВНИМАНИЕ!!! Здесь надо увеличивать индекс на 1
-        # потому что в Excel индексирование начинается с 1 !!!
+            self._idx_set = False   # Clear the index setting flag
+        # Here you need to increase the index by 1
+        # because in Excel indexing starts at 1
         self.cell_idx = column+1
     
         if cell['merge_row'] > 1:
             cell_attr['ss:MergeDown'] = str(cell['merge_row'] - 1)
-            # Обработать левый столбец области объединения
+            # Edit left column of join area
             self._setCellMergeDown(row, column, cell['merge_row'], sheet)
 
-        # Стиль
+        # Style
         cell_attr['ss:StyleID'] = self._saveCellStyleID(cell)
 
         self.startElement('Cell', cell_attr)
@@ -772,20 +741,20 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
         
     def _getCellValue(self, value):
         """
-        Подготовить значение для записи в файл.
+        Get cell value.
         """
         if self._getCellType(value) == 'Number':
-            # Это число
+            # Number
             value = value.strip()
         else:
-            # Это не число
+            # Not number
             value = value
 
         if not isinstance(value, str):
             try:
-                value = str(value)  #, self._encoding)
+                value = str(value)
             except:
-                value = str(value)  #, 'cp1251')
+                value = str(value)
         if value:
             value = saxutils.escape(value)
             
@@ -793,26 +762,26 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
 
     def _getCellType(self, value):
         """
-        Тип ячейки.
+        Get cell type.
         """
         try:
-            # Это число
+            # Number
             float(value)
             return 'Number'
         except:
-            # Это не число
+            # Not number
             return 'String'
 
-    def _setCellmerge_across(self, row, column, merge_across_, sheet):
+    def _setCellMergeAcross(self, row, column, merge_across, sheet):
         """
-        Сбросить все ячейки, которые попадают в горизонтальную зону объединения.
+        Reset all cells that fall into the horizontal pool area.
 
-        :param row: НОмер строки.
-        :param column: Номер колонки.
-        :param merge_across_: Количество ячеек, объединенных с текущей.
-        :param sheet: Структура листа.
+        :param row: Row.
+        :param column: Column.
+        :param merge_across: Merge cell number.
+        :param sheet: Worksheet struct data.
         """
-        for i in range(1, merge_across_):
+        for i in range(1, merge_across):
             try:
                 cell = sheet[row - 1][column + i - 1]
             except IndexError:
@@ -823,12 +792,12 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
 
     def _setCellMergeDown(self, row, column, merge_down, sheet):
         """
-        Сбросить все ячейки, которые попадают в вертикальную зону объединения.
+        Reset all cells that fall into the vertical pool area.
 
-        :param row: НОмер строки.
-        :param column: Номер колонки.
-        :param merge_down: Количество ячеек, объединенных с текущей.
-        :param sheet: Структура листа.
+        :param row: Row.
+        :param column: Column.
+        :param merge_down: Merge cell number.
+        :param sheet: Worksheet struct data.
         """
         for i in range(1, merge_down):
             try:
@@ -839,17 +808,17 @@ class icXMLSSGenerator(saxutils.XMLGenerator):
                 sheet[row + i - 1][column - 1]['hidden'] = True
         return sheet
 
-    def _setCellMerge(self, row, column, merge_across_, merge_down, sheet):
+    def _setCellMerge(self, row, column, merge_across, merge_down, sheet):
         """
-        Сбросить все ячейки, которые попадают в зону объединения.
+        Reset all cells that fall into the pool zone.
 
-        :param row: НОмер строки.
-        :param column: Номер колонки.
-        :param merge_across_: Количество ячеек, объединенных с текущей.
-        :param merge_down: Количество ячеек, объединенных с текущей.
-        :param sheet: Структура листа.
+        :param row: Row.
+        :param column: Column.
+        :param merge_across: Merge cell number.
+        :param merge_down: Merge cell number.
+        :param sheet: Worksheet struct data.
         """
-        for x in range(1, merge_across_):
+        for x in range(1, merge_across):
             for y in range(1, merge_down):
                 try:
                     cell = sheet[row + y - 1][column + x - 1]

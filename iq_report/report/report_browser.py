@@ -5,92 +5,93 @@
 Модуль приложения генератора отчетов.
 """
 
-# Подключение библиотек
 import os
 import os.path
 
 import wx
 import wx.lib.buttons
 
-from ic.std.utils import inifunc
-from ic.std.dlg import dlg
-from ic.std.img import bmp
-from ic.std.log import log
-from ic.std.utils import filefunc
-from ic.std.utils import resfunc
+from iq.util import ini_func
+from iq.util import file_func
+from iq.util import res_func
+from iq.util import log_func
+from iq.util import global_func
 
-import ic.report
-from ic.report import report_generator
-from ic import config
+from iq.dialog import dlg_func
+from iq.engine import img_func
 
-__version__ = (0, 1, 1, 2)
+from . import report_gen_func
+# from . import config
 
-# Константы
-# Индексы полей списка кортежей
+__version__ = (0, 0, 0, 1)
 
-REP_FILE_IDX = 0        # полное имя файла/директория отчета
-REP_NAME_IDX = 1        # имя отчета/директория
-REP_DESCRIPT_IDX = 2    # описание отчета/директория
-REP_ITEMS_IDX = 3       # вложенные объекты
-REP_IMG_IDX = 4         # Образ отчета в дереве отчетов
+# Indexes
+REP_FILE_IDX = 0            # full file name / report directory
+REP_NAME_IDX = 1            # report name / directory
+REP_DESCRIPTION_IDX = 2     # report description / directory
+REP_ITEMS_IDX = 3           # nested objects
+REP_IMG_IDX = 4             # Report image in the report tree
 
-# Режимы работы браузера
-IC_REPORT_VIEWER_MODE = 0
-IC_REPORT_EDITOR_MODE = 1
+# Browser modes
+REPORT_VIEWER_MODE = 0
+REPORT_EDITOR_MODE = 1
 
-# Позиции и размеры кнопок управления
+# Positions and sizes of control buttons
 REP_BROWSER_BUTTONS_POS_X = 780
 REP_BROWSER_BUTTONS_WIDTH = 200
 REP_BROWSER_BUTTONS_HEIGHT = 30
 
-# Не обрабатываемые имена папок
+# Unprocessed folder names
 NOT_WORK_DIRNAMES = ('__pycache__',)
 
-# Размер диалогового окна
+# Dialog box size
 REP_BROWSER_DLG_WIDTH = 1000
 REP_BROWSER_DLG_HEIGHT = 460
 
-# Заголовок
-TITLE = 'icReport'
+# Dialog title
+TITLE = 'iqReport'
+
+REPORT_FILENAME_EXT = '.rep'
+XLS_FILENAME_EXT = '.xls'
 
 
 def getReportList(report_dir, is_sort=True):
     """
     Получить список отчетов.
 
-    :param report_dir: Директорий, в котором лежат файлы отчетов.
+    :param report_dir: Report directory.
     :type is_sort: bool.
-    :param is_sort: Сортировать список по именам?
-    :return: Возвращает список списков следующего формата:
+    :param is_sort: Sort list by name?
+    :return: Format list:
         [
-        [полное имя файла/директория отчета, имя отчета/директория,
-            описание отчета/директория, None/вложенные объекты, индекс образа],
+            [
+            full file name / report directory,
+            report name / directory,
+            report description / directory,
+            None / Nested Objects,
+            image index
+            ],
         .
         .
         .
         ]
-        Описание директория берется из файла descript.ion,
-        который должен находится в этой же директории.
-        Если такой файл не найден, то описание директория - пустое.
-        Вложенные объекты список, элементы которого имеют такую же структуру.
+        The description of the directory is taken from the descript.ion file,
+        which should be in the same directory.
+        If such a file is not found, then the directory description is empty.
+        Nested objects is a list whose elements have the same structure.
     """
     try:
-        # Коррекция аргументов
         report_dir = os.path.abspath(os.path.normpath(report_dir))
-        log.debug(u'Сканирование папки отчетов <%s>' % report_dir)
+        log_func.debug(u'Report folder scan <%s>' % report_dir)
 
-        # Выходой список
         dir_list = list()
         rep_list = list()
 
-        # Сначала обработать под-папки
-        sub_dirs = filefunc.getSubDirsFilter(report_dir)
+        sub_dirs = file_func.getSubDirs(report_dir)
 
-        # то записать информацию в выходной список о директории
         img_idx = 0
         for sub_dir in sub_dirs:
-
-            # Исключить не обрабатываемые папки
+            # Exclude not processed folders
             if os.path.basename(sub_dir) in NOT_WORK_DIRNAMES:
                 continue
 
@@ -104,50 +105,44 @@ def getReportList(report_dir, is_sort=True):
                     description_file.close()
                 dir_description = sub_dir
 
-            # Для поддиректориев рекурсивно вызвать эту же функцию
             data = [sub_dir, os.path.basename(sub_dir), dir_description,
                     getReportList(sub_dir, is_sort), img_idx]
             dir_list.append(data)
+
         if is_sort:
-            # ВНИМАНИЕ! Сортировка по 3-й колонке
             dir_list.sort(key=lambda i: i[2])
 
-        # Получить список всех файлов
-        file_rep_list = [filename for filename in filefunc.getFilesByExt(report_dir, '.rprt')
-                         if not filename.lower().endswith('_pkl.rprt')]
-        # log.debug(u'Список файлов отчетов %s' % filefunc.getFilesByExt(report_dir, '.rprt'))
+        filename_mask = os.path.join(report_dir, '*%s' % REPORT_FILENAME_EXT)
+        file_rep_list = [filename for filename in file_func.getFilesByMask(filename_mask)]
 
         for rep_file_name in file_rep_list:
-            # записать данные о этом файле в выходной список
-            rep_struct = resfunc.loadResourceFile(rep_file_name, bRefresh=True)
-            # Определение образа
+            rep_struct = res_func.loadRuntimeResource(rep_file_name)
             img_idx = 2
             try:
                 if rep_struct['generator'][-3:].lower() == 'xml':
                     img_idx = 1
             except:
-                log.warning('Ошибка определения типа отчета')
-            # Данные
+                log_func.error(u'Report type definition error')
+
             try:
                 data = [rep_file_name, rep_struct['name'],
                         rep_struct['description'], None, img_idx]
                 rep_list.append(data)
             except:
-                log.fatal(u'Ошибка чтения шаблона отчета <%s>' % rep_file_name)
+                log_func.fatal(u'Error reading report template <%s>' % rep_file_name)
+
         if is_sort:
-            # ВНИМАНИЕ! Сортировка по 3-й колонке
             rep_list.sort(key=lambda i: i[2])
 
         return dir_list + rep_list
     except:
-        # Вывести сообщение об ошибке в лог
-        log.fatal(u'Ошибка заполнения информации о файлах отчетов <%s>.' % report_dir)
+        log_func.fatal(u'Error filling out information about report files <%s>.' % report_dir)
     return list()
 
 
-def get_root_dirname():
+def getRootDirname():
     """
-    Путь к корневой папке.
+    Get project root dirname.
     """
     cur_dirname = os.path.dirname(__file__)
     if not cur_dirname:
@@ -155,426 +150,345 @@ def get_root_dirname():
     return os.path.dirname(os.path.dirname(cur_dirname))
 
 
-def get_img_dirname():
+class iqReportBrowserDialog(wx.Dialog):
     """
-    Путь к папке образов.
+    Report browser form.
     """
-    cur_dirname = os.path.dirname(__file__)
-    if not cur_dirname:
-        cur_dirname = os.getcwd()
-    return os.path.join(cur_dirname, 'img')
-
-
-class icReportBrowserDialog(wx.Dialog):
-    """
-    Форма браузера отчетов.
-    """
-    def __init__(self, parent=None, mode=IC_REPORT_VIEWER_MODE, report_dir=''):
+    def __init__(self, parent=None, mode=REPORT_VIEWER_MODE, report_dir=''):
         """
-        Конструктор.
+        Constructor.
 
-        :param parent: Родительская форма.
-        :param mode: Режим работы.
-        :param report_dir: Папка отчетов.
+        :param parent: Parent window.
+        :param mode: Browser mode.
+        :param report_dir: Report directory.
         """
-        # Версия в строковом виде
-        ver = '.'.join([str(ident) for ident in config.__version__])
-        # Создать экземпляр главного окна
+        ver = '.'.join([str(ident) for ident in __version__])
         wx.Dialog.__init__(self, parent, wx.NewId(),
-                           title=u'%s. Система управления отчетами. v. %s' % (TITLE, ver),
+                           title=u'%s. Report management system. v. %s' % (TITLE, ver),
                            pos=wx.DefaultPosition, size=wx.Size(REP_BROWSER_DLG_WIDTH, REP_BROWSER_DLG_HEIGHT),
                            style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION)
 
-        # Папка отчетов
-        self._ReportDir = report_dir
+        self._report_dirname = report_dir
 
         self.icon = None
         self.SetIcon(self.get_icon_obj())
 
-        # Строка папки отчетов
         self.dir_txt = wx.StaticText(self, id=wx.NewId(),
                                      label='',
                                      pos=wx.Point(10, 10), size=wx.DefaultSize,
                                      style=0)
 
-        # Если папки отчетов не определена или не существует, то ...
-        if not self._ReportDir or not os.path.exists(self._ReportDir):
-            # ... считать путь к папке отчетов из файла настройки
-            self._ReportDir = inifunc.loadParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir')
-            if not self._ReportDir or not os.path.exists(self._ReportDir):
-                self._ReportDir = dlg.getDirDlg(self,
-                                                u'Папка отчетов <%s> не найдена. Выберите папку отчетов.' %  self._ReportDir)
-                # Сохранить сразу в конфигурационном файле
-                if self._ReportDir:
-                    self._ReportDir = os.path.normpath(self._ReportDir)
-                    inifunc.saveParamINI(self.getReportSettingsINIFile(),
-                                         'REPORTS', 'report_dir', self._ReportDir)
-        # Отобразить новый путь в окне
-        self.dir_txt.SetLabel(self._ReportDir)
+        if not self._report_dirname or not os.path.exists(self._report_dirname):
+            self._report_dirname = ini_func.loadParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir')
+            if not self._report_dirname or not os.path.exists(self._report_dirname):
+                self._report_dirname = dlg_func.getDirDlg(self,
+                                                          u'Report directory <%s> not found. Select report directory.' % self._report_dirname)
 
-        # Список отчетов
+                if self._report_dirname:
+                    self._report_dirname = os.path.normpath(self._report_dirname)
+                    ini_func.saveParamINI(self.getReportSettingsINIFile(),
+                                          'REPORTS', 'report_dir', self._report_dirname)
+        self.dir_txt.SetLabel(self._report_dirname)
+
         self.rep_tree = wx.TreeCtrl(self, wx.NewId(),
                                     pos=wx.Point(10, 30), size=wx.Size(750, 390), style=wx.TR_HAS_BUTTONS,
                                     validator=wx.DefaultValidator, name='ReportTree')
 
         self.img_list = wx.ImageList(16, 16)
-        self.img_list.Add(bmp.createBitmap(os.path.join(get_img_dirname(), 'reports.png')))
-        self.img_list.Add(bmp.createBitmap(os.path.join(get_img_dirname(), 'page_excel.png')))
-        self.img_list.Add(bmp.createBitmap(os.path.join(get_img_dirname(), 'report.png')))
+        img = img_func.createIconImage('fatcow/report_stack')
+        self.img_list.Add(img)
+        img = img_func.createIconImage('fatcow/report_green')
+        self.img_list.Add(img)
+        img = img_func.createIconImage('fatcow/report')
+        self.img_list.Add(img)
         self.rep_tree.AssignImageList(self.img_list)
 
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.onSelectChanged, id=self.rep_tree.GetId())
 
-        # Кнопки управления
-
-        # Кнопка вывода отчета/предварительного просмотра/печати
-        self.rep_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                             bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                           'report_magnify.png')),
-                                                             u'Предв. просмотр',
+        img = img_func.createIconImage('fatcow/report_magnify')
+        self.rep_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Preview',
                                                              size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                    REP_BROWSER_BUTTONS_HEIGHT),
                                                              pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 30))
         self.Bind(wx.EVT_BUTTON, self.onPreviewRepButton, id=self.rep_button.GetId())
 
-        # Кнопка /печати
-        self.print_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                               bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                             'printer.png')),
-                                                               u'Печать',
+        img = img_func.createIconImage('fatcow/printer')
+        self.print_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Print',
                                                                size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                      REP_BROWSER_BUTTONS_HEIGHT),
                                                                pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 70))
         self.Bind(wx.EVT_BUTTON, self.onPrintRepButton, id=self.print_button.GetId())
 
-        # Кнопка установки параметров страницы
-        self.page_setup_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                                    bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                                  'page_orientation.png')),
-                                                                    u'Параметры страницы',
+        img = img_func.createIconImage('fatcow/page_orientation')
+        self.page_setup_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Page setup',
                                                                     size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                           REP_BROWSER_BUTTONS_HEIGHT),
                                                                     pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 110))
         self.Bind(wx.EVT_BUTTON, self.onPageSetupButton, id=self.page_setup_button.GetId())
 
-        # Кнопка конвертирования отчета
-        self.convert_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                                 bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                               'excel_exports.png')),
-                                                                 u'Конвертация',
-                                                                 size=(REP_BROWSER_BUTTONS_WIDTH,
-                                                                       REP_BROWSER_BUTTONS_HEIGHT),
-                                                                 pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 150))
+        img = img_func.createIconImage('fatcow/excel_exports')
+        self.export_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Export',
+                                                                size=(REP_BROWSER_BUTTONS_WIDTH,
+                                                                      REP_BROWSER_BUTTONS_HEIGHT),
+                                                                pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 150))
         self.Bind(wx.EVT_BUTTON, self.onConvertRepButton, id=self.convert_button.GetId())
 
-        if mode == IC_REPORT_EDITOR_MODE:
-            # Кнопка настройки
-            self.set_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                                 bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                               'folder_vertical_document.png')),
-                                                                 u'Папка отчетов',
+        if mode == REPORT_EDITOR_MODE:
+            img = img_func.createIconImage('fatcow/folder_vertical_document')
+            self.set_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Report folder',
                                                                  size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                        REP_BROWSER_BUTTONS_HEIGHT),
                                                                  pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 190))
             self.Bind(wx.EVT_BUTTON, self.onSetRepDirButton, id=self.set_button.GetId())
 
-            # Кнопка создания нового отчета
-            self.new_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                                 bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                               'report_add.png')),
-                                                                 u'Создание',
+            img = img_func.createIconImage('fatcow/report_add')
+            self.new_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Create',
                                                                  size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                        REP_BROWSER_BUTTONS_HEIGHT),
                                                                  pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 230))
             self.Bind(wx.EVT_BUTTON, self.onNewRepButton, id=self.new_button.GetId())
 
-            # Кнопка редактирования отчета
-            self.edit_button=wx.lib.buttons.GenBitmapTextButton(self,wx.NewId(),
-                                                                bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                              'report_design.png')),
-                                                                u'Редактирование',
+            img = img_func.createIconImage('fatcow/report_design')
+            self.edit_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Edit',
                                                                 size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                       REP_BROWSER_BUTTONS_HEIGHT),
                                                                 pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 270))
             self.Bind(wx.EVT_BUTTON, self.onEditRepButton, id=self.edit_button.GetId())
 
-            # Кнопка Обновления отчета
-            self.convert_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                                     bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                                   'arrow_refresh.png')),
-                                                                     u'Обновление',
+            img = img_func.createIconImage('fatcow/arrow_refresh')
+            self.convert_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Update',
                                                                      size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                            REP_BROWSER_BUTTONS_HEIGHT),
                                                                      pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 310))
             self.Bind(wx.EVT_BUTTON, self.onUpdateRepButton, id=self.convert_button.GetId())
 
-            # Кнопка модуля отчета
-            self.module_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                                    bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                                  'script_lightning.png')),
-                                                                    u'Модуль отчета',
-                                                                    size=(REP_BROWSER_BUTTONS_WIDTH,
-                                                                          REP_BROWSER_BUTTONS_HEIGHT),
-                                                                    pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 350))
-            self.Bind(wx.EVT_BUTTON, self.onModuleRepButton, id=self.module_button.GetId())
-                
-        # Кнопка выхода
-        self.exit_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
-                                                              bmp.createBitmap(os.path.join(get_img_dirname(),
-                                                                                            'door_in.png')),
-                                                              u'Выход',
+            # self.module_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(),
+            #                                                         bmp.createBitmap(os.path.join(get_img_dirname(),
+            #                                                                                       'script_lightning.png')),
+            #                                                         u'Модуль отчета',
+            #                                                         size=(REP_BROWSER_BUTTONS_WIDTH,
+            #                                                               REP_BROWSER_BUTTONS_HEIGHT),
+            #                                                         pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 350))
+            # self.Bind(wx.EVT_BUTTON, self.onModuleRepButton, id=self.module_button.GetId())
+
+        img = img_func.createIconImage('fatcow/door_in')
+        self.exit_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Exit',
                                                               size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                     REP_BROWSER_BUTTONS_HEIGHT),
                                                               pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 390),
                                                               style=wx.ALIGN_LEFT)
         self.Bind(wx.EVT_BUTTON, self.onExitButton, id=self.exit_button.GetId())
 
-        # Заполнить дерево отчетов
-        self._fillReportTree(self._ReportDir)
-
-    def get_icon_obj(self):
-        """
-        Функция получения иконки формы браузера.
-        """
-        if self.icon is None:
-            icon_filename = os.path.join(get_img_dirname(), 'report_stack.png')
-            self.icon = wx.Icon(icon_filename, wx.BITMAP_TYPE_PNG)
-        return self.icon
+        self.buildReportTree(self._report_dirname)
 
     def getReportSettingsINIFile(self):
         """
-        Определить имя конфигурационного файла, 
-            в котором хранится путь к папке отчетов.
+        Get the name of the configuration file in which the path
+        to the report folder is stored.
         """
-        return os.path.join(get_root_dirname(), 'settings.ini')
+        if global_func.getProjectName():
+            prj_settings_filename = file_func.getProjectSettingsFilename()
+            return prj_settings_filename
+        return os.path.join(getRootDirname(), 'settings.ini')
         
     def onPreviewRepButton(self, event):
         """
-        Обработчик нажатия кнопки 'Предварительный просмотр/Печать'.
+        Preview button click handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        log.debug(u'Предварительный просмотр <%s>' % str(item_data[REP_FILE_IDX] if item_data else u'-'))
-        # Если это файл отчета, то получить его
+        log_func.debug(u'Preview <%s>' % str(item_data[REP_FILE_IDX] if item_data else u'-'))
+
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            # Получение отчета
-            report_generator.getReportGeneratorSystem(item_data[REP_FILE_IDX],
-                                                      parent=self,
-                                                      bRefresh=True).preview()
-        # Если это папка, то вывести сообщение
+            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
+                                                     parent=self,
+                                                     refresh=True).preview()
         else:
-            dlg.getWarningBox(title=u'ВНИМАНИЕ', message=u'Необходимо выбрать отчет!', parent=self)
+            dlg_func.openWarningBox(title=u'WARNING',
+                                    message=u'You must select a report', parent=self)
         event.Skip()
             
     def onPrintRepButton(self, event):
         """
-        Обработчик нажатия кнопки 'Печать отчета'.
+        Print button click handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        log.debug(u'Печать <%s>' % item_data[REP_FILE_IDX] if item_data else u'-')
-        # Если это файл отчета, то получить его
+        log_func.debug(u'Print <%s>' % item_data[REP_FILE_IDX] if item_data else u'-')
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            # Получение отчета
-            report_generator.getReportGeneratorSystem(item_data[REP_FILE_IDX],
-                                                      parent=self,
-                                                      bRefresh=True).Print()
-        # Если это папка, то вывести сообщение
+            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
+                                                     parent=self,
+                                                     refresh=True).print()
         else:
-            dlg.getWarningBox(title=u'ВНИМАНИЕ', message=u'Необходимо выбрать отчет!', parent=self)
+            dlg_func.openWarningBox(title=u'WARNING',
+                                    message=u'You must select a report', parent=self)
         event.Skip()
 
     def onPageSetupButton(self, event):
         """
-        Обработчик нажатия кнопки 'Параметры страницы'.
+        Page setup button click handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        # Если это файл отчета, то получить его
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            # Получение отчета
-            report_generator.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self).setPageSetup()
-        # Если это папка, то вывести сообщение
+            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self).setPageSetup()
         else:
-            dlg.getWarningBox(title=u'ВНИМАНИЕ', message=u'Необходимо выбрать отчет!', parent=self)
+            dlg_func.openWarningBox(title=u'WARNING',
+                                    message=u'You must select a report', parent=self)
         event.Skip()
 
     def onSetRepDirButton(self, event):
         """
-        Обработчик нажатия кнопки 'Папка отчетов'.
+        Report folder button click handler.
         """
-        # Считать путь к папке отчетов из файла настройки
-        self._ReportDir = inifunc.loadParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir')
-        # Выбрать папку отчетов
-        dir_dlg = wx.DirDialog(self, u'Выберите путь к папке отчетов:',
+        self._report_dirname = ini_func.loadParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir')
+        dir_dlg = wx.DirDialog(self, u'Select report folder path:',
                                style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
-        # Установка пути по умолчанию
-        if self._ReportDir:
-            dir_dlg.SetPath(self._ReportDir)
+        if self._report_dirname:
+            dir_dlg.SetPath(self._report_dirname)
         if dir_dlg.ShowModal() == wx.ID_OK:
-            self._ReportDir = dir_dlg.GetPath()
+            self._report_dirname = dir_dlg.GetPath()
         
         dir_dlg.Destroy()        
 
-        # Сохранить новую выбранную папку
-        ok = inifunc.saveParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir', self._ReportDir)
+        ok = ini_func.saveParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir', self._report_dirname)
             
         if ok is True:
-            # Отобразить новый путь в окне
-            self.dir_txt.SetLabel(self._ReportDir)
-            # и обновить дерево отчетов
-            self._fillReportTree(self._ReportDir)
+            self.dir_txt.SetLabel(self._report_dirname)
+            self.buildReportTree(self._report_dirname)
         event.Skip()
 
     def onExitButton(self, event):
         """
-        Обработчик нажатия кнопки 'Выход'.
+        Exit button click handler.
         """
         self.EndModal(wx.ID_OK)
         event.Skip()
 
     def onNewRepButton(self, event):
         """
-        Обработчик нажатия ккнопки 'Новый отчет'.
+        Create report button click handler.
         """
-        # Запустить редакторы
-        report_generator.getCurReportGeneratorSystem().createNew(self._ReportDir)
+        report_gen_func.getCurReportGeneratorSystem().createNew(self._report_dirname)
         event.Skip()
 
     def onEditRepButton(self, event):
         """
-        Обработчик нажатия ккнопки 'Редактирование отчета'.
+        Edit button click handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        # Если это файл отчета, то запустить на редактирование
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            # Запустить на редактирование
-            rep_generator = report_generator.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self)
+            rep_generator = report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self)
             if rep_generator is not None:
                 rep_generator.edit(item_data[0])
             else:
-                log.warning(u'Не определен генератор отчета. Тип <%s>' % item_data[REP_FILE_IDX])
+                log_func.error(u'Report generator not defined. Type <%s>' % item_data[REP_FILE_IDX])
 
         event.Skip()
 
     def onUpdateRepButton(self, event):
         """
-        Обработчик нажатия кнопки 'Обновление отчета'.
+        Update button click handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        # Если это файл отчета, то запустить обновление шаблона
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            # Запустить обновление шаблона отчета
-            log.debug(u'Обновление отчета <%s>' % item_data[0])
-            report_generator.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self).update(item_data[0])
+            log_func.debug(u'Update report <%s>' % item_data[0])
+            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self).update(item_data[0])
         else:
-            report_generator.getCurReportGeneratorSystem(self).update()
+            report_gen_func.getCurReportGeneratorSystem(self).update()
                 
-        # Заполнить дерево отчетов
-        self._fillReportTree(self._ReportDir)
+        self.buildReportTree(self._report_dirname)
 
         event.Skip()
 
     def onConvertRepButton(self, event):
         """
-        Обработчик нажатия кнопки 'Конвертация'.
+        Convert button click handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        log.debug(u'Конвертация <%s>' % item_data[REP_FILE_IDX] if item_data else u'-')
-        # Если это файл отчета, то получить его
+        log_func.debug(u'Convert <%s>' % item_data[REP_FILE_IDX] if item_data else u'-')
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            # Получение отчета
-            report_generator.getReportGeneratorSystem(item_data[REP_FILE_IDX],
-                                                      parent=self,
-                                                      bRefresh=True).convert()
+            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
+                                                     parent=self,
+                                                     refresh=True).convert()
         else:
-            dlg.getWarningBox(title=u'ВНИМАНИЕ', message=u'Необходимо выбрать отчет!', parent=self)
+            dlg_func.openWarningBox(title=u'WARNING',
+                                    message=u'You must select a report', parent=self)
 
         event.Skip()
 
     def onModuleRepButton(self, event):
         """
-        Обработчик нажатия кнопки 'Модуль отчета'.
+        Report module button click handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        # Если это файл отчета, то запустить открытие модуля отчета
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            report_generator.getReportGeneratorSystem(item_data[REP_FILE_IDX],
-                                                      parent=self).openModule(item_data[REP_FILE_IDX])
+            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
+                                                     parent=self).openModule(item_data[REP_FILE_IDX])
         else:
-            dlg.getWarningBox(title=u'ВНИМАНИЕ', message=u'Необходимо выбрать отчет!', parent=self)
+            dlg_func.openWarningBox(title=u'WARNING',
+                                    message=u'You must select a report', parent=self)
 
         event.Skip()
 
     def onRightMouseClick(self, event):
         """
-        Нажаитие правой кнопки мыши на дереве.
+        Tree item right mouse button clcik handler.
         """
-        # Создать всплывающее меню
         popup_menu = wx.Menu()
         id_rename = wx.NewId()
-        popup_menu.Append(id_rename, u'Переименовать отчет')
+        popup_menu.Append(id_rename, u'Rename')
         self.Bind(wx.EVT_MENU, self.onRenameReport, id=id_rename)
-        self.rep_tree.PopupMenu(popup_menu,event.GetPosition())
+        self.rep_tree.PopupMenu(popup_menu, event.GetPosition())
         event.Skip()
 
     def onRenameReport(self, event):
         """
-        Переименовать отчет.
+        Rename report menu item handler.
         """
-        # Определить выбранный пункт дерева
         item = self.rep_tree.GetSelection()
         item_data = self.rep_tree.GetItemData(item)
-        # Если это файл отчета, то переименовать его
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
             old_rep_name = os.path.splitext(os.path.split(item_data[REP_FILE_IDX])[1])[0]
-            new_rep_name = dlg.getTextInputDlg(self, u'Переименование отчета',
-                                               u'Введите новое имя отчета', old_rep_name)
-            # Если имя введено и имя не старое, то переименовать
+            new_rep_name = dlg_func.getTextEntryDlg(self, u'Rename report',
+                                                    u'Entry new report name', old_rep_name)
             if new_rep_name and new_rep_name != old_rep_name:
                 new_rep_file_name = os.path.join(os.path.split(item_data[REP_FILE_IDX])[0],
-                                                 new_rep_name+'.rprt')
-                # Если новый файл не существует, то переименовать старый
+                                                 new_rep_name + REPORT_FILENAME_EXT)
+
                 if not os.path.isfile(new_rep_file_name):
                     self.renameReport(item_data[REP_FILE_IDX], new_rep_name)
                 else:
-                    dlg.getWarningBox(title=u'ВНИМАНИЕ',
-                                      message=u'Невозможно поменять имя отчета. Отчет с таким именем уже существует.',
-                                      parent=self)
+                    dlg_func.openWarningBox(title=u'WARNING',
+                                            message=u'A report with the same name already exists',
+                                            parent=self)
 
         event.Skip()
 
     def renameReport(self, rep_filename, new_name):
         """
-        Переименовать отчет.
+        Rename report.
         """
         old_name = os.path.splitext(os.path.split(rep_filename)[1])[0]
         old_rep_file_name = rep_filename
-        old_rep_pkl_file_name = os.path.splitext(old_rep_file_name)[0] + '_pkl.rprt'
-        old_xls_file_name = os.path.splitext(old_rep_file_name)[0] + '.xls'
+        old_rep_pkl_file_name = os.path.splitext(old_rep_file_name)[0] + res_func.PICKLE_RESOURCE_FILE_EXT
+        old_xls_file_name = os.path.splitext(old_rep_file_name)[0] + XLS_FILENAME_EXT
         new_rep_file_name = os.path.join(os.path.split(old_rep_file_name)[0],
-                                         new_name + '.rprt')
+                                         new_name + REPORT_FILENAME_EXT)
         if os.path.isfile(old_rep_file_name):
             try:
                 os.rename(old_rep_file_name, new_rep_file_name)
             except:
-                log.fatal(u'Ошибка переименования файла <%s>' % old_rep_file_name)
-            # Убить пикловский файл
+                log_func.fatal(u'Error rename file <%s>' % old_rep_file_name)
+
             if os.path.isfile(old_rep_pkl_file_name):
                 os.remove(old_rep_pkl_file_name)
-            # Поменять имя в файле отчета.
-            report = resfunc.loadResource(new_rep_file_name)
+
+            report = res_func.loadResource(new_rep_file_name)
             report['name'] = new_name
 
             rep_file = None
@@ -586,91 +500,79 @@ class icReportBrowserDialog(wx.Dialog):
                 rep_file.close()
 
         new_xls_file_name = os.path.join(os.path.split(old_rep_file_name)[0],
-                                         new_name + '.xls')
+                                         new_name + XLS_FILENAME_EXT)
         if os.path.isfile(old_xls_file_name):
             os.rename(old_xls_file_name, new_xls_file_name)
-            # Поменять имя листа отчета.
             try:
-                # Установить связь с Excel
                 excel_app = win32com.client.Dispatch('Excel.Application')
-                # Сделать приложение невидимым
                 excel_app.Visible = 0
-                # Открыть
                 rep_tmpl = new_xls_file_name.replace('./', os.getcwd()+'/')
                 rep_tmpl_book = excel_app.Workbooks.Open(rep_tmpl)
                 rep_tmpl_sheet = rep_tmpl_book.Worksheets(old_name)
-                # Переименовать лист
                 rep_tmpl_sheet.Name = new_name
-                # Сохранить и закрыть
                 rep_tmpl_book.save()
                 excel_app.Quit()
             except pythoncom.com_error:
-                # Вывести сообщение об ошибке в лог
-                log.fatal(u'Ошибка переименования файла')
+                log_func.fatal(u'Error rename file')
 
     def onSelectChanged(self, event):
         """
-        Изменение выделенного компонента.
+        Tree item select changed handler.
         """
         event.Skip()
 
-    def _fillReportTree(self, report_dir):
+    def buildReportTree(self, report_dir):
         """
-        Наполнить дерево отчетов данными об отчетах.
+        Build the report tree by report data.
 
-        :param report_dir: Директория отчетов.
+        :param report_dir: Report directory.
         """
-        # Получить описание всех отчетов
         rep_data = getReportList(report_dir)
         if rep_data is None:
-            log.warning(u'Данные не прочитались. Папка отчетов <%s>' % report_dir)
+            log_func.error(u'Error data. Report directory <%s>' % report_dir)
             return
-        # Удалить все пункты
+
         self.rep_tree.DeleteAllItems()
-        # Корень
-        root = self.rep_tree.AddRoot(u'Отчеты', image=0)
+        root = self.rep_tree.AddRoot(u'Reports', image=0)
         self.rep_tree.SetItemData(root, None)
-        # Добавить пункты дерева по полученному описанию отчетов
         self._appendItemsReportTree(root, rep_data)
-        # Развернуть дерево
         self.rep_tree.Expand(root)
 
     def _appendItemsReportTree(self, parent_id, items):
         """
-        Добавить пункты дерева по полученному описанию отчетов.
+        Add tree items based on the received report description.
 
-        :param parent_id: Идентификатор родительского узла.
-        :param items: Ветка описаний отчетов.
+        :param parent_id: Parent item id.
+        :param items: Report data branch.
         """
         if not items:
-            log.warning(u'Пустой список описаний отчетов при построении дерева отчетов')
+            log_func.error(u'An empty list of report descriptions when building a report tree')
 
-        # Перебрать описания отчетов в описании.
         for item_data in items:
-            item = self.rep_tree.AppendItem(parent_id, item_data[REP_DESCRIPT_IDX], -1, -1, data=None)
-            # Если описание папки отчетов, то доавить рекурсивно ветку
+            item = self.rep_tree.AppendItem(parent_id, item_data[REP_DESCRIPTION_IDX], -1, -1, data=None)
+
             if item_data[REP_ITEMS_IDX] is not None:
                 self._appendItemsReportTree(item, item_data[REP_ITEMS_IDX])
-                # Добавить изображение папки
+
                 self.rep_tree.SetItemImage(item, 0, wx.TreeItemIcon_Normal)
                 self.rep_tree.SetItemImage(item, 0, wx.TreeItemIcon_Selected)
             else:
-                # Добавить изображение отчета
+
                 self.rep_tree.SetItemImage(item, item_data[REP_IMG_IDX], wx.TreeItemIcon_Normal)
                 self.rep_tree.SetItemImage(item, item_data[REP_IMG_IDX], wx.TreeItemIcon_Selected)
-            # Добавить связь с данными
+
             self.rep_tree.SetItemData(item, item_data)
 
     def setReportDir(self, rep_dir):
         """
-        Установить директорий/папку отчетов.
+        Set report directory.
 
-        :param rep_dir: Папка отчетов.
+        :param rep_dir: Report directory.
         """
-        self._ReportDir = rep_dir
+        self._report_dirname = rep_dir
 
     def getReportDir(self):
         """
-        Папка отчетов.
+        Get report folder.
         """
-        return self._ReportDir
+        return self._report_dirname

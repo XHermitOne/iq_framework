@@ -105,9 +105,9 @@ class iqGnuplotTrendNavigator(gnuplot_trend_navigator_proto.iqGnuplotTrendNaviga
 
     def setXFormat(self, x_format=None):
         """
-        Set X-axis data presentation format.
+        Set X-axis data presentation num_format.
 
-        :param x_format: X axis data presentation format.
+        :param x_format: X axis data presentation num_format.
             If not defined, then taken from the resource description of the object.
         :return:
         """
@@ -118,9 +118,9 @@ class iqGnuplotTrendNavigator(gnuplot_trend_navigator_proto.iqGnuplotTrendNaviga
 
     def setYFormat(self, y_format=None):
         """
-        Set Y-axis data presentation format.
+        Set Y-axis data presentation num_format.
 
-        :param y_format: Y axis data presentation format.
+        :param y_format: Y axis data presentation num_format.
             If not defined, then taken from the resource description of the object.
         :return:
         """

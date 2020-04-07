@@ -9,7 +9,7 @@ Gnuplot usage command examples:
 gnuplot -e "
 set xdata time;
 set timefmt '%H:%M:%S';
-set format x '%H:%M:%S';
+set num_format x '%H:%M:%S';
 set xrange['00:00:00':'00:00:15'];
 set terminal png;
 set style line 1 lt 1 lw 1 pt 3 linecolor rgb 'red';
@@ -149,10 +149,10 @@ class iqGnuplotManager(object):
 
     def setTimeFormat(self, dt_format=None):
         """
-        Set date-time format.
+        Set date-time num_format.
 
-        :param dt_format: Date-time format.
-            If None, then format setting is excluded from the list of commands.
+        :param dt_format: Date-time num_format.
+            If None, then num_format setting is excluded from the list of commands.
         :return: True/False.
         """
         global DATETIME_GRAPH_DATA_FMT
@@ -167,15 +167,15 @@ class iqGnuplotManager(object):
 
     def setXFormat(self, x_format=None):
         """
-        Set X axis format.
+        Set X axis num_format.
 
-        :param x_format: X axis format.
-            If None, then format setting is excluded from the list of commands.
+        :param x_format: X axis num_format.
+            If None, then num_format setting is excluded from the list of commands.
         :return: True/False.
         """
-        cmd_sign = 'set format x'
-        cmd = 'set format x \'%s\'' % x_format
-        # Remember the X axis format for
+        cmd_sign = 'set num_format x'
+        cmd = 'set num_format x \'%s\'' % x_format
+        # Remember the X axis num_format for
         # the correct output of data to the chart data file
         self.__x_format = x_format
         return self._appendCommand(cmd, cmd_sign)
@@ -356,7 +356,7 @@ class iqGnuplotManager(object):
     def saveGraphData(self, graph_filename, graph_data=(), fields=()):
         """
         Write graph data to a data file.
-        By default, temporary data is written to the file in the format DATETIME_GRAPH_DATA_FMT.
+        By default, temporary data is written to the file in the num_format DATETIME_GRAPH_DATA_FMT.
 
         :param graph_filename: The full name of the chart data file.
         :param graph_data: List of dictionaries for these graphs.
@@ -397,7 +397,7 @@ class iqGnuplotManager(object):
     def runCommands(self):
         """
         Start generating.
-        Another name for the method is gen
+        Another name for the method is generate
 
         :return: True/False.
         """

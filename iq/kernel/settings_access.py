@@ -51,7 +51,7 @@ class iqSettingsDotUseProto(object):
         else:
             prj_name = self._cur_settings_list[0]
             ini_filename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-                                         prj_name, prj_name, '%s.ini' % prj_name)
+                                        prj_name, prj_name, '%s.ini' % prj_name)
         return ini_filename
     
     def get(self):

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Excel file converter module in xls to dictionary format.
+Excel file converter module in xls to dictionary num_format.
 """
 
 # --- Подключение библиотек ---
@@ -16,13 +16,13 @@ from . import xml2dict
 
 __version__ = (0, 0, 0, 1)
 
-# XML Excel file format
+# XML Excel file num_format
 xlXMLSpreadsheet = 46
 
 
 def XlsFile2Dict(xls_filename):
     """
-    Function to convert Excel files in xls format to Python dictionary format.
+    Function to convert Excel files in xls num_format to Python dictionary num_format.
 
     :param xls_filename: xls file name.
     :return: The function returns a completed dictionary,

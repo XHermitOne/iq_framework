@@ -2,40 +2,39 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль функций системы генератора отчетов.
+Report generator system functions module.
 
-В качестве ключей таблицы запроса могут быть:
-    '__variables__': Словарь переменных отчета,
-    '__coord_fill__': Словарь координатных замен,
-    '__sql__': SQL выражения указания таблицы запроса,
-        ВНИМАНИЕ! SQL выражение задается без сигнатуры SQL_SIGNATURE.
-            Просто в виде SQL выражения типа <SELECT>,
-    '__fields__': Список описаний полей таблицы запроса.
-    '__data__': Список записей таблицы запроса,
+The keys of the query table can be:
+    '__variables__': Report variables dictionary,
+    '__coord_fill__': Dictionary of coordinate replacements,
+    '__sql__': SQL query table,
+        The SQL expression is specified without the SQL_SIGNATURE signature.
+        As an SQL expression like <SELECT>,
+    '__fields__': A list of field descriptions for the query table,
+    '__data__': List of query table entries,
 
-Все эти ключи обрабатываются в процессе генерации отчета.
+All these keys are processed during the report generation process.
 """
 
-# Подключение библиотек
 import os
 import os.path
 import re
 import shutil
 import sqlalchemy
 
-from ic.std.utils import execfunc
-from ic.std.log import log
-from ic.std.utils import filefunc
-from ic.std.utils import resfunc
-from ic.std.dlg import dlg
-from ic.std.utils import textfunc
-from ic.std.utils import txtgen
+from iq.util import log_func
+from iq.util import exec_func
+from iq.util import file_func
+from iq.util import res_func
+from iq.util import str_func
+from iq.util import txtgen_func
 
-from ic.report import icreptemplate
+from iq.dialog import dlg_func
 
-__version__ = (0, 1, 1, 2)
+from . import report_template
 
-# Константы подсистемы
+__version__ = (0, 0, 0, 1)
+
 DEFAULT_REP_TMPL_FILE = os.path.join(os.path.dirname(__file__), 'new_report_template.ods')
 
 OFFICE_OPEN_CMD_FORMAT = 'libreoffice %s'
@@ -46,68 +45,68 @@ XML_TEMPLATE_EXT = '.xml'
 DEFAULT_TEMPLATE_EXT = ODS_TEMPLATE_EXT
 DEFAULT_REPORT_TEMPLATE_EXT = '.rprt'
 
-DEFAULT_REPORT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))+'/reports/')
+DEFAULT_REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                                                  'reports'))
 
-# Сигнатуры значений бендов отчета (Длина сигнатуры д.б. 4 символа)
+# Report bend values signatures (Length 4 symbol)
 DB_URL_SIGNATURE = 'URL:'
 SQL_SIGNATURE = 'SQL:'
 CODE_SIGNATURE = 'PRG:'
 PY_SIGNATURE = 'PY:'
 
 
-class icReportGeneratorSystem(object):
+class iqReportGeneratorSystem(object):
     """
-    Класс системы генерации отчетов. Абстрактный класс.
+    Reporting system class. Abstract class.
     """
-
     def __init__(self, report=None, parent=None):
         """
-        Конструктор класса.
+        Constructor.
 
-        :param report: Шаблон отчета.
-        :param parent: Родительская форма, необходима для вывода сообщений.
+        :param report: Report template.
+        :param parent: Parent window.
         """
-        # Шаблон отчета
-        self._Rep = report
-        # Таблица запроса
-        self._QueryTab = None
+        # Report template
+        self._report_template = report
+        # Query table
+        self._query_table = None
 
-        # Родительская форма, необходима для вывода сообщений.
-        self._ParentForm = parent
+        # Parent window
+        self._parent_window = parent
 
-        # Предварительный просмотр
-        self.PrintPreview = None
+        # # Preview
+        # self.PrintPreview = None
 
     def getReportDir(self):
         """
-        Папка отчетов.
+        Get report folder.
         """
         return DEFAULT_REPORT_DIR
 
     def getProfileDir(self):
         """
-        Папка профиля программы.
+        Get profile path.
         """
-        return filefunc.getProfilePath()
+        return file_func.getProjectProfilePath()
 
     def getGeneratorType(self):
         """
-        Тип системы генерации отчетов.
+        Type of reporting system.
         """
-        my_generator_type = self._Rep.get('generator', None) if self._Rep else None
+        my_generator_type = self._report_template.get('generator', None) if self._report_template else None
         if my_generator_type is None:
-            log.warning(u'Не удалось определить тип системы генерации отчетов в <%s>' % self.__class__.__name__)
+            log_func.error(u'Failed to determine the type of reporting system in <%s>' % self.__class__.__name__)
         elif isinstance(my_generator_type, str):
             my_generator_type = my_generator_type.lower()
         return my_generator_type
 
     def sameGeneratorType(self, generator_type):
         """
-        Проверка на тот же тип системы генерации отчетов что и указанный.
+        Check for the same type of reporting system as specified.
 
-        :param generator_type: Тип системы генерации отчетов.
-            Тип задается расширением файла источника шаблона.
-            Обычно '.ods', '.xml', 'xls' и т.п.
+        :param generator_type: Type of reporting system.
+            The type is specified by the template source file extension.
+            As '.ods', '.xml', '.xls' etc.
         :return: True/False
         """
         my_generator_type = self.getGeneratorType()
@@ -115,422 +114,397 @@ class icReportGeneratorSystem(object):
 
     def getReportDescription(self):
         """
-        Описание отчета.
+        Get report description.
 
-        :return: Строку описание отчета или его имя если описание не
-            определено.
+        :return: The description of the report or
+            its name if the description is not defined.
         """
         description = u''
-        if self._Rep:
-            description = self._Rep.get('description', self._Rep.get('name', u''))
+        if self._report_template:
+            description = self._report_template.get('description', self._report_template.get('name', u''))
         return description
 
-    def setParentForm(self, parent):
+    def setParent(self, parent):
         """
-        Установить родительскую форму для определения папки отчетов.
+        Set parent window.
         """
-        self._ParentForm = parent
+        self._parent_window = parent
         
-    def getParentForm(self):
+    def getParent(self):
         """
-        Родительская форма.
+        Get parent window.
         """
-        return self._ParentForm
+        return self._parent_window
         
     def reloadRepData(self, tmpl_filename=None):
         """
-        Перегрузить данные отчета.
+        Reload report data.
 
-        :param tmpl_filename: Имя файла шаблона отчета.
+        :param tmpl_filename: Report template filename.
         """
-        self._Rep = resfunc.loadResourceFile(tmpl_filename, bRefresh=True)
+        self._report_template = res_func.loadRuntimeResource(tmpl_filename)
         
     def setRepData(self, report):
         """
-        Установить данные отчета.
+        Set report template data.
         """
-        self._Rep = report
+        self._report_template = report
 
     def selectAction(self, report=None, *args, **kwargs):
         """
-        Запуск генерации отчета с последующим выбором действия.
+        Start report generation and then select an action.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         return
 
     def preview(self, report=None, *args, **kwargs):
         """
-        Предварительный просмотр.
+        Preview report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         return
 
     def print(self, report=None, *args, **kwargs):
         """
-        Печать.
+        Print report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         return 
 
     def setPageSetup(self):
         """
-        Установка параметров страницы.
+        Set page setup.
         """
         return
 
     def convert(self, report=None, to_filename=None, *args, **kwargs):
         """
-        Конвертирование результатов отчета.
+        Convert report.
 
-        :param report: Полное описание шаблона отчета.
-        :param to_filename: Имя файла, куда необходимо сохранить отчет.
+        :param report: Report template data.
+        :param to_filename: Destination report filename.
         """
         return
 
     def export(self, report=None, to_filename=None, *args, **kwargs):
         """
-        Вывод результатов отчета во внешнюю программу.
+        Export report.
 
-        :param report: Полное описание шаблона отчета.
-        :param to_filename: Имя файла, куда необходимо сохранить отчет.
+        :param report: Report template data.
+        :param to_filename: Destination report filename.
         """
         return self.convert(report, to_filename)
 
     def createNew(self, dst_path=None):
         """
-        Создание нового отчета.
+        Create new report.
 
-        :param dst_path: Результирующая папка, в которую будет помещен новый файл.
+        :param dst_path: Destination report folder path.
         """
         return self.createNewByOffice(dst_path)
         
     def createNewByOffice(self, dst_path=None):
         """
-        Создание нового отчета средствами LibreOffice Calc.
+        Create a new report using LibreOffice Calc.
 
-        :param dst_path: Результирующая папка, в которую будет помещен новый файл.
+        :param dst_path: Destination report folder path.
         """
         try:
             src_filename = DEFAULT_REP_TMPL_FILE
-            new_filename = dlg.getTextInputDlg(self._ParentForm,
-                                               u'Создание нового файла',
-                                               u'Введите имя файла шаблона отчета')
+            new_filename = dlg_func.getTextEntryDlg(self._parent_window,
+                                                    u'Create new',
+                                                    u'Enter a file name for the report template')
             if os.path.splitext(new_filename)[1] != '.ods':
                 new_filename += '.ods'
 
             if dst_path is None:
-                # Необходимо определить результирующий путь
-                dst_path = dlg.getDirDlg(self._ParentForm,
-                                         u'Папка хранения')
+                # It is necessary to determine the resulting path
+                dst_path = dlg_func.getDirDlg(self._parent_window,
+                                              u'Report folder')
                 if not dst_path:
                     dst_path = os.getcwd()
 
             dst_filename = os.path.join(dst_path, new_filename)
             if os.path.exists(dst_filename):
-                if dlg.getAskBox(u'Заменить существующий файл?'):
+                if dlg_func.openAskBox(u'Rewrite existing file?'):
                     shutil.copyfile(src_filename, dst_filename)
             else:
                 shutil.copyfile(src_filename, dst_filename)
 
             cmd = OFFICE_OPEN_CMD_FORMAT % dst_filename
-            log.debug(u'Command <%s>' % textfunc.toUnicode(cmd))
+            log_func.debug(u'Command <%s>' % str_func.toUnicode(cmd))
             os.system(cmd)
 
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'createNew report template by LibreOffice Calc')
+            log_func.fatal(u'Error create new report template by LibreOffice Calc')
 
     def edit(self, report=None):
         """
-        Редактирование отчета.
+        Edit report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         return
 
     def update(self, tmpl_filename=None):
         """
-        Обновить шаблон отчета в системе генератора отчетов.
+        Update report template.
 
-        :param tmpl_filename: Имя файла шаблона отчета.
-            Если None, то должен производиться запрос на выбор этого файла.
-        :return: Имя файла файла шаблона или None в случае ошибки.
+        :param tmpl_filename: Report template filename.
+            If None then select this file.
+        :return: Report template filename or None if error.
         """
         try:
             return self._update(tmpl_filename)
         except:
-            log.fatal(u'Ошибка обновления шаблона <%s>' % tmpl_filename)
+            log_func.fatal(u'Error update report template <%s>' % tmpl_filename)
         return None
 
     def _update(self, tmpl_filename=None):
         """
         Обновить шаблон отчета в системе генератора отчетов.
 
-        :param tmpl_filename: Имя файла шаблона отчета.
-            Если None, то должен производиться запрос на выбор этого файла.
-        :return: Имя файла файла шаблона или None в случае ошибки.
+        :param tmpl_filename: Report template filename.
+            If None then select this file.
+        :return: Report template filename or None if error.
         """
         if tmpl_filename is None:
-            filename = dlg.getFileDlg(parent=self._ParentForm,
-                                      title=u'Выберите шаблон отчета:',
-                                      wildcard=u'Электронные таблицы ODF (*.ods)|*.ods|Microsoft Excel 2003 XML (*.xml)|*.xml',
-                                      default_path=self.getReportDir())
+            filename = dlg_func.getFileDlg(parent=self._parent_window,
+                                           title=u'Select report template:',
+                                           wildcard_filter=u'Open document spreadsheet ODF (*.ods)|*.ods|Microsoft Excel 2003 XML (*.xml)|*.xml',
+                                           default_path=self.getReportDir())
         else:
             filename = os.path.abspath(os.path.normpath(tmpl_filename))
 
         if os.path.isfile(filename):
-            # Конвертация
-            log.debug(u'Начало конвертации <%s>' % filename)
+            log_func.info(u'Start convert <%s>' % filename)
             tmpl_filename = None
             template = None
             if os.path.exists(os.path.splitext(filename)[0] + DEFAULT_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + DEFAULT_TEMPLATE_EXT
-                template = icreptemplate.icODSReportTemplate()
+                template = report_template.icODSReportTemplate()
             elif os.path.exists(os.path.splitext(filename)[0] + ODS_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + ODS_TEMPLATE_EXT
-                template = icreptemplate.icODSReportTemplate()
+                template = report_template.icODSReportTemplate()
             elif os.path.exists(os.path.splitext(filename)[0] + XLS_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + XLS_TEMPLATE_EXT
-                template = icreptemplate.icXLSReportTemplate()
+                template = report_template.icXLSReportTemplate()
             elif os.path.exists(os.path.splitext(filename)[0] + XML_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + XML_TEMPLATE_EXT
-                template = icreptemplate.icExcelXMLReportTemplate()
+                template = report_template.icExcelXMLReportTemplate()
             else:
-                log.warning(u'Не найден шаблон отчета <%s>' % filename)
+                log_func.error(u'Report template not found <%s>' % filename)
 
             new_filename = None
             if template:
                 rep_template = template.read(tmpl_filename)
                 new_filename = os.path.splitext(filename)[0]+DEFAULT_REPORT_TEMPLATE_EXT
-                resfunc.saveResourcePickle(new_filename, rep_template)
-            log.info(u'Конец конвертации')
+                res_func.saveResourcePickle(new_filename, rep_template)
+            log_func.info(u'End convert')
             return new_filename
         else:
-            log.warning(u'Не найден файл источника шаблона <%s>' % filename)
+            log_func.error(u'Report template file not found <%s>' % filename)
         return None
    
     def openModule(self, tmpl_filename=None):
         """
-        Открыть модуль отчета в редакторе.
+        Open report module in editor.
         """
         if tmpl_filename is None:
-            log.warning(u'Не определен файл модуля отчета')
-        # Определить файл *.xml
+            log_func.error(u'Report template file not defined')
+
         module_file = os.path.abspath(os.path.splitext(tmpl_filename)[0]+'.py')
         if os.path.exists(module_file):
             try:
-                self._ParentForm.GetParent().ide.OpenFile(module_file)
+                self._parent_window.GetParent().ide.OpenFile(module_file)
             except:
-                log.fatal(u'Ошибка открытия модуля <%s>' % module_file)
+                log_func.fatal(u'Error open report module <%s>' % module_file)
         else:
-            dlg.getMsgBox(u'Файл модуля отчета <%s> не найден.' % module_file)
+            dlg_func.openErrBox(u'Report module file not found <%s>' % module_file)
         
     def generate(self, report=None, db_url=None, sql=None, stylelib=None, vars=None, *args, **kwargs):
         """
-        Запустить генератор отчета.
+        Run report generator.
 
-        :param report: Шаблон отчета.
-        :param db_url: Connection string в виде url. Например
+        :param report: Report template.
+        :param db_url: Connection string as url.
+            For example:
             postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-        :param sql: Запрос SQL.
-        :param stylelib: Библиотека стилей.
-        :param vars: Словарь переменных отчета.
-        :return: Возвращает сгенерированный отчет или None в случае ошибки.
+        :param sql: SQL query.
+        :param stylelib: Style library.
+        :param vars: Report variables dictionary.
+        :return: Generated report data or None if error.
         """
         return None
 
     def generateReport(self, report=None, *args, **kwargs):
         """
-        Запустить генератор отчета.
+        Generate report.
 
-        :param report: Шаблон отчета.
-        :return: Возвращает сгенерированный отчет или None в случае ошибки.
+        :param report: Report template.
+        :return: Generated report data or None if error.
         """
         return None
 
-    def initRepTemplate(self, report, QueryTab_=None):
+    def initRepTemplate(self, report, query_table=None):
         """
-        Прочитать данные о шаблоне отчета.
+        Read report template data.
 
-        :param report: Полное описание шаблона отчета.
-        :param QueryTab_: Таблица запроса.
+        :param report: Report temlate data.
+        :param query_table: Query table.
         """
-        # 1. Прочитать структру отчета
-        self._Rep = report
-        # 2. Таблица запроса
-        self._QueryTab = QueryTab_
+        # 1. Report template data
+        self._report_template = report
+        # 2. Query table
+        self._query_table = query_table
 
-        # 3. Скорректировать шаблон для нормальной обработки генератором
-        self._Rep = self.RepSQLObj2SQLite(self._Rep, resfunc.loadResourceFile(resfunc.icGetTabResFileName()))
+        # 3. Adjust the template for normal processing by the generator
+        res = res_func.loadRuntimeResource(res_func.icGetTabResFileName())
+        self._report_template = self.RepSQLObj2SQLite(self._report_template, res)
 
-        # 5. Коррекция параметров БД и запроса
-        # self._Rep['data_source'] = ic_exec.ExecuteMethod(self._Rep['data_source'], self)
-        # self._Rep['query'] = ic_exec.ExecuteMethod(self._Rep['query'], self)
+        # 5. Correction of database and query parameters
+        # self._report_template['data_source'] = ic_exec.ExecuteMethod(self._report_template['data_source'], self)
+        # self._report_template['query'] = ic_exec.ExecuteMethod(self._report_template['query'], self)
 
-        # !!! ВНИМАНИЕ!!!
-        # --- Проверка случая когда функция  запроса возвращает SQL запрос ---
-        # if type(self._Rep['query'])==type(''):
-        #     self._Rep['query']=ic.db.tabrestr.icQueryTxtSQLObj2SQLite(self._Rep['query'],\
+        # Checking if a query function returns an SQL query
+        # if type(self._report_template['query'])==type(''):
+        #     self._report_template['query']=ic.db.tabrestr.icQueryTxtSQLObj2SQLite(self._report_template['query'],\
         #         ic.utils.util.readAndEvalFile(ic.utils.resource.icGetTabResFileName()))
 
     def _getSQLQueryTable(self, report, db_url=None, sql=None):
         """
-        Получить таблицу запроса.
+        Get query table.
 
-        :param report: Шаблон отчета.
-        :param db_url: Connection string в виде url. Например
+        :param report: Report template data.
+        :param db_url: Connection string as url.
+            For example:
             postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-        :param sql: Текст SQL запроса.
-        :return: Функция возвращает словарь -
-            ТАБЛИЦА ЗАПРОСА ПРЕДСТАВЛЯЕТСЯ В ВИДЕ СЛОВАРЯ 
-            {'__fields__':имена полей таблицы,'__data__':данные таблицы}
+        :param sql: SQL query text.
+        :return: Query table dictionary:
+            {'__fields__': field_name_list, '__data__': table_data}
         """
         result = None
-        # Инициализация
+
         db_connection = None
         try:
             if not db_url:
                 data_source = report['data_source']
 
                 if not data_source:
-                    # Учет случая когда источник данных не определен
-                    log.warning(u'Не определен источник данных в отчете')
+                    log_func.error(u'Report data source not defined')
                     return {'__fields__': list(), '__data__': list()}
 
                 signature = data_source[:4].upper()
                 if signature != DB_URL_SIGNATURE:
-                    log.warning('Not support DB type <%s>' % signature)
+                    log_func.error('Not support DB type <%s>' % signature)
                     return result
-                # БД задается с помощью стандартного DB URL
+                # DB is set using standard DB URL
                 db_url = data_source[4:].lower().strip()
 
-            log.info(u'Связь с БД <%s>' % db_url)
-            # Установить связь с БД
+            log_func.info(u'DB URL <%s>' % db_url)
+
             db_connection = sqlalchemy.create_engine(db_url)
-            # Освободить БД
-            # db_connection.dispose()
-            log.info(u'SQL <%s>' % textfunc.toUnicode(sql, 'utf-8'))
+            log_func.info(u'SQL <%s>' % str_func.toUnicode(sql, 'utf-8'))
             sql_result = db_connection.execute(sql)
             rows = sql_result.fetchall()
             cols = rows[0].keys() if rows else []
 
-            # Закрыть связь
             db_connection.dispose()
             db_connection = None
 
-            # ТАБЛИЦА ЗАПРОСА ПРЕДСТАВЛЯЕТСЯ В ВИДЕ СЛОВАРЯ
-            # {'__fields__':имена полей таблицы,'__data__':данные таблицы} !!!
             result = {'__fields__': cols, '__data__': list(rows)}
             return result
         except:
             if db_connection:
-                # Закрыть связь
                 db_connection.dispose()
 
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка определения таблицы SQL запроса <%s>.' % sql)
-            log.error(u'''ВНИМАНИЕ! Если возникает ошибка в модуле:
-        ----------------------------------------------------------------------------------------------
-        File "/usr/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 324, in do_execute
-            cursor.execute(statement, parameters)
-        TypeError: 'dict' object does not support indexing
-        ----------------------------------------------------------------------------------------------        
-        Это означает что SQLAlchemy не может распарсить SQL выражение. 
-        Необходимо вместо <%> использовать <%%> в SQL выражении. 
-                    ''')
-
+            log_func.fatal(u'Error defining SQL query table <%s>.' % sql)
         return None
 
     def _isQueryFunc(self, query):
         """
-        Определить представлен запрос в виде функции?
+        Determine the submitted request as a function?
 
-        :param query: Текст запроса.
+        :param query: Query text.
         :return: True/False.
         """
         return query and isinstance(query, str) and query.startswith(PY_SIGNATURE)
 
     def _execQueryFunc(self, query, vars=None):
         """
-        Получить запрос из функции.
+        Get a request from a function.
 
-        :param query: Текст запроса.
-        :param vars: Внешние переменные.
-        :return: Возвращает запрос в разрешенном формате.
+        :param query: Query text.
+        :param vars: External variables.
+        :return: Query in internal format.
         """
-        # Убрать сигнатуру определения функции
+        # Clear signature
         func = query.replace(PY_SIGNATURE, '').strip()
         var_names = vars.keys() if vars else None
-        log.debug(u'Выполнение функции: <%s>. Дополнительные переменные %s' % (func, var_names))
-        return execfunc.exec_code(func, name_space=locals(), kwargs=vars)
+        log_func.debug(u'Execute function: <%s>. External variables %s' % (func, var_names))
+        return exec_func.execTxtFunction(func, context=vars)
 
     def _isEmptyQueryTbl(self, query_tbl):
         """
-        Проверка пустой таблицы запроса.
+        Is empty query table?.
 
-        :param query_tbl: Словарь таблицы запроса.
-        :return: True - пустая таблица запроса.
-            False - есть данные.
+        :param query_tbl: Query table.
+        :return: True - empty query table / False - no.
         """
         if not query_tbl:
             return True
-        # Есть переменные?
+        # Exists variables?
         elif isinstance(query_tbl, dict) and '__variables__' in query_tbl and query_tbl['__variables__']:
             return False
-        # Есть координатные замены?
+        # Exists coordinate filling?
         elif isinstance(query_tbl, dict) and '__coord_fill__' in query_tbl and query_tbl['__coord_fill__']:
             return False
-        # Есть данные табличной части?
+        # Exists table data?
         elif isinstance(query_tbl, dict) and '__data__' in query_tbl and query_tbl['__data__']:
             return False
         return True
 
     def createEmptyQueryTbl(self):
         """
-        Создать пустую таблицу запроса.
-        В случае постой таблицы запроса генерация не должна прекращаться.
+        Create empty query table.
 
-        :return: Функция возвращает словарь -
-            ТАБЛИЦА ЗАПРОСА ПРЕДСТАВЛЯЕТСЯ В ВИДЕ СЛОВАРЯ
-            {'__fields__': (), '__data__': []}
+        :return: Query table dictionary:
+            {'__fields__': field_name_list, '__data__': table_data}
         """
         return {'__fields__': (), '__data__': []}
 
     def getQueryTbl(self, report, db_url=None, sql=None, *args, **kwargs):
         """
-        Получить таблицу запроса.
+        Get query table.
 
-        :param report: Шаблон отчета.
-        :param db_url: Connection string в виде url. Например
+        :param report: Report template data.
+        :param db_url: Connection string as url.
+            For example:
             postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-        :param sql: Запрос SQL.
-            ВНИМАНИЕ! В начале SQL запроса должна стоять сигнатура:
-            <SQL:> - Текст SQL запроса
-            <PY:> -  Запрос задается функцией Python
-            <PRG:> - Запрос задается внешней функцией Python.
-        :return: Функция возвращает словарь -
-            ТАБЛИЦА ЗАПРОСА ПРЕДСТАВЛЯЕТСЯ В ВИДЕ СЛОВАРЯ 
-            {'__fields__':описания полей таблицы,'__data__':данные таблицы}
+        :param sql: SQL query.
+            At the beginning of the SQL query should be a signature:
+            <SQL:> - SQL query text
+            <PY:> -  SQL query text returned Python function.
+            <PRG:> - SQL query text returned Python function.
+        :return: Query table dictionary:
+            {'__fields__': field_name_list, '__data__': table_data}
         """
         query = None
         try:
             if sql:
                 query = sql
             else:
-                # !!! ВНИМАНИЕ!!!
-                # Проверка случая когда функция  запроса возвращает таблицу
+                # Case when a query function returns a table
                 if isinstance(report['query'], dict):
                     return report['query']
                 elif self._isQueryFunc(report['query']):
                     variables = kwargs.get('variables', None)
                     query = self._execQueryFunc(report['query'], vars=variables)
 
-                    # Если метод возвращает уже сгенерированную таблицу запроса,
-                    # то просто вернуть ее
                     if isinstance(query, dict):
                         if '__sql__' in query:
                             dataset_dict = self._getSQLQueryTable(report=report,
@@ -541,141 +515,136 @@ class icReportGeneratorSystem(object):
                         return query
                 else:
                     query = report['query']
-                # Обработка когда запрос вообще не определен
+                # Query not defined
                 if query is None:
-                    log.warning(u'Запрос отчета не определен')
+                    log_func.error(u'Query not defined')
                     return None
 
                 if query.startswith(SQL_SIGNATURE):
-                    # Запрос задается SQL выражением
+                    # SQL expression
                     query = query.replace(SQL_SIGNATURE, u'').strip()
                 elif query.startswith(CODE_SIGNATURE):
-                    # Запрос задается функцией Python
-                    query = execfunc.exec_code(query.replace(CODE_SIGNATURE, u'').strip())
+                    # Python function
+                    query = exec_func.execTxtFunction(query.replace(CODE_SIGNATURE, u'').strip())
                 elif query.startswith(PY_SIGNATURE):
-                    # Запрос задается функцией Python
-                    query = execfunc.exec_code(query.replace(PY_SIGNATURE, u'').strip())
+                    # Python
+                    query = exec_func.execTxtFunction(query.replace(PY_SIGNATURE, u'').strip())
                 else:
-                    log.warning(u'Не указана сигнатура в запросе <%s>' % query)
+                    log_func.error(u'Not defined query signature <%s>' % query)
                     return None
-                # ВНИМАНИЕ! Запрос может параметризироваться переменными передаваемыми
-                # явным образом. Поэтому необходимо произвести генерацию
+                # The request can be parameterized by variables passed explicitly.
+                # Therefore, it is necessary to generate
                 if kwargs:
                     try:
-                        # Для замен используем другой генератор
-                        # необходимо только заменить открывающий и закрывающие сигнатуры тега
+                        # For replacements, use another generator
                         query_txt = query.replace(u'[&', u'{{ ').replace(u'&]', u' }}')
-                        query = txtgen.gen(query_txt, kwargs)
+                        query = txtgen_func.generate(query_txt, kwargs)
                     except:
-                        log.fatal(u'Ошибка преобразования запроса\n<%s>\nпри получении таблицы запроса для отчета' % str(query))
+                        log_func.fatal(u'Error transform query\n<%s>\nfor report query table' % str(query))
 
             query_tbl = None
-            if not self._QueryTab:
-                # Таблица запроса определена в виде SQL
+            if not self._query_table:
+                # SQL expression
                 query_tbl = self._getSQLQueryTable(report, db_url=db_url, sql=query)
             else:
-                # Если таблица запроса указана конкретно, то обработать ее
-                # Указано имя таблицы запроса
-                if isinstance(self._QueryTab, str):
-                    if self._QueryTab[:4].upper() == SQL_SIGNATURE:
-                        # Обработка обычного SQL запроса
-                        query_tbl = self._getSQLQueryTable(report, sql=self._QueryTab[4:].strip())
+                if isinstance(self._query_table, str):
+                    if self._query_table[:4].upper() == SQL_SIGNATURE:
+                        query_tbl = self._getSQLQueryTable(report, sql=self._query_table[4:].strip())
                     else:
-                        log.warning(u'Не поддерживаемый тип запроса <%s>' % self._QueryTab)
-                # Таблица уже просто определена как DataSet
-                elif isinstance(self._QueryTab, dict):
-                    query_tbl = self._QueryTab
+                        log_func.error(u'Unsupported query type <%s>' % self._query_table)
+
+                elif isinstance(self._query_table, dict):
+                    query_tbl = self._query_table
                 else:
-                    log.warning(u'Не поддерживаемый тип запроса <%s>' % type(self._QueryTab))
+                    log_func.error(u'Unsupported query type <%s>' % type(self._query_table))
             return query_tbl
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка определения таблицы запроса <%s>.' % query)
+            log_func.fatal(u'Error query table <%s>.' % query)
         return None
 
-    def RepSQLObj2SQLite(self, report, res_table):
-        """
-        Преобразование имен в шаблоне отчета в контексте SQLObject в имена в
-            контексте sqlite.
-
-        :param report: Щаблон отчета.
-        :param res_table: Ресурсное описание таблиц.
-        """
-        try:
-            rep = report
-            # Для корректной обработки имен полей и таблиц они д.б.
-            # отсортированны по убыванию длин имен классов данных
-            data_class_names = res_table.keys()
-            data_class_names.sort()
-            data_class_names.reverse()
-
-            # Обработка шаблона отчета
-            # 1. Верхний и нижний колонтитулы
-            # Перебор ячеек
-            for row in rep['upper']:
-                for cell in row:
-                    if cell:
-                        # Перебор классов
-                        for data_class_name in data_class_names:
-                            cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
-                                                                                res_table[data_class_name]['scheme'])
-            # Перебор ячеек
-            for row in rep['under']:
-                for cell in row:
-                    if cell:
-                        # Перебор классов
-                        for data_class_name in data_class_names:
-                            cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
-                                                                                res_table[data_class_name]['scheme'])
-            # 2. Лист шаблона
-            # Перебор ячеек
-            for row in rep['sheet']:
-                for cell in row:
-                    if cell:
-                        # Перебор классов
-                        for data_class_name in data_class_names:
-                            cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
-                                                                                res_table[data_class_name]['scheme'])
-            # 3. Описание групп
-            for grp in rep['groups']:
-                for data_class_name in data_class_names:
-                    grp['field'] = ic.db.tabrestr.icNamesSQLObj2SQLite(grp['field'], data_class_name,
-                                                                       res_table[data_class_name]['scheme'])
-
-            return rep
-        except:
-            return report
+    # def RepSQLObj2SQLite(self, report, res_table):
+    #     """
+    #     Преобразование имен в шаблоне отчета в контексте SQLObject в имена в
+    #         контексте sqlite.
+    #
+    #     :param report: Щаблон отчета.
+    #     :param res_table: Ресурсное описание таблиц.
+    #     """
+    #     try:
+    #         rep = report
+    #         # Для корректной обработки имен полей и таблиц они д.б.
+    #         # отсортированны по убыванию длин имен классов данных
+    #         data_class_names = res_table.keys()
+    #         data_class_names.sort()
+    #         data_class_names.reverse()
+    #
+    #         # Обработка шаблона отчета
+    #         # 1. Верхний и нижний колонтитулы
+    #         # Перебор ячеек
+    #         for row in rep['upper']:
+    #             for cell in row:
+    #                 if cell:
+    #                     # Перебор классов
+    #                     for data_class_name in data_class_names:
+    #                         cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
+    #                                                                             res_table[data_class_name]['scheme'])
+    #         # Перебор ячеек
+    #         for row in rep['under']:
+    #             for cell in row:
+    #                 if cell:
+    #                     # Перебор классов
+    #                     for data_class_name in data_class_names:
+    #                         cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
+    #                                                                             res_table[data_class_name]['scheme'])
+    #         # 2. Лист шаблона
+    #         # Перебор ячеек
+    #         for row in rep['sheet']:
+    #             for cell in row:
+    #                 if cell:
+    #                     # Перебор классов
+    #                     for data_class_name in data_class_names:
+    #                         cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
+    #                                                                             res_table[data_class_name]['scheme'])
+    #         # 3. Описание групп
+    #         for grp in rep['groups']:
+    #             for data_class_name in data_class_names:
+    #                 grp['field'] = ic.db.tabrestr.icNamesSQLObj2SQLite(grp['field'], data_class_name,
+    #                                                                    res_table[data_class_name]['scheme'])
+    #
+    #         return rep
+    #     except:
+    #         return report
 
     def previewResult(self, report_data=None):
         """
-        Предварительный просмотр.
+        Preview.
 
-        :param report_data: Сгенерированный отчет.
+        :param report_data: Generated report data.
         """
         return
 
     def printResult(self, report_data=None):
         """
-        Печать.
+        Print.
 
-        :param report_data: Сгенерированный отчет.
+        :param report_data: Generated report data.
         """
         return
 
     def convertResult(self, report_data=None, to_filename=None):
         """
-        Конвертирование результатов отчета.
+        Convert.
 
-        :param report_data: Сгенерированный отчет.
-        :param to_filename: Имя результирующего файла.
+        :param report_data: Generated report data.
+        :param to_filename: Destination report filename.
         """
         return
 
     def save(self, report_data=None):
         """
-        Сохранить результаты генерации в файл
+        Save generated report data to file.
 
-        :param report_data: Сгенерированный отчет.
-        :return: Имя сохраненного файла или None, если сохранения не произошло.
+        :param report_data: Generated report data.
+        :return: Destination report data filename or None if error.
         """
         return None

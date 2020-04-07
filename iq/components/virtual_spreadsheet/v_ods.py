@@ -167,7 +167,7 @@ class iqODS(object):
 
     def _genNumberStyleName(self):
         """
-        Generating a style name for a numeric representation format.
+        Generating a style name for a numeric representation num_format.
         """
         # from services.ic_std.utils import uuid
         # return uuid.get_uuid()
@@ -176,7 +176,7 @@ class iqODS(object):
 
     def setNumberFormat(self, data_dict):
         """
-        Fill in the format of the numeric representation.
+        Fill in the num_format of the numeric representation.
 
         :param data_dict: Data dictionary.
         """
@@ -306,7 +306,7 @@ class iqODS(object):
         properties_args = {}
         number_format = self.getChildrenByName(data_dict, 'NumberFormat')
         if number_format:
-            # Filling in a numeric representation format
+            # Filling in a numeric representation num_format
             number_properties = self.setNumberFormat(number_format[0])
             number_style_name = self._genNumberStyleName()
             properties_args['datastylename'] = number_style_name
@@ -744,12 +744,12 @@ class iqODS(object):
                 type = 'string'
         return type            
     
-    # Excel column names in A1 format
+    # Excel column names in A1 num_format
     COLS_A1 = None
 
     def _getColsA1(self):
         """
-        Excel column names in A1 format.
+        Excel column names in A1 num_format.
         """
         if self.COLS_A1:
             return self.COLS_A1
@@ -769,7 +769,7 @@ class iqODS(object):
 
     def _getA1(self, r1c1):
         """
-        Convert an address from the format R1C1 to A1.
+        Convert an address from the num_format R1C1 to A1.
         """
         parse = re.findall(self.R1_FORMAT, r1c1)
         row = 1
@@ -787,7 +787,7 @@ class iqODS(object):
 
     def _getR1C1(self, a1):
         """
-        Convert an address from A1 format to R1C1.
+        Convert an address from A1 num_format to R1C1.
         """
         parse = re.findall(self.DIGIT_FORMAT, a1)
         row = 1
@@ -807,7 +807,7 @@ class iqODS(object):
 
     def _R1C1Fmt2A1Fmt(self, formula):
         """
-        Transfer formulas from R1C1 format to A1 format.
+        Transfer formulas from R1C1 num_format to A1 num_format.
 
         :param formula: The formula in a string.
         :return: String of translated formula.
@@ -840,7 +840,7 @@ class iqODS(object):
 
     def _A1Fmt2R1C1Fmt(self, formula):
         """
-        Translation of a formula from A1 format to R1C1 format.
+        Translation of a formula from A1 num_format to R1C1 num_format.
 
         :param formula: The formula as a string.
         :return: String of translated formula.
@@ -853,7 +853,7 @@ class iqODS(object):
         
     def _translateR1C1Formula(self, formula):
         """
-        Transfer formulas from R1C1 format to ODS file format.
+        Transfer formulas from R1C1 num_format to ODS file num_format.
 
         :param formula: The formula as a string.
         :return: String of translated formula.
@@ -862,7 +862,7 @@ class iqODS(object):
 
     def _translateA1Formula(self, formula):
         """
-        Translation of a formula from ODS (A1) format to R1C1 format.
+        Translation of a formula from ODS (A1) num_format to R1C1 num_format.
 
         :param formula: The formula as a string.
         :return: String of translated formula.
@@ -1001,7 +1001,7 @@ class iqODS(object):
 
     def readNumberStyles(self, *ods_styles):
         """
-        Read data on number format styles.
+        Read data on number num_format styles.
 
         :param ods_styles: Style list.
         """
@@ -1031,7 +1031,7 @@ class iqODS(object):
             self.ods_document.styles.getElementsByType(odf.style.Style) + \
             self.ods_document.masterstyles.getElementsByType(odf.style.Style)
 
-        # Number format styles
+        # Number num_format styles
         self._number_styles_ = self.readNumberStyles(self.ods_document.automaticstyles,
                                                      self.ods_document.styles,
                                                      self.ods_document.masterstyles)
@@ -1100,7 +1100,7 @@ class iqODS(object):
     
     def readNumberFormat(self, ods_element=None):
         """
-        Read number format data from ODS file.
+        Read number num_format data from ODS file.
 
         :param ods_element: ODS element corresponding to the style of numerical representation.
         """
@@ -1505,7 +1505,7 @@ class iqODS(object):
         
     def _getPaperSizeFormat(self, page_width, page_height):
         """
-        Determine the size of the sheet format.
+        Determine the size of the sheet num_format.
 
         :param page_width: Page width in cm.
         :param page_height: Page height in cm.
