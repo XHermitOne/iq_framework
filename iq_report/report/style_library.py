@@ -2,78 +2,78 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль библиотеки стилей для отчетов.
+Report style library module.
 """
 
 import copy
 import string
 
-from ic.std.log import log
-from ic.std.convert import xml2dict
+from iq.util import log_func
+from iq.util import xml2dict
 
-from ic.report import icreptemplate
+from . import report_template
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 0, 0, 1)
 
-# Стиль
-IC_REP_STYLE = {'font': None,   # Шрифт Структура типа ic.components.icfont.SPC_IC_FONT
-                'color': None,  # Цвет
-                # 'border':None, #Обрамление
-                # 'align':None, #Расположение текста
-                # 'num_format': None, #Формат ячейки
-                }
+# Style data structure
+REP_STYLE = {
+    'font': None,
+    'color': None,
+    # 'border': None,
+    # 'align': None,
+    # 'num_format': None,
+    }
 
 
-class icRepStyleLib(icreptemplate.icReportTemplate):
+class iqReportStyleLibrary(report_template.iqReportTemplate):
     """
-    Класс библиотеки стилей для отчетов.
+    Report style library class.
     """
     def __init__(self):
         """
-        Конструктор класса.
+        Constructor.
         """
-        icreptemplate.icReportTemplate.__init__(self)
-        self._style_lib = {}
+        report_template.iqReportTemplate.__init__(self)
+        self._style_lib = dict()
         
     def convert(self, src_data):
         """
-        Конвертация из XML представления библиотеки стилей в представление
-            библиотеки стилей отчета.
+        Convert XML style library data to report style library data.
 
-        :param src_data: Исходные данные.
+        :param src_data: Source data.
         """
         pass
         
     def get(self):
         """
-        Получить сконвертированные данные библиотеки стилей отчета.
+        Get converted report style library data.
         """
         return self._style_lib
 
 
-class icXMLRepStyleLib(icRepStyleLib):
+class iqXMLReportStyleLibrary(iqReportStyleLibrary):
     """
-    Класс преобразования XML библиотеки стилей для отчетов.
+    XML report style library class.
     """
     def __init__(self):
         """
-        Конструктор.
+        Constructor.
         """
-        icRepStyleLib.__init__(self)
+        iqReportStyleLibrary.__init__(self)
 
     def open(self, xml_filename):
         """
-        Открыть XML файл.
+        Open XML file.
 
-        :param xml_filename: Имя XML файла библиотеки стилей отчета.
+        :param xml_filename: XML report style library filename.
         """
         return xml2dict.XmlFile2Dict(xml_filename)
 
     def convert(self, xml_filename):
         """
-        Конвертация из XML файла в представление библиотеки стилей отчета.
+        Convert from XML file to report style library.
 
-        :param xml_filename: Исходные данные.
+        :param xml_filename: XML report style library filename.
         """
         xml_data = self.open(xml_filename)
         self._style_lib = self.covert_data(xml_data)
@@ -81,42 +81,39 @@ class icXMLRepStyleLib(icRepStyleLib):
 
     def covert_data(self, data):
         """
-        Преобразование данных из одного представления в другое.
+        Convert from XML file to report style library.
         """
         try:
-            style_lib = {}
-            
-            # Определение основных структур
+            # Get workbook
             workbook = data['children'][0]
-            # Стили (в виде словаря)
-            styles = {}
+            # Styles as dictionary
+            styles = dict()
             styles_lst = [element for element in workbook['children'] if element['name'] == 'Styles']
             if styles_lst:
-                styles = dict([(style['ID'], style) for style in  styles_lst[0]['children']])
+                styles = dict([(style['ID'], style) for style in styles_lst[0]['children']])
 
             worksheets = [element for element in workbook['children'] if element['name'] == 'Worksheet']
 
+            # Get worksheet
             rep_worksheet = worksheets[0]
             rep_data_tab = rep_worksheet['children'][0]
-            # Список строк
+            # Row data list
             rep_data_rows = [element for element in rep_data_tab['children'] if element['name'] == 'Row']
 
-            # Заполнение
             style_lib = self._getStyles(rep_data_rows, styles)
             return style_lib
         except:
-            # Вывести сообщение об ошибке в лог
-            log.error(u'Ошибка преобразования данных библиотеки стилей отчета.')
-            return None
+            log_func.fatal(u'Error convert report style library data')
+        return None
 
-    # Разрешенные символы в именах тегов стилей
-    LATIN_CHARSET = string.ascii_uppercase+string.ascii_lowercase+string.digits+'_'
+    # Allowed characters in style tag names
+    LATIN_CHARSET = string.ascii_uppercase+string.ascii_lowercase + string.digits + '_'
 
     def _isStyleTag(self, value):
         """
-        Определить является ли значение тегом стиля.
+        Is tag as style tag?
 
-        :param value: Строка-значение в ячейке.
+        :param value: Cell value as string.
         :return: True/False.
         """
         for symbol in value:
@@ -126,17 +123,17 @@ class icXMLRepStyleLib(icRepStyleLib):
 
     def _getStyles(self, rows, styles):
         """
-        Определить словарь стилей.
+        Get styles dictionary.
 
-        :param rows: Список строк в XML.
-        :param styles: Словарь стилей в XML.
+        :param rows: Row list in XML.
+        :param styles: Style dictionary in XML.
         """
-        new_styles = {}
+        new_styles = dict()
         for row in rows:
             for cell in row['children']:
-                # Получить значение
+                # Get value
                 value = cell['children'][0]['value']
-                # Обрабатывать только строковые значения
+
                 if value and isinstance(value, str):
                     if self._isStyleTag(value):
                         style_id = cell['StyleID']
@@ -145,12 +142,12 @@ class icXMLRepStyleLib(icRepStyleLib):
                             
     def _getStyle(self, style_id, styles):
         """
-        Определить стиль по его идентификатору.
+        Get style data by ID.
 
-        :param style_id: Идентификатор стиля в XML описании.
-        :param styles: Словарь стилей в XML.
+        :param style_id: Style ID in XML data.
+        :param styles: Style dictionary in XML.
         """
-        style = copy.deepcopy(IC_REP_STYLE)
+        style = copy.deepcopy(REP_STYLE)
         
         if style_id in styles:
             style['font'] = self._getFontStyle(styles[style_id])

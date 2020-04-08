@@ -2,70 +2,69 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль генератора отчетов.
+Report generator module.
 
-В ячейках шаблона отчета можон ставить следующие теги:
-["..."] - Обращение к полю таблицы запроса.
+Report cell tags:
+["..."] - Access to the query table field.
 
-[&...&] - Обращение к переменной отчета.
-Переменные отчета могут задаваться в таблице запроса
-в виде словаря по ключу '__variables__'.
+[&...&] - Accessing a report variable.
+Report variables are set in the query table
+in the form of a dictionary by key '__variables__'.
 
-[@package.module.function()@] - Вызов функции прикладного программиста.
+[@package.module.function()@] - Python function call.
 
-[=...=] - Исполнение блока кода.
-Системные переменные блока кода:
-    value - Значение записываемое в ячейку
-    record - Словарь текущей записи таблицы запроса
-Например:
+[=...=] - Execution of a code block.
+Code block system variables:
+    value - The value written to the cell
+    record - Dictionary of the current query table entry
+For example:
     [=value=record['dt'].strftime('%B')=]
     [=new_cell['color']=dict(background=(128, 0 , 0)) if record['is_alarm'] else None; value=record['field_name']=]
 
-[^...^] - Системные функции генератора.
-Например: 
-    [^N^] - Номер строки табличной части.
-    [^SUM(record['...'])^] или [^SUM({имя поля})^] - Суммирование по полю.
-    [^AVG(record['...'])^] или [^AVG({имя поля})^] - Вычисление среднего значения по полю.
+[^...^] - Generator system functions.
+For example:
+    [^N^] - Tabular line number.
+    [^SUM(record['...'])^] or [^SUM({имя поля})^] - Field summation.
+    [^AVG(record['...'])^] or [^AVG({имя поля})^] - Field average calculation.
 
-[*...*] - Установка стиля генерации.
+[*...*] - Setting the generation style.
 """
 
-# Подключение библиотек
 import time
 import re
 import copy
 
-from ic.std.log import log
-from ic.std.utils import textfunc
-from ic.std.utils import execfunc
+from iq.util import log_func
+from iq.util import str_func
+from iq.util import exec_func
 
-__version__ = (0, 1, 2, 2)
+__version__ = (0, 0, 0, 1)
 
-# Константы
-# Ключевые теги для обозначения:
-# значения поля таблицы запроса
+# Report cell tags:
+# query table field values
 REP_FIELD_PATT = r'(\[\'.*?\'\])'
-# функционала
+# function
 REP_FUNC_PATT = r'(\[@.*?@\])'
-# выражения
+# expression
 REP_EXP_PATT = r'(\[#.*?#\])'
-# ламбда-выражения
+# lambda
 REP_LAMBDA_PATT = r'(\[~.*?~\])'
-# переменной
+# variable
 REP_VAR_PATT = r'(\[&.*?&\])'
-# Блок кода
+# code block
 REP_EXEC_PATT = r'(\[=.*?=\])'
-# Системные функции
+# system function
 REP_SYS_PATT = r'(\[\^.*?\^\])'
-REP_SUM_FIELD_START = '{'   # Теги используются в системной функции
-REP_SUM_FIELD_STOP = '}'    # суммирования SUM для обозначения значений полей
-# Указание стиля из библиотеки стилей
+# Tags are used in the SUM summation
+# system function to indicate field values
+REP_SUM_FIELD_START = '{'
+REP_SUM_FIELD_STOP = '}'
+# style
 REP_STYLE_PATT = r'(\[\*.*?\*\])'
-# Указание родительского отчета
+# sub report
 REP_SUBREPORT_PATT = r'(\[$.*?$\])'
 
-# Список всех патернов используемых при разборе значений ячеек
-ALL_PATTERNS = [REP_FIELD_PATT,
+ALL_PATTERNS = (REP_FIELD_PATT,
                 REP_FUNC_PATT,
                 REP_EXP_PATT,
                 REP_LAMBDA_PATT,
@@ -74,232 +73,232 @@ ALL_PATTERNS = [REP_FIELD_PATT,
                 REP_SYS_PATT,
                 REP_STYLE_PATT,
                 REP_SUBREPORT_PATT,
-                ]
+                )
     
-# Спецификации и структуры
-# Структура шаблона отчета
-# Следующие ключи необходимы только для ICReportGenerator'a
-IC_REP_TMPL = {'name': '',              # Имя отчета
-               'description': '',       # Описание шаблона
-               'variables': {},         # Переменные отчета
-               'generator': None,       # Генератор
-               'data_source': None,     # Указание источника данных/БД
-               'query': None,           # Запрос отчета
-               'style_lib': None,       # Библиотека стилей
-               'header': {},            # Бэнд заголовка отчета (Координаты и размер)
-               'footer': {},            # Бэнд подвала/примечания отчета (Координаты и размер)
-               'detail': {},            # Бэнд области данных (Координаты и размер)
-               'groups': [],            # Список бэндов групп (Координаты и размер)
-               'upper': {},             # Бэнд верхнего колонтитула (Координаты и размер)
-               'under': {},             # Бэнд нижнего колонтитула (Координаты и размер)
-               'sheet': [],             # Лист ячеек отчета (Список строк описаний ячеек)
-               'args': {},              # Аргументы для вывода отчета в акцесс
-               'page_setup': None,      # Параметры страницы
-               }
+REPORT_TEMPLATE = {
+    'name': '',             # Report name
+    'description': '',      # Description
+    'variables': {},        # Report variables
+    'generator': None,      # Generator
+    'data_source': None,    # Data source / BD
+    'query': None,          # Report query
+    'style_lib': None,      # Style library
+    'header': {},           # Header band (coordinates and sizes)
+    'footer': {},           # Footer band (coordinates and sizes)
+    'detail': {},           # Data area band (coordinates and sizes)
+    'groups': [],           # Group band list (coordinates and sizes)
+    'upper': {},            # Upper band (coordinates and sizes)
+    'under': {},            # Under band (coordinates and sizes)
+    'sheet': [],            # Report cells
+    'args': {},             # Extended arguments
+    'page_setup': None,     # Page setup
+    }
 
-# Ориентация страницы
-IC_REP_ORIENTATION_PORTRAIT = 0     # Книжная
-IC_REP_ORIENTATION_LANDSCAPE = 1    # Альбомная
 
-# Параметры страницы
-IC_REP_PAGESETUP = {'orientation': IC_REP_ORIENTATION_PORTRAIT,     # Ориентация страницы
-                    'start_num': 1,                                 # Начинать нумеровать со страницы...
-                    'page_margins': (0, 0, 0, 0),                   # Поля
-                    'scale': 100,                                   # Масштаб печати (в %)
-                    'paper_size': 9,                                # Размер страницы - 9-A4
-                    'resolution': (600, 600),                       # Плотность/качество печати
-                    'fit': (1, 1),                                  # Параметры заполнения отчета на листах
-                    }
+# Page orientation
+REP_ORIENTATION_PORTRAIT = 0     # Portrait
+REP_ORIENTATION_LANDSCAPE = 1    # Landscape
 
-# Структура данных бэнда
-IC_REP_BAND = {'row': -1,       # Строка бэнда
-               'col': -1,       # Колонка бэнда
-               'row_size': -1,  # Размер бэнда по строкам
-               'col_size': -1,  # Размер бэнда по колонкам
-               }
+# Page setup
+REP_PAGESETUP = {
+    'orientation': REP_ORIENTATION_PORTRAIT,  # Page orientation
+    'start_num': 1,                           # Start numbering from page...
+    'page_margins': (0, 0, 0, 0),             # Margins
+    'scale': 100,                             # Print scale (in %)
+    'paper_size': 9,                          # Page size - 9-A4
+    'resolution': (600, 600),                 # Density / print quality
+    'fit': (1, 1),                            # Parameters for filling out a report on sheets
+    }
 
-# Форматы ячеек
-REP_FMT_NONE = None     # Не устанавливать формат
-REP_FMT_STR = 'S'       # Строковый/текстовый
-REP_FMT_TIME = 'T'      # Время
-REP_FMT_DATE = 'D'      # Дата
-REP_FMT_NUM = 'N'       # Числовой
-REP_FMT_FLOAT = 'F'     # Числовой с плавающей точкой
-REP_FMT_MISC = 'M'      # Просто какойто формат
-REP_FMT_EXCEL = 'X'     # Формат заданный Excel
+# Band data structure
+REP_BAND = {
+    'row': -1,          # Band row
+    'col': -1,          # Band column
+    'row_size': -1,     # Band size in rows
+    'col_size': -1,     # Band size in columns
+    }
+
+# Cell formats
+REP_FMT_NONE = None     # Do not set format
+REP_FMT_STR = 'S'       # String/Text
+REP_FMT_TIME = 'T'      # Time
+REP_FMT_DATE = 'D'      # Date
+REP_FMT_NUM = 'N'       # Number
+REP_FMT_FLOAT = 'F'     # Float
+REP_FMT_MISC = 'M'      # Abstract format
+REP_FMT_EXCEL = 'X'     # Excel format
 
 # Структура ячейки отчета
-IC_REP_CELL = {'merge_row': 0,      # Кол-во строк для объединеных ячеек
-               'merge_col': 0,      # Кол-во волонок для объединеных ячеек
-               'left': 0,           # Координата X
-               'top': 0,            # Координата Y
-               'width': 10,         # Ширина ячейки
-               'height': 10,        # Высота ячейки
-               'value': None,       # Текст ячейки
-               'font': None,        # Шрифт Структура типа ic.components.icfont.SPC_IC_FONT
-               'color': None,       # Цвет
-               'border': None,      # Обрамление
-               'align': None,       # Расположение текста
-               'sum': None,         # Список сумм
-               'visible': True,     # Видимость ячейки
-               'num_format': None,      # Формат ячейки
-               }
+REP_CELL = {
+    'merge_row': 0,         # Merge row number
+    'merge_col': 0,         # Merge column number
+    'left': 0,              # X coordinate
+    'top': 0,               # Y coordinate
+    'width': 10,            # Cell width
+    'height': 10,           # Cell height
+    'value': None,          # Cell text
+    'font': None,           # Font
+    'color': None,          # Color
+    'border': None,         # Border
+    'align': None,          # Alignment text
+    'sum': None,            # Sum list
+    'visible': True,        # Cell visible
+    'num_format': None,     # Cell format
+    }
 
-# Данные сумм
-# ВНИМАНИЕ!!! На каждой итерации текущее значение суммы вычисляется, как value=value+eval(formul)
-IC_REP_SUM = {'value': 0,       # Текущее значение суммы
-              'formul': '0',    # Формула вычисления сумм
-              }
+# At each iteration, the current value of the sum is calculated
+# as value=value+eval(formul)
+REP_SUM = {
+    'value': 0,     # Current sum value
+    'formul': '0',  # Formula for calculating the amount
+    }
 
-# Цвет
-IC_REP_COLOR = {'text': (0, 0, 0),      # Цвет текста
-                'background': None,     # Цвет фона
-                }
+# Color
+REP_COLOR = {
+    'text': (0, 0, 0),      # Foreground color
+    'background': None,     # Background color
+    }
 
-# Обрамление - кортеж из 4-х элементов
-IC_REP_BORDER_LEFT = 0
-IC_REP_BORDER_TOP = 1
-IC_REP_BORDER_BOTTOM = 2
-IC_REP_BORDER_RIGHT = 3
-IC_REP_BORDER_LINE = {'color': (0, 0, 0),   # Цвет
-                      'style': None,        # Стиль
-                      'weight': 0,          # Толщина
-                      }
+# Borders
+REP_BORDER_LEFT = 0
+REP_BORDER_TOP = 1
+REP_BORDER_BOTTOM = 2
+REP_BORDER_RIGHT = 3
+REP_BORDER_LINE = {
+    'color': (0, 0, 0),
+    'style': None,
+    'weight': 0,
+    }
 
-# Стили линий обрамления отчета
-IC_REP_LINE_SOLID = 0
-IC_REP_LINE_SHORT_DASH = 1
-IC_REP_LINE_DOT_DASH = 2
-IC_REP_LINE_DOT = 3
-IC_REP_LINE_TRANSPARENT = None
+# Line styles
+REP_LINE_SOLID = 0
+REP_LINE_SHORT_DASH = 1
+REP_LINE_DOT_DASH = 2
+REP_LINE_DOT = 3
+REP_LINE_TRANSPARENT = None
 
-# Размещение
-IC_REP_ALIGN = {'align_txt': (0, 0),    # кортеж из 2-х элементов
-                'wrap_txt': False,      # Перенос текста по словам
-                }
-IC_REP_ALIGN_HORIZ = 0
-IC_REP_ALIGN_VERT = 1
+# Alignment
+REP_ALIGN = {
+    'align_txt': (0, 0),
+    'wrap_txt': False,
+    }
+REP_ALIGN_HORIZ = 0
+REP_ALIGN_VERT = 1
 
-# Выравнивание текста
-IC_HORIZ_ALIGN_LEFT = 0
-IC_HORIZ_ALIGN_CENTRE = 1
-IC_HORIZ_ALIGN_RIGHT = 2
+REP_HORIZ_ALIGN_LEFT = 0
+REP_HORIZ_ALIGN_CENTRE = 1
+REP_HORIZ_ALIGN_RIGHT = 2
 
-IC_VERT_ALIGN_TOP = 3
-IC_VERT_ALIGN_CENTRE = 4
-IC_VERT_ALIGN_BOTTOM = 5
+REP_VERT_ALIGN_TOP = 3
+REP_VERT_ALIGN_CENTRE = 4
+REP_VERT_ALIGN_BOTTOM = 5
 
-# Структура группы
-IC_REP_GRP = {'header': {},         # Заголовок группы.
-              'footer': {},         # Примечание группы.
-              'field': None,        # Имя поля группы
-              'old_rec': None,      # Старое значение записи таблицы запроса.
-              }
+# Group
+REP_GRP = {
+    'header': {},       # Group header
+    'footer': {},       # Group footer
+    'field': None,      # Group field name
+    'old_rec': None,    # Old query table record
+    }
 
 DEFAULT_ENCODING = 'utf-8'
 
 
-class icReportGenerator:
+class iqReportGenerator(object):
     """
-    Класс генератора отчета.
+    Report generator class.
     """
     def __init__(self):
         """
-        Конструктор класса.
+        Constructor.
         """
-        # Имя отчета
+        # Report name
         self._RepName = None
-        # Таблица запроса
+        # Query table
         self._QueryTbl = None
-        # Количество записей таблицы запроса
+        # Query table record number
         self._QueryTblRecCount = -1
-        # Текущая запись таблицы запроса
-        self._CurRec = {}
-        # Шаблон отчета
+        # Current query table record
+        self._CurRec = dict()
+        # Report template
         self._Template = None
-        # Описание листа шаблона отчета
+        # Report template sheet
         self._TemplateSheet = None
-        # Выходной отчет
+        # Result report data
         self._Rep = None
 
-        # Список групп
-        self._RepGrp = []
+        # Group list
+        self._RepGrp = list()
 
-        # Текущая координата Y для перераспределения координат ячеек
+        # Current Y coordinate for redistributing cell coordinates
         self._cur_top = 0
 
-        # Пространство имен отчета
-        self._NameSpace = {}
+        # Report name space
+        self._NameSpace = dict()
 
-        # Атрибуты ячейки по умолчанию
-        # если None, то атрибуты не устанавливаются
+        # Cell attributes by default. If None, then attributes are not set
         self.AttrDefault = None
 
-        # Библиотека стилей
+        # Style library
         self._StyleLib = None
         
-        # Покоординатная замена значений ячеек
+        # Coordinate replacement of cell values
         self._CoordFill = None
 
-        # Словарь форматов ячеек
-        self._cellFmt = {}
+        # Cell format dictionary
+        self._cellFmt = dict()
 
     def generate(self, rep_template, query_table, name_space=None, coord_fill=None):
         """
-        Генерация отчета.
+        Generate report.
 
-        :param rep_template: Структура шаблона отчета (см. спецификации).
-        :param query_table: Таблица запроса.
-            Словарь следующей структуры:
+        :param rep_template: Report template data.
+        :param query_table: Query table:
                 {
-                    '__name__':имя таблицы запроса,
-                    '__fields__':[имена полей],
-                    '__data__':[список списков значений],
-                    '__sub__':{словарь данных подотчетов},
+                    '__name__': query table name,
+                    '__fields__': [field names],
+                    '__data__': [query table data],
+                    '__sub__': {sub report data},
                 }.
-        :param name_space: Пространство имен шаблона.
-            Обычный словарь:
+        :param name_space: Report name space.
                 {
-                    'имя переменной': значение переменной, 
+                    'variable name': variable value,
                 }.
-            ВНИМАНИЕ! Этот словарь может передаваться в таблице запроса
-                ключ __variables__.
-        :param coord_fill: Координатное заполнение значений ячеек.
-            Формат:
+            This dictionary can be transmitted in the query table key __variables__.
+        :param coord_fill: Coordinate filling in cell values.
+            Format:
                 {
-                    (Row,Col): 'Значение',
+                    (row, col): 'value',
                 }.
-            ВНИМАНИЕ! Этот словарь может передаваться в таблице запроса
-                ключ __coord_fill__.
-        :return: Заполненную структуру отчета.
+            This dictionary can be transmitted in the query table key __coord_fill__.
+        :return: Generated report data.
         """
         try:
-            # Покоординатная замена значений ячеек
+            # Coordinate filling in cell values
             self._CoordFill = coord_fill
             if query_table and '__coord_fill__' in query_table:
                 if self._CoordFill is None:
                     self._CoordFill = dict()
                 self._CoordFill.update(query_table['__coord_fill__'])
 
-            # Инициализация списка групп
+            # Group list
             self._RepGrp = list()
 
-            # I. Определить все бэнды в шаблоне и ячейки сумм
+            # I. Define all bands in the template and amount cells
             if isinstance(rep_template, dict):
                 self._Template = rep_template
             else:
-                # Вывести сообщение об ошибке в лог
-                log.warning(u'Ошибка типа шаблона отчета <%s>.' % type(rep_template))
+                log_func.error(u'Error report template type <%s>.' % type(rep_template))
                 return None
 
-            # Инициализация имени отчета
+            # Init report name
             if 'name' in query_table and query_table['name']:
-                # Если таблица запроса именована, то значит это имя готового отчета
+                # If the query table is named, then this is the name of the finished report
                 self._RepName = str(query_table['name'])
             elif 'name' in self._Template:
                 self._RepName = self._Template['name']
             
-            # Заполнить пространство имен
+            # Init name space
             self._NameSpace = name_space
             if self._NameSpace is None:
                 self._NameSpace = dict()
@@ -307,9 +306,9 @@ class icReportGenerator:
             if query_table and '__variables__' in query_table:
                 self._NameSpace.update(query_table['__variables__'])
             if self._NameSpace:
-                log.debug(u'Переменные отчета: %s' % str(list(self._NameSpace.keys())))
+                log_func.debug(u'Report variables: %s' % str(list(self._NameSpace.keys())))
 
-            # Библиотека стилей
+            # Style library
             self._StyleLib = None
             if 'style_lib' in self._Template:
                 self._StyleLib = self._Template['style_lib']
@@ -317,68 +316,62 @@ class icReportGenerator:
             self._TemplateSheet = self._Template['sheet']
             self._TemplateSheet = self._initSumCells(self._TemplateSheet)
 
-            # II. Инициализация таблицы запроса
+            # II. Init query table
             self._QueryTbl = query_table
-            # Определить количество записей в таблице запроса
+            # Determine the number of records in the query table
             self._QueryTblRecCount = 0
             if self._QueryTbl and '__data__' in self._QueryTbl:
                 self._QueryTblRecCount = len(self._QueryTbl['__data__'])
 
-            # Проинициализировать бенды групп
+            # Init group band
             for grp in self._Template['groups']:
                 grp['old_rec'] = None
 
             time_start = time.time()
-            log.info(u'Отчет <%s>. Запуск генерации' % textfunc.toUnicode(self._RepName))
+            log_func.info(u'Report <%s>. Generate start' % str_func.toUnicode(self._RepName))
 
-            # III. Вывод данных в отчет
-            # Создать отчет
-            self._Rep = copy.deepcopy(IC_REP_TMPL)
+            # III. Fill report
+            # Create report
+            self._Rep = copy.deepcopy(REPORT_TEMPLATE)
             self._Rep['name'] = self._RepName
 
-            # Инициализация необходимых переменных
-            field_idx = {}      # Индексы полей
+            # Init variables
+            field_idx = dict()      # Field indexes
             i = 0
             i_rec = 0
-            # Перебор полей таблицы запроса
+            # Iterate through the fields of a query table
             if self._QueryTbl and '__fields__' in self._QueryTbl:
                 for cur_field in self._QueryTbl['__fields__']:
                     field_idx[cur_field] = i
                     i += 1
 
-            # Если записи в таблице запроса есть, то ...
             if self._QueryTblRecCount:
-                # Проинициализировать текущую строку для использования
-                # ее в заголовке отчета
+                # Init current record
                 rec = self._QueryTbl['__data__'][i_rec]
-                # Заполнить словарь текущей записи
                 for field_name in field_idx.keys():
                     val = rec[field_idx[field_name]]
-                    # Предгенерация значения данных ячейки
                     self._CurRec[field_name] = val
-                # Прописать индекс текущей записи
-                self._CurRec['ic_sys_num_rec'] = i_rec
+                # Current record index
+                self._CurRec['sys_num_rec_idx'] = i_rec
 
-            # Верхний колонтитул
+            # Upper
             if self._Template['upper']:
                 self._genUpper(self._Template['upper'])
             
-            # Вывести в отчет заголовок
+            # Header
             self._genHeader(self._Template['header'])
 
-            # Главный цикл
-            # Перебор записей таблицы запроса
+            # Main loop
             while i_rec < self._QueryTblRecCount:
-                # Обработка групп
-                # Проверка смены группы в описании всех групп
-                # и найти индекс самой общей смененной группы
-                i_grp_out = -1      # индекс самой общей смененной группы
-                # Флаг начала генерации (примечания групп не выводяться)
+                # Group
+                # Check group change and find the index of the most common change group
+                i_grp_out = -1
+                # Start generate flag
                 start_gen = False
                 for i_grp in range(len(self._Template['groups'])):
                     grp = self._Template['groups'][i_grp]
                     if grp['old_rec']:
-                        # Проверить условие вывода примечания группы
+                        # Check group note output condition
                         if self._CurRec[grp['field']] != grp['old_rec'][grp['field']]:
                             i_grp_out = i_grp
                             break
@@ -387,77 +380,71 @@ class icReportGenerator:
                         start_gen = True
                         break
                 if i_grp_out != -1:
-                    # Вывести примечания
+                    # Display notes
                     if start_gen is False:
                         for i_grp in range(len(self._Template['groups'])-1, i_grp_out-1, -1):
                             grp = self._Template['groups'][i_grp]
                             self._genGrpFooter(grp)
-                    # Вывести заголовки
+                    # Show headers
                     for i_grp in range(i_grp_out, len(self._Template['groups'])):
                         grp = self._Template['groups'][i_grp]
                         grp['old_rec'] = copy.deepcopy(self._CurRec)
                         self._genGrpHeader(grp)
                     
-                # Область данных
+                # Data area
                 self._genDetail(self._Template['detail'])
 
-                # Увеличить суммы суммирующих ячеек
+                # Increase the sum of summing cells
                 self._sumIterate(self._TemplateSheet, self._CurRec)
 
-                # Перейти на следующую запись
+                # Next record
                 i_rec += 1
-                # Заполнить словарь текущей записи
+                # Set current record
                 if i_rec < self._QueryTblRecCount:
                     rec = self._QueryTbl['__data__'][i_rec]
-                    # Заполнить словарь текущей записи
                     for field_name in field_idx.keys():
                         val = rec[field_idx[field_name]]
-                        # Предгенерация значения данных ячейки
                         self._CurRec[field_name] = val
-                    # Прописать индекс текущей записи
-                    self._CurRec['ic_sys_num_rec'] = i_rec
+                    # Set current record index
+                    self._CurRec['sys_num_rec_idx'] = i_rec
 
-            # Вывести примечания после области данных
+            # Footer
             for i_grp in range(len(self._Template['groups'])-1, -1, -1):
                 grp = self._Template['groups'][i_grp]
                 if grp['old_rec']:
                     self._genGrpFooter(grp)
                 else:
                     break
-            # Вывести в отчет примечание отчета
             self._genFooter(self._Template['footer'])
-            # Нижний колонтитул
+            # Under
             if self._Template['under']:
                 self._genUnder(self._Template['under'])
 
-            # Параметры страницы
+            # Page setup
             self._Rep['page_setup'] = self._Template['page_setup']
 
-            # Прогресс бар
-            log.info(u'Отчет <%s>. Окончание генерации. Время: %d сек.' % (textfunc.toUnicode(self._RepName),
-                                                                           time.time()-time_start))
+            log_func.info(u'Report <%s>. Generate end. Time: %d sec.' % (str_func.toUnicode(self._RepName),
+                                                                         time.time()-time_start))
 
             return self._Rep
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации отчета.')
-            return None
+            log_func.fatal(u'Error report generate')
+        return None
 
     def _genHeader(self, header):
         """
-        Сгенерировать заголовок отчета и перенести ее в выходной отчет.
+        Generate report header.
 
-        :param header: Бэнд заголовка.
-        :return: Возвращает результат выполнения операции True/False.
+        :param header: Header band.
+        :return: True/False.
         """
         try:
-            # log.debug(u'Генерация заголовка')
-            # Добавлять будем в конец отчета,
-            # поэтому опреелить максимальную строчку
+            # log_func.debug(u'Generate header')
+            # We will add to the end of the report, therefore, determine the maximum line
             max_row = len(self._Rep['sheet'])
             i_row = 0
             cur_height = 0
-            # Перебрать все ячейки бэнда
+
             for row in range(header['row'], header['row'] + header['row_size']):
                 for col in range(header['col'], header['col'] + header['col_size']):
                     if self._TemplateSheet[row][col]:
@@ -465,40 +452,37 @@ class icReportGenerator:
                                       self._Rep, max_row+i_row, col, self._CurRec)
                         cur_height = self._TemplateSheet[row][col]['height']
                 i_row += 1
-                # Увеличить текущую координату Y
+                # Current coordinate Y
                 self._cur_top += cur_height
-            # Прописать область
+
             self._Rep['header'] = {'row': max_row,
                                    'col': header['col'],
                                    'row_size': i_row,
                                    'col_size': header['col_size'],
                                    }
-            # Очистить сумы суммирующих ячеек
+            # Clear sums
             self._TemplateSheet = self._clearSum(self._TemplateSheet, 0, len(self._TemplateSheet))
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации заголовка отчета <%s>.' % textfunc.toUnicode(self._RepName))
-            return False
+            log_func.fatal(u'Error report header generate <%s>.' % str_func.toUnicode(self._RepName))
+        return False
             
     def _genFooter(self, footer):
         """
-        Сгенерировать примечание отчета и перенести ее в выходной отчет.
+        Generate report footer.
 
-        :param footer: Бэнд примечания.
-        :return: Возвращает результат выполнения операции True/False.
+        :param footer: Footer band.
+        :return: True/False.
         """
         try:
-            # Подвала отчета просто нет
             if not footer:
                 return True
 
-            # Добавлять будем в конец отчета,
-            # поэтому опреелить максимальную строчку
+            # We will add to the end of the report, therefore, determine the maximum line
             max_row = len(self._Rep['sheet'])
-            i_row = 0       # Счетчик строк бэнда
+            i_row = 0       # Row band count
             cur_height = 0
-            # Перебрать все ячейки бэнда
+
             for row in range(footer['row'], footer['row'] + footer['row_size']):
                 for col in range(footer['col'], footer['col'] + footer['col_size']):
                     if self._TemplateSheet[row][col]:
@@ -506,9 +490,9 @@ class icReportGenerator:
                                       self._Rep, max_row+i_row, col, self._CurRec)
                         cur_height = self._TemplateSheet[row][col]['height']
                 i_row += 1
-                # Увеличить текущую координату Y
+                # Current Y coordinate
                 self._cur_top += cur_height
-            # Прописать область
+
             self._Rep['footer'] = {'row': max_row,
                                    'col': footer['col'],
                                    'row_size': i_row,
@@ -516,24 +500,22 @@ class icReportGenerator:
                                    }
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации примечания отчета <%s>.' % self._RepName)
-            return False
+            log_func.fatal(u'Error report footer generate <%s>.' % self._RepName)
+        return False
 
     def _genDetail(self, detail):
         """
-        Сгенерировать область данных отчета и перенести ее в выходной отчет.
+        Generate report detail.
 
-        :param detail: Бэнд области данных.
-        :return: Возвращает результат выполнения операции True/False.
+        :param detail: Detail band.
+        :return: True/False.
         """
         try:
-            # Добавлять будем в конец отчета,
-            # поэтому опреелить максимальную строчку
+            # We will add to the end of the report, therefore, determine the maximum line
             max_row = len(self._Rep['sheet'])
-            i_row = 0   # Счетчик строк бэнда
+            i_row = 0
             cur_height = 0
-            # Перебрать все ячейки бэнда
+
             for row in range(detail['row'], detail['row'] + detail['row_size']):
                 for col in range(detail['col'], detail['col'] + detail['col_size']):
                     if self._TemplateSheet[row][col]:
@@ -541,9 +523,9 @@ class icReportGenerator:
                                       self._Rep, max_row+i_row, col, self._CurRec)
                         cur_height = self._TemplateSheet[row][col]['height']
                 i_row += 1
-                # Увеличить текущую координату Y
+                # Current Y coordinate
                 self._cur_top += cur_height
-            # Прописать область
+
             if self._Rep['detail'] == {}:
                 self._Rep['detail'] = {'row': max_row,
                                        'col': detail['col'],
@@ -555,27 +537,25 @@ class icReportGenerator:
 
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации области данных отчета <%s>.' % self._RepName)
-            return False
+            log_func.fatal(u'Error report detail generate <%s>.' % self._RepName)
+        return False
 
     def _genGrpHeader(self, rep_group):
         """
-        Генерация заголовка группы.
+        Generate group header.
 
-        :param rep_group: Словарь IC_REP_GRP, описывающий группу.
-        :return: Возвращает результат выполнения операции True/False.
+        :param rep_group: REP_GRP dictionary.
+        :return: True/False.
         """
         try:
             band = rep_group['header']
             if not band:
                 return False
-            # Добавлять будем в конец отчета,
-            # поэтому опреелить максимальную строчку
+            # We will add to the end of the report, therefore, determine the maximum line
             max_row = len(self._Rep['sheet'])
-            i_row = 0   # Счетчик строк бэнда
+            i_row = 0
             cur_height = 0
-            # Перебрать все ячейки бэнда
+
             for row in range(band['row'], band['row']+band['row_size']):
                 for col in range(band['col'], band['col']+band['col_size']):
                     if self._TemplateSheet[row][col]:
@@ -583,36 +563,33 @@ class icReportGenerator:
                                       self._Rep, max_row+i_row, col, self._CurRec)
                         cur_height = self._TemplateSheet[row][col]['height']
                 i_row += 1
-                # Увеличить текущую координату Y
+                # Current Y coordinate
                 self._cur_top += cur_height
-            # Очистить сумы суммирующих ячеек
-            # ВНИМАНИЕ!!! Итоговых ячеек не бывает в заголовках. Поэтому я не обработываю их
+            # Clear sums. There are no summary cells in the headers
             band = rep_group['footer']
             if band:
                 self._TemplateSheet = self._clearSum(self._TemplateSheet, band['row'], band['row']+band['row_size'])
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации заголовка группы <%s> отчета <%s>.' % (rep_group['field'], self._RepName))
-            return False
+            log_func.fatal(u'Error group header generate <%s> of report <%s>.' % (rep_group['field'], self._RepName))
+        return False
 
     def _genGrpFooter(self, rep_group):
         """
-        Генерация примечания группы.
+        Generate group footer.
 
-        :param rep_group: Словарь IC_REP_GRP, описывающий группу.
-        :return: Возвращает результат выполнения операции True/False.
+        :param rep_group: REP_GRP dictionary.
+        :return: True/False.
         """
         try:
             band = rep_group['footer']
             if not band:
                 return False
-            # Добавлять будем в конец отчета,
-            # поэтому опреелить максимальную строчку
+
             max_row = len(self._Rep['sheet'])
-            i_row = 0   # Счетчик строк бэнда
+            i_row = 0
             cur_height = 0
-            # Перебрать все ячейки бэнда
+
             for row in range(band['row'], band['row']+band['row_size']):
                 for col in range(band['col'], band['col']+band['col_size']):
                     if self._TemplateSheet[row][col]:
@@ -620,35 +597,30 @@ class icReportGenerator:
                                       self._Rep, max_row + i_row, col, rep_group['old_rec'])
                         cur_height = self._TemplateSheet[row][col]['height']
                 i_row += 1
-                # Увеличить текущую координату Y
+                # Current Y coordinate
                 self._cur_top += cur_height
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации примечания группы <%s> отчета <%s>.' % (rep_group['field'], self._RepName))
-            return False
+            log_func.fatal(u'Error group footer generate <%s> of report <%s>.' % (rep_group['field'], self._RepName))
+        return False
 
     def _genUpper(self, upper):
         """
-        Сгенерировать верхний колонтитул/заголовок страницы отчета и
-        перенести ее в выходной отчет.
+        Generate report upper.
 
-        :param upper: Бэнд верхнего колонтитула.
-        :return: Возвращает результат выполнения операции True/False.
+        :param upper: Upper band.
+        :return: True/False.
         """
         try:
             if 'row' not in upper or 'col' not in upper or \
                'row_size' not in upper or 'col_size' not in upper:
-                # Не надо обрабатывать строки
                 self._Rep['upper'] = upper
                 return True
                 
-            # Добавлять будем в конец отчета,
-            # поэтому опреелить максимальную строчку
             max_row = len(self._Rep['sheet'])
             i_row = 0
             cur_height = 0
-            # Перебрать все ячейки бэнда
+
             for row in range(upper['row'], upper['row'] + upper['row_size']):
                 for col in range(upper['col'], upper['col'] + upper['col_size']):
                     if self._TemplateSheet[row][col]:
@@ -656,39 +628,35 @@ class icReportGenerator:
                                       self._Rep, max_row+i_row, col, self._CurRec)
                         cur_height = self._TemplateSheet[row][col]['height']
                 i_row += 1
-                # Увеличить текущую координату Y
+
                 self._cur_top += cur_height
-            # Прописать область
+
             self._Rep['upper'] = copy.deepcopy(upper)
             self._Rep['upper']['row'] = max_row
             self._Rep['upper']['row_size'] = i_row
             
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации верхнего колонтитула отчета <%s>.' % self._RepName)
-            return False
+            log_func.fatal(u'Error report upper generate <%s>' % self._RepName)
+        return False
 
     def _genUnder(self, under):
         """
-        Сгенерировать нижний колонтитул отчета и перенести ее в выходной отчет.
+        Generate report under.
 
-        :param under: Бэнд нижнего колонтитула.
-        :return: Возвращает результат выполнения операции True/False.
+        :param under: Under band.
+        :return: True/False.
         """
         try:
             if 'row' not in under or 'col' not in under or \
                'row_size' not in under or 'col_size' not in under:
-                # Не надо обрабатывать строки
                 self._Rep['under'] = under
                 return True
                 
-            # Добавлять будем в конец отчета,
-            # поэтому опреелить максимальную строчку
             max_row = len(self._Rep['sheet'])
             i_row = 0
             cur_height = 0
-            # Перебрать все ячейки бэнда
+
             for row in range(under['row'], under['row'] + under['row_size']):
                 for col in range(under['col'], under['col'] + under['col_size']):
                     if self._TemplateSheet[row][col]:
@@ -696,255 +664,246 @@ class icReportGenerator:
                                       self._Rep, max_row+i_row, col, self._CurRec)
                         cur_height = self._TemplateSheet[row][col]['height']
                 i_row += 1
-                # Увеличить текущую координату Y
+
                 self._cur_top += cur_height
-            # Прописать область
+
             self._Rep['under'] = copy.deepcopy(under)
             self._Rep['under']['row'] = max_row
             self._Rep['under']['row_size'] = i_row
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации нижнего колонтитула отчета <%s>.' % self._RepName)
-            return False
+            log_func.fatal(u'Error report under generate <%s>' % self._RepName)
+        return False
             
     def _genSubReport(self, sub_rep_name, row):
         """
-        Генерация под-отчета.
+        Generate sub report.
 
-        :param sub_rep_name: Имя под-отчета.
-        :param row: Номер строки листа, после которой будет вставляться под-отчет.
-        :return: Возвращает результат выполнения операции True/False.
+        :param sub_rep_name: Sub report name.
+        :param row: Rown number for insert sub report.
+        :return: True/False.
         """
         try:
             if '__sub__' in self._QueryTbl and self._QueryTbl['__sub__']:
                 if sub_rep_name in self._QueryTbl['__sub__']:
-                    # Если есть данные под-отчета, тогда запустить генерацию
+                    # If there is sub-report data, then start the generation
                     report = self._QueryTbl['__sub__'][sub_rep_name]['report']
                     if isinstance(report, str):
-                        # Импорт для генерации под-отчетов
-                        from ic.report import icreptemplate
-                        # Под-отчет задан именем файла.
-                        template = icreptemplate.icExcelXMLReportTemplate()
+                        from . import report_template
+                        template = report_template.iqlXMLSpreadSheetReportTemplate()
 
                         self._QueryTbl['__sub__'][sub_rep_name]['report'] = template.read(report)
-                    # Запуск генерации подотчета
-                    rep_gen = icReportGenerator()
+
+                    # Generate sub report
+                    rep_gen = iqReportGenerator()
                     rep_result = rep_gen.generate(self._QueryTbl['__sub__'][sub_rep_name]['report'],
                                                   self._QueryTbl['__sub__'][sub_rep_name],
                                                   self._QueryTbl['__sub__'][sub_rep_name]['__variables__'],
                                                   self._QueryTbl['__sub__'][sub_rep_name]['__coord_fill__'])
-                    # Вставить результат под-отчета после строки
+
                     self._Rep['sheet'] = self._Rep['sheet'][:row]+rep_result['sheet']+self._Rep['sheet'][row:]
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации под-отчета <%s> отчета <%s>.' % (sub_rep_name, self._RepName))
-            return False
+            log_func.fatal(u'Error sub report generate <%s> of report <%s>.' % (sub_rep_name, self._RepName))
+        return False
 
     def _genCell(self, from_sheet, from_row, from_col, to_report, to_row, to_col, record):
         """
-        Генерация ячейки из шаблона в выходной отчет.
+        Generate report cell.
 
-        :param from_sheet: Из листа шаблона.
-        :param from_row: Координаты ячейки шаблона. Строка.
-        :param from_col: Координаты ячейки шаблона. Столбец.
-        :param to_report: В отчет.
-        :param to_row: Координаты ячейки отчета. Строка.
-        :param to_col: Координаты ячейки отчета. Столбец.
-        :param record: Запись.
-        :return: Возвращает результат выполнения операции True/False.
+        :param from_sheet: From report template sheet.
+        :param from_row: Report template cell row.
+        :param from_col: Report template cell column.
+        :param to_report: To report.
+        :param to_row: Result report cell row.
+        :param to_col: Result report cell column.
+        :param record: Current record.
+        :return: True/False.
         """
         try:
             cell = copy.deepcopy(from_sheet[from_row][from_col])
 
-            # Коррекция координат ячейки
+            # Correct cell coordinate
             cell['top'] = self._cur_top
-            # Генерация текста ячейки
+            # Generate cell value
             if self._CoordFill and (to_row, to_col) in self._CoordFill:
-                # Координатные замены
+                # Coordinate replacements
                 fill_val = str(self._CoordFill[(to_row, to_col)])
                 cell['value'] = self._genTxt({'value': fill_val}, record, to_row, to_col)
             else:
-                # Перенести все ячейки из шаблона в выходной отчет
+                # Transfer all cells from the template to the output report
                 cell['value'] = self._genTxt(cell, record, to_row, to_col)
 
-            # log.debug(u'Значение <%s>' % text(new_cell['value']))
+            # log_func.debug(u'Value <%s>' % text(new_cell['value']))
 
-            # Установка атирибутов ячейки по умолчанию
-            # Заполнение некоторых атрибутов ячейки по умолчанию
+            # Set default cell atiributes
+            # Filling some default cell attributes
             if self.AttrDefault and isinstance(self.AttrDefault, dict):
                 cell.update(self.AttrDefault)
                 
-            # Установить описание ячейки отчета.
+            # Set report cell description
             if len(to_report['sheet']) <= to_row:
-                # Расширить строки
+                # Expand rows
                 for i_row in range(len(to_report['sheet']), to_row + 1):
                     to_report['sheet'].append([])
             if len(to_report['sheet'][to_row]) <= to_col:
-                # Расширить колонки
+                # Expand columns
                 for i_col in range(len(to_report['sheet'][to_row]), to_col + 1):
                     to_report['sheet'][to_row].append(None)
-            # Установить описание колонки
+
             if cell['visible']:
                 to_report['sheet'][to_row][to_col] = cell
             return True
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации ячейки шаблона <%s>.' % self._RepName)
-            return False
+            log_func.fatal(u'Error report cell generate <%s>' % self._RepName)
+        return False
         
     def _genTxt(self, cell, record=None, cell_row=None, cell_col=None):
         """
-        Генерация текста.
+        Generate text.
 
-        :param cell: Ячейка.
-        :param record: Словарь, описывающий текущую запись таблицы запроса.
-            Формат: { <имя поля> : <значение поля>, ...}
-        :param cell_row: Номер строки ячейки в результирующем отчете.
-        :param cell_col: Номер колонки ячейки в результирующем отчете.
-        :return: Возвращает сгенерированное значение.
+        :param cell: Cell.
+        :param record: Current record data.
+            Format:
+                { <field name> : <value>, ...}
+        :param cell_row: Cell row number.
+        :param cell_col: Cell column number.
+        :return: Generated text value or None if error.
         """
         value = u''
         try:
-            # Проверка на преобразование типов
             cell_val = cell['value']
             if cell_val is not None and not isinstance(cell_val, str):
                 cell_val = str(cell_val)
             if cell_val not in self._cellFmt:
-                parsed_fmt = self.funcTextParse(cell_val)
+                parsed_fmt = self.parseFuncText(cell_val)
                 self._cellFmt[cell_val] = parsed_fmt
             else:
                 parsed_fmt = self._cellFmt[cell_val]
 
-            func_str = []   # Выходной список значений
+            func_str = list()   # Result value list
             i_sum = 0
-            # Перебрать строки функционала
+
             for cur_func in parsed_fmt['func']:
 
-                # Функция
+                # Function
                 if re.search(REP_FUNC_PATT, cur_func):
-                    value = self._exec_function(cur_func, locals(), globals())
+                    value = self._execFunction(cur_func, locals(), globals())
 
-                # Исполняемое выражение
+                # Expression
                 elif re.search(REP_EXP_PATT, cur_func):
-                    value = self._exec_expression(cur_func, locals(), globals())
+                    value = self._execExpression(cur_func, locals(), globals())
 
-                # Ламбда-выражение
+                # Lambda
                 elif re.search(REP_LAMBDA_PATT, cur_func):
-                    value = self._exec_lambda(cur_func, locals(), globals())
+                    value = self._execLambda(cur_func, locals(), globals())
 
-                # Переменная
+                # Variable
                 elif re.search(REP_VAR_PATT, cur_func):
-                    value = self._get_variable(cur_func, locals(), globals())
+                    value = self._getVariable(cur_func, locals(), globals())
 
-                # Блок кода
+                # Code block
                 elif re.search(REP_EXEC_PATT, cur_func):
-                    value = self._exec_code(cur_func, locals(), globals())
+                    value = self._execCodeBlock(cur_func, locals(), globals())
 
-                # Системная функция
+                # System function
                 elif re.search(REP_SYS_PATT, cur_func):
-                    # Функция суммирования
+                    # Sum function
                     if cur_func[2:6].lower() == 'sum(':
                         value = str(cell['sum'][i_sum]['value'])
-                        i_sum += 1  # Перейти к следующей сумме
-                    # Функция вычисления среднего значения
+                        i_sum += 1  # Next sum
+                    # Average calculation function
                     elif cur_func[2:6].lower() == 'avg(':
-                        if 'ic_sys_num_rec' not in record:
-                            record['ic_sys_num_rec'] = 0
-                        value = str(cell['sum'][i_sum]['value'] / (record['ic_sys_num_rec'] + 1))
-                        i_sum += 1  # Перейти к следующей сумме
+                        if 'sys_num_rec_idx' not in record:
+                            record['sys_num_rec_idx'] = 0
+                        value = str(cell['sum'][i_sum]['value'] / (record['sys_num_rec_idx'] + 1))
+                        i_sum += 1  # Next sum
                     elif cur_func[2:-2].lower() == 'n':
-                        if 'ic_sys_num_rec' not in record:
-                            record['ic_sys_num_rec'] = 0
-                        sys_num_rec = record['ic_sys_num_rec']
+                        if 'sys_num_rec_idx' not in record:
+                            record['sys_num_rec_idx'] = 0
+                        sys_num_rec = record['sys_num_rec_idx']
                         value = str(sys_num_rec + 1)
                     else:
-                        # Вывести сообщение об ошибке в лог
-                        log.warning(u'Неизвестная системная функция <%s> шаблона <%s>.' % (textfunc.toUnicode(cur_func),
-                                                                                           self._RepName))
+                        log_func.error(u'Unknown system function <%s> in <%s>' % (str_func.toUnicode(cur_func),
+                                                                                  self._RepName))
                         value = ''
                         
-                # Стиль
+                # Style
                 elif re.search(REP_STYLE_PATT, cur_func):
-                    value = self._set_style(cur_func, locals(), globals())
+                    value = self._setStyle(cur_func, locals(), globals())
 
-                # Поле
+                # Field
                 elif re.search(REP_FIELD_PATT, cur_func):
-                    value = self._get_field_value(cur_func, locals(), globals())
+                    value = self._getFieldValue(cur_func, locals(), globals())
 
-                # Под-отчеты
+                # Sub report
                 elif re.search(REP_SUBREPORT_PATT, cur_func):
-                    value = self._gen_subreport(cur_func, locals(), globals())
+                    value = self._genSubReportBlock(cur_func, locals(), globals())
 
                 else:
-                    log.warning(u'Не обрабатываемая функция <%s>' % str(cur_func))
+                    log_func.error(u'Unsupported function <%s>' % str(cur_func))
 
-                # ВНИМАНИЕ! В значении ячейки тоже могут быть управляющие коды
+                # The cell value may also contain control codes
                 value = self._genTxt({'value': value}, record)
                 func_str.append(value)
 
-            # Заполнение формата
             return self._valueFormat(parsed_fmt['fmt'], func_str)
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации текста ячейки <%s> шаблона <%s>.' % (textfunc.toUnicode(cell['value']),
-                                                                              self._RepName))
-            return None
+            log_func.fatal(u'Error cell text generate <%s> in <%s>.' % (str_func.toUnicode(cell['value']),
+                                                                        self._RepName))
+        return None
 
-    def _exec_function(self, cur_func, locals, globals):
+    def _execFunction(self, cur_func, locals, globals):
         """
-        Выполнить вызов внешней функции.
-        ВНИМАНИЕ: Функция в шаблоне может иметь 1 аргумент это словарь записи.
-            Например:
-                [@package_name.module_name.function_name(record)@]
+        Execute external function.
+        A function in a template can have 1 argument; this is a dictionary of entries.
+        For example:
+            [@package_name.module_name.function_name(record)@]
 
-        :param cur_func: Текст вызова функции с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Вычисленное значение в виде строки или пустая строка в случае ошибки.
+        :param cur_func: Call function text.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: The calculated value as a string or an empty string in case of an error.
         """
         value = u''
         func_body = cur_func[2:-2]
         try:
             value = str(self._execFuncGen(func_body, locals))
         except:
-            log.fatal(u'Ошибка выполнения функции <%s>' % func_body)
+            log_func.fatal(u'Error execute function <%s>' % func_body)
         return value
 
-    def _exec_expression(self, cur_func, locals, globals):
+    def _execExpression(self, cur_func, locals, globals):
         """
-        Выполнить исполняемое выражение.
-        ВНИМАНИЕ: Исполняемое выражение в шаблоне должно иметь
-            вид получения значения value.
-            Например:
-                [#record["dt"].strftime("%B")#]
+        Execute expression.
+        For example:
+            [#record["dt"].strftime("%B")#]
 
-        :param cur_func: Текст исполняемого выражения с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Вычисленное значение в виде строки или пустая строка в случае ошибки.
+        :param cur_func: Expression text.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: The calculated value as a string or an empty string in case of an error.
         """
         value = u''
         exp_body = cur_func[2:-2]
         try:
             value = eval(exp_body, globals, locals)
         except:
-            log.fatal(u'Ошибка выполнения исполняемого выражения <%s>' % exp_body)
-        log.debug(u'Выполнение исполняемого выражения <%s>. Значение <%s>' % (exp_body, str(value)))
+            log_func.fatal(u'Error expression execute <%s>' % exp_body)
+        log_func.debug(u'Execute expression <%s>. Value <%s>' % (exp_body, str(value)))
         return value
 
-    def _exec_lambda(self, cur_func, locals, globals):
+    def _execLambda(self, cur_func, locals, globals):
         """
-        Выполнение lambda выражения.
-            ВНИМАНИЕ: Лямбда-выражение в шаблоне должно иметь 1 аргумент это словарь записи.
-                Например:
-                    [~rec: rec['name']=='Петров'~]
+        Execute lambda.
+        Lambda haa 1 argument. It is record.
+        For example:
+            [~rec: rec['name']=='My name'~]
 
-        :param cur_func: Вызов lambda выражения с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Вычисленное значение в виде строки или пустая строка в случае ошибки.
+        :param cur_func: Call lambda text.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: The calculated value as a string or an empty string in case of an error.
         """
         value = u''
         lambda_body = cur_func[2:-2]
@@ -952,84 +911,81 @@ class icReportGenerator:
         try:
             lambda_func = eval('lambda ' + cur_func[2:-2])
         except:
-            log.fatal(u'Ошибка определения lambda выражения <%s>' % lambda_body)
+            log_func.fatal(u'Error lambda format <%s>' % lambda_body)
 
         if lambda_func:
             try:
                 record = locals['record'] if 'record' in locals else globals.get('record', dict())
                 value = str(lambda_func(record))
             except:
-                log.fatal(u'Ошибка выполнения lambda выражения <%s>' % lambda_body)
+                log_func.fatal(u'Error lambda execute <%s>' % lambda_body)
 
         return value
 
-    def _exec_code(self, cur_func, locals, globals):
+    def _execCodeBlock(self, cur_func, locals, globals):
         """
-        Выполнить блок кода.
-        ВНИМАНИЕ: В блоке кода доступны объекты new_cell и record.
-            Если надо вывести информацию, то ее надо выводить в
-            переменную value.
-            Например:
-            [=value = '-' if record['name']=='Петров' else ''=]
+        Execute code block.
+        In the code block, new_cell and record objects are available.
+        If you need to display information, then it must be displayed in the variable value.
+        For example:
+            [=value = '-' if record['name']=='My name' else ''=]
 
-        :param cur_func: Текст блока кода с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Вычисленное значение в виде строки или пустая строка в случае ошибки.
+        :param cur_func: Code block text.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: The calculated value as a string or an empty string in case of an error.
         """
         value = u''
         exec_func = cur_func[2:-2].strip()
         try:
             exec(exec_func, globals, locals)
-            # ВНИМАНИЕ! При выполнении блока кода значение переменной располагается
-            # в пространстве имен locals.
-            # Поэтому необходимо после выполнения блока кода вернуть переменную обратно в
-            # текущую функцию
+            # When the code block is executed, the value of the variable is located in the locals namespace.
+            # Therefore, after executing the code block, it is necessary
+            # to return the variable back to the current function
             value = locals.get('value', u'')
         except:
-            log.fatal(u'Ошибка выполнения блока кода <%s>' % textfunc.toUnicode(exec_func))
-        # log.debug(u'Выполнение блока кода <%s>. Значение <%s>' % (exec_func, str(value)))
+            log_func.fatal(u'Error code block execute <%s>' % str_func.toUnicode(exec_func))
         return str(value)
 
-    def _get_variable(self, cur_func, locals, globals):
+    def _getVariable(self, cur_func, locals, globals):
         """
-        Получить переменную из пространства имен отчета.
+        Get variable from report name space.
 
-        :param cur_func: Текст блока обращения к переменной с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Переменная в строковом виде.
+        :param cur_func: Get variable text.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: The variable value as a string or an empty string in case of an error.
         """
         var_name = cur_func[2:-2]
         if var_name in self._NameSpace:
-            log.debug(u'Обработка переменной <%s>' % var_name)
+            log_func.debug(u'Get variable <%s>' % var_name)
         else:
-            log.warning(u'Переменная <%s> не найдена в пространстве имен' % var_name)
+            log_func.error(u'Variable <%s> not found in report name space' % var_name)
         value = str(self._NameSpace.setdefault(var_name, u''))
         return value
 
-    def _set_style(self, cur_func, locals, globals):
+    def _setStyle(self, cur_func, locals, globals):
         """
-        Установить стиль.
+        Set style.
 
-        :param cur_func: Текст блока указания имени стиля с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Переменная в строковом виде.
+        :param cur_func: Style name.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: Empty string.
         """
         value = u''
         style_name = cur_func[2:-2]
         self._setStyleAttr(style_name)
         return value
 
-    def _get_field_value(self, cur_func, locals, globals):
+    def _getFieldValue(self, cur_func, locals, globals):
         """
-        Получить значение поля текущей записи.
+        Get field value of current record.
 
-        :param cur_func: Текст блока обращения к полю с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Переменная в строковом виде.
+        :param cur_func: Field name.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: Value as string.
         """
         value = u''
         field_name = str((cur_func[2:-2]))
@@ -1037,18 +993,18 @@ class icReportGenerator:
         try:
             value = record[field_name]
         except KeyError:
-            log.warning(u'В строке (%s) поле <%s> не найдено' % (textfunc.toUnicode(record),
-                                                                 textfunc.toUnicode(field_name)))
+            log_func.error(u'In record (%s) field <%s> not found' % (str_func.toUnicode(record),
+                                                                     str_func.toUnicode(field_name)))
         return value
 
-    def _gen_subreport(self, cur_func, locals, globals):
+    def _genSubReportBlock(self, cur_func, locals, globals):
         """
-        Запуск генерации подъотчета.
+        Generate sub report.
 
-        :param cur_func: Текст ссылки на подъотчет с тегами.
-        :param locals: Словарь локального пространства имен.
-        :param globals: Словарь глобального пространства имен.
-        :return: Переменная в строковом виде.
+        :param cur_func: Sub report name.
+        :param locals: Local name space.
+        :param globals: Global name space.
+        :return: Empty string.
         """
         value = u''
         subreport_name = cur_func[2:-2]
@@ -1058,13 +1014,13 @@ class icReportGenerator:
 
     def _valueFormat(self, fmt, data_list):
         """
-        Заполнение формата значения ячейки.
+        Set value format.
 
-        :param fmt: Формат.
-        :param data_list: Данные, которые нужно поместить в формат.
-        :return: Возвращает строку, соответствующую формату.
+        :param fmt: Format.
+        :param data_list: Format data.
+        :return: A string that matches the format.
         """
-        # Заполнение формата
+        # Set format
         if data_list is []:
             if fmt:
                 value = fmt
@@ -1072,7 +1028,8 @@ class icReportGenerator:
                 return None
         elif data_list == [None] and fmt == '%s':
             return None
-        # Обработка значения None
+
+        # None value
         elif bool(None in data_list):
             data_lst = [{None: ''}.setdefault(val, val) for val in data_list]
             value = fmt % tuple(data_lst)
@@ -1082,9 +1039,9 @@ class icReportGenerator:
         
     def _setStyleAttr(self, style_name):
         """
-        Установить атрибуты по умолчанию ячеек по имени стиля из библиотеки стилей.
+        Set the default attributes of cells by style name from the style library.
 
-        :param style_name: Имя стиля из библиотеки стилей.
+        :param style_name: Style name.
         """
         if self._StyleLib and style_name in self._StyleLib:
             self.AttrDefault = self._StyleLib[style_name]
@@ -1093,91 +1050,87 @@ class icReportGenerator:
         
     def _getSum(self, formula):
         """
-        Получить сумму по формуле.
+        Get sum by formula.
 
-        :param formula: Формула.
-        :return: Возвращает строковое значение суммы.
+        :param formula: Formula.
+        :return: Sum as string.
         """
         return '0'
 
     def _initSumCells(self, sheet):
         """
-        Выявление и инициализация ячеек с суммами.
+        Init cell sums.
 
-        :param sheet: Описание листа отчета.
-        :return: Возвращает описание листа с корректным описанием ячеек с суммами.
-            В результате ошибки возвращает старое описание листа.
+        :param sheet: Report sheet data.
+        :return: Returns a description of a sheet with a correct description of cells with sums.
+             The error returns the old sheet description.
         """
         try:
             new_sheet = sheet
-            # Просмотр и коррекция каждой ячейки листа
+
             for row in range(len(new_sheet)):
                 for col in range(len(new_sheet[row])):
                     if new_sheet[row][col]:
                         new_sheet[row][col] = self._initSumCell(new_sheet[row][col])
             return new_sheet
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка инициализации суммирующих ячеек шаблона <%s>.' % self._RepName)
+            log_func.fatal(u'Error sum cells init <%s>.' % self._RepName)
         return sheet
 
     def _initSumCell(self, cell):
         """
-        Инициализация суммарной ячейки.
+        Init cell sum.
 
-        :param cell: Описание ячейки.
-        :return: Возвращает скоррекстированное описание ячейки.
-            В случае ошибки возвращает старое описание ячейки.
+        :param cell: Cell data.
+        :return: Returns the corrected cell description.
+             In case of an error, returns the old description of the cell.
         """
         try:
             new_cell = cell
-            # Проверка на преобразование типов
+
             cell_val = new_cell['value']
             if cell_val is not None and not isinstance(cell_val, str):
                 cell_val = str(cell_val)
-            parsed_fmt = self.funcTextParse(cell_val, [REP_SYS_PATT])
-            # Перебрать строки функционала
+            parsed_fmt = self.parseFuncText(cell_val, [REP_SYS_PATT])
+
             for cur_func in parsed_fmt['func']:
-                # Системная функция
+                # System function
                 if re.search(REP_SYS_PATT, cur_func):
-                    # Функция суммирования
+                    # Sum function
                     if cur_func[2:6].lower() in ('sum(', 'avg('):
-                        # Если данные суммирующей ячейки не инициализированы, то
+                        # Init sum
                         if new_cell['sum'] is None:
                             new_cell['sum'] = []
-                        # Проинициализировать данные суммарной ячейки
-                        new_cell['sum'].append(copy.deepcopy(IC_REP_SUM))
+
+                        new_cell['sum'].append(copy.deepcopy(REP_SUM))
                         new_cell['sum'][-1]['formul'] = cur_func[6:-3].replace(REP_SUM_FIELD_START, 'record[\'').replace(REP_SUM_FIELD_STOP, '\']')
             return new_cell
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка инициализации ячейки <%s>.' % cell)
+            log_func.fatal(u'Error init cell sum <%s>' % cell)
         return cell
 
     def _sumIterate(self, sheet, record):
         """
-        Итерация суммирования.
+        Sum step.
 
-        :param sheet: Описание листа отчета.
-        :param record: Запись, на которой вызывается итерация.
-        :return: Возвращает описание листа с корректным описанием ячеек с суммами.
-            В результате ошибки возвращает старое описание листа.
+        :param sheet: Report sheet data.
+        :param record: Current record.
+        :return: Returns a description of a sheet with a correct description of cells with sums.
+             The error returns the old sheet description.
         """
         try:
             new_sheet = sheet
-            # Просмотр и коррекция каждой ячейки листа
+
             for row in range(len(new_sheet)):
                 for col in range(len(new_sheet[row])):
-                    # Если ячейка определена, то ...
+
                     if new_sheet[row][col]:
-                        # Если ячейка суммирующая,
-                        # то выполнить операцию суммирования
                         if new_sheet[row][col]['sum'] is not None and new_sheet[row][col]['sum'] is not []:
                             for cur_sum in new_sheet[row][col]['sum']:
                                 try:
                                     value = eval(cur_sum['formul'], globals(), locals())
                                 except:
-                                    log.warning(u'Ошибка выполнения формулы для подсчета сумм <%s>.' % cur_sum)
+                                    log_func.error(u'Error sum by formula <%s>.' % cur_sum)
                                     value = 0.0
                                 try:
                                     if value is None:
@@ -1186,99 +1139,90 @@ class icReportGenerator:
                                         value = float(value)
                                     cur_sum['value'] += value
                                 except:
-                                    log.warning(u'Ошибка итерации сумм <%s>+<%s>' % (cur_sum['value'], value))
+                                    log_func.warning(u'Ошибка итерации сумм <%s>+<%s>' % (cur_sum['value'], value))
 
             return new_sheet
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка итерации сумм суммирующих ячеек шаблона <%s>.' % self._RepName)
+            log_func.fatal(u'Error step sum. Report <%s>' % self._RepName)
         return sheet
 
     def _clearSum(self, sheet, start_row, stop_row):
         """
-        Обнуление сумм.
+        Clear sum.
 
-        :param sheet: Описание листа отчета.
-        :param start_row: Начало бэнда обнуления.
-        :param stop_row: Конец бэнда обнуления.
-        :return: Возвращает описание листа с корректным описанием ячеек с суммами.
-            В результате ошибки возвращает старое описание листа.
+        :param sheet: Report sheet data.
+        :param start_row: Start row band for clear.
+        :param stop_row: End row band for clear.
+        :return: Returns a description of a sheet with a correct description of cells with sums.
+            The error returns the old sheet description.
         """
         try:
             new_sheet = sheet
-            # Просмотр и коррекция каждой ячейки листа
+
             for row in range(start_row, stop_row):
                 for col in range(len(new_sheet[row])):
-                    # Если ячейка определена, то ...
                     if new_sheet[row][col]:
-                        # Если ячейка суммирующая, то выполнить операцию обнуления
                         if new_sheet[row][col]['sum'] is not None and new_sheet[row][col]['sum'] is not []:
                             for cur_sum in new_sheet[row][col]['sum']:
                                 cur_sum['value'] = 0
             return new_sheet
         except:
-            # Вывести сообщение об ошибке в лог
-            log.error(u'Ошибка обнуления сумм суммирующих ячеек шаблона <%s>.' % self._RepName)
+            log_func.fatal(u'Error clear sum. Report <%s>.' % self._RepName)
         return sheet
         
-    # Функции-свойства
     def getCurRec(self):
         return self._CurRec
 
-    def funcTextParse(self, text, patterns=ALL_PATTERNS):
+    def parseFuncText(self, text, patterns=ALL_PATTERNS):
         """
-        Разобрать строку на формат и исполняемый код.
+        Parse a text into format and executable code.
 
-        :param text: Разбираемая строка.
-        :param patterns: Cписок строк патернов тегов обозначения
-            начала и конца функционала.
-        :return: Возвращает словарь следующей структуры:
+        :param text: Parse text.
+        :param patterns: List of string patterns of tags to indicate the beginning and end of the functional.
+        :return: Dictionary:
             {
-            'fmt': Формат строки без строк исполняемого кода вместо него стоит %s;
-            'func': Список строк исполняемого кода.
+            'fmt': The format of a line without lines of executable code is %s;
+            'func': List of lines of executable code.
             }
-            В случае ошибки возвращает None.
+            None if error.
         """
         try:
-            # Инициализация структуры
+            # Init
             ret = {'fmt': '', 'func': []}
 
-            # Проверка аргументов
             if not text:
                 return ret
 
-            # Заполнение патерна
+            # Set pattern
             pattern = r''
             for cur_sep in patterns:
                 pattern += cur_sep
                 if cur_sep != patterns[-1]:
                     pattern += r'|'
                     
-            # Разбор строки на обычные строки и строки функционала
+            # Parse
             parsed_str = [x for x in re.split(pattern, text) if x is not None]
-            # Перебор тегов
+
             for i_parse in range(len(parsed_str)):
-                # Перебор патернов функционала
                 func_find = False
                 for cur_patt in patterns:
-                    # Какой-то функционал
+                    # Functional
                     if re.search(cur_patt, parsed_str[i_parse]):
                         ret['func'].append(parsed_str[i_parse])
-                        # И добавить в формат %s
+                        # Set %s
                         ret['fmt'] += '%s'
                         func_find = True
                         break
-                # Обычная строка
+                # String
                 if func_find is False:
                     ret['fmt'] += parsed_str[i_parse]
             return ret
         except:
-            log.fatal(u'Ошибка формата <%s> ячейки шаблона <%s>.' % (text, self._RepName))
+            log_func.fatal(u'Error text format <%s> in report <%s>.' % (text, self._RepName))
         return None
 
     def _execFuncGen(self, function, locals):
         """
-        Выполнить функцию при генерации.
+        Execute function.
         """
-        # re_import = not ic_mode.isRuntimeMode()
-        return execfunc.exec_code(function, bReImport=True)
+        return exec_func.execTxtFunction(function)

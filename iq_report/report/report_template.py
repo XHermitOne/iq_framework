@@ -2,64 +2,60 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль шаблона отчетов.
+Report template module.
 """
 
-# Подключение библиотек
 import os.path
 import string
 import copy
 import pickle
 import re
 
-from ic.std.log import log
-from ic.std.convert import xml2dict
-from ic.std.utils import execfunc
-from ic.std.utils import textfunc
+from iq.util import log_func
+from iq.util import xml2dict
+from iq.util import exec_func
+from iq.util import str_func
 
-from ic.report import icrepgen
+from . import report_generator
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 0, 0, 1)
 
-# Константы
-# Теги шаблона
-DESCRIPTION_TAG = '[description]'   # Описание
-VAR_TAG = '[var]'                   # Бэнд переменных
-GENERATOR_TAG = '[generator]'       # Бэнд указания системы генерации
-DATASRC_TAG = '[data_source]'       # Бэнд указания источника данных для отчета/БД
-QUERY_TAG = '[query]'               # Бэнд указания запроса для получения таблицы запроса
-STYLELIB_TAG = '[style_lib]'        # Бэнд указания библиотеки стилей
+# Report template tags
+DESCRIPTION_TAG = '[description]'   # Description band
+VAR_TAG = '[var]'                   # Variable band
+GENERATOR_TAG = '[generator]'       # Generator type band
+DATASRC_TAG = '[data_source]'       # Data source / DB band
+QUERY_TAG = '[query]'               # Query table band
+STYLELIB_TAG = '[style_lib]'        # Style labrary band
 
-HEADER_TAG = '[header]'             # Бэнд заголовка отчета (Координаты и размер)
-FOOTER_TAG = '[footer]'             # Бэнд подвала/примечания отчета (Координаты и размер)
-DETAIL_TAG = '[detail]'             # Бэнд области данных (Координаты и размер)
-HEADER_GROUP_TAG = '[head_grp]'     # Список бэндов групп (Координаты и размер)
-FOOTER_GROUP_TAG = '[foot_grp]'     # Список бэндов групп (Координаты и размер)
-UPPER_TAG = '[upper]'               # Бэнд верхнего колонтитула (Координаты и размер)
-UNDER_TAG = '[under]'               # Бэнд нижнего колонтитула (Координаты и размер)
+HEADER_TAG = '[header]'             # Report header band
+FOOTER_TAG = '[footer]'             # Report footer band
+DETAIL_TAG = '[detail]'             # Report data area band
+HEADER_GROUP_TAG = '[head_grp]'     # Group header band
+FOOTER_GROUP_TAG = '[foot_grp]'     # Group footer band
+UPPER_TAG = '[upper]'               # Report upper band
+UNDER_TAG = '[under]'               # Report under band
 
-# Список всех тегов
-ALL_TAGS = [DESCRIPTION_TAG, VAR_TAG, GENERATOR_TAG, DATASRC_TAG, QUERY_TAG, STYLELIB_TAG,
+ALL_TAGS = (DESCRIPTION_TAG, VAR_TAG, GENERATOR_TAG, DATASRC_TAG, QUERY_TAG, STYLELIB_TAG,
             HEADER_TAG, FOOTER_TAG, DETAIL_TAG,
-            HEADER_GROUP_TAG, FOOTER_GROUP_TAG, UPPER_TAG, UNDER_TAG]
+            HEADER_GROUP_TAG, FOOTER_GROUP_TAG, UPPER_TAG, UNDER_TAG)
     
-# Заголовочные теги
-TITLE_TAGS = [DESCRIPTION_TAG, VAR_TAG, GENERATOR_TAG, DATASRC_TAG, QUERY_TAG, STYLELIB_TAG]
+# Title tags
+TITLE_TAGS = (DESCRIPTION_TAG, VAR_TAG, GENERATOR_TAG, DATASRC_TAG, QUERY_TAG, STYLELIB_TAG)
 
-# ВНИМАНИЕ: Коэффициенты для преобразования ширины и высоты
-# колонок и строк получены экспериментальным путем. М.б. уточнены.
-IC_XL_COEF_WIDTH = 2
-IC_XL_COEF_HEIGHT = 2
+# The coefficients for converting the width and height of
+# the columns and rows are obtained experimentally
+XL_COEF_WIDTH = 2
+XL_COEF_HEIGHT = 2
 
-# Параметры заполнения по умолчанию
 DEFAULT_FIT_WIDTH = 1
 DEFAULT_FIT_HEIGHT = 1
 
-# Плотность печати
+# Print density
 DEFAULT_HORIZ_RESOLUTION = 300
 DEFAULT_VERT_RESOLUTION = 300
 
-DEFAULT_REPORT_FILE_EXT = '.rprt'
+DEFAULT_REPORT_FILE_EXT = '.rep'
 
 TRANSPARENT_COLOR = 'transparent'
 
@@ -67,57 +63,62 @@ CODE_SIGNATURE = 'PRG:'
 PY_SIGNATURE = 'PY:'
 
 
-class icReportTemplate:
+class iqReportTemplate(object):
     """
-    Класс шаблона отчета.
+    Report template class.
     """
     def __init__(self):
         """
-        Конструктор класса.
+        Constructor.
         """
-        # Структура шаблона отчета,  которую понимает генератор отчетов.
+        # Report template data
         self._rep_template = None
 
-        # Полное имя исходного файла шаблона
+        # Full report template filename
         self.template_filename = None
 
     def setTemplateFilename(self, template_filename):
         """
-        Полное имя исходного файла шаблона.
+        Set report template filename.
 
-        :param template_filename: Полное имя исходного файла шаблона
+        :param template_filename: Report template filename.
         """
         self.template_filename = template_filename
 
     def getTemplateFilename(self):
         """
-        Полное имя исходного файла шаблона.
+        Get report template filename.
         """
         return self.template_filename
 
     def save(self, template_filename, template_name=None):
         """
-        Сохранить шаблон в Pickle файле.
+        Save report template file as Pickle.
 
-        :param template_filename: Имя XML файла шаблона.
-        :param template_name: Имя шаблона (листа).
+        :param template_filename:  XML report template filename.
+        :param template_name: Template name.
+        :return: True/False.
         """
-        pickle_file_name = os.path.splitext(template_filename)[0]+DEFAULT_REPORT_FILE_EXT
+        pickle_file_name = os.path.splitext(template_filename)[0] + DEFAULT_REPORT_FILE_EXT
         pickle_file = None
         try:
             pickle_file = open(pickle_file_name, 'wb')
             pickle.dump(self._rep_template, pickle_file)
             pickle_file.close()
+            return True
         except:
             if pickle_file:
                 pickle_file.close()
+            log_func.fatal(u'Error save report template file')
+        return False
 
     def load(self, template_filename, template_name=None):
         """
-        Загрузить шаблон из Pickle файла.
+        Load report template data from Pickle file.
 
-        :param template_filename: Имя XML файла шаблона.
-        :param template_name: Имя шаблона (листа).
+        :param template_filename: XML report template filename.
+        :param template_name: Template name.
+        :return: True/False.
         """
         self.setTemplateFilename(template_filename)
         pickle_file_name = os.path.splitext(template_filename)[0]+DEFAULT_REPORT_FILE_EXT
@@ -126,67 +127,71 @@ class icReportTemplate:
             pickle_file = open(pickle_file_name, 'rb')
             self._rep_template = pickle.load(pickle_file)
             pickle_file.close()
+            return True
         except:
             if pickle_file:
                 pickle_file.close()
+            log_func.fatal(u'Error load report template from file <%s>' % template_filename)
+        return False
 
-    def mustRenew(self, template_filename, template_name=None):
+    def needUpdate(self, template_filename, template_name=None):
         """
-        Надо обновить Pickle файл шаблона отчета?
+        Need to update the Pickle report template file?
 
-        :param template_filename: Имя XML файла шаблона.
-        :param template_name: Имя шаблона (листа).
-        :return: True-необходимо обновление. False-обновлять не надо.
+        :param template_filename: XML report template filename.
+        :param template_name: Template name.
+        :return: True-need update / False-no need to update.
         """
         pickle_file_name = os.path.splitext(template_filename)[0]+DEFAULT_REPORT_FILE_EXT
         if not os.path.exists(pickle_file_name) or os.path.getsize(pickle_file_name) < 10:
-            # 1. Pickle файл не существует, значит надо сделать обновление
-            # 2. Подразумевается что размер шаблона не может быть меньше 10 байт,
-            # иначе там записан None или пустой словарь
+            # 1. Pickle file does not exist, so you need to update
+            # 2. It is understood that the size of the template cannot be less
+            # than 10 bytes, otherwise None or an empty dictionary is written there
             return True
-        # Проверка на время создания xml шаблона
+        # Check creation time of xml template
         xml_create_time = os.path.getmtime(template_filename)
         rtp_create_time = os.path.getmtime(pickle_file_name)
         return xml_create_time > rtp_create_time
         
     def read(self, tmpl_filename, template_name=None):
         """
-        Прочитать файл шаблона отчета.
+        Read report template data.
 
-        :param tmpl_filename: Файл шаблона отчета.
-        :param template_name: Имя шаблона (листа).
+        :param tmpl_filename: Report template filename.
+        :param template_name: Template name.
         """
         pass
 
     def get(self):
         """
-        Получить подготовленные данные шаблона отчета.
+        Get report template data.
         """
         return self._rep_template
 
-    _lineStyle = {'Continuous': icrepgen.IC_REP_LINE_SOLID,
-                  'Dash': icrepgen.IC_REP_LINE_SHORT_DASH,
-                  'DashDot': icrepgen.IC_REP_LINE_DOT_DASH,
-                  'Dot': icrepgen.IC_REP_LINE_DOT,
-                  }
+    _LINE_STYLE = {
+        'Continuous': report_generator.REP_LINE_SOLID,
+        'Dash': report_generator.REP_LINE_SHORT_DASH,
+        'DashDot': report_generator.REP_LINE_DOT_DASH,
+        'Dot': report_generator.REP_LINE_DOT,
+        }
 
     def _getLineStyle(self, line_style):
         """
-        Перекодировать стиль.
+        Recode style.
         """
-        return self._lineStyle.setdefault(line_style, icrepgen.IC_REP_LINE_TRANSPARENT)
+        return self._LINE_STYLE.setdefault(line_style, report_generator.REP_LINE_TRANSPARENT)
         
     def _getBordersStyle(self, style):
         """
-        Определить границы ячейки из стиля.
+        Get borders from style.
 
-        :param style: Описание стиля.
+        :param style: Style data.
         """
         style_border = [style_attr for style_attr in style['children'] if style_attr['name'] == 'Borders']
         if style_border:
             style_border = style_border[0]['children']
         else:
-            style_border = []
+            style_border = list()
             
         borders = [None, None, None, None]
         for border in style_border:
@@ -204,7 +209,7 @@ class icReportTemplate:
                 elif border['Position'] == 'Right':
                     borders[3] = {}
                     cur_border = borders[3]
-                # Заполнение описния
+
                 if 'LineStyle' in border:
                     cur_border['style'] = self._getLineStyle(border['LineStyle'])
                 if 'Weight' in border:
@@ -214,19 +219,18 @@ class icReportTemplate:
         
     def _getFontStyle(self, style):
         """
-        Взять описание шрифта из стиля.
+        Get font data from style.
 
-        :param style: Описание стиля.
+        :param style: Style data.
         """
-        # Шрифт описанный в стиле
         style_font = [style_attr for style_attr in style['children'] if style_attr['name'] == 'Font']
-        log.debug('Font <%s> Style <%s>' % (style_font, style['ID']))
+        log_func.debug('Font <%s> Style <%s>' % (style_font, style['ID']))
         if style_font:
             style_font = style_font[0]
         else:
             style_font = {}
         
-        # Выходная структура шрифта
+        # Font data
         font = {'name': 'Arial Cyr',
                 'size': 10,
                 'family': 'default',
@@ -255,7 +259,7 @@ class icReportTemplate:
         
     def _getColorRGB(self, color):
         """
-        Преобразование цвета из #RRGGBB в (R,G,B).
+        Convert color from #RRGGBB format to (R,G,B) format.
         """
         if color.strip().lower() == TRANSPARENT_COLOR:
             return None
@@ -263,12 +267,12 @@ class icReportTemplate:
         
     def _getColorStyle(self, style):
         """
-        Определить цвет, определенный в стиле.
+        Get color data from style.
 
-        :param style: Описание стиля.
+        :param style: Style data.
         """
         color = {}
-        # Шрифт описанный в стиле
+
         style_font = [style_attr for style_attr in style['children'] if style_attr['name'] == 'Font']
         if style_font:
             style_font = style_font[0]
@@ -278,10 +282,10 @@ class icReportTemplate:
         if 'Color' in style_font:
             color['text'] = self._getColorRGB(style_font['Color'])
         else:
-            # Цвет текста по умолчанию ЧЕРНЫЙ
+            # Default text color is black
             color['text'] = (0, 0, 0)
             
-        # Интерьер описанный в стиле
+        # Interior in style
         style_interior = [style_attr for style_attr in style['children'] if style_attr['name'] == 'Interior']
         if style_interior:
             style_interior = style_interior[0]
@@ -291,15 +295,15 @@ class icReportTemplate:
         if 'Color' in style_interior:
             color['background'] = self._getColorRGB(style_interior['Color'])
         else:
-            # Цвет фона по умолчанию БЕЛЫЙ
+            # Default background color is white
             color['background'] = None
         return color
 
     def _getAlignStyle(self, style):
         """
-        Определить размещение.
+        Get alignment data from style.
 
-        :param style: Описание стиля.
+        :param style: Style data.
         """
         style_align = [style_attr for style_attr in style['children'] if style_attr['name'] == 'Alignment']
         if style_align:
@@ -307,26 +311,27 @@ class icReportTemplate:
         else:
             style_align = {}
         
-        align = {'align_txt': [icrepgen.IC_HORIZ_ALIGN_LEFT, icrepgen.IC_VERT_ALIGN_CENTRE],
+        align = {'align_txt': [report_generator.REP_HORIZ_ALIGN_LEFT,
+                               report_generator.REP_VERT_ALIGN_CENTRE],
                  'wrap_txt': False,
                  }
-        # Выравнивание текста
+        # Text alignment
         if 'Horizontal' in style_align:
             if style_align['Horizontal'] == 'Left':
-                align['align_txt'][0] = icrepgen.IC_HORIZ_ALIGN_LEFT
+                align['align_txt'][0] = report_generator.REP_HORIZ_ALIGN_LEFT
             elif style_align['Horizontal'] == 'Right':
-                align['align_txt'][0] = icrepgen.IC_HORIZ_ALIGN_RIGHT
+                align['align_txt'][0] = report_generator.REP_HORIZ_ALIGN_RIGHT
             elif style_align['Horizontal'] == 'Center':
-                align['align_txt'][0] = icrepgen.IC_HORIZ_ALIGN_CENTRE
+                align['align_txt'][0] = report_generator.REP_HORIZ_ALIGN_CENTRE
         if 'Vertical' in style_align:
             if style_align['Vertical'] == 'Top':
-                align['align_txt'][1] = icrepgen.IC_VERT_ALIGN_TOP
+                align['align_txt'][1] = report_generator.REP_VERT_ALIGN_TOP
             elif style_align['Vertical'] == 'Bottom':
-                align['align_txt'][1] = icrepgen.IC_VERT_ALIGN_BOTTOM
+                align['align_txt'][1] = report_generator.REP_VERT_ALIGN_BOTTOM
             elif style_align['Vertical'] == 'Center':
-                align['align_txt'][1] = icrepgen.IC_VERT_ALIGN_CENTRE
+                align['align_txt'][1] = report_generator.REP_VERT_ALIGN_CENTRE
         align['align_txt'] = tuple(align['align_txt'])
-        # Перенос по словам
+        # Wrap text
         if 'WrapText' in style_align and style_align['WrapText'] == '1':
             align['wrap_txt'] = True
 
@@ -334,7 +339,7 @@ class icReportTemplate:
 
     def _getFmtStyle(self, style):
         """
-        Определить формат ячейки.
+        Get number format from style.
         """
         style_fmt = [style_attr for style_attr in style['children'] if style_attr['name'] == 'NumberFormat']
         if style_fmt:
@@ -343,30 +348,30 @@ class icReportTemplate:
             style_fmt = {}
         
         if 'Format' in style_fmt:
-            return icrepgen.REP_FMT_EXCEL+style_fmt['Format']
-        return icrepgen.REP_FMT_NONE
+            return report_generator.REP_FMT_EXCEL + style_fmt['Format']
+        return report_generator.REP_FMT_NONE
 
     def _getPageSetup(self, page_setup):
         """
-        Определить параметры страницы.
+        Get page setup data.
         """
         new_page_setup = {}
-        # Ориентиция
+        # Orientation
         layouts = [obj for obj in page_setup['children'] if obj['name'] == 'Layout']
-        log.debug('Layout %s' % layouts)
+        log_func.debug('Layout %s' % layouts)
         if layouts:
             layout = layouts[0]
             if 'Orientation' in layout:
                 if layout['Orientation'] == 'Landscape':
-                    new_page_setup['orientation'] = icrepgen.IC_REP_ORIENTATION_LANDSCAPE
+                    new_page_setup['orientation'] = report_generator.REP_ORIENTATION_LANDSCAPE
                 elif layout['Orientation'] == 'Portrait':
-                    new_page_setup['orientation'] = icrepgen.IC_REP_ORIENTATION_PORTRAIT
-            # Начало нумерации страниц
+                    new_page_setup['orientation'] = report_generator.REP_ORIENTATION_PORTRAIT
+            # Start page number
             if 'StartPageNumber' in layout:
                 new_page_setup['start_num'] = int(layout['StartPageNumber'])
-        # Поля
+        # Margins
         page_margins = [obj for obj in page_setup['children'] if obj['name'] == 'PageMargins']
-        log.debug('PageMargins %s' % page_margins)
+        log_func.debug('PageMargins %s' % page_margins)
         if page_margins:
             page_margin = page_margins[0]
             new_page_setup['page_margins'] = []
@@ -380,19 +385,18 @@ class icReportTemplate:
 
     def _getPrintSetup(self, print_setup):
         """
-        Определить параметры страницы.
+        Get print setup data.
         """
         new_print_setup = {}
-        # Размер бумаги
+        # Paper size
         paper_sizes = [obj for obj in print_setup['children'] if obj['name'] == 'PaperSizeIndex']
         if paper_sizes:
             new_print_setup['paper_size'] = paper_sizes[0]['value']
-        # Масштаб
+        # Scale
         scales = [obj for obj in print_setup['children'] if obj['name'] == 'Scale']
         if scales:
             new_print_setup['scale'] = int(scales[0]['value'])
         else:
-            # Параметры заполнения
             try:
                 h_fit = [obj for obj in print_setup['children'] if obj['name'] == 'FitWidth'][0]['value']
             except:
@@ -402,7 +406,7 @@ class icReportTemplate:
             except:
                 v_fit = DEFAULT_FIT_HEIGHT
             new_print_setup['fit'] = (int(h_fit), int(v_fit))
-        # Плотность печати
+
         try:
             h_resolution = [obj for obj in print_setup['children'] if obj['name'] == 'HorizontalResolution'][0]['value']
         except:
@@ -416,101 +420,100 @@ class icReportTemplate:
         return new_print_setup
 
 
-class icExcelXMLReportTemplate(icReportTemplate):
+class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
     """
-    Шаблон отчета в формате Excel XMLSpreadSheet.
+    Report template in Excel XMLSpreadSheet format.
     """
     def __init__(self):
         """
-        Конструктор класса.
+        Constructor.
         """
-        icReportTemplate.__init__(self)
+        iqReportTemplate.__init__(self)
         
-        # Номер колонки тегов бендов
+        # Bend tag column number
         self._tag_band_col = None
-        # Тег текущего бенда
+        # Current band tag
         self.__cur_band = None
         
-        # Текущий обрабоатываемый лист шаблона отчета
+        # Current report template worksheet
         self._rep_worksheet = None
 
-        # Ширина колонки с повторяющимися атрибутами
+        # Duplicate column width
         self._column_span_width = None
-        # Высота строки с повторяющимися атрибутами
+        # Duplicate row height
         self._row_span_height = 12.75
         
-        # Ширина колонки по умолчанию
+        # Default column width
         self._default_column_width = None
-        # Высота строки по умолчанию
+        # Default row height
         self._default_row_height = 12.75
 
     def read(self, tmpl_filename, template_name=None):
         """
-        Прочитать файл шаблона отчета.
+        Read report template file.
 
-        :param tmpl_filename: Файл шаблона отчета.
-        :param template_name: Имя шаблона (листа).
+        :param tmpl_filename: Report template filename.
+        :param template_name: Template name.
         """
-        if self.mustRenew(tmpl_filename, template_name):
-            # Надо обновить шаблон
+        if self.needUpdate(tmpl_filename, template_name):
+            # Need update template data
             template_data = self.open(tmpl_filename)
             self._rep_template = self.parse(template_data, template_name)
             self.save(tmpl_filename, template_name)
         else:
-            # Можно просто загрузить из Pickle файла
             self.load(tmpl_filename, template_name)
         return self._rep_template
 
     def open(self, tmpl_filename):
         """
-        Открыть файл шаблона отчета.
+        Open report template file.
 
-        :param tmpl_filename: Файл шаблона отчета.
+        :param tmpl_filename: Report template filename.
         """
         return xml2dict.XmlFile2Dict(tmpl_filename)
 
     def _normList(self, data_list, element_name, length=None):
         """
-        Нормализация списка.
+        Normal list.
 
-        :param length: Максимальная длина списка, если указана, то
-            список нормализуется до максимальной длины.
+        :param length: Maximum list length, if specified, then
+            the list is normalized to the maximum length.
         """
         element_template = {'name': element_name}
         lst = []
         for i in range(len(data_list)):
             element = data_list[i]
-            # Проверка индексов
+            # Check indexes
             if 'Index' in element:
                 if int(element['Index']) > len(lst):
                     lst += [element_template] * (int(element['Index'])-len(lst)-1)
             lst.append(element)
-            # Проверка на объединенные ячейки
+            # Merge cells
             if 'MergeAcross' in element:
                 lst += [element_template] * int(element['MergeAcross'])
                 
         if length:
             if length > len(lst):
-                # Удлинить
                 lst += [element_template]*(length - len(lst))
         return lst
         
     def _normTable(self, table):
         """
-        Нормализация (приведение к квадратному виду) таблицы.
+        Normal table.
         """
         new_table = {}.fromkeys([key for key in table.keys() if key != 'children'])
         for key in new_table.keys():
             new_table[key] = table[key]
         new_table['children'] = []
-        # Колонки
+
+        # Columns
         cols = [element for element in table['children'] if element['name'] == 'Column']
         cols = self._normList(cols, 'Column')
         max_len = len(cols)
-        # Строки
+        # Rows
         rows = [element for element in table['children'] if element['name'] == 'Row']
         rows = self._normList(rows, 'Row')
-        # Ячейки
+        # Cells
         for i_row in range(len(rows)):
             row = rows[i_row]
             if 'children' in row:
@@ -522,15 +525,15 @@ class icExcelXMLReportTemplate(icReportTemplate):
 
     def _defineSpan(self, obj_list):
         """
-        Задублировать описания объектов с указанием атрибута Span.
+        Duplicate object descriptions with the Span attribute.
 
-        :param obj_list: Список описаний объектов.
-        :return: Список с добавленными дубликатами объектов.
+        :param obj_list: Object data list.
+        :return: List with duplicate objects added.
         """
         result = list()
         for obj in obj_list:
             if 'Span' in obj:
-                # ВНИМАНИЕ! Это учет объекта описание которого мы используем
+                # This is an object account whose description we use
                 #                         v
                 span = int(obj['Span']) + 1
                 new_obj = copy.deepcopy(obj)
@@ -542,59 +545,58 @@ class icExcelXMLReportTemplate(icReportTemplate):
 
     def parse(self, template_data, template_name=None):
         """
-        Разобрать/преобразовать прочитанную структуру.
+        Parse template data.
 
-        :param template_data: Словарь описания шаблона.
-        :param template_name: Имя шаблона(листа), если None то первый лист.
+        :param template_data: Report template data.
+        :param template_name: Template name, if None then first sheet.
         """
         try:
-            # Создать первоначальный шаблон
-            rep = copy.deepcopy(icrepgen.IC_REP_TMPL)
+            # Create template
+            rep = copy.deepcopy(report_generator.REPORT_TEMPLATE)
 
-            # 0. Определение основных структур
             workbook = template_data['children'][0]
-            # Стили (в виде словаря)
+            # Styles
             styles = dict([(style['ID'], style) for style in [element for element in workbook['children']
                                                               if element['name'] == 'Styles'][0]['children']])
             worksheets = [element for element in workbook['children'] if element['name'] == 'Worksheet']
 
-            # I. Определить все бэнды в шаблоне
-            # Если имя шаблона не определено, тогда взять первый лист
+            # I. Define all bands in the template
+            # If the template name is not defined, then take the first sheet
             if template_name is None:
                 template_name = worksheets[0]['Name']
                 self._rep_worksheet = worksheets[0]
             else:
-                # Установить активной страницу выбранного шаблона отчета
+                # Set the page of the selected report template active
                 self._rep_worksheet = [sheet for sheet in worksheets if sheet['Name'] == template_name][0]
-            # Прописать имя отчета
+
             rep['name'] = template_name
             
-            # Взять таблицу
+            # Table
             rep_template_tabs = [rep_obj for rep_obj in self._rep_worksheet['children'] if rep_obj['name'] == 'Table']
             self._setDefaultCellSize(rep_template_tabs[0])
-            # Привести таблицу к нормальному виду
+            # Normal table
             rep_template_tab = self._normTable(rep_template_tabs[0])
 
-            # Взять описания колонок
+            # Column data
             rep_template_cols = [element for element in rep_template_tab['children'] if element['name'] == 'Column']
             rep_template_cols = self._defineSpan(rep_template_cols)
-            # Взять описания строк
+            # Row data
             rep_template_rows = [element for element in rep_template_tab['children'] if element['name'] == 'Row']
             rep_template_rows = self._defineSpan(rep_template_rows)
 
-            # Количество колонок без колонки тегов бендов
+            # The number of columns without a column tag bands
             col_count = self._getColumnCount(rep_template_rows)
-            log.debug(u'Количество колонок: %d' % col_count)
+            log_func.debug(u'Column number [%d]' % col_count)
 
-            # II. Определить все ячейки листа
+            # II. Define all sheet cells
             used_rows = range(len(rep_template_rows))
             used_cols = range(col_count)
 
-            self.__cur_band = None  # Тег текущего бенда
-            # Перебор по строкам
+            self.__cur_band = None  # Current band tag
+
             for cur_row in used_rows:
                 if not self._isTitleBand(rep_template_rows, cur_row):
-                    # Не колонтитулы, добавить ячейки в общий лист
+                    # No footers, add cells to the shared sheet
                     rep['sheet'].append([])
                     for cur_col in used_cols:
                         cell_attr = self._getCellAttr(rep_template_rows, rep_template_cols, styles, cur_row, cur_col)
@@ -603,34 +605,29 @@ class icExcelXMLReportTemplate(icReportTemplate):
                         else:
                             rep['sheet'][-1].append(None)
 
-            # III. Определить бэнды в шаблоне
-            # Перебрать все ячейки первой колонки
-            self.__cur_band = None  # Тег текущего бенда
-            title_row = 0   # Счетчик строк колонтитулов/заголовочных бендов
+            # III. Define band in sheet
+            self.__cur_band = None  # Current band tag
+            title_row = 0   # Header / footer line counter
     
-            # Перебор всех строк в шаблоне
             for cur_row in range(len(rep_template_rows)):
                 tag = self._getTagBandRow(rep_template_rows, cur_row)
-                # Если это ячейка с определенным тегом, значит новый бенд
+                # If this is a cell with a specific tag, then a new band
                 if tag:
-                    # Определить текущий бэнд
                     self.__cur_band = tag
                     if tag in TITLE_TAGS:
-                        # Обработка строк заголовочных тегов
-                        parse_func = self._TitleTagParse.setdefault(tag, None)
+                        parse_func = self._TITLE_TAG_PARSE_METHODS.setdefault(tag, None)
                         try:
                             parse_func(self, rep, rep_template_rows[cur_row]['children'])
                         except:
-                            log.fatal(u'Ошибка парсинга функции <%s>' % textfunc.toUnicode(parse_func))
+                            log_func.fatal(u'Error parse function <%s>' % str_func.toUnicode(parse_func))
                         title_row += 1
                     else:
-                        # Определить бэнд внутри объекта
                         rep = self._defBand(self.__cur_band, cur_row, col_count, title_row, rep)
                 else:
-                    log.error(u'Не корректный тег <%s> строки [%d]' % (tag, cur_row))
+                    log_func.error(u'Not valid tag <%s> of row [%d]' % (tag, cur_row))
 
-            # Прочитать в шаблон параметры страницы
-            rep['page_setup'] = copy.deepcopy(icrepgen.IC_REP_PAGESETUP)
+            # Page setup
+            rep['page_setup'] = copy.deepcopy(report_generator.REP_PAGESETUP)
             sheet_options = [rep_obj for rep_obj in self._rep_worksheet['children']
                              if rep_obj['name'] == 'WorksheetOptions']
 
@@ -640,39 +637,37 @@ class icExcelXMLReportTemplate(icReportTemplate):
             if print_setup:
                 rep['page_setup'].update(self._getPrintSetup(print_setup[0]))
 
-            # Проверить заполнение генератора отчета
             if not rep['generator']:
                 tmpl_filename = self.getTemplateFilename()
                 rep['generator'] = os.path.splitext(tmpl_filename)[1].upper() if tmpl_filename else '.ODS'
 
             return rep
         except:
-            log.fatal(u'Ошибка парсинга шаблона отчета <%s>' % textfunc.toUnicode(template_name))
+            log_func.fatal(u'Error parse report template <%s>' % str_func.toUnicode(template_name))
         return None
 
     def _existTagBand(self):
         """
-        Присутствует в шаблоне колонка тегов бендов?
-            Если не существует, то далее считаем,
-            что весь шаблон - это  заголовок отчета [header].
+        Exists band tag column in report template data?
+        If it does not exist, then we further consider
+        that the whole template is the header of the report [header].
 
-        :return: True - колонка тегов бендов есть в шаблоне / False - нет.
+        :return: True/False.
         """
-        log.info(u'Колонка тегов бендов [%s]' % str(self._tag_band_col))
+        log_func.info(u'Band tag column [%s]' % str(self._tag_band_col))
         return self._tag_band_col is not None
 
     def _getColumnCount(self, rows):
         """
-        Определить количество колонок.
+        Get column number.
 
-        :param rows: Список описаний строк.
-        :return: Количество колонок шаблона отчета.
+        :param rows: Row data list.
+        :return: Column number.
         """
-        # Сначала предполагаем что в шаблоне имеется колонка тегов бендов
+        # First, we assume that the template has a column of bend tags
         col_count = self._getTagBandIdx(rows)
         if col_count <= 0:
-            # В шаблоне нет колонки тегов бендов
-            # Считаем по строкам
+            # The template does not have a column of tag tags
             max_col = 0
             for row in range(len(rows)):
                 if 'children' in rows[row]:
@@ -683,36 +678,35 @@ class icExcelXMLReportTemplate(icReportTemplate):
 
     def _getTagBandIdx(self, rows):
         """
-        Определить номер колонки тегов бэндов.
+        Get band tag column index.
 
-        :param rows: Список описаний строк.
-        :return: Номер колонки тегов бендов.
+        :param rows: Row data list.
+        :return: Band tag column index.
         """
         if self._tag_band_col is None:
-            # Это последняя колонка
+            # Last column
             tag_col = 0
             for row in range(len(rows)):
                 if 'children' in rows[row]:
                     for col in range(len(rows[row]['children'])):
-                        # Определение данных ячейки
                         try:
                             cell_data = rows[row]['children'][col]['children']
                         except:
                             cell_data = None
-                        # Если данные ячейки определены, то получить значение
+                        # If the cell data is defined, then get the value
                         if cell_data and 'value' in cell_data[0]:
                             value = cell_data[0]['value']
                         else:
                             value = None
                         if self._isTag(value):
                             tag_col = max(tag_col, col)
-                        log.debug(u'Поиск индекса тега бенда. Ячейка [%d : %d]. Значение <%s>. Колонка тега бенда [%d]' % (row, col, value, tag_col))
+                        log_func.debug(u'Find band tag column index. Cell [%d : %d]. Value <%s>. Band tag column [%d]' % (row, col, value, tag_col))
             self._tag_band_col = tag_col
         return self._tag_band_col
         
     def _band(self, band, row, col_size):
         """
-        Процедура заполнения бэнда.
+        Fill band.
         """
         new_band = band
         if 'row' not in new_band or new_band['row'] < 0:
@@ -731,12 +725,12 @@ class icExcelXMLReportTemplate(icReportTemplate):
 
     def _normDetail(self, detail, report):
         """
-        Приведение к нормальному виду табличной части отчета.
-            Если ячейки в табличной части не заполнены, то имеется ввиду,
-            что ячейки будет заполняться по порядку.
+        Normal report template data area.
+        If the cells in the tabular section are not filled, then it means
+        that the cells will be filled in order.
 
-        :param detail: Описание бенда табличной части.
-        :param report: Описание данных отчета.
+        :param detail: Detail band data.
+        :param report: Report data.
         """
         if detail['row_size'] == 1:
             ok = any([bool(cell['value']) for cell in report['sheet'][detail['row']]])
@@ -746,88 +740,79 @@ class icExcelXMLReportTemplate(icReportTemplate):
                         try:
                             report['sheet'][i_row][i_col]['value'] = '[\'%s\']' % (self.FIELD_NAMES[i_col - detail['col']])
                         except:
-                            log.fatal('Ошибка. Функция _normDetail')
+                            log_func.fatal('Error normal detail')
         return report
         
     def _defBand(self, band_tag, row, col_count, title_row, report):
         """
-        Заполнить описание бенда.
+        Define band data.
 
-        :param band_tag: Тег бэнда.
-        :param row: Номер строки.
-        :param title_row: Количество строк заголовочных бендов.
-        :param col_count: Количество колонок.
-        :param report: Описание данных отчета.
-        :return: Описание данных отчета.
+        :param band_tag: Band tag.
+        :param row: Row number.
+        :param title_row: Title row number.
+        :param col_count: Column number.
+        :param report: Report data.
+        :return: Report data.
         """
         try:
-            # Сделать копию данных отчета для возможного отката.
+            # Create copy report data
             rep = copy.deepcopy(report)
             
-            log.debug(u'Определение бэнда. Тег: <%s>' % band_tag)
+            log_func.debug(u'Define band. Band tag: <%s>' % band_tag)
             if band_tag.strip() == HEADER_TAG:
-                # Заполнить бэнд
                 rep['header'] = self._band(rep['header'], row - title_row, col_count)
             elif band_tag.strip() == DETAIL_TAG:
-                # Заполнить бэнд
                 rep['detail'] = self._band(rep['detail'], row - title_row, col_count)
                 self._normDetail(rep['detail'], rep)
             elif band_tag.strip() == FOOTER_TAG:
-                # Заполнить бэнд
                 rep['footer'] = self._band(rep['footer'], row - title_row, col_count)
             elif HEADER_GROUP_TAG in band_tag:
-                # Определить имя поля группировки
-                field_name = re.split(icrepgen.REP_FIELD_PATT, band_tag)[1].strip()[2:-2]
-                # Если такой группы не зарегестрировано, то прописать ее
+                # Group field name
+                field_name = re.split(report_generator.REP_FIELD_PATT, band_tag)[1].strip()[2:-2]
+                # If such a group is not registered, then register it
                 is_grp = any([grp['field'] == field_name for grp in rep['groups']])
                 if not is_grp:
-                    # Записать в соответствии с положением относительно др. групп
-                    rep['groups'].append(copy.deepcopy(icrepgen.IC_REP_GRP))
+                    # Record in accordance with the regulations regarding other groups
+                    rep['groups'].append(copy.deepcopy(report_generator.REP_GRP))
                     rep['groups'][-1]['field'] = field_name
-                # Записать заголовок группы
+                # Group title
                 grp_field = [grp for grp in rep['groups'] if grp['field'] == field_name][0]
-                # Заполнить бэнд
                 grp_field['header'] = self._band(grp_field['header'], row - title_row, col_count)
             elif FOOTER_GROUP_TAG in band_tag:
-                # Определить имя поля группировки
-                field_name = re.split(icrepgen.REP_FIELD_PATT, band_tag)[1].strip()[2:-2]
-                # Если такой группы не зарегестрировано, то прописать ее
+                # Group field name
+                field_name = re.split(report_generator.REP_FIELD_PATT, band_tag)[1].strip()[2:-2]
+                # If such a group is not registered, then register it
                 is_grp = any([grp['field'] == field_name for grp in rep['groups']])
                 if not is_grp:
-                    # Записать в соответствии с положением относительно др. групп
-                    rep['groups'].append(copy.deepcopy(icrepgen.IC_REP_GRP))
+                    rep['groups'].append(copy.deepcopy(report_generator.REP_GRP))
                     rep['groups'][-1]['field'] = field_name
-                # Записать примечание группы
                 grp_field = [grp for grp in rep['groups'] if grp['field'] == field_name][0]
-                # Заполнить бэнд
                 grp_field['footer'] = self._band(grp_field['footer'], row - title_row, col_count)
             elif band_tag.strip() == UPPER_TAG:
-                # Верхний колонтитул
+                # Upper
                 rep['upper'] = self._band(rep['upper'], row - title_row, col_count)
             elif band_tag.strip() == UNDER_TAG:
-                # Нижний колонтитул
+                # Under
                 rep['under'] = self._band(rep['under'], row - title_row, col_count)
             else:
-                # Вывести сообщение об ошибке в лог
-                log.warning(u'Не определенный тип бэнда <%s>.' % band_tag)
-            # Заполнить колонтитулы
+                log_func.error(u'Unsupported band type <%s>' % band_tag)
             rep['upper'] = self._bandUpper(rep['upper'], self._rep_worksheet)
             rep['under'] = self._bandUnder(rep['under'], self._rep_worksheet)
             
             return rep
         except:
-            log.fatal(u'Ошибка определения бэнда <%s>.' % band_tag)
-            return report
+            log_func.fatal(u'Error define band <%s>' % band_tag)
+        return report
         
     def _bandUpper(self, band, worksheet_data):
         """
-        Процедура заполнения верхнего колонтитула.
+        Define upper band.
 
-        :param band: Бэнд колонтитула.
-        :param worksheet_data: Данные листа шаблона.
+        :param band: Upper band data.
+        :param worksheet_data: Report template worksheet data.
         """
         rep_upper = band
-        # Заполнить данные и размер поля колонтитула
+
         if 'data' not in band:
             worksheet_options = [element for element in worksheet_data['children'] if element['name'] == 'WorksheetOptions']
             if worksheet_options:
@@ -843,13 +828,13 @@ class icExcelXMLReportTemplate(icReportTemplate):
         
     def _bandUnder(self, band, worksheet_data):
         """
-        Процедура заполнения нижнего колонтитула.
+        Define under band.
 
-        :param band: Бэнд колонтитула.
-        :param worksheet_data: Данные листа шаблона.
+        :param band: Under band data.
+        :param worksheet_data: Report template worksheet data.
         """
         rep_under = band
-        # Заполнить данные и размер поля колонтитула
+
         if 'data' not in band:
             worksheet_options = [element for element in worksheet_data['children'] if element['name'] == 'WorksheetOptions']
             if worksheet_options:
@@ -865,22 +850,22 @@ class icExcelXMLReportTemplate(icReportTemplate):
         
     def _getParseRow(self, row, cur_band):
         """
-        Подготовить для разбора строку шаблона.
+        Get row data for parsing.
 
-        :param row: Описание строки.
-        :param cur_band: Текуший тег бенда.
+        :param row: Row data.
+        :param cur_band: Current band tag.
         """
         return row
     
     def _getCellStyle(self, rows, columns, styles, row, column):
         """
-        Определить стиль ячейки.
+        Get cell style.
 
-        :param rows: Список строк.
-        :param columns: Список колонок.
-        :param styles: Словарь стилей.
-        :param row: Номер строки ячейки.
-        :param column: Номер колонки ячейки.
+        :param rows: Row data list.
+        :param columns: Column data list.
+        :param styles: Styles dictionary.
+        :param row: Cell row index.
+        :param column: Cell column index.
         """
         try:
             try:
@@ -888,7 +873,7 @@ class icExcelXMLReportTemplate(icReportTemplate):
             except:
                 template_cell = {}
                 cell_style = styles['Default']
-            # Определение стиля ячейки
+
             if 'StyleID' in template_cell:
                 cell_style = styles[template_cell['StyleID']]
             else:
@@ -904,42 +889,39 @@ class icExcelXMLReportTemplate(icReportTemplate):
                             cell_style = styles['Default']
                     else:
                         cell_style = styles['Default']
-            # log.debug('Get new_cell style <%s>' % cell_style)
+            # log_func.debug('Get new_cell style <%s>' % cell_style)
             return cell_style
         except:
-            log.fatal(u'Ошибка определения стиля ячейки шаблона отчета')
+            log_func.fatal(u'Error define cell style')
         return styles['Default']
 
     def _getTypeCell(self, cell):
         """
-        Определить тип ячейки.
+        Get cell type.
 
-        :param cell: Описание ячейки.
+        :param cell: Cell data.
         """
-        # В ячейке нет данных
         if 'children' not in cell or not cell['children']:
-            return icrepgen.REP_FMT_NONE
+            return report_generator.REP_FMT_NONE
             
-        # Данные в ячейке имеются
         cell_data = cell['children'][0]
         if 'Type' in cell_data:
             if cell_data['Type'] == 'General':
-                return icrepgen.REP_FMT_NONE
+                return report_generator.REP_FMT_NONE
             elif cell_data['Type'] == 'String':
-                return icrepgen.REP_FMT_STR
+                return report_generator.REP_FMT_STR
             elif cell_data['Type'] == 'Number':
-                return icrepgen.REP_FMT_NUM
+                return report_generator.REP_FMT_NUM
             else:
-                return icrepgen.REP_FMT_MISC+cell_data['Type']
-        return icrepgen.REP_FMT_NONE
+                return report_generator.REP_FMT_MISC + cell_data['Type']
+        return report_generator.REP_FMT_NONE
 
     def _getCellValue(self, cell):
         """
-        Значение ячейки.
+        Get cell value.
 
-        :param cell: Описание ячейки.
+        :param cell: Cell data.
         """
-        # Данных в ячейке нет
         if 'children' not in cell or not cell['children'] or \
            'value' not in cell['children'][0]:
             return None
@@ -947,9 +929,9 @@ class icExcelXMLReportTemplate(icReportTemplate):
         
     def _setDefaultCellSize(self, table):
         """
-        Установка параметров по умолчанию для ячейки.
+        Set cell default data.
 
-        :param table: Описание Таблицы.
+        :param table: Table data.
         """
         if 'DefaultColumnWidth' in table:
             self._default_column_width = float(table['DefaultColumnWidth'])
@@ -960,20 +942,20 @@ class icExcelXMLReportTemplate(icReportTemplate):
         
     def _getCellAttr(self, rows, columns, styles, row, column):
         """
-        Функция возращает структуру атрибутов ячейки.
+        Get cell attributes data.
 
-        :param rows: Список строк.
-        :param columns: Список колонок.
-        :param styles: Словарь стилей.
-        :param row: Номер строки ячейки.
-        :param column: Номер колонки ячейки.
-        :return: Возвращает структуру icrepgen.IC_REP_CELL.
+        :param rows: Row data list.
+        :param columns: Column data list.
+        :param styles: Styles dictionary.
+        :param row: Cell row index.
+        :param column: Cell column index.
+        :return: report_generator.REP_CELL structure.
         """
         try:
             cell_style = self._getCellStyle(rows, columns, styles, row, column)
             cell = {}
 
-            # Ширина колонок
+            # Column widths
             if not columns:
                 cell_width = self._default_column_width     # 8.43
             elif len(columns) > column and 'Hidden' in columns[column]:
@@ -981,12 +963,11 @@ class icExcelXMLReportTemplate(icReportTemplate):
             elif columns and len(columns) > column and 'Width' in columns[column]:
                 cell_width = float(columns[column]['Width'])
                 if 'Span' in columns[column]:
-                    # Повторение атрибутов колонок
                     self._column_span_width = cell_width
             else:
-                cell_width = self._column_span_width    # None=8.43
+                cell_width = self._column_span_width    # Default 8.43
 
-            # Высота строк
+            # Row heights
             if not rows:
                 cell_height = self._default_row_height
             elif len(rows) > row and 'Hidden' in rows[row] and rows[row]['Hidden'] == '1':
@@ -994,14 +975,12 @@ class icExcelXMLReportTemplate(icReportTemplate):
             elif rows and len(rows) > row and 'Height' in rows[row]:
                 cell_height = float(rows[row]['Height'])
                 if 'Span' in rows[row]:
-                    # Повторение атрибутов строк
                     self._row_span_height = cell_height
             else:
-                cell_height = self._row_span_height     # По умолчанию - 12.75
+                cell_height = self._row_span_height     # Default 12.75
 
-            # Объединение ячеек
-            # Учет ширины и высоты ячеек для объединенных ячеек
-            # Если ячейки объеденены в щаблоне, то и объеденить их в отчете
+            # Merge cells
+            # If cells are combined in a template, then merge them in a report
             cell['merge_row'] = 1
             cell['merge_col'] = 1
 
@@ -1015,53 +994,51 @@ class icExcelXMLReportTemplate(icReportTemplate):
             except:
                 template_cell = None
                 
-            # Заполнение атрибутов ячейки
-            # Размеры ячейки
+            # Cell attributes
+            # Cell size
             cell['width'] = cell_width
             cell['height'] = cell_height
-            # Видимость ячейки
+            # Visible
             cell['visible'] = True
     
-            # Обрамление
+            # Borders
             cell['border'] = self._getBordersStyle(cell_style)
             
-            # Шрифт
+            # Font
             cell['font'] = self._getFontStyle(cell_style)
     
-            # Установить цвет текста и фона
+            # Set color
             cell['color'] = self._getColorStyle(cell_style)
     
-            # Размещение
+            # Alignment
             cell['align'] = self._getAlignStyle(cell_style)
     
-            # Формат вывода текста
+            # Number format
             cell['num_format'] = self._getFmtStyle(cell_style)
-            # Генерация текста ячейки
-            # Перенести все ячейки из шаблона в выходной отчет
+            # Cell text
             if template_cell:
                 cell['value'] = self._getCellValue(template_cell)
             else:
                 cell['value'] = None
 
-            # Инициализация данных суммирующих ячеек
+            # Init sum
             cell['sum'] = None
     
             return cell
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка определения атрибутов ячейки шаблона.')
+            log_func.fatal(u'Error get cell attributes')
         return None
     
     def _isTag(self, value):
         """
-        Есть ли теги бендов в значении ячейки.
+        Are there bend tags in the cell value?
 
-        :param value: Значение ячейки.
-        :return: Возвращает True/False.
+        :param value: Cell value.
+        :return: True/False.
         """
         if not value:
             return False
-        # Если хотя бы 1 тег есть в ячейке, то все ок
+        # If at least 1 tag is in the cell, then everything is ok
         for tag in ALL_TAGS:
             if value.find(tag) != -1:
                 return True
@@ -1069,45 +1046,45 @@ class icExcelXMLReportTemplate(icReportTemplate):
 
     def _getTagBandRow(self, rows, row):
         """
-        Определить тег бенда, к которому принадлежит строка.
+        Define the band tag to which the line belongs.
 
-        :param rows: Список строк.
-        :param row: Номер строки.
-        :return: Строка-тег бэнда или None  в случае ошибки.
+        :param rows: Row data list.
+        :param row: Row index.
+        :return: Band tag string or None in case of error.
         """
         try:
             row_data = rows[row]
-            # Проверка корректности описания строки
+
             if 'children' not in row_data or not row_data['children']:
-                log.warning(u'Ошибка наличия дочерних объектов строки <%s>' % row)
+                log_func.error(u'Error having row children <%s>' % row)
                 return self.__cur_band
             i_tag = self._getTagBandIdx(rows)
 
-            # ВНИМАНИЕ! Если колонки тегов бендов нет в шаблоне
-            # то считаем что весь шаблон это шапка отчета
-            # Используется для простого заполнения тегами
+            # If the column of the tags of the bends is not in the template,
+            # then we consider that the entire template is a report header
             if not self._existTagBand():
                 self.__cur_band = HEADER_TAG
             else:
                 if i_tag > 0:
                     i_tag, tag_value = self._findTagBandRow(row_data)
                     if i_tag >= 0:
-                        # Если тег найден, то взять его
+                        # If tag found
                         self.__cur_band = tag_value
 
             return self.__cur_band
         except:
-            log.fatal(u'Ошибка в функции _getTagBandRow')
+            log_func.fatal(u'Error get tag band row')
         return None
 
     def _findTagBandRow(self, row):
         """
-        Поиск тега в текущем бэнде.
+        Search for a tag in the current band.
 
-        :param row: Строка.
-        :return: Кортеж: (Индекс ячейки в строке, в которой находится тег.
-            Или -1, если тег в строке не найден,
-            Сам тег).
+        :param row: Row data.
+        :return: Tuple:
+            (The index of the cell in the row where the tag is located.
+             Or -1 if the tag is not found in the line,
+             Tag).
         """
         try:
             for i in range(len(row['children'])-1, -1, -1):
@@ -1116,64 +1093,64 @@ class icExcelXMLReportTemplate(icReportTemplate):
                    self._isTag(str(cell['children'][0]['value']).lower().strip()):
                     return i, cell['children'][0]['value'].lower().strip()
         except:
-            log.fatal(u'Ошибка в функции _findTagBandRow')
+            log_func.fatal(u'Error find tag in current band')
         return -1, None
 
     def _isUpperBand(self, rows, row):
         """
-        Проверить является текущая строка листа бэндом верхнего колонтитула.
+        Check is the current line row of the band header.
 
-        :param rows: Список строк.
-        :param row: Номер строки.
-        :return: Возвращает True/False.
+        :param rows: Row data list.
+        :param row: Row index.
+        :return: True/False.
         """
         try:
             tag = self._getTagBandRow(rows, row)
             return bool(tag == UPPER_TAG)
         except:
-            log.fatal(u'Ошибка в функции _isUpperBand')
+            log_func.fatal(u'Error check is row upper band')
             return False
     
     def _isUnderBand(self, rows, row):
         """
-        Проверить является текущая строка листа бэндом нижнего колонтитула.
+        Check is the current line row of the footer band.
 
-        :param rows: Список строк.
-        :param row: Номер строки.
-        :return: Возвращает True/False.
+        :param rows: Row data list.
+        :param row: Row index.
+        :return: True/False.
         """
         try:
             tag = self._getTagBandRow(rows, row)
             return bool(tag == UNDER_TAG)
         except:
-            log.fatal(u'Ошибка в функции _isUnderBand')
+            log_func.fatal(u'Error check is row under band')
         return False
 
     def _isTitleBand(self, rows, row):
         """
-        Проверить является текущая строка листа бэндом заголовочной части.
+        Is the current row of the sheet a band of the header?
 
-        :param rows: Список строк.
-        :param row: Номер строки.
-        :return: Возвращает True/False.
+        :param rows: Row data list.
+        :param row: Row index.
+        :return: True/False.
         """
         try:
             return bool(self._getTagBandRow(rows, row) in TITLE_TAGS)
         except:
-            log.fatal(u'Ошибка в функции _isTitleBand')
+            log_func.fatal(u'Error check is row title band')
         return False
 
     def _parseDescriptionTag(self, report, parse_row):
         """
-        Разбор заголовочного тега описания.
+        Parse description tag.
 
-        :param report: Шаблон отчета.
-        :param parse_row: Разбираемая строка шаблона отчета в виде списка.
+        :param report: Report template data.
+        :param parse_row: The parsed line of the report template as a list.
         """
         try:
             if not self._existTagBand():
-                # Если теги бендов не указаны в шаблоне то
-                # определяем описание как имя файла
+                # If band tags are not specified in the template,
+                # then we define the description as a file name
                 tmpl_filename = self.getTemplateFilename()
                 report['description'] = os.path.splitext(os.path.basename(tmpl_filename))[0] if tmpl_filename else u''
             else:
@@ -1182,37 +1159,37 @@ class icExcelXMLReportTemplate(icReportTemplate):
                 else:
                     report['description'] = None
         except:
-            log.fatal(u'Ошибка в функции _parseDescriptionTag')
+            log_func.fatal(u'Error parse description tag')
 
     def _parseVarTag(self, report, parse_row):
         """
-        Разбор заголовочного тега переменных.
+        Parse variable tag.
 
-        :param report: Шаблон отчета.
-        :param parse_row: Разбираемая строка шаблона отчета в виде списка.
+        :param report: Report template data.
+        :param parse_row: The parsed line of the report template as a list.
         """
         try:
             name = parse_row[0]['children'][0]['value']
             value = parse_row[1]['children'][0]['value']
             if isinstance(value, str) and value.startswith(CODE_SIGNATURE):
-                value = execfunc.exec_code(value.replace(CODE_SIGNATURE, u'').strip())
+                value = exec_func.execTxtFunction(value.replace(CODE_SIGNATURE, u'').strip())
             elif isinstance(value, str) and value.startswith(PY_SIGNATURE):
-                value = execfunc.exec_code(value.replace(PY_SIGNATURE, u'').strip())
+                value = exec_func.execTxtFunction(value.replace(PY_SIGNATURE, u'').strip())
             report['variables'][name] = value
         except:
-            log.fatal(u'Ошибка в функции _parseVarTag')
+            log_func.fatal(u'Error parse variable tag')
 
     def _parseGeneratorTag(self, report, parse_row):
         """
-        Разбор заголовочного тега генеаратора.
+        Parse generator tag.
 
-        :param report: Шаблон отчета.
-        :param parse_row: Разбираемая строка шаблона отчета в виде списка.
+        :param report: Report template data.
+        :param parse_row: The parsed line of the report template as a list.
         """
         try:
             if not self._existTagBand():
-                # Если теги бендов не указаны в шаблоне то
-                # определяем генератор по расширению имени файла
+                # If band tags are not specified in the template,
+                # then we determine the generator by file name extension
                 tmpl_filename = self.getTemplateFilename()
                 report['generator'] = os.path.splitext(tmpl_filename)[1].upper() if tmpl_filename else '.ODS'
             else:
@@ -1221,107 +1198,107 @@ class icExcelXMLReportTemplate(icReportTemplate):
                 else:
                     report['generator'] = None
         except:
-            log.fatal(u'Ошибк в функции _parseGeneratorTag')
+            log_func.fatal(u'Error parse generator tag')
 
     def _parseDataSrcTag(self, report, parse_row):
         """
-        Разбор заголовочного тега источника даных.
+        Parser data source tag.
 
-        :param report: Шаблон отчета.
-        :param parse_row: Разбираемая строка шаблона отчета в виде списка.
+        :param report: Report template data.
+        :param parse_row: The parsed line of the report template as a list.
         """
         try:
             report['data_source'] = parse_row[0]['children'][0]['value']
         except:
             report['data_source'] = None
-            log.warning(u'Не указан источник данных!')
+            log_func.error(u'Not defined data source / database')
 
     def _parseQueryTag(self, report, parse_row):
         """
-        Разбор заголовочного тега запроса.
+        Parse query tag.
 
-        :param report: Шаблон отчета.
-        :param parse_row: Разбираемая строка шаблона отчета в виде списка.
+        :param report: Report template data.
+        :param parse_row: The parsed line of the report template as a list.
         """
         try:
             report['query'] = parse_row[0]['children'][0]['value']
         except:
             report['query'] = None
-            log.warning(u'Не указан запрос!')
+            log_func.error(u'Not defined query')
             
     def _parseStyleLibTag(self, report, parse_row):
         """
-        Разбор заголовочного тега библиотеки стилей.
+        Parse style library tag.
 
-        :param report: Шаблон отчета.
-        :param parse_row: Разбираемая строка шаблона отчета в виде списка.
+        :param report: Report template data.
+        :param parse_row: The parsed line of the report template as a list.
         """
         try:
             from . import style_library
             xml_style_lib_file_name = parse_row[0]['children'][0]['value']
-            report['style_lib'] = style_library.icXMLRepStyleLib().convert(xml_style_lib_file_name)
+            report['style_lib'] = style_library.iqXMLReportStyleLibrary().convert(xml_style_lib_file_name)
         except:
-            log.fatal(u'Ошибка в функции _parseStyleLibTag')
+            log_func.fatal(u'Error parse style library tag')
             
-    # Словарь функций разбора заголовочных тегов
-    _TitleTagParse = {DESCRIPTION_TAG: _parseDescriptionTag,
-                      VAR_TAG: _parseVarTag,
-                      GENERATOR_TAG: _parseGeneratorTag,
-                      DATASRC_TAG: _parseDataSrcTag,
-                      QUERY_TAG: _parseQueryTag,
-                      STYLELIB_TAG: _parseStyleLibTag,
-                      }
+    # Dictionary of header tag parsing functions
+    _TITLE_TAG_PARSE_METHODS = {DESCRIPTION_TAG: _parseDescriptionTag,
+                                VAR_TAG: _parseVarTag,
+                                GENERATOR_TAG: _parseGeneratorTag,
+                                DATASRC_TAG: _parseDataSrcTag,
+                                QUERY_TAG: _parseQueryTag,
+                                STYLELIB_TAG: _parseStyleLibTag,
+                                }
 
 
-from ic.virtual_excel import icexcel
+from iq.components.virtual_spreadsheet import v_spreadsheet
 
 
-class icODSReportTemplate(icExcelXMLReportTemplate):
+class iqODSReportTemplate(iqlXMLSpreadSheetReportTemplate):
     """
-    Шаблон отчета в формате ODF Open Document Spreadsheet.
+    Report template in ODF Open Document Spreadsheet format.
     """
     def __init__(self):
         """
-        Конструктор класса.
+        Constructor.
         """
-        icExcelXMLReportTemplate.__init__(self)
+        iqlXMLSpreadSheetReportTemplate.__init__(self)
 
     def open(self, tmpl_filename):
         """
-        Открыть файл шаблона отчета.
+        Open report template file.
 
-        :param tmpl_filename: Файл шаблона отчета.
+        :param tmpl_filename: Report template filename.
         """
-        v_excel = icexcel.icVExcel()
-        result = v_excel.load(tmpl_filename)
-        v_excel.saveAsXML(tmpl_filename.replace('.ods', '.xml'))
+        spreadsheet = v_spreadsheet.iqVSpreadsheet()
+        result = spreadsheet.load(tmpl_filename)
+        spreadsheet.saveAsXML(tmpl_filename.replace('.ods', '.xml'))
         return result
 
 
-class icXLSReportTemplate(icODSReportTemplate):
+class iqXLSReportTemplate(iqODSReportTemplate):
     """
-    Шаблон отчета в формате Excel XLS.
+    Report template in Excel XLS format.
     """
 
     def __init__(self):
         """
         Конструктор класса.
         """
-        icODSReportTemplate.__init__(self)
+        iqODSReportTemplate.__init__(self)
 
     def open(self, tmpl_filename):
         """
-        Открыть файл шаблона отчета.
+        Open report template file.
 
-        :param tmpl_filename: Файл шаблона отчета.
+        :param tmpl_filename: Report template filename.
         """
         try:
             ods_filename = os.path.splitext(tmpl_filename)[0] + '.ods'
             cmd = 'unoconv --num_format=ods %s' % tmpl_filename
-            log.info(u'Выполнение комманды ОС <%s>' % cmd)
+            log_func.info(u'Execute command <%s>' % cmd)
             os.system(cmd)
 
-            return icODSReportTemplate.open(self, ods_filename)
+            return iqODSReportTemplate.open(self, ods_filename)
         except:
-            log.fatal(u'Ошибка открытия файла шаблона <%s>' % tmpl_filename)
+            log_func.fatal(u'Error open report template file <%s>' % tmpl_filename)
         return None

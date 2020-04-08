@@ -490,8 +490,8 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
             self.startElementLevel('Style', {'ss:ID': style['style_id']})
             # Alignment
             align = dict()
-            h_align = self._REPORT_ALIGNMENT2XML[style['align']['align_txt'][report_generator.IC_REP_ALIGN_HORIZ]]
-            v_align = self._REPORT_ALIGNMENT2XML[style['align']['align_txt'][report_generator.IC_REP_ALIGN_VERT]]
+            h_align = self._REPORT_ALIGNMENT2XML[style['align']['align_txt'][report_generator.REP_ALIGN_HORIZ]]
+            v_align = self._REPORT_ALIGNMENT2XML[style['align']['align_txt'][report_generator.REP_ALIGN_VERT]]
             if h_align:
                 align['ss:Horizontal'] = h_align
             if v_align:
@@ -573,12 +573,12 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
             return '0.'
         return '0'
 
-    _REPORT_ALIGNMENT2XML = {report_generator.IC_HORIZ_ALIGN_LEFT: 'Left',
-                             report_generator.IC_HORIZ_ALIGN_CENTRE: 'Center',
-                             report_generator.IC_HORIZ_ALIGN_RIGHT: 'Right',
-                             report_generator.IC_VERT_ALIGN_TOP: 'Top',
-                             report_generator.IC_VERT_ALIGN_CENTRE: 'Center',
-                             report_generator.IC_VERT_ALIGN_BOTTOM: 'Bottom',
+    _REPORT_ALIGNMENT2XML = {report_generator.REP_HORIZ_ALIGN_LEFT: 'Left',
+                             report_generator.REP_HORIZ_ALIGN_CENTRE: 'Center',
+                             report_generator.REP_HORIZ_ALIGN_RIGHT: 'Right',
+                             report_generator.REP_VERT_ALIGN_TOP: 'Top',
+                             report_generator.REP_VERT_ALIGN_CENTRE: 'Center',
+                             report_generator.REP_VERT_ALIGN_BOTTOM: 'Bottom',
                              }
         
     def _borderRep2XML(self, border, position):
@@ -588,21 +588,21 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
         if border[position]:
             return {'Position': self._REPORT_POSITION2XML.setdefault(position, 'Left'),
                     'Color': self._colorRep2XML(border[position].setdefault('color', None)),
-                    'LineStyle': self._REPORT_LINE2XML.setdefault(border[position].setdefault('style', report_generator.IC_REP_LINE_TRANSPARENT), 'Continuous'),
+                    'LineStyle': self._REPORT_LINE2XML.setdefault(border[position].setdefault('style', report_generator.REP_LINE_TRANSPARENT), 'Continuous'),
                     'Weight': str(border[position].setdefault('weight', 1)),
                     }
 
-    _REPORT_POSITION2XML = {report_generator.IC_REP_BORDER_LEFT: 'Left',
-                            report_generator.IC_REP_BORDER_RIGHT: 'Right',
-                            report_generator.IC_REP_BORDER_TOP: 'Top',
-                            report_generator.IC_REP_BORDER_BOTTOM: 'Bottom',
+    _REPORT_POSITION2XML = {report_generator.REP_BORDER_LEFT: 'Left',
+                            report_generator.REP_BORDER_RIGHT: 'Right',
+                            report_generator.REP_BORDER_TOP: 'Top',
+                            report_generator.REP_BORDER_BOTTOM: 'Bottom',
                             }
         
-    _REPORT_LINE2XML = {report_generator.IC_REP_LINE_SOLID: 'Continuous',
-                        report_generator.IC_REP_LINE_SHORT_DASH: 'Dash',
-                        report_generator.IC_REP_LINE_DOT_DASH: 'DashDot',
-                        report_generator.IC_REP_LINE_DOT: 'Dot',
-                        report_generator.IC_REP_LINE_TRANSPARENT: None,
+    _REPORT_LINE2XML = {report_generator.REP_LINE_SOLID: 'Continuous',
+                        report_generator.REP_LINE_SHORT_DASH: 'Dash',
+                        report_generator.REP_LINE_DOT_DASH: 'DashDot',
+                        report_generator.REP_LINE_DOT: 'Dot',
+                        report_generator.REP_LINE_TRANSPARENT: None,
                         }
     
     def _colorRep2XML(self, color):

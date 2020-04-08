@@ -286,16 +286,16 @@ class iqReportGeneratorSystem(object):
             template = None
             if os.path.exists(os.path.splitext(filename)[0] + DEFAULT_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + DEFAULT_TEMPLATE_EXT
-                template = report_template.icODSReportTemplate()
+                template = report_template.iqODSReportTemplate()
             elif os.path.exists(os.path.splitext(filename)[0] + ODS_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + ODS_TEMPLATE_EXT
-                template = report_template.icODSReportTemplate()
+                template = report_template.iqODSReportTemplate()
             elif os.path.exists(os.path.splitext(filename)[0] + XLS_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + XLS_TEMPLATE_EXT
-                template = report_template.icXLSReportTemplate()
+                template = report_template.iqXLSReportTemplate()
             elif os.path.exists(os.path.splitext(filename)[0] + XML_TEMPLATE_EXT):
                 tmpl_filename = os.path.splitext(filename)[0] + XML_TEMPLATE_EXT
-                template = report_template.icExcelXMLReportTemplate()
+                template = report_template.iqlXMLSpreadSheetReportTemplate()
             else:
                 log_func.error(u'Report template not found <%s>' % filename)
 

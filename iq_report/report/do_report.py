@@ -149,7 +149,7 @@ def loadStyleLib(stylelib_filename=None):
     if stylelib_filename:
         stylelib_filename = os.path.abspath(stylelib_filename)
         if os.path.exists(stylelib_filename):
-            xml_stylelib = style_library.icXMLRepStyleLib()
+            xml_stylelib = style_library.iqXMLReportStyleLibrary()
             stylelib = xml_stylelib.convert(stylelib_filename)
     return stylelib
 

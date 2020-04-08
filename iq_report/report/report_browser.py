@@ -57,7 +57,7 @@ XLS_FILENAME_EXT = '.xls'
 
 def getReportList(report_dir, is_sort=True):
     """
-    Получить список отчетов.
+    Get report template list.
 
     :param report_dir: Report directory.
     :type is_sort: bool.
