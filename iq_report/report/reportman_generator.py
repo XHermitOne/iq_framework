@@ -2,146 +2,145 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль системы генератора отчетов ReportManager.
+ReportManager generator system module.
+
+https://reportman.sourceforge.io
 """
 
-# --- Подключение библиотек ---
 import os
 import os.path
+import tempfile
+
+from iq.util import res_func
+# from iq.util import util_func
+from iq.util import exec_func
+from iq.util import log_func
+from iq.dialog import dlg_func
+
+from . import report_gen_system
+
+from . import reportman
 
 
-from ic.report import icrepgensystem
-from ic.std.utils import resfunc
-from ic.std.utils import utilfunc
-from ic.std.utils import execfunc
-from ic.std.dlg import dlg
-from ic.std.log import log
+__version__ = (0, 0, 0, 1)
 
-# PyReportManager - the ActiveX wrapper code
-try:
-    from ic.report import reportman
-except ImportError:
-    log.error(u'Ошибка импорта PyReportManager', bForcePrint=True)
+DEFAULT_REP_FILE_NAME = os.path.join(tempfile.gettempdir(), 'new_report.rep')
 
 
-__version__ = (0, 1, 1, 2)
-
-# --- Константы подсистемы ---
-DEFAULT_REP_FILE_NAME = 'c:/temp/new_report.rep'
-
-
-# --- Описания классов ---
-class icReportManagerGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
+class iqReportManagerGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
     """
-    Класс системы генерации отчетов ReportManager.
+    ReportManager generator system class.
     """
-
     def __init__(self, report=None, parent=None):
         """
-        Конструктор класса.
+        Constructor.
 
-        :param report: Шаблон отчета.
-        :param parent: Родительская форма, необходима для вывода сообщений.
+        :param report: Report template data.
+        :param parent: Parent window.
         """
-        # вызов конструктора предка
-        icrepgensystem.icReportGeneratorSystem.__init__(self, report, parent)
+        report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Имя файла шаблона отчета
+        # Report template filename
         self.RepTmplFileName = None
         
-        # Папка отчетов.
+        # Report folder
         self._report_dir = None
-        if self._ParentForm:
-            self._report_dir = os.path.abspath(self._ParentForm.getReportDir())
+        if self._parent_window:
+            self._report_dir = os.path.abspath(self._parent_window.getReportDir())
         
     def getReportDir(self):
         """
-        Папка отчетов.
+        Get report folder path.
         """
         return self._report_dir
 
-    def preview(self, report=None):
+    def preview(self, report=None, *args, **kwargs):
         """
-        Предварительный просмотр.
+        Preview report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         if report is None:
-            report = self._Rep
-        # Создание связи с ActiveX
+            report = self._report_template
+        # Connect with ActiveX
         report_dir = os.path.abspath(self.getReportDir())
         report_file = os.path.join(report_dir, report['generator'])
         try:
             report_manager = reportman.ReportMan(report_file)
-            # Параметры отчета
+            # Report parameters
             params = self._getReportParameters(report)
-            # Установка параметров
+            # Set parameters
             self._setReportParameters(report_manager, params)
-            # Вызов предварительного просмотра
-            report_manager.preview(u'Предварительный просмотр: %s' % report_file)
+
+            report_manager.preview(u'Preview: %s' % report_file)
+            return True
         except:
-            log.fatal(u'Ошибка передварительного просмотра отчета %s' % report_file)
+            log_func.fatal(u'Error preview report <%s>' % report_file)
+        return False
             
-    def print(self, report=None):
+    def print(self, report=None, *args, **kwargs):
         """
-        Печать.
+        Print report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         if report is None:
             report = self._Rep
-        # Создание связи с ActiveX
+        # Create with ActiveX
         report_dir = os.path.abspath(self.getReportDir())
         report_file = os.path.join(report_dir, report['generator'])
         try:
             report_manager = reportman.ReportMan(report_file)
-            # Параметры отчета
+            # Report parameters
             params = self._getReportParameters(report)
-            # Установка параметров
+            # Set parameters
             self._setReportParameters(report_manager, params)
-            # Вызов предварительного просмотра
-            report_manager.printout(u'Печать: %s' % report_file, True, True)
+
+            report_manager.printout(u'Print: %s' % report_file, True, True)
+            return True
         except:
-            log.fatal(u'Ошибка печати отчета %s' % report_file)
+            log_func.fatal(u'Error print report <%s>' % report_file)
+        return False
 
     def setPageSetup(self):
         """
-        Установка параметров страницы.
+        Set page setup.
         """
         pass
 
     def convert(self, report=None, to_xls_filename=None, *args, **kwargs):
         """
-        Вывод результатов отчета в Excel.
+        Convert report data to Office.
 
-        :param report: Полное описание шаблона отчета.
-        :param to_xls_filename: Имя файла, куда необходимо сохранить отчет.
+        :param report: Report template data.
+        :param to_xls_filename: Destination report filename.
         """
         if report is None:
             report = self._Rep
-        # Создание связи с ActiveX
+        # Connection with ActiveX
         report_dir = os.path.abspath(self.getReportDir())
         report_file = os.path.join(report_dir, report['generator'])
         try:
             report_manager = reportman.ReportMan(report_file)
-            # Параметры отчета
+            # Report parameters
             params = self._getReportParameters(report)
-            # Установка параметров
+            # Set parameters
             self._setReportParameters(report_manager, params)
-            # Вызов предварительного просмотра
+
             report_manager.execute()
+            return True
         except:
-            log.fatal(u'Ошибка конвертирования отчета %s' % report_file)
+            log_func.fatal(u'Error convert report <%s>' % report_file)
+        return False
 
     def edit(self, rep_filename=None):
         """
-        Редактирование отчета.
+        Edit report.
 
-        :param rep_filename: Полное имя файла шаблона отчета.
+        :param rep_filename: Report template filename.
         """
-        # Создание связи с ActiveX
         rprt_file_name = os.path.abspath(rep_filename)
-        rep = resfunc.loadResource(rprt_file_name)
+        rep = res_func.loadResource(rprt_file_name)
         report_dir = os.path.abspath(self.getReportDir())
         rep_file = os.path.join(report_dir, rep['generator'])
         
@@ -150,27 +149,28 @@ class icReportManagerGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
         if reportman_designer_key:
             reportman_designer_run = reportman_designer_key.replace('\'%1\'', '\'%s\'') % rep_file
             cmd = 'start %s' % reportman_designer_run
-            log.debug(u'Запуск команды ОС: <%s>' % cmd)
-            # и запустить Report Manager Designer
+            log_func.debug(u'Execute command <%s>' % cmd)
+            # Run Report Manager Designer
             os.system(cmd)
         else:
-            msg = u'Не определен дизайнер отчетов Report Manager Designer %s' % reportman_designer_key
-            log.warning(msg)
-            dlg.getWarningBox(u'ВНИМАНИЕ!', msg)
+            msg = u'Not define Report Manager Designer <%s>' % reportman_designer_key
+            log_func.error(msg)
+            dlg_func.openWarningBox(u'WARNING', msg)
 
-        # Определить файл *.xml
         xml_file = os.path.normpath(os.path.abspath(os.path.splitext(rep_filename)[0]+'.xml'))
         cmd = 'start excel.exe \'%s\'' % xml_file
-        log.debug(u'Запуск команды ОС: <%s>' % cmd)
-        # и запустить MSExcel
+        log_func.debug(u'Execute command <%s>' % cmd)
         os.system(cmd)
 
     def _getReportParameters(self, report=None):
         """
-        Запустить генератор отчета.
+        Get report parameters.
 
-        :param report: Шаблон отчета.
-        :return: Возвращает словарь параметров. {'Имя параметра отчета':Значение параметра отчета}.
+        :param report: Report template data.
+        :return: Report parameters dictionary:
+            {'report_parameter_name': report_parameter_value,
+            ...
+            }.
         """
         try:
             if report is not None:
@@ -178,27 +178,29 @@ class icReportManagerGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
             else:
                 report = self._Rep
 
-            # 1. Получить параметры запроса отчета
+            # 1. Get query table
             query = report['query']
             if query is not None:
                 if self._isQueryFunc(query):
                     query = self._execQueryFunc(query)
                 else:
-                    query = execfunc.exec_code(query)
+                    query = exec_func.execTxtFunction(query)
                 
             return query
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка определения параметров отчета %s.' % report['name'])
-            return None
+            log_func.fatal(u'Error get report parameters <%s>' % report['name'])
+        return None
 
     def _setReportParameters(self, report_obj, parameters):
         """
-        Установить параметры для отчета.
+        Set report parameters.
 
-        :param report_obj: Объект отчета ReportManger.
-        :param parameters: Словарь параметров. {'Имя параметра отчета':Значение параметра отчета}.
-        :return: Возвращает результат выполнения операции.
+        :param report_obj: ReportManger report object.
+        :param parameters: Report parameters dictionary:
+            {'report_parameter_name': report_parameter_value,
+            ...
+            }.
+        :return: True/False.
         """
         try:
             if parameters:
@@ -206,5 +208,6 @@ class icReportManagerGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
                     report_obj.set_param(param_name, param_value)
             return True
         except:
-            log.fatal(u'Ошибка установки параметров %s в отчете %s' % (parameters, report_obj._report_filename))
-            return False
+            log_func.fatal(u'Error set report parameters <%s> in report <%s>' % (parameters,
+                                                                                 report_obj._report_filename))
+        return False

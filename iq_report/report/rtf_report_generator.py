@@ -2,364 +2,329 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль системы генератора отчетов, основанные на генерации RTF файлов.
+RTF report generator system module.
 """
 
-# --- Подключение библиотек ---
-import os 
+import os
 import os.path
 import copy
 import re
 
-from ic.report import rtf_report
-from ic.report import icrepgensystem
-from ic.std.dlg import dlg
+from iq.util import log_func
+from iq.dialog import dlg_func
 
-from ic.std.log import log
+from . import rtf_report
+from . import report_gen_system
 
-__version__ = (0, 1, 1, 2)
 
-# --- Константы ---
+__version__ = (0, 0, 0, 1)
+
 RTF_VAR_PATTERN = r'(#.*?#)'
-# Список всех патернов используемых при разборе значений ячеек
-ALL_PATERNS = [RTF_VAR_PATTERN]
+# List of all patterns used in parsing cell values
+ALL_PATERNS = (RTF_VAR_PATTERN, )
+
+RTF_FILENAME_EXT = '.rtf'
 
 
-class icRTFReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
+class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
     """
-    Класс системы генерации отчетов, основанные на генерации RTF файлов.
+    RTF report generator system class.
     """
     def __init__(self, report=None, parent=None):
         """
-        Конструктор класса.
+        Constructor.
 
-        :param report: Шаблон отчета.
-        :param parent: Родительская форма, необходима для вывода сообщений.
+        :param report: Report template data.
+        :param parent: Parent window.
         """
-        # вызов конструктора предка
-        icrepgensystem.icReportGeneratorSystem.__init__(self, report, parent)
+        report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Имя файла шаблона отчета
+        # Report template filename
         self.RepTmplFileName = None
         
-        # Папка отчетов.
+        # Report folder
         self._report_dir = None
-        if self._ParentForm:
-            self._report_dir = os.path.abspath(self._ParentForm.getReportDir())
+        if self._parent_window:
+            self._report_dir = os.path.abspath(self._parent_window.getReportDir())
         
     def reloadRepData(self, tmpl_filename=None):
         """
-        Перегрузить данные отчета.
+        Reload report template data.
 
-        :param tmpl_filename: Имя файла шаблона отчета.
+        :param tmpl_filename: Report template filename.
         """
         if tmpl_filename is None:
             tmpl_filename = self.RepTmplFileName
-        icrepgensystem.icReportGeneratorSystem.reloadRepData(self, tmpl_filename)
+        report_gen_system.iqReportGeneratorSystem.reloadRepData(self, tmpl_filename)
         
     def getReportDir(self):
         """
-        Папка отчетов.
+        Get report folder path.
         """
         return self._report_dir
 
     def _genRTFReport(self, report):
         """
-        Генерация отчета и сохранение его в RTF файл.
+        Generate report and save it in RTF file.
 
-        :param report: Полное описание шаблона отчета.
-        :return: Возвращает имя rtf файла или None в случае ошибки.
+        :param report: Report template data.
+        :return: Report RTF filename or None if error.
         """
         if report is None:
-            report = self._Rep
+            report = self._report_template
         data_rep = self.generateReport(report)
         if data_rep:
             rep_file_name = os.path.join(self.getReportDir(), '%s_report_result.rtf' % data_rep['name'])
-            template_file_name = os.path.abspath(data_rep['generator'], self.getReportDir())
-            log.info(u'Сохранение отчета %s в файл %s' % (template_file_name, rep_file_name))
+            template_file_name = os.path.abspath(data_rep['generator'])
+            log_func.info(u'Save report <%s> to file <%s>' % (template_file_name, rep_file_name))
             
-            data = self._predGenerateAllVar(data_rep['__data__'])
+            data = self._prevGenerateAllVar(data_rep['__data__'])
             rtf_report.genRTFReport(data, rep_file_name, template_file_name)
             return rep_file_name
         return None
         
-    def preview(self, report=None):
+    def preview(self, report=None, *args, **kwargs):
         """
-        Предварительный просмотр.
+        Preview report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         rtf_rep_file_name = self._genRTFReport(report)
         if rtf_rep_file_name:
-            # Открыть в режиме просмотра
             self.previewWord(rtf_rep_file_name)
             
     def previewWord(self, rtf_filename):
         """
-        Открыть word  в режиме предварительного просмотра.
+        Open RTF report in word in preview mode.
 
-        :param rtf_filename: Имя rtf файла, содержащего сгенерированный отчет.
+        :param rtf_filename: Report RTF filename.
         """
         try:
-            # Установить связь с Word
+            # Connect with Word
             word_app = win32com.client.Dispatch('Word.Application')
-            # Скрыть
+            # Hide
             word_app.Visible = 0
-            # Открыть
+            # Open RTF
             rep_tmpl_book = word_app.Documents.Open(rtf_filename)
-            # Показать
+            # Show
             word_app.Visible = 1
             
             rep_tmpl_book.PrintPreview()
             return True
         except pythoncom.com_error:
-            # Вывести сообщение об ошибке в лог
-            log.fatal()
-            return False
+            log_func.fatal(u'Error preview report <%s>' % rtf_filename)
+        return False
 
-    def print(self, report=None):
+    def print(self, report=None, *args, **kwargs):
         """
-        Печать.
+        Print report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         rtf_rep_file_name = self._genRTFReport(report)
         if rtf_rep_file_name:
-            # Открыть печать
             self.printWord(rtf_rep_file_name)
 
     def printWord(self, rtf_filename):
         """
-        Печать отчета с помощью word.
+        Print RTF report by word.
 
-        :param rtf_filename: Имя rtf файла, содержащего сгенерированный отчет.
+        :param rtf_filename: Report RTF filename.
         """
         try:
-            # Установить связь с Word
+            # Connect with Word
             word_app = win32com.client.Dispatch('Word.Application')
-            # Скрыть
+            # Hide
             word_app.Visible = 0
-            # Открыть
+            # Open RTF
             rep_tmpl_book = word_app.Documents.Open(rtf_filename)
-            # Показать
+            # Show
             word_app.Visible = 1
             
             rep_tmpl_book.PrintOut()
             return True
         except pythoncom.com_error:
-            # Вывести сообщение об ошибке в лог
-            log.fatal()
-            return False
+            log_func.fatal(u'Error print report <%s>' % rtf_filename)
+        return False
             
     def setPageSetup(self):
         """
-        Установка параметров страницы.
+        Set page setup.
         """
         pass
 
     def convert(self, report=None, to_xls_filename=None, *args, **kwargs):
         """
-        Вывод результатов отчета в Excel.
+        Convert generate report to Office.
 
-        :param report: Полное описание шаблона отчета.
-        :param to_xls_filename: Имя файла, куда необходимо сохранить отчет.
+        :param report: Report template data.
+        :param to_xls_filename: Destination generated report filename.
         """
         pass
 
     def openWord(self, rtf_filename):
         """
-        Открыть word.
+        Open RTF file in Word.
 
-        :param rtf_filename: Имя rtf файла, содержащего сгенерированный отчет.
+        :param rtf_filename: Report RTF filename.
         """
         try:
-            # Установить связь с Word
+            # Connection with Word
             word_app = win32com.client.Dispatch('Word.Application')
-            # Скрыть
+            # Hide
             word_app.Visible = 0
-            # Открыть
+            # Open RTF
             rep_tmpl_book = word_app.Open(rtf_filename)
-            # Показать
+            # Show
             word_app.Visible = 1
             return True
         except pythoncom.com_error:
-            # Вывести сообщение об ошибке в лог
-            log.fatal()
-            return False
+            log_func.fatal(u'Error open report <%s>' % rtf_filename)
+        return False
     
     def edit(self, rep_filename=None):
         """
-        Редактирование отчета.
+        Edit report.
 
-        :param rep_filename: Полное имя файла шаблона отчета.
+        :param rep_filename: Report template filename.
         """
-        # Определить файл *.rtf
-        rtf_file = os.path.abspath(os.path.splitext(rep_filename)[0]+'.rtf')
+        # Set *.rtf filename
+        rtf_file = os.path.abspath(os.path.splitext(rep_filename)[0] + RTF_FILENAME_EXT)
         cmd = 'start word.exe \'%s\'' % rtf_file
-        log.info(u'Выполнение комманды ОС <%s>' % cmd)
-        # и запустить MSWord
+        log_func.info(u'Execute command <%s>' % cmd)
+        # Run MSWord
         os.system(cmd)
 
-    def generateReport(self, report=None):
+    def generateReport(self, report=None, *args, **kwargs):
         """
-        Запустить генератор отчета.
+        Generate report.
 
-        :param report: Шаблон отчета.
-        :return: Возвращает сгенерированный отчет или None в случае ошибки.
+        :param report: Report template data.
+        :return: Generated report or None if error.
         """
         try:
             if report is not None:
-                self._Rep = report
+                self._report_template = report
 
-            # 1. Получить таблицу запроса
-            # Данные отчета.
-            # Формат:
-            # {
-            #    #Переменные
-            #    '__variables__':{'имя переменной1':значение переменной1,...}, #Переменные
-            #    #Список таблиц
-            #    '__tables__':[
-            #        {
-            #        '__fields__':(('имя поля1'),...), #Поля
-            #        '__data__':[(значение поля1,...)], #Данные
-            #        },...
-            #        ],
-            #    #Циклы генерации
-            #    '__loop__':{
-            #        'имя цикла1':[{переменные и таблицы, используемые в цикле},...],
-            #        ...
-            #        },
-            # }.
-
-            query_data = self.GetQueryTbl(self._Rep)
+            # 1. Get query table
+            query_data = self.getQueryTbl(self._report_template)
             if not query_data:
-                dlg.getWarningBox(u'Внимание',
-                                  u'Нет данных, соответствующих запросу: %s' % self._Rep['query'],
-                                  parent=self._ParentForm)
+                dlg_func.openWarningBox(u'WARNING',
+                                        u'Not report data\nQuery <%s>' % self._report_template['query'],
+                                        parent=self._parent_window)
                 return None
 
-            # 2. Запустить генерацию
-            rep_data = copy.deepcopy(self._Rep)
+            # 2. Generate
+            rep_data = copy.deepcopy(self._report_template)
             rep_data['__data__'] = query_data
             return rep_data
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации отчета %s.' % self._Rep['name'])
-            return None
+            log_func.fatal(u'Error generate report <%s>' % self._report_template['name'])
+        return None
 
-    def _predGenerateAllVar(self, data):
+    def _prevGenerateAllVar(self, data):
         """
-        Предобработка всех переменных. Выполняется рекурсивно.
+        Prepare all variables.
 
-        :return: Возвращает структуры с заполненными переменными.
+        :return: Data with defined values.
         """
         if '__variables__' in data:
-            # Сделать предобработку
-            data['__variables__'] = self._predGenerateVar(data['__variables__'])
+            # Prepare
+            data['__variables__'] = self._prevGenerateVar(data['__variables__'])
         if '__loop__' in data:
             for loop_name, loop_body in data['__loop__'].items():
                 if loop_body:
                     for i_loop in range(len(loop_body)):
-                        loop_body[i_loop] = self._predGenerateAllVar(loop_body[i_loop])
+                        loop_body[i_loop] = self._prevGenerateAllVar(loop_body[i_loop])
                     data['__loop__'][loop_name] = loop_body
         return data
 
-    def _predGenerateVar(self, variables, value=None):
+    def _prevGenerateVar(self, variables, value=None):
         """
-        Предобработка словаря переменных.
+        Prepare variable dictionary.
 
-        :param variables: Словарь переменных.
-        :param value: Текущее обработываемое значение.
+        :param variables: Valiable dictionary.
+        :param value: Current value.
         """
         if value is None:
             for name, value in variables.items():
-                variables[name] = self._predGenerateVar(variables, str(value))
+                variables[name] = self._prevGenerateVar(variables, str(value))
             return variables
         else:
-            # Сначала заменить перевод каретки
+            # Replace
             value = value.replace('\r\n', '\n').strip()
-            # Затем распарсить
-            parsed = self._funcTextParse(value)
+            # Parse
+            parsed = self._parseFuncText(value)
             values = []
             for cur_var in parsed['func']:
                 if re.search(RTF_VAR_PATTERN, cur_var):
                     if cur_var[1:-1] in variables:
-                        values.append(self._predGenerateVar(variables,
+                        values.append(self._prevGenerateVar(variables,
                                                             variables[cur_var[1:-1]]))
                     else:
                         values.append('')
                 else:
-                    log.warning(u'Не известный тег <%s>' % cur_var)
-            # Заполнить формат
+                    log_func.error(u'Unsupported tag <%s>' % cur_var)
+
             val_str = self._valueFormat(parsed['fmt'], values)
             return val_str
 
-    def _funcTextParse(self, text, patterns=ALL_PATERNS):
+    def _parseFuncText(self, text, patterns=ALL_PATERNS):
         """
-        Разобрать строку на формат и исполняемый код.
+        Parse the string into format and executable code.
 
-        :param text: Разбираемая строка.
-        :param patterns: Cписок строк патернов тегов обозначения
-            начала и конца функционала.
-        :return: Возвращает словарь следующей структуры:
+        :param text: Parsed text.
+        :param patterns: A list of strings of patterns of tags
+            to indicate the beginning and end of the functional.
+        :return: Dictionary:
             {
-            'fmt': Формат строки без строк исполняемого кода вместо него стоит %s;
-            'func': Список строк исполняемого кода.
+            'fmt': The format of a line without lines of executable code is% s;
+            'func': List of lines of executable code.
             }
-            В случае ошибки возвращает None.
+            or None if error.
         """
         try:
-            # Инициализация структуры
-            ret = {}
-            ret['fmt'] = ''
-            ret['func'] = []
+            result = dict()
+            result['fmt'] = ''
+            result['func'] = list()
     
-            # Проверка аргументов
             if not text:
-                return ret
+                return result
     
-            # Заполнение патерна
             pattern = r''
             for cur_sep in patterns:
                 pattern += cur_sep
                 if cur_sep != patterns[-1]:
                     pattern += r'|'
                     
-            # Разбор строки на обычные строки и строки функционала
             parsed_str = [x for x in re.split(pattern, text) if x is not None]
-            # Перебор тегов
             for i_parse in range(len(parsed_str)):
-                # Перебор патернов функционала
                 func_find = False
                 for cur_patt in patterns:
-                    # Какой-то функционал
                     if re.search(cur_patt, parsed_str[i_parse]):
-                        ret['func'].append(parsed_str[i_parse])
-                        # И добавить в формат %s
-                        ret['fmt'] += '%s'
+                        result['func'].append(parsed_str[i_parse])
+                        # Add %s in format
+                        result['fmt'] += '%s'
                         func_find = True
                         break
-                # Обычная строка
                 if not func_find:
-                    ret['fmt'] += parsed_str[i_parse]
-            return ret
+                    result['fmt'] += parsed_str[i_parse]
+            return result
         except:
-            # win32api.MessageBox(0, '%s' % (sys.exc_info()[1].args[1]))
-            log.fatal()
+            log_func.fatal(u'Error parse func text <%s>' % text)
         return None
 
     def _valueFormat(self, fmt, data_list):
         """
-        Заполнение формата значения ячейки.
+        Set cell value format.
         
-        :param fmt: Формат.
-        :param data_list: Данные, которые нужно поместить в формат.
-        :return: Возвращает строку, соответствующую формату.
+        :param fmt: Format.
+        :param data_list: Data list.
+        :return: Returns a string matching the format.
         """
-        # Заполнение формата
         if data_list == list():
             value = fmt
-        # Обработка значения None
+
         elif bool(None in data_list):
             data_lst = [{None: ''}.setdefault(val, val) for val in data_list]
             value = fmt % tuple(data_lst)

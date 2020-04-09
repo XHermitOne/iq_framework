@@ -18,11 +18,11 @@ __version__ = (0, 0, 0, 1)
 
 REPORT_GEN_SYSTEM = None
 
-REPORT_GENERATOR_SYSTEM_TYPES = {'.xml': xml_report_generator.icXMLReportGeneratorSystem,  # XMLSS generator
+REPORT_GENERATOR_SYSTEM_TYPES = {'.xml': xml_report_generator.iqXMLReportGeneratorSystem,  # XMLSS generator
                                  '.ods': ods_report_generator.icODSReportGeneratorSystem,  # ODS generator
                                  # '.xls': icxlsreportgenerator.icXLSReportGeneratorSystem,  # XLS generator
-                                 # '.rep': reportman_generator.icReportManagerGeneratorSystem,     # Report Manager
-                                 '.rtf': rtf_report_generator.icRTFReportGeneratorSystem,  # RTF generator
+                                 # '.rep': reportman_generator.iqReportManagerGeneratorSystem,     # Report Manager
+                                 '.rtf': rtf_report_generator.iqRTFReportGeneratorSystem,  # RTF generator
                                  }
 
 # List of template source extensions

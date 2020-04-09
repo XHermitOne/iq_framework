@@ -2,339 +2,342 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль системы генератора отчетов, основанные на генерации XML файлов.
+ODS file report generator system module.
 """
 
-# Подключение библиотек
 import copy
 import os 
 import os.path
 
 from .dlg import report_action_dlg
-from ic.std.log import log
-from ic.std.dlg import dlg
-from ic.std.utils import textfunc
 
-from ic.virtual_excel import icexcel
+from iq.util import log_func
+from iq.dialog import dlg_func
+from iq.util import str_func
+from iq.util import global_func
 
-from ic.report import icrepgensystem
-from ic.report import icrepgen
-from ic.report import icrepfile
+from iq.components.virtual_spreadsheet import v_spreadsheet
 
-from ic import config
-
-
-__version__ = (0, 1, 1, 1)
+from . import report_gen_system
+from . import report_generator
+from . import report_file
 
 
-class icODSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
+__version__ = (0, 0, 0, 1)
+
+ODS_FILENAME_EXT = '.ods'
+PDF_FILENAME_EXT = '.pdf'
+
+
+class icODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
     """
-    Класс системы генерации отчетов, основанные на генерации ODS файлов.
+    ODS file report generator system class.
     """
-
     def __init__(self, report=None, parent=None):
         """
-        Конструктор класса.
+        Constructor.
 
-        :param report: Шаблон отчета.
-        :param parent: Родительская форма, необходима для вывода сообщений.
+        :param report: Report template data.
+        :param parent: Parent window.
         """
-        # вызов конструктора предка
-        icrepgensystem.icReportGeneratorSystem.__init__(self, report, parent)
+        report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Имя файла шаблона отчета
+        # Report template filename
         self.RepTmplFileName = None
         
-        # Папка отчетов.
+        # Report folder
         self._report_dir = None
-        if self._ParentForm:
-            self._report_dir = os.path.abspath(self._ParentForm.getReportDir())
+        if self._parent_window:
+            self._report_dir = os.path.abspath(self._parent_window.getReportDir())
         
     def reloadRepData(self, tmpl_filename=None):
         """
-        Перегрузить данные отчета.
+        Reload report template data.
 
-        :param tmpl_filename: Имя файла шаблона отчета.
+        :param tmpl_filename: Report template filename.
         """
         if tmpl_filename is None:
             tmpl_filename = self.RepTmplFileName
-        icrepgensystem.icReportGeneratorSystem.reloadRepData(self, tmpl_filename)
+        report_gen_system.iqReportGeneratorSystem.reloadRepData(self, tmpl_filename)
         
     def getReportDir(self):
         """
-        Папка отчетов.
+        Get report folder path.
         """
         if self._report_dir is None:
-            if self._ParentForm:
-                self._report_dir = os.path.abspath(self._ParentForm.getReportDir())
+            if self._parent_window:
+                self._report_dir = os.path.abspath(self._parent_window.getReportDir())
             else:
-                log.warning(u'Не определена папка отчетов!')
+                log_func.error(u'Not define report directory')
                 self._report_dir = ''
                                 
         return self._report_dir
 
     def _genODSReport(self, report, *args, **kwargs):
         """
-        Генерация отчета и сохранение его в ODS файл.
+        Generate report and save it in ODS file.
 
-        :param report: Полное описание шаблона отчета.
-        :return: Возвращает имя xml файла или None в случае ошибки.
+        :param report: Report template data.
+        :return: Report ODS filename or None if error.
         """
         if report is None:
-            report = self._Rep
+            report = self._report_template
         data_rep = self.generateReport(report, *args, **kwargs)
         return self.save(data_rep)
 
     def selectAction(self, report=None, *args, **kwargs):
         """
-        Запуск генерации отчета с последующим выбором действия.
+        Start report generation and then select an action.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         ods_rep_file_name = self._genODSReport(report, *args, **kwargs)
         if ods_rep_file_name and os.path.exists(ods_rep_file_name):
             return self.doSelectAction(ods_rep_file_name)
         else:
-            log.warning(u'Файл отчета <%s> не существует' % ods_rep_file_name)
+            log_func.error(u'Report file <%s> not exists' % ods_rep_file_name)
 
     def doSelectAction(self, data):
         """
-        Запуск выбора действия над отчетом.
+        Start select action.
 
-        :param data: Данные об отчете.
+        :param data: Report data.
         """
         action = report_action_dlg.getReportActionDlg(title=self.getReportDescription())
         if action == report_action_dlg.PRINT_ACTION_ID:
-            return self.PrintOffice(data)
+            return self.printOffice(data)
         elif action == report_action_dlg.PREVIEW_ACTION_ID:
-            return self.PreviewOffice(data)
+            return self.previewOffice(data)
         elif action == report_action_dlg.EXPORT_ACTION_ID:
-            return self.OpenOffice(data)
+            return self.openOffice(data)
         else:
-            log.warning(u'Не определено действие над отчетом')
+            log_func.warning(u'Not define action')
         return None
 
     def preview(self, report=None, *args, **kwargs):
         """
-        Предварительный просмотр.
+        Preview report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         ods_rep_file_name = self._genODSReport(report, *args, **kwargs)
         if ods_rep_file_name and os.path.exists(ods_rep_file_name):
-            # Открыть в режиме просмотра
-            self.PreviewOffice(ods_rep_file_name)
+            return self.previewOffice(ods_rep_file_name)
+        return False
             
-    def PreviewOffice(self, ods_filename):
+    def previewOffice(self, ods_filename):
         """
-        Открыть отчет в режиме предварительного просмотра.
+        Open ODS file in Office preview mode.
 
-        :param ods_filename: Имя ods файла, содержащего сгенерированный отчет.
+        :param ods_filename: Report ODS filename.
         """
         if not os.path.exists(ods_filename):
-            log.warning(u'Предварительный просмотр. Файл <%s> не найден' % ods_filename)
-            return
+            log_func.error(u'Preview. Report file <%s> not exists' % ods_filename)
+            return False
 
-        pdf_filename = os.path.splitext(ods_filename)[0]+'.pdf'
+        pdf_filename = os.path.splitext(ods_filename)[0] + PDF_FILENAME_EXT
+
         if os.path.exists(pdf_filename):
             try:
                 os.remove(pdf_filename)
             except:
-                log.error(u'Delete file <%s>' % pdf_filename)
+                log_func.fatal(u'Delete file <%s>' % pdf_filename)
 
         cmd = 'unoconv --num_format=pdf %s' % ods_filename
-        log.info(u'UNOCONV. Выполнение комманды <%s>' % cmd)
+        log_func.info(u'UNOCONV. Execute command <%s>' % cmd)
         os.system(cmd)
 
         cmd = 'evince %s&' % pdf_filename
-        log.info(u'EVINCE. Выполнение комманды <%s>' % cmd)
+        log_func.info(u'EVINCE. Execute command <%s>' % cmd)
         os.system(cmd)
+        return True
 
     def print(self, report=None, *args, **kwargs):
         """
-        Печать.
+        Print report.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         ods_rep_file_name = self._genODSReport(report, *args, **kwargs)
         if ods_rep_file_name and os.path.exists(ods_rep_file_name):
-            # Открыть печать в CALC
-            self.PrintOffice(ods_rep_file_name)
+            return self.printOffice(ods_rep_file_name)
+        return False
 
-    def PrintOffice(self, ods_filename):
+    def printOffice(self, ods_filename):
         """
-        Печать отчета с помощью CALC.
+        Print report by Office.
 
-        :param ods_filename: Имя ods файла, содержащего сгенерированный отчет.
+        :param ods_filename: Report ODS filename.
         """
         if ods_filename and os.path.exists(ods_filename):
             cmd = 'libreoffice -p %s&' % ods_filename
-            log.info(u'Выполнение комманды ОС <%s>' % cmd)
+            log_func.info(u'Execute command <%s>' % cmd)
             os.system(cmd)
+            return True
         else:
-            log.warning(u'Печать. Файл <%s> не найден.' % ods_filename)
+            log_func.error(u'Print. Report file <%s> not exists' % ods_filename)
+        return False
 
     def setPageSetup(self):
         """
-        Установка параметров страницы.
+        Set page setup.
         """
         pass
 
     def convert(self, report=None, to_filename=None, *args, **kwargs):
         """
-        Вывод результатов отчета в Excel.
+        Convert report data to Office.
 
-        :param report: Полное описание шаблона отчета.
-        :param to_filename: Имя файла, куда необходимо сохранить отчет.
+        :param report: Report template data.
+        :param to_filename: Destination report filename.
         """
         rep_file_name = self._genODSReport(report, *args, **kwargs)
         if rep_file_name:
-            # Открыть CALC в режиме
-            self.OpenOffice(rep_file_name)
+            return self.openOffice(rep_file_name)
+        return False
 
-    def OpenOffice(self, ods_filename):
+    def openOffice(self, ods_filename):
         """
-        Открыть.
+        Open report.
 
-        :param ods_filename: Имя ods файла, содержащего сгенерированный отчет.
+        :param ods_filename: Report ODS filename.
         """
         if ods_filename and os.path.exists(ods_filename):
             cmd = 'libreoffice %s&' % ods_filename
-            log.info('Выполнение комманды ОС <%s>' % cmd)
+            log_func.info('Execute command <%s>' % cmd)
             os.system(cmd)
+            return True
         else:
-            log.warning(u'Открытие. Файл <%s> не найден' % ods_filename)
+            log_func.error(u'Open. Report file <%s> not exists' % ods_filename)
+        return False
 
     def edit(self, rep_filename=None):
         """
-        Редактирование отчета.
+        Edit report.
 
-        :param rep_filename: Полное имя файла шаблона отчета.
+        :param rep_filename: Report template filename.
         """
-        # Определить файл *.ods
+        # Set *.ods filename
         ods_file = os.path.abspath(os.path.splitext(rep_filename)[0]+'.ods')
         cmd = 'libreoffice \"%s\"&' % ods_file
-        # и запустить
+        log_func.info(u'Execute command <%s>' % cmd)
         os.system(cmd)
+        return True
 
     def generateReport(self, report=None, *args, **kwargs):
         """
-        Запустить генератор отчета.
+        Generate report.
 
-        :param report: Шаблон отчета.
-        :return: Возвращает сгенерированный отчет или None в случае ошибки.
+        :param report: Report template data.
+        :return: Generated report or None if error.
         """
         try:
             if report is not None:
-                self._Rep = report
+                self._report_template = report
 
-            # 1. Получить таблицу запроса
-            # Переменные могут учавствовать в генерации текста запроса
+            # 1. Get query table
             variables = kwargs.get('variables', None)
             if variables:
                 kwargs.update(variables)
 
-            query_tbl = self.getQueryTbl(self._Rep, *args, **kwargs)
+            query_tbl = self.getQueryTbl(self._report_template, *args, **kwargs)
             if self._isEmptyQueryTbl(query_tbl):
-                if not config.get_glob_var('NO_GUI_MODE'):
-                    if not dlg.getAskBox(u'Внимание',
-                                         u'Нет данных, соответствующих запросу: %s. Продолжить генерацию отчета?' % self._Rep['query']):
+                if not global_func.isCUIEngine():
+                    if not dlg_func.openAskBox(u'WARNING',
+                                               u'No report data\nQuery <%s>\nContinue report generation?' % self._report_template['query']):
                         return None
                 else:
-                    log.warning(u'')
+                    log_func.warning(u'No report data. Continue generation')
                 query_tbl = self.createEmptyQueryTbl()
 
-            # 2. Запустить генерацию
-            rep = icrepgen.icReportGenerator()
+            # 2. Generate
+            rep = report_generator.iqReportGenerator()
             coord_fill = kwargs.get('coord_fill', None)
-            data_rep = rep.generate(self._Rep, query_tbl,
+            data_rep = rep.generate(self._report_template, query_tbl,
                                     name_space=variables, coord_fill=coord_fill)
 
             return data_rep
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации отчета <%s>.' % self._Rep['name'])
+            log_func.fatal(u'Error generate report <%s>.' % self._report_template['name'])
         return None
 
     def generate(self, report=None, db_url=None, sql=None, stylelib=None, vars=None, *args, **kwargs):
         """
-        Запустить генератор отчета.
+        Generate report.
 
-        :param report: Шаблон отчета.
-        :param db_url: Connection string в виде url. Например
+        :param report: Report template data.
+        :param db_url: Connection string as url.
+            For example:
             postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-        :param sql: Запрос SQL.
-        :param stylelib: Библиотека стилей.
-        :param vars: Словарь переменных отчета.
-        :return: Возвращает сгенерированный отчет или None в случае ошибки.
+        :param sql: SQL query.
+        :param stylelib: Style library.
+        :param vars: Report variables dictionary.
+        :return: Generated report or None if error.
         """
         try:
             if report is not None:
-                self._Rep = report
+                self._report_template = report
 
             if stylelib:
-                self._Rep['style_lib'] = stylelib
+                self._report_template['style_lib'] = stylelib
 
             if vars:
-                self._Rep['variables'] = vars
+                self._report_template['variables'] = vars
 
-            # 1. Получить таблицу запроса
+            # 1. Get query table
             _kwargs = copy.deepcopy(kwargs)
             _kwargs.update(dict(db_url=db_url, sql=sql, stylelib=stylelib, variables=vars))
-            query_tbl = self.getQueryTbl(self._Rep, **_kwargs)
+            query_tbl = self.getQueryTbl(self._report_template, **_kwargs)
             if self._isEmptyQueryTbl(query_tbl):
-                dlg.getMsgBox(u'Внимание',
-                              u'Нет данных, соответствующих запросу: %s' % self._Rep['query'],
-                              self._ParentForm)
+                dlg_func.openWarningBox(u'WARNING',
+                                        u'No report data\nQuery <%s>' % self._report_template['query'],
+                                        parent=self._parent_window)
                 return None
 
-            # 2. Запустить генерацию
-            rep = icrepgen.icReportGenerator()
-            data_rep = rep.generate(self._Rep, query_tbl,
+            # 2. Generate
+            rep = report_generator.iqReportGenerator()
+            data_rep = rep.generate(self._report_template, query_tbl,
                                     name_space=vars, *args, **kwargs)
 
             return data_rep
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации отчета <%s>.' % textfunc.toUnicode(self._Rep['name']))
+            log_func.fatal(u'Error generate report <%s>.' % str_func.toUnicode(self._report_template['name']))
         return None
 
-    def save(self, report_data=None, is_virtual_excel=True):
+    def save(self, report_data=None, to_virtual_spreadsheet=True):
         """
-        Сохранить результаты генерации в файл
+        Save generated report to file.
 
-        :param report_data: Сгенерированный отчет.
-        :param is_virtual_excel: Сохранение произвести с помощью VirtualExcel?
-            True - да, False - Сохранение производится конвертацией с помощью UNOCONV.
-            ВНИМАНИЕ! При конвертации с помощью UNOCONV ячейки не образмериваются.
-                Размеры ячеек остаются по умолчанию.
-                UNOCONV транслирует не все стили и атрибуты ячеек.
-        :return: Имя сохраненного файла или None, если сохранения не произошло.
+        :param report_data: Generated report data.
+        :param to_virtual_spreadsheet: Save by Virtual SpreadSheet?
+            True - yes,
+            False - Save by UNOCONV convertation.
+            When converting using UNOCONV, the cells are not dimensioned.
+            Cell sizes remain by default.
+            UNOCONV does not translate all cell styles and attributes.
+        :return: Destination report filename or None if error.
         """
         if report_data:
-            rep_file = icrepfile.icExcelXMLReportFile()
+            rep_file = report_file.iqXMLSpreadSheetReportFile()
             save_dir = self.getProfileDir()
             if not save_dir:
-                save_dir = icrepgensystem.DEFAULT_REPORT_DIR
-            # print(u'DBG:', save_dir, report_data, type(report_data))
+                save_dir = report_gen_system.DEFAULT_REPORT_DIR
             xml_rep_file_name = os.path.join(save_dir, '%s_report_result.xml' % report_data['name'])
             rep_file_name = os.path.join(save_dir, '%s_report_result.ods' % report_data['name'])
 
             rep_file.write(xml_rep_file_name, report_data)
 
-            if is_virtual_excel:
-                log.info(u'Конвертация отчета <%s> в файл <%s>' % (textfunc.toUnicode(xml_rep_file_name),
-                                                                   textfunc.toUnicode(rep_file_name)))
-                v_excel = icexcel.icVExcel()
-                v_excel.load(xml_rep_file_name)
-                v_excel.saveAs(rep_file_name)
+            if to_virtual_spreadsheet:
+                log_func.info(u'Convert report <%s> to file <%s>' % (str_func.toUnicode(xml_rep_file_name),
+                                                                     str_func.toUnicode(rep_file_name)))
+                spreadsheet = v_spreadsheet.iqVSpreadsheet()
+                spreadsheet.load(xml_rep_file_name)
+                spreadsheet.saveAs(rep_file_name)
             else:
-                # ВНИМАНИЕ! UNOCONV транслирует не все стили и атрибуты ячеек
-                # Поэтому сначала используется Virtual Excel
                 cmd = 'unoconv --num_format=ods %s' % xml_rep_file_name
-                log.info(u'UNOCONV. Конвертация отчета <%s> в файл <%s>. (%s)' % (textfunc.toUnicode(xml_rep_file_name),
-                                                                                  textfunc.toUnicode(rep_file_name),
-                                                                                  textfunc.toUnicode(cmd)))
+                log_func.info(u'UNOCONV. Convert report <%s> to file <%s>' % (str_func.toUnicode(xml_rep_file_name),
+                                                                              str_func.toUnicode(rep_file_name)))
+                log_func.info(u'Execute command <%s>' % cmd)
                 os.system(cmd)
 
             return rep_file_name
@@ -342,31 +345,34 @@ class icODSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
 
     def previewResult(self, report_data=None):
         """
-        Предварительный просмотр.
+        Preview report result.
 
-        :param report_data: Сгенерированный отчет.
+        :param report_data: Generated report data.
         """
         report_filename = self.save(report_data)
         if report_filename:
-            return self.PreviewOffice(report_filename)
+            return self.previewOffice(report_filename)
+        return False
 
     def printResult(self, report_data=None):
         """
-        Печать.
+        Print report result.
 
-        :param report_data: Сгенерированный отчет.
+        :param report_data: Generated report data.
         """
         report_filename = self.save(report_data)
         if report_filename:
-            return self.PrintOffice(report_filename)
+            return self.printOffice(report_filename)
+        return False
 
     def convertResult(self, report_data=None, to_filename=None):
         """
-        Конвертирование результатов отчета.
+        Convert report result.
 
-        :param report_data: Сгенерированный отчет.
-        :param to_filename: Имя результирующего файла.
+        :param report_data: Generated report data.
+        :param to_filename: Destination report filename.
         """
         report_filename = self.save(report_data)
         if report_filename:
-            return self.OpenOffice(report_filename)
+            return self.openOffice(report_filename)
+        return False

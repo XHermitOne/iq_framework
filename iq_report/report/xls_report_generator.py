@@ -2,104 +2,105 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль системы генератора отчетов, основанные на генерации XML файлов.
+XLS report generator system module.
 """
 
-# Подключение библиотек
 import copy
 import os 
 import os.path
 
 from .dlg import report_action_dlg
-from ic.std.log import log
-from ic.std.dlg import dlg
 
-from ic.virtual_excel import icexcel
+from iq.util import log_func
+from iq.dialog import dlg_func
+from iq.util import global_func
 
-from ic.report import icrepgensystem
-from ic.report import icrepgen
-from ic.report import icrepfile
+from iq.components.virtual_spreadsheet import v_spreadsheet
 
-from ic import config
+from . import report_gen_system
+from . import report_generator
+from . import report_file
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 0, 0, 1)
+
+PDF_FILENAME_EXT = '.pdf'
+XLS_FILENAME_EXT = '.xls'
 
 
-class icXLSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
+class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
     """
-    Класс системы генерации отчетов, основанные на генерации XLS файлов.
+    XLS report generator system class.
     """
-
     def __init__(self, report=None, parent=None):
         """
-        Конструктор класса.
+        Constructor.
 
-        :param report: Шаблон отчета.
-        :param parent: Родительская форма, необходима для вывода сообщений.
+        :param report: Report template data.
+        :param parent: Parent window.
         """
-        # вызов конструктора предка
-        icrepgensystem.icReportGeneratorSystem.__init__(self, report, parent)
+        report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Имя файла шаблона отчета
+        # Report template filename
         self.RepTmplFileName = None
         
-        # Папка отчетов.
+        # Report folder
         self._report_dir = None
-        if self._ParentForm:
-            self._report_dir = os.path.abspath(self._ParentForm.getReportDir())
+        if self._parent_window:
+            self._report_dir = os.path.abspath(self._parent_window.getReportDir())
         
     def reloadRepData(self, tmpl_filename=None):
         """
-        Перегрузить данные отчета.
+        Reload report template data.
 
-        :param tmpl_filename: Имя файла шаблона отчета.
+        :param tmpl_filename: Report template filename.
         """
         if tmpl_filename is None:
             tmpl_filename = self.RepTmplFileName
-        icrepgensystem.icReportGeneratorSystem.reloadRepData(self, tmpl_filename)
+        report_gen_system.iqReportGeneratorSystem.reloadRepData(self, tmpl_filename)
         
     def getReportDir(self):
         """
-        Папка отчетов.
+        Get report folder path.
         """
         if self._report_dir is None:
-            if self._ParentForm:
-                self._report_dir = os.path.abspath(self._ParentForm.getReportDir())
+            if self._parent_window:
+                self._report_dir = os.path.abspath(self._parent_window.getReportDir())
             else:
-                log.warning(u'Не определена папка отчетов!')
+                log_func.error(u'Not define report directory')
                 self._report_dir = ''
                                 
         return self._report_dir
 
     def _genXLSReport(self, report, *args, **kwargs):
         """
-        Генерация отчета и сохранение его в XLS файл.
+        Generate a report and save it in an XLS file.
 
-        :param report: Полное описание шаблона отчета.
-        :return: Возвращает имя xml файла или None в случае ошибки.
+        :param report: Report template data.
+        :return: Report XML file name or None if error.
         """
         if report is None:
-            report = self._Rep
+            report = self._report_template
         data_rep = self.generateReport(report, *args, **kwargs)
         return self.save(data_rep)
 
     def selectAction(self, report=None, *args, **kwargs):
         """
-        Запуск генерации отчета с последующим выбором действия.
+        Start report generation and then select an action.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         xls_rep_file_name = self._genXLSReport(report, *args, **kwargs)
         if xls_rep_file_name and os.path.exists(xls_rep_file_name):
             return self.doSelectAction(xls_rep_file_name)
         else:
-            log.warning(u'Файл отчета <%s> не существует' % xls_rep_file_name)
+            log_func.error(u'Report file <%s> not exists' % xls_rep_file_name)
+        return False
 
     def doSelectAction(self, data):
         """
-        Запуск выбора действия над отчетом.
+        Select action.
 
-        :param data: Данные об отчете.
+        :param data: Report data.
         """
         action = report_action_dlg.getReportActionDlg(title=self.getReportDescription())
         if action == report_action_dlg.PRINT_ACTION_ID:
@@ -109,238 +110,240 @@ class icXLSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
         elif action == report_action_dlg.EXPORT_ACTION_ID:
             return self.openOffice(data)
         else:
-            log.warning(u'Не определено действие над отчетом')
+            log_func.warning(u'Not select action')
         return None
 
     def preview(self, report=None, *args, **kwargs):
         """
-        Предварительный просмотр.
+        Preview.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         xls_rep_file_name = self._genXLSReport(report, *args, **kwargs)
         if xls_rep_file_name and os.path.exists(xls_rep_file_name):
-            # Открыть в режиме просмотра
-            self.previewOffice(xls_rep_file_name)
+            return self.previewOffice(xls_rep_file_name)
+        return False
             
     def previewOffice(self, xls_filename):
         """
-        Открыть отчет в режиме предварительного просмотра.
+        Open preview in Office.
 
-        :param xls_filename: Имя xls файла, содержащего сгенерированный отчет.
+        :param xls_filename: Report XLS filename.
         """
         if not os.path.exists(xls_filename):
-            log.warning(u'Предварительный просмотр. Файл <%s> не найден' % xls_filename)
-            return
+            log_func.error(u'Preview. Report file <%s> not exists' % xls_filename)
+            return False
 
-        pdf_filename = os.path.splitext(xls_filename)[0] + '.pdf'
+        pdf_filename = os.path.splitext(xls_filename)[0] + PDF_FILENAME_EXT
         if os.path.exists(pdf_filename):
             try:
                 os.remove(pdf_filename)
             except:
-                log.error(u'Ошибка удаления файла <%s>' % pdf_filename)
+                log_func.fatal(u'Error delete file <%s>' % pdf_filename)
 
         cmd = 'unoconv --num_format=pdf %s' % xls_filename
-        log.info(u'UNOCONV. Выполнения комманды ОС <%s>' % cmd)
+        log_func.info(u'UNOCONV. Execute command <%s>' % cmd)
         os.system(cmd)
 
         cmd = 'evince %s&' % pdf_filename
-        log.info(u'EVINCE. Выполнения комманды ОС <%s>' % cmd)
+        log_func.info(u'EVINCE. Execute command <%s>' % cmd)
         os.system(cmd)
+        return True
 
     def print(self, report=None, *args, **kwargs):
         """
-        Печать.
+        Print.
 
-        :param report: Полное описание шаблона отчета.
+        :param report: Report template data.
         """
         xls_rep_file_name = self._genXLSReport(report, *args, **kwargs)
         if xls_rep_file_name and os.path.exists(xls_rep_file_name):
-            # Открыть печать в CALC
-            self.printOffice(xls_rep_file_name)
+            return self.printOffice(xls_rep_file_name)
+        return False
 
     def printOffice(self, xls_filename):
         """
-        Печать отчета с помощью CALC.
+        Print report by Office.
 
-        :param xls_filename: Имя xls файла, содержащего сгенерированный отчет.
+        :param xls_filename: Report XLS filename.
         """
         if xls_filename and os.path.exists(xls_filename):
             cmd = 'libreoffice -p %s&' % xls_filename
-            log.info(u'Выполнения комманды ОС <%s>' % cmd)
+            log_func.info(u'Execute command <%s>' % cmd)
             os.system(cmd)
+            return True
         else:
-            log.warning(u'Печать. Файл <%s> не найден.' % xls_filename)
+            log_func.error(u'Print. Report file <%s> not exists' % xls_filename)
+        return False
 
     def setPageSetup(self):
         """
-        Установка параметров страницы.
+        Set page setup.
         """
         pass
 
     def convert(self, report=None, to_filename=None, *args, **kwargs):
         """
-        Вывод результатов отчета в Excel.
+        Convert report to Excel.
 
-        :param report: Полное описание шаблона отчета.
-        :param to_filename: Имя файла, куда необходимо сохранить отчет.
+        :param report: Report template data.
+        :param to_filename: Destination report filename.
         """
         rep_file_name = self._genXLSReport(report, *args, **kwargs)
         if rep_file_name:
-            # Открыть CALC в режиме
-            self.openOffice(rep_file_name)
+            return self.openOffice(rep_file_name)
+        return False
 
     def openOffice(self, xls_filename):
         """
-        Открыть.
+        Open XLS report in Office.
 
-        :param xls_filename: Имя xls файла, содержащего сгенерированный отчет.
+        :param xls_filename: Report XLS filename.
         """
         if xls_filename and os.path.exists(xls_filename):
             cmd = 'libreoffice %s&' % xls_filename
-            log.info('Выполнения комманды ОС <%s>' % cmd)
+            log_func.info('Execute command <%s>' % cmd)
             os.system(cmd)
+            return True
         else:
-            log.warning(u'Открытие. Файл <%s> не найден' % xls_filename)
+            log_func.error(u'Open. Report file <%s> not exists' % xls_filename)
+        return False
 
     def edit(self, rep_filename=None):
         """
-        Редактирование отчета.
+        Edit report.
 
-        :param rep_filename: Полное имя файла шаблона отчета.
+        :param rep_filename: Report template filename.
         """
-        # Определить файл *.xls
-        xls_file = os.path.abspath(os.path.splitext(rep_filename)[0]+'.xls')
+        # Set *.xls filename
+        xls_file = os.path.abspath(os.path.splitext(rep_filename)[0] + XLS_FILENAME_EXT)
         cmd = 'libreoffice \"%s\"&' % xls_file
-        # и запустить
+        log_func.info('Execute command <%s>' % cmd)
         os.system(cmd)
+        return True
 
     def generateReport(self, report=None, *args, **kwargs):
         """
-        Запустить генератор отчета.
+        Generate report.
 
-        :param report: Шаблон отчета.
-        :return: Возвращает сгенерированный отчет или None в случае ошибки.
+        :param report: Report template data.
+        :return: Generated report or None if error.
         """
         try:
             if report is not None:
-                self._Rep = report
+                self._report_template = report
 
-            # 1. Получить таблицу запроса
-            # Переменные могут учавствовать в генерации текста запроса
+            # 1. Get query table
             variables = kwargs.get('variables', None)
             if variables:
                 kwargs.update(variables)
 
-            query_tbl = self.getQueryTbl(self._Rep, *args, **kwargs)
+            query_tbl = self.getQueryTbl(self._report_template, *args, **kwargs)
             if self._isEmptyQueryTbl(query_tbl):
-                if not config.get_glob_var('NO_GUI_MODE'):
-                    if not dlg.getAskBox(u'Внимание',
-                                         u'Нет данных, соответствующих запросу: %s. Продолжить генерацию отчета?' % self._Rep['query']):
+                if not global_func.isCUIEngine():
+                    if not dlg_func.openAskBox(u'WARNING',
+                                               u'Not report data\nQuery: %s\nContinue report generation' % self._report_template['query']):
                         return None
                 else:
-                    log.warning(u'Пустая таблица запроса. Продолжение генерации.')
+                    log_func.warning(u'Not report data. Continue generation')
                 query_tbl = self.createEmptyQueryTbl()
 
-            # 2. Запустить генерацию
-            rep = icrepgen.icReportGenerator()
+            # 2. Generation
+            rep = report_generator.iqReportGenerator()
             coord_fill = kwargs.get('coord_fill', None)
-            data_rep = rep.generate(self._Rep, query_tbl,
+            data_rep = rep.generate(self._report_template, query_tbl,
                                     name_space=variables, coord_fill=coord_fill)
 
             return data_rep
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации отчета <%s>.' % self._Rep['name'])
+            log_func.fatal(u'Error generate report <%s>' % self._report_template['name'])
         return None
 
     def generate(self, report=None, db_url=None, sql=None, stylelib=None, vars=None, *args, **kwargs):
         """
-        Запустить генератор отчета.
+        Run report generator.
 
-        :param report: Шаблон отчета.
-        :param db_url: Connection string в виде url. Например
+        :param report: Report template data.
+        :param db_url: Connection string as url.
+            For example:
             postgresql+psycopg2://postgres:postgres@10.0.0.3:5432/realization.
-        :param sql: Запрос SQL.
-        :param stylelib: Библиотека стилей.
-        :param vars: Словарь переменных отчета.
-        :return: Возвращает сгенерированный отчет или None в случае ошибки.
+        :param sql: SQL query.
+        :param stylelib: Style library.
+        :param vars: Report variables dictionary.
+        :return: Generated report or None if error.
         """
         try:
             if report is not None:
-                self._Rep = report
+                self._report_template = report
 
             if stylelib:
-                self._Rep['style_lib'] = stylelib
+                self._report_template['style_lib'] = stylelib
 
             if vars:
-                self._Rep['variables'] = vars
+                self._report_template['variables'] = vars
 
-            # 1. Получить таблицу запроса
+            # 1. Get query table
             _kwargs = copy.deepcopy(kwargs)
             _kwargs.update(dict(db_url=db_url, sql=sql, stylelib=stylelib, variables=vars))
-            query_tbl = self.getQueryTbl(self._Rep, **_kwargs)
+            query_tbl = self.getQueryTbl(self._report_template, **_kwargs)
             if self._isEmptyQueryTbl(query_tbl):
-                dlg.getMsgBox(u'Внимание', u'Нет данных, соответствующих запросу: %s' % self._Rep['query'],
-                              parent=self._ParentForm)
+                dlg_func.openWarningBox(u'WARNING',
+                                        u'Not report data\nQuery <%s>' % self._report_template['query'],
+                                        parent=self._parent_window)
                 return None
 
-            # 2. Запустить генерацию
-            rep = icrepgen.icReportGenerator()
-            data_rep = rep.generate(self._Rep, query_tbl,
+            # 2. Run generator
+            rep = report_generator.iqReportGenerator()
+            data_rep = rep.generate(self._report_template, query_tbl,
                                     name_space=vars, *args, **kwargs)
 
             return data_rep
         except:
-            # Вывести сообщение об ошибке в лог
-            log.fatal(u'Ошибка генерации отчета <%s>.' % self._Rep['name'])
+            log_func.fatal(u'Error generate report <%s>' % self._report_template['name'])
         return None
 
-    def save(self, report_data=None, is_virtual_excel=True):
+    def save(self, report_data=None, to_virtual_spreadsheet=True):
         """
-        Сохранить результаты генерации в файл
+        Save report result to file.
 
-        :param report_data: Сгенерированный отчет.
-        :param is_virtual_excel: Сохранение произвести с помощью VirtualExcel?
-            True - да, False - Сохранение производится конвертацией с помощью UNOCONV.
-            ВНИМАНИЕ! При конвертации с помощью UNOCONV ячейки не образмериваются.
-                Размеры ячеек остаются по умолчанию.
-                UNOCONV транслирует не все стили и атрибуты ячеек.
-        :return: Имя сохраненного файла или None, если сохранения не произошло.
+        :param report_data: Generated report data.
+        :param to_virtual_spreadsheet: Save by Virtual SpreadSheet?
+            True - yes,
+            False - Save by UNOCONV convertation.
+            When converting using UNOCONV, the cells are not dimensioned.
+            Cell sizes remain by default.
+            UNOCONV does not translate all cell styles and attributes.
+        :return: Destination report filename or None if error.
         """
         if report_data:
-            rep_file = icrepfile.icExcelXMLReportFile()
+            rep_file = report_file.iqXMLSpreadSheetReportFile()
             save_dir = self.getProfileDir()
             if not save_dir:
-                save_dir = icrepgensystem.DEFAULT_REPORT_DIR
-            # print(u'DBG:', save_dir, report_data, type(report_data))
+                save_dir = report_gen_system.DEFAULT_REPORT_DIR
             xml_rep_file_name = os.path.join(save_dir, '%s_report_result.xml' % report_data['name'])
             rep_file_name = os.path.join(save_dir, '%s_report_result.ods' % report_data['name'])
 
             rep_file.write(xml_rep_file_name, report_data)
 
-            if is_virtual_excel:
-                log.info(u'Конвертация отчета <%s> в файл <%s>' % (xml_rep_file_name, rep_file_name))
-                v_excel = icexcel.icVExcel()
-                v_excel.load(xml_rep_file_name)
-                v_excel.saveAs(rep_file_name)
-                # Здесь дописать переконвертацию
+            if to_virtual_spreadsheet:
+                log_func.info(u'Convert report <%s> to file <%s>' % (xml_rep_file_name, rep_file_name))
+                spreadsheet = v_spreadsheet.iqVSpreadsheet()
+                spreadsheet.load(xml_rep_file_name)
+                spreadsheet.saveAs(rep_file_name)
             else:
-                # ВНИМАНИЕ! UNOCONV транслирует не все стили и атрибуты ячеек
-                # Поэтому сначала используется Virtual Excel
                 cmd = 'unoconv -f ods %s' % xml_rep_file_name
-                log.info(u'UNOCONV. Конвертация отчета <%s> в файл <%s>. (%s)' % (xml_rep_file_name,
-                                                                                  rep_file_name, cmd))
+                log_func.info(u'UNOCONV. Convert report <%s> to file <%s>' % (xml_rep_file_name,
+                                                                              rep_file_name))
+                log_func.info(u'Execute command <%s>' % cmd)
                 os.system(cmd)
-
             return rep_file_name
         return None
 
     def previewResult(self, report_data=None):
         """
-        Предварительный просмотр.
+        Preview report.
 
-        :param report_data: Сгенерированный отчет.
+        :param report_data: Generated report data.
         """
         report_filename = self.save(report_data)
         if report_filename:
@@ -348,9 +351,9 @@ class icXLSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
 
     def printResult(self, report_data=None):
         """
-        Печать.
+        Print report.
 
-        :param report_data: Сгенерированный отчет.
+        :param report_data: Generated report data.
         """
         report_filename = self.save(report_data)
         if report_filename:
@@ -358,10 +361,10 @@ class icXLSReportGeneratorSystem(icrepgensystem.icReportGeneratorSystem):
 
     def convertResult(self, report_data=None, to_filename=None):
         """
-        Конвертирование результатов отчета.
+        Convert report.
 
-        :param report_data: Сгенерированный отчет.
-        :param to_filename: Имя результирующего файла.
+        :param report_data: Generated report data.
+        :param to_filename: Destination report filename.
         """
         report_filename = self.save(report_data)
         if report_filename:

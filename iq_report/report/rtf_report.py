@@ -2,77 +2,33 @@
 # -*- coding: utf-8 -*-
 
 """
-Заполнение rtf шаблона.
+RTF file function.
 """
 
 import copy
 
-__version__ = (0, 1, 1, 2)
+from iq.util import log_func
 
-tblDct = {'__fields__': (('n_lot',), ('predmet_lot',), ('cena_lot',)),
-          '__name__': 'P1',
-          '__data__': [(1, 'лот 1.1', 200.0),
-                       (2, 'лот 1.2', 210.0),
-                       (3, 'лот 1.3', 220.0),
-                       (4, 'лот 1.4', 300.0)]}
-
-tblDct2 = {'__fields__': (('n_lot',), ('predmet_lot',), ('cena_lot',)),
-           '__name__': 'P2',
-           '__data__': [(1, 'лот 2.1', 500.0),
-                        (2, 'лот 2.2', 510.0),
-                        (3, 'лот 2.3', 520.0)]}
-
-tblDct3 = {'__fields__': (('n_lot',), ('predmet_lot',), ('cena_lot',)),
-           '__name__': 'P1',
-           '__data__': [(1, 'лот 3.1', 200.0),
-                        (2, 'лот 3.2', 210.0),
-                        (3, 'лот 3.3', 220.0),
-                        (4, 'лот 3.4', 300.0)]}
-
-tblDct4 = {'__fields__': (('n_lot',), ('predmet_lot',), ('cena_lot',)),
-           '__name__': 'P2',
-           '__data__': [(1, 'лот 4.1', 500.0),
-                        (2, 'лот 4.2', 510.0),
-                        (3, 'лот 4.3', 520.0)]}
-
-LDct1 = {'__variables__': {'VAR_L': 'Слот 1'},
-         '__tables__': [tblDct, tblDct2]}
-LDct2 = {'__variables__': {'VAR_L': 'Слот 2'},
-         '__tables__': [tblDct3, tblDct4]}
-LDct3 = {'__variables__': {'VAR_L': 'Слот 3'}}
+__version__ = (0, 0, 0, 1)
 
 
 def getSD(var, val):
     return {'__variables__': {var: val}}
 
 
-DataDct = {'__variables__': {'form_torg': '''Тип торгов
-hjkfdshjkhjksfadhlkhfsa
-sfdjhjkhfajkhfjdskhfhks
-    GGGGGGGGGGGGGGGGGg
-''',
-                             'izveschen_url': 'www.abakan.ru',
-                             'VAR_L_1': 'Слот 1',
-                             'VAR_L_2': 'Слот 2',
-                             'VAR_LG': 'Общий текст',
-                             'name_torg': 'Имя торгов'},
-           '__loop__': {'L': [LDct1, LDct2],
-                        'I': [getSD('I', 1), getSD('I', 2), getSD('I', 3)],
-                        'J': [getSD('J', 1), getSD('J', 2), getSD('J', 3)]},
-           '__tables__': []}
-
-
 def findNextVar(rep, pos=0):
     """
-    Ищет следующую переменную.
+    Find next variable.
     
     :type rep: C{string}
-    :param rep: Шаблон.
+    :param rep: Report template as text.
     :type pos: C{int}
-    :param pos: Позиция, с которой искать.
+    :param pos: Basis find position.
     :rtype: C{tuple}
-    :return: Возвращает картеж. 1-й элемент начальная позиция текста замены;
-        2-й элемент конечная позиция; 3-й элемент - имя переменной.
+    :return: Tuple:
+        (start position of the replacement text,
+        end position of the replacement text,
+        variable name)
     """
     p1 = rep.find('#', pos)
 
@@ -84,12 +40,12 @@ def findNextVar(rep, pos=0):
     if p2 == -1:
         return -1, -1, None
     
-    # --- Определяем имя переменной
-    var = rep[p1+1:p2]
+    # Variable name
+    var = rep[p1 + 1:p2]
     
-    # --- Выкидываем все лишнее
-    
-    # Ищем конец группы
+    # Delete all unnecessary
+
+    # Group end
     n2 = var.find('}')
         
     if n2 > -1:
@@ -106,14 +62,14 @@ def findNextVar(rep, pos=0):
             s = var
             break
         
-        # Ищем конец группы
+        # Group end
         n2 = var.find('}', n1+1)
         
         if n2 == -1:
-            s += var[n1+1: p2]
+            s += var[n1 + 1:p2]
             break
         
-        s += var[n1+1: n2]
+        s += var[n1 + 1:n2]
         n1 = n2+1
         
     s = s.replace('\r', '').replace('\n', '')
@@ -126,49 +82,47 @@ def findNextVar(rep, pos=0):
 
 def getLoopList(data, lname):
     """
-    Определяет список элементов в цикле.
+    Defines a list of items in a loop.
     """
-    lst = []
+    lst = list()
     if '__loop__' in data and lname in data['__loop__']:
         ls = data['__loop__'][lname]
         
-        #   Заимствуем описание родительских переменных
+        # We borrow the description of parent variables
         for el in ls:
         
-            # Заимствуем описание циклов
+            # We borrow a description of the cycles
             if '__loop__' in el:
-                elm={'__loop__': copy.copy(el['__loop__'])}
+                elm = {'__loop__': copy.copy(el['__loop__'])}
             else:
-                elm = {'__loop__': {}}
+                elm = {'__loop__': dict()}
                 if '__loop__' in data:
                     for lp, sp in data['__loop__'].items():
                         if lp != lname:
                             elm['__loop__'][lp] = copy.copy(sp)
             
-            # Заимствуем описание переменных
+            # We borrow the description of variables
             elm['__variables__'] = copy.copy(data['__variables__'])
             elm['__variables__'].update(el['__variables__'])
             
-            # Заимствуем описание таблиц
+            # We borrow the description of the tables
             elm['__tables__'] = copy.copy(data['__tables__'])
-            nmLst = [x['__name__'] for x in elm['__tables__']]
+            name_list = [x['__name__'] for x in elm['__tables__']]
 
             if '__tables__' in el:
                 for tbl in el['__tables__']:
-                    if '__name__' in tbl and not tbl['__name__'] in nmLst:
+                    if '__name__' in tbl and not tbl['__name__'] in name_list:
                         elm['__tables__'].append(tbl)
             
             lst.append(elm)
-            
         return lst
-    
     return lst
 
 
 def getTableTemplate(rep, pos):
     """
+    Parsing a table template.
     """
-    # --- Разбираем шаблон таблицы
     p2 = pos
     
     while 1:
@@ -177,7 +131,7 @@ def getTableTemplate(rep, pos):
         if not var:
             break
 
-        #   Ищем коней кгруппы
+        # Looking for group horses
         if var == '1D':
             break
         else:
@@ -186,53 +140,48 @@ def getTableTemplate(rep, pos):
     return pos, p2
 
 
-repTest = '''
-    #Variable1#
-    #Variblee2#
-'''
-
-
-def _gen_table(table, templ):
+def _genTable(table, templ):
     """
-    Генерирует таблицу по шаблону и табличным данным.
+    Generates a table from a template and tabular data.
     """
     txt = ''
     for r in table['__data__']:
-        replDct = {}
+        repl_dict = dict()
         for indx, col in enumerate(table['__fields__']):
-            replDct[col[0]] = str(r[indx])
+            repl_dict[col[0]] = str(r[indx])
             
-        txt += parse_rtf(None, templ, replDct)
+        txt += parseRTF(None, templ, repl_dict)
 
     return txt
 
 
 def doTableByName(data, templ, name):
     """
-    Генерация по имени таблицы.
+    Generate a table by name.
     """
     table = None
     
     for tbl in data['__tables__']:
         if tbl['__name__'] == name:
-            return _gen_table(tbl, templ)
+            return _genTable(tbl, templ)
 
     return ''
 
 
 def doTableByIdx(data, templ, idx):
     """
-    Генерация по индексу таблицы.
+    Generate a table by index.
     """
     if len(data['__tables__']) > idx:
         tbl = data['__tables__'][idx]
-        return _gen_table(tbl, templ)
+        return _genTable(tbl, templ)
 
     return ''
 
 
-def parse_rtf(data, rep, replace_dict=None, idx_loop=None, idx_key=None):
+def parseRTF(data, rep, replace_dict=None, idx_loop=None, idx_key=None):
     """
+    Parse RTF file data.
     """
     p2 = 0
         
@@ -242,112 +191,112 @@ def parse_rtf(data, rep, replace_dict=None, idx_loop=None, idx_key=None):
     if data and '__tables__' not in data:
         data['__tables__'] = []
         
-    bTableBeg = False
-    tBegTag = 0
-    tEndTag = 0
-    tName = None
+    b_table_beg = False
+    t_beg_tag = 0
+    t_end_tag = 0
+    t_name = None
     
-    bLoopBeg = False
-    lBegTag = 0
-    lEndTag = 0
-    lName = None
+    b_loop_beg = False
+    l_beg_tag = 0
+    l_end_tag = 0
+    l_name = None
 
     indx = 0
     
     if idx_loop and idx_key:
-        varKey = '%s_%s' % (idx_loop, idx_key)
+        var_key = '%s_%s' % (idx_loop, idx_key)
     else:
-        varKey = ''
+        var_key = ''
     
-    # --- Разбираем шаблон
+    # Parse template
     while 1:
         p1, p2, var = findNextVar(rep, p2+1)
     
         if not var:
             break
             
-        if var[:2] == 'D1' and not bLoopBeg:
-            bTableBeg = True
-            tBegTag = p1
-            tEndTag = p2
+        if var[:2] == 'D1' and not b_loop_beg:
+            b_table_beg = True
+            t_beg_tag = p1
+            t_end_tag = p2
             
-            if varKey:
-                tName = var[3:] +'_' + idx_key
+            if var_key:
+                t_name = var[3:] + '_' + idx_key
             else:
-                tName = var[3:]
+                t_name = var[3:]
 
-        elif var[:4] == 'LOOP' and not bLoopBeg:
-            bLoopBeg = True
-            lBegTag = p1
-            lEndTag = p2
-            lName = var[5:]
+        elif var[:4] == 'LOOP' and not b_loop_beg:
+            b_loop_beg = True
+            l_beg_tag = p1
+            l_end_tag = p2
+            l_name = var[5:]
 
         elif var[:7] == 'ENDLOOP':
             loop_name = var[8:]
             
-            if loop_name == lName:
-                # Выделяем повторяющуюся часть
-                templ = rep[lEndTag+2:p1]
+            if loop_name == l_name:
+                # Select the repeating part.
+                templ = rep[l_end_tag+2:p1]
                 txt = ''
                 
                 n = templ.find('}')
-                # Убираем первую группу из шаблона
+                # We remove the first group from the template
                 if n != -1:
                     templ = templ[n+1:]
                 
                 n = templ.rfind('{')
-                # Убираем последнюю группу из шаблона
+                # We remove the last group from the template
                 if n != -1:
                     templ = templ[:n]
 
-                lst = getLoopList(data, lName)
+                lst = getLoopList(data, l_name)
                 txt = ''
                 if lst:
                     for sp in lst:
-                        txt += parse_rtf(sp, templ)
+                        txt += parseRTF(sp, templ)
                 else:
-                    # Если список не определен просто запустить генерацию
-                    # чтобы стереть все теги из текста
-                    txt += parse_rtf({'__variables__': {}}, templ)
+                    # If the list is not defined,
+                    # then start the generation to erase all tags from the text
+                    txt += parseRTF({'__variables__': {}}, templ)
                     
-                # Вставляем текст
+                # Insert text
                 if txt:
-                    rep = rep[:lBegTag] + txt + rep[p2+1:]
-                    p2 = lBegTag + 1
+                    rep = rep[:l_beg_tag] + txt + rep[p2+1:]
+                    p2 = l_beg_tag + 1
                     
-                bLoopBeg = False
+                b_loop_beg = False
         
-        elif var == '1D' and not bLoopBeg:
-            # Выделяем табличную часть
-            templ = rep[tEndTag+2:p1]
+        elif var == '1D' and not b_loop_beg:
+            # Select the tabular part
+            templ = rep[t_end_tag+2:p1]
             txt = ''
             
             n = templ.find('}')
-            # Убираем первую группу из шаблона
+            # Remove the first group from the template
             if n != -1:
                 templ = templ[n+1:]
             
             n = templ.rfind('{')
-            # Убираем последнюю группу из шаблона
+            # Remove the last group from the template
             if n != -1:
                 templ = templ[:n]
             
-            # Генерируем таблицу
-            if tName:
-                txt = doTableByName(data, templ, tName)
+            # Generate table
+            if t_name:
+                txt = doTableByName(data, templ, t_name)
             else:
                 txt = doTableByIdx(data, templ, indx)
                 indx += 1
 
-            # Вставляем таблицу
-            rep = rep[:tBegTag] + txt + rep[p2+1:]
-            p2 = tBegTag + 1
-            bTableBeg = False
+            # Insert table
+            rep = rep[:t_beg_tag] + txt + rep[p2+1:]
+            p2 = t_beg_tag + 1
+            b_table_beg = False
 
-        #   Вставляем переменные
-        elif not bTableBeg and not bLoopBeg:
+        # Insert variables
+        elif not b_table_beg and not b_loop_beg:
             
-            if varKey:
+            if var_key:
                 v = var+'_'+str(idx_key)
                 if v not in replace_dict.keys():
                     v = var
@@ -367,22 +316,35 @@ def parse_rtf(data, rep, replace_dict=None, idx_loop=None, idx_key=None):
 
 def genRTFReport(data, rep_filename, tmpl_filename):
     """
-    Создает rtf отчет по шаблону.
+    Generate RTF report by template.
+
+    :return: True/False.
     """
-    f = open(tmpl_filename, 'rt')
-    rep = f.read()
-    f.close()
+    rtf_file = None
+    try:
+        rtf_file = open(tmpl_filename, 'rt')
+        rep = rtf_file.read()
+        rtf_file.close()
+    except:
+        if rtf_file:
+            rtf_file.close()
+        log_func.fatal(u'Error read RTF report template file <%s>' % tmpl_filename)
+        return False
 
-    rep = parse_rtf(data, rep)
-    
-    f = open(rep_filename, 'wt')
-    f.write(rep)
-    f.close()
+    try:
+        rep = parseRTF(data, rep)
+    except:
+        log_func.fatal(u'Error parse RTF data')
+        return False
 
-
-def test():
-    genRTFReport(DataDct, 'V:/pythonprj/ReportRTF/IzvTEST.rtf', 'V:/pythonprj/ReportRTF/Blank_Izv.rtf')
-
-
-if __name__ == '__main__':
-    test()
+    rtf_file = None
+    try:
+        rtf_file = open(rep_filename, 'wt')
+        rtf_file.write(rep)
+        rtf_file.close()
+    except:
+        if rtf_file:
+            rtf_file.close()
+        log_func.fatal(u'Error write RTF report template file <%s>' % rep_filename)
+        return False
+    return True
