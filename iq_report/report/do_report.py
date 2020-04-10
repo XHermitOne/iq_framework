@@ -154,28 +154,6 @@ def loadStyleLib(stylelib_filename=None):
     return stylelib
 
 
-def openReportBrowser(parent_form=None, report_dir='', mode=report_browser.REPORT_EDITOR_MODE):
-    """
-    Launch report browser.
-
-    :param parent_form: The parent form, if not specified, creates a new application.
-    :param report_dir: Directory where reports are stored.
-    :return: True/False.
-    """
-    dlg = None
-    try:
-        dlg = report_browser.iqReportBrowserDialog(parent=parent_form, mode=mode,
-                                                   report_dir=report_dir)
-        dlg.ShowModal()
-        dlg.Destroy()
-        return True
-    except:
-        if dlg:
-            dlg.Destroy()
-        log_func.fatal(u'Error starting report browser')
-    return False
-
-
 def openReportEditor(parent_form=None, report_dir=''):
     """
     Starting the report editor. Editor - browser mode.
@@ -184,7 +162,7 @@ def openReportEditor(parent_form=None, report_dir=''):
     :param report_dir: Directory where reports are stored.
     :return: True/False.
     """
-    return openReportBrowser(parent_form, report_dir, report_browser.REPORT_EDITOR_MODE)
+    return report_browser.openReportBrowser(parent_form, report_dir, report_browser.REPORT_EDITOR_MODE)
 
 
 def openReportViewer(parent_form=None, report_dir=''):
@@ -195,7 +173,7 @@ def openReportViewer(parent_form=None, report_dir=''):
     :param report_dir: Directory where reports are stored.
     :return: True/False.
     """
-    return openReportBrowser(parent_form, report_dir, report_browser.REPORT_VIEWER_MODE)
+    return report_browser.openReportBrowser(parent_form, report_dir, report_browser.REPORT_VIEWER_MODE)
 
 
 def printReport(parent_form=None, report_filename='', report_dir='',

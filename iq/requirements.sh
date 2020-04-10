@@ -85,6 +85,11 @@ pip3 install mtranslate
 # 
 sudo apt --fix-broken install --assume-yes
 
+# iq
+export IQ_PATH="$(dirname "$PWD")"
+rm ~/.local/lib/python3.6/site-packages/iq.pth
+echo $IQ_PATH >> ~/.local/lib/python3.6/site-packages/iq.pth
+
 echo
 echo  _     _____                                 _   
 echo |_|___|   __|___ ___ _____ ___ _ _ _ ___ ___| |_ 

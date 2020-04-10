@@ -21,7 +21,6 @@ from iq.dialog import dlg_func
 from iq.engine import img_func
 
 from . import report_gen_func
-# from . import config
 
 __version__ = (0, 0, 0, 1)
 
@@ -170,8 +169,11 @@ class iqReportBrowserDialog(wx.Dialog):
 
         self._report_dirname = report_dir
 
-        self.icon = None
-        self.SetIcon(self.get_icon_obj())
+        img = img_func.createIconImage('fatcow/report_stack')
+        if img:
+            self.SetIcon(icon=wx.Icon(img))
+        else:
+            log_func.warning(u'Error set report browser icon')
 
         self.dir_txt = wx.StaticText(self, id=wx.NewId(),
                                      label='',
@@ -231,7 +233,7 @@ class iqReportBrowserDialog(wx.Dialog):
                                                                 size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                       REP_BROWSER_BUTTONS_HEIGHT),
                                                                 pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 150))
-        self.Bind(wx.EVT_BUTTON, self.onConvertRepButton, id=self.convert_button.GetId())
+        self.Bind(wx.EVT_BUTTON, self.onConvertRepButton, id=self.export_button.GetId())
 
         if mode == REPORT_EDITOR_MODE:
             img = img_func.createIconImage('fatcow/folder_vertical_document')
@@ -576,3 +578,29 @@ class iqReportBrowserDialog(wx.Dialog):
         Get report folder.
         """
         return self._report_dirname
+
+
+def openReportBrowser(parent_form=None, report_dir='', mode=REPORT_EDITOR_MODE):
+    """
+    Launch report browser.
+
+    :param parent_form: The parent form, if not specified, creates a new application.
+    :param report_dir: Directory where reports are stored.
+    :return: True/False.
+    """
+    app = wx.GetApp()
+    if app is None:
+        app = wx.App()
+
+    dlg = None
+    try:
+        dlg = iqReportBrowserDialog(parent=parent_form, mode=mode,
+                                    report_dir=report_dir)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return True
+    except:
+        if dlg:
+            dlg.Destroy()
+        log_func.fatal(u'Error starting report browser')
+    return False

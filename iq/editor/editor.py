@@ -43,28 +43,39 @@ def _openResourceEditor(res_filename):
     """
     if global_func.isWXEngine():
         if res_func.isResourceFile(res_filename):
+            log_func.info(u'Edit resource <%s>' % res_filename)
             from .wx.res_editor import resource_editor
             resource_editor.runResourceEditor(res_filename=res_filename)
             return True
 
         elif py_func.isPythonFile(res_filename):
+            log_func.info(u'Edit python file <%s>' % res_filename)
             from .wx import start_py
             return start_py.startPythonEditor(py_filename=res_filename)
 
         elif wxfb_manager.isWXFormBuilderProjectFile(res_filename):
+            log_func.info(u'Edit wxFormBuilder project <%s>' % res_filename)
             from .wx import start_wxfb
             return start_wxfb.startWXFormBuilderEditor(fbp_filename=res_filename)
 
+        elif os.path.isdir(res_filename) and os.path.exists(os.path.join(res_filename, 'descript.ion')):
+            log_func.info(u'Design reports <%s>' % res_filename)
+            # Report folder
+            from iq_report import report_manager
+            rep_manager = report_manager.getReportManager()
+            rep_manager.setReportDir(report_dir=res_filename)
+            return rep_manager.design()
+
         elif os.path.isdir(res_filename):
+            log_func.info(u'Edit folder <%s>' % res_filename)
             from .wx import start_folder_dialog
             return start_folder_dialog.startFolderEditor(folder_path=res_filename)
 
         elif not os.path.exists(res_filename):
             # PyCharm
             res_filename = os.path.dirname(res_filename)
-            if os.path.isdir(res_filename):
-                from .wx import start_folder_dialog
-                return start_folder_dialog.startFolderEditor(folder_path=res_filename)
+            if os.path.exists(res_filename):
+                return _openResourceEditor(res_filename)
 
         else:
             log_func.error(u'Not support editing file <%s>' % res_filename)
