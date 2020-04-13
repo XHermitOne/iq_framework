@@ -11,6 +11,7 @@ from ..util import log_func
 from ..util import global_func
 from ..util import res_func
 from ..util import py_func
+from ..util import file_func
 
 from ..dialog import dlg_func
 from ..editor.wx import wxfb_manager
@@ -42,7 +43,11 @@ def _openResourceEditor(res_filename):
     :return: True/False.
     """
     if global_func.isWXEngine():
-        if res_func.isResourceFile(res_filename):
+        if os.path.isdir(res_filename) and res_filename == file_func.getFrameworkPath():
+            log_func.info(u'Main editor <%s>' % res_filename)
+            return openEditor()
+
+        elif res_func.isResourceFile(res_filename):
             log_func.info(u'Edit resource <%s>' % res_filename)
             from .wx.res_editor import resource_editor
             resource_editor.runResourceEditor(res_filename=res_filename)
