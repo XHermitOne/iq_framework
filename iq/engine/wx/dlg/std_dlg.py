@@ -2,68 +2,53 @@
 # -*- coding: utf-8 -*-
 
 """
-Функции стандартных диалогов прикладного уровня.
+Standart dialog functions module.
 """
 
 import wx
 import wx.lib.calendar
 
-from . import dlgfunc
+from . import calendar_dlg
+from . import year_dlg
+from . import month_dlg
+from . import quarter_dlg
+from . import monthrange_dlg
+from . import daterange_dlg
 
-try:
-    from . import iccalendardlg
-except ImportError:
-    pass
+# from . import icnsilistdlg
+from . import integer_dlg
+from . import radiochoice_dlg
+from . import intrange_dlg
+from . import checkbox_dlg
+from . import radiochoicemaxi_dlg
+from . import checkboxmaxi_dlg
 
-from . import icyeardlg
-from . import icmonthdlg
-from . import icquarterdlg
-from . import icmonthrangedlg
-try:
-    from . import icdaterangedlg
-except ImportError:
-    pass
-
-from . import icnsilistdlg
-from . import icintegerdlg
-from . import icradiochoicedlg
-from . import icintrangedlg
-from . import iccheckboxdlg
-from . import icradiochoicemaxidlg
-from . import iccheckboxmaxidlg
-
-try:
-    from ic.log import log
-except ImportError:
-    pass
-
-try:
-    from ic.utils import datefunc
-except ImportError:
-    pass
+from iq.util import log_func
+from iq.util import dt_func
+from . import wxdlg_func
 
 
-__version__ = (0, 1, 9, 1)
+__version__ = (0, 0, 0, 1)
 
 
 def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100):
     """
-    Ввод целого числа в диалоговом окне.
+    Entry integer number in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заголовок окна.
-    :param label: Текст приглашения ввода.
-    :param min_value: Минимально-допустимое значение.
-    :param max_value: Максимально-допустимое значение.
-    :return: Введенное значение или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param label: Prompt text.
+    :param min_value: Minimum value.
+    :param max_value: Maximum value.
+    :return: Entered value or None if press <Cancel>.
     """
     value = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icintegerdlg.icIntegerDialog(parent)
+    dlg = integer_dlg.iqIntegerDialog(parent)
     dlg.init(title=title, label=label, min_value=min_value, max_value=max_value)
     dlg.Centre()
 
@@ -76,18 +61,18 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
 
 def getDateDlg(parent=None):
     """
-    Выбор даты в диалоговом окне календаря.
+    Select date dalog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :return: Выбранную дату(datetime) или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :return: Selected date (as datetime) or None if press <Cancel>.
     """
     selected_date = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = iccalendardlg.icCalendarDialog(parent)
+    dlg = calendar_dlg.iqCalendarDialog(parent)
     dlg.Centre()
 
     if dlg.ShowModal() == wx.ID_OK:
@@ -99,30 +84,28 @@ def getDateDlg(parent=None):
 
 def getYearDlg(parent=None, title=None, default_year=None):
     """
-    Выбор года в диалоговом окне.
+    Select year in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заоголовок диалогового окна.
-    :param default_year: Устанавлемое здачение по умолчанию.
-    :return: Выбранный год (datetime) или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param default_year: Default year.
+    :return: Selected year (as datetime) or None if press <Cancel>.
     """
     selected_year = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icyeardlg.icYearDialog(parent)
+    dlg = year_dlg.iqYearDialog(parent)
     dlg.Centre()
 
     if title:
-        # Если определен заголовок, то установить в диалоговом окне
         dlg.SetTitle(title)
 
     if default_year:
-        # Выбран год по умолчанию
         dlg.setSelectedYear(default_year)
-    dlg.init_year_choice()
+    dlg.initYearChoice()
 
     if dlg.ShowModal() == wx.ID_OK:
         selected_year = dlg.getSelectedYearAsDatetime()
@@ -133,18 +116,18 @@ def getYearDlg(parent=None, title=None, default_year=None):
 
 def getMonthDlg(parent=None):
     """
-    Выбор месяца в диалоговом окне.
+    Select month in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :return: Первый день выбранного месяца (datetime) или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :return: Selected first month day (as datetime) or None if press <Cancel>.
     """
     selected_month = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icmonthdlg.icMonthDialog(parent)
+    dlg = month_dlg.iqMonthDialog(parent)
     dlg.Centre()
 
     if dlg.ShowModal() == wx.ID_OK:
@@ -156,18 +139,18 @@ def getMonthDlg(parent=None):
 
 def getQuarterDlg(parent=None):
     """
-    Выбор квартала в диалоговом окне.
+    Select quarter in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :return: Кортеж (год, номер картала) или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :return: Tuple (year, quarter number) or None press <Cancel>.
     """
     selected_quarter = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icquarterdlg.icQuarterDialog(parent=parent)
+    dlg = quarter_dlg.iqQuarterDialog(parent=parent)
     dlg.Centre()
 
     if dlg.ShowModal() == wx.ID_OK:
@@ -177,45 +160,44 @@ def getQuarterDlg(parent=None):
     return selected_quarter
 
 
-MONTH_CHOICES = datefunc.MONTHS
+MONTH_CHOICES = dt_func.getMonths()
 
 
 def getMonthNumDlg(parent=None, title=None, text=None):
     """
-    Выбор номера месяца в диалоговом окне.
+    Select month number in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заоголовок диалогового окна.
-    :param text: Приглашение ввода.
-    :return: Номер месяца 1-январь ... 12-декабрь или None, если нажата <Отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param text: Prompt text.
+    :return: Month number or None if press <Cancel>.
     """
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    title = u'МЕСЯЦ' if title is None else title
-    text = u'Выберите месяц' if text is None else text
-    selected_idx = dlgfunc.getSingleChoiceIdxDlg(parent, title=title, prompt_text=text, choices=MONTH_CHOICES)
+    title = u'MONTH' if title is None else title
+    text = u'Select month' if text is None else text
+    selected_idx = wxdlg_func.getSingleChoiceIdxDlg(parent, title=title, prompt_text=text, choices=MONTH_CHOICES)
     if selected_idx >= 0:
         return selected_idx + 1
-    # Нажата ОТМЕНА
     return None
 
 
 def getMonthRangeDlg(parent=None):
     """
-    Выбор периода по месяцам в диалоговом окне.
+    Select month range in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :return: Кортеж периода по месяцам (datetime) или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :return: Month range tuple (as datetime) or None if press <Cancel>.
     """
     selected_range = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icmonthrangedlg.icMonthRangeDialog(parent)
+    dlg = monthrange_dlg.iqMonthRangeDialog(parent)
     dlg.Centre()
 
     if dlg.ShowModal() == wx.ID_OK:
@@ -227,19 +209,19 @@ def getMonthRangeDlg(parent=None):
 
 def getDateRangeDlg(parent=None, is_concrete_date=False):
     """
-    Выбор периода по датам в диалоговом окне.
+    Select date range in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param is_concrete_date: Вкл. режим ввода конкретной даты?
-    :return: Кортеж периода по датам (datetime) или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param is_concrete_date: Select concrete date?
+    :return: Date range tuple (as datetime) or None if press <Cancel>.
     """
     selected_range = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icdaterangedlg.icDateRangeDialog(parent)
+    dlg = daterange_dlg.iqDateRangeDialog(parent)
     dlg.setConcreteDateCheck(is_concrete_date)
 
     dlg.Centre()
@@ -250,63 +232,60 @@ def getDateRangeDlg(parent=None, is_concrete_date=False):
 
     if selected_range:
         try:
-            log.debug(u'Выбранный диапазон дат: <%s> - <%s>' % selected_range)
+            log_func.debug(u'Selected date range: <%s> - <%s>' % selected_range)
         except:
             pass
     return selected_range
 
 
-def getNSIListDlg(parent=None,
-                  db_url=None, nsi_sprav_tabname=None,
-                  code_fieldname='cod', name_fieldname='name',
-                  ext_filter=''):
-    """
-    Выбор значения из простого спискового справочника.
-
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param db_url: URL подключения к БД.
-    :param nsi_sprav_tabname: Имя таблицы справочника.
-    :param code_fieldname: Имя поля кода в таблице справочника.
-    :param name_fieldname: Имя поля наименования в таблице справочника.
-    :param ext_filter: Дополнительный фильтр записей.
-    :return: Выбранный код справочника или None если нажата <отмена>.
-    """
-    selected_code = None
-
-    if parent is None:
-        parent = wx.GetApp().GetTopWindow()
-
-    dlg = icnsilistdlg.icNSIListDialog(parent)
-    dlg.Centre()
-    dlg.setDbURL(db_url)
-    dlg.initChoice(nsi_sprav_tabname, code_fieldname, name_fieldname, ext_filter)
-
-    if dlg.ShowModal() == wx.ID_OK:
-        selected_code = dlg.getSelectedCode()
-
-    try:
-        dlg.Destroy()
-    except wx.PyDeadObjectError:
-        print(u'wx.PyDeadObjectError. Ошибка удаления диалогового окна')
-    return selected_code
+# def getNSIListDlg(parent=None,
+#                   db_url=None, nsi_sprav_tabname=None,
+#                   code_fieldname='cod', name_fieldname='name',
+#                   ext_filter=''):
+#     """
+#     Выбор значения из простого спискового справочника.
+#
+#     :param parent: Родительское окно. Если не определено, то
+#         береться wx.GetApp().GetTopWindow()
+#     :param db_url: URL подключения к БД.
+#     :param nsi_sprav_tabname: Имя таблицы справочника.
+#     :param code_fieldname: Имя поля кода в таблице справочника.
+#     :param name_fieldname: Имя поля наименования в таблице справочника.
+#     :param ext_filter: Дополнительный фильтр записей.
+#     :return: Выбранный код справочника или None если нажата <отмена>.
+#     """
+#     selected_code = None
+#
+#     if parent is None:
+#         parent = wx.GetApp().GetTopWindow()
+#
+#     dlg = icnsilistdlg.icNSIListDialog(parent)
+#     dlg.Centre()
+#     dlg.setDbURL(db_url)
+#     dlg.initChoice(nsi_sprav_tabname, code_fieldname, name_fieldname, ext_filter)
+#
+#     if dlg.ShowModal() == wx.ID_OK:
+#         selected_code = dlg.getSelectedCode()
+#
+#     try:
+#         dlg.Destroy()
+#     except wx.PyDeadObjectError:
+#         print(u'wx.PyDeadObjectError. Ошибка удаления диалогового окна')
+#     return selected_code
 
 
 def getStdDlgQueue(*dlgs):
     """
-    Определить очередность вызова диалоговых окон для
-    определения параметров запроса отчета.
+    Open dialogs queue.
 
-    :param dlgs: Список словарей описания вызова диалоговых окон.
-        Вызов диалогового окна - это словарь формата:
-        {'key': Ключ результата,
-         'function': Функция вызова диалога,
-         'args': Список аргументов функции вызова диалога,
-         'kwargs': Словарь именованных аргументов вункции вызова диалога}.
-    :return: Словарь заполненных значений с помощью диалоговых функций.
+    :param dlgs: Dialog box description dictionaries list.
+        Format:
+        {'key': Result name,
+         'function': Dialog function,
+         'args': Dialog function arguments,
+         'kwargs': Dialog function named arguments}.
+    :return: Result dictionary.
     """
-    # ВНИМАНИЕ! Для корректного отображения окон необходимо указать
-    # frame в явном виде
     frame = wx.Frame(None, -1)
     frame.Center()
 
@@ -326,24 +305,22 @@ def getStdDlgQueue(*dlgs):
 
 def getRadioChoiceDlg(parent=None, title=None, label=None, choices=()):
     """
-    Выбор элемента wxRadioBox.
+    Select wxRadioBox item.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заголовок окна.
-    :param label: Текст приглашения ввода.
-    :param choices: Список выбора.
-        Максимальное количество элементов выбора 5.
-        При большем количестве элементов необходимо использовать 
-        другую диалоговую форму выбора.    
-    :return: Индекс выбранного эдемента или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param label: Prompt text.
+    :param choices: Choice list.
+        Maximum 5 items.
+    :return: Selected item index or None if press <Cancel>.
     """
     value = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icradiochoicedlg.icRadioChoiceDialog(parent)
+    dlg = radiochoice_dlg.iqRadioChoiceDialog(parent)
     dlg.init(title=title, label=label, choices=choices)
     dlg.Centre()
 
@@ -356,23 +333,23 @@ def getRadioChoiceDlg(parent=None, title=None, label=None, choices=()):
 
 def getIntRangeDlg(parent=None, title=None, label_begin=None, label_end=None, min_value=0, max_value=100):
     """
-    Ввод целого числа в диалоговом окне.
+    Entry integer range in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заголовок окна.
-    :param label_begin: Текст приглашения ввода первого номера диапазона.
-    :param label_end: Текст приглашения ввода последнего номера диапазона.
-    :param min_value: Минимально-допустимое значение.
-    :param max_value: Максимально-допустимое значение.
-    :return: Введенное значение или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param label_begin: First prompt text.
+    :param label_end: Second prompt text.
+    :param min_value: Minimal value.
+    :param max_value: Maximal value.
+    :return: Entered value or None if press <Cancel>.
     """
     value = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icintrangedlg.icIntRangeDialog(parent)
+    dlg = intrange_dlg.iqIntRangeDialog(parent)
     dlg.init(title=title, label_begin=label_begin, label_end=label_end,
              min_value=min_value, max_value=max_value)
     dlg.Centre()
@@ -386,25 +363,23 @@ def getIntRangeDlg(parent=None, title=None, label_begin=None, label_end=None, mi
 
 def getCheckBoxDlg(parent=None, title=None, label=None, choices=(), defaults=()):
     """
-    Выбор элементов wxCheckBox.
+    Select wxCheckBox items in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заголовок окна.
-    :param label: Текст приглашения ввода.
-    :param choices: Список выбора.
-        Максимальное количество элементов выбора 7.
-        При большем количестве элементов необходимо использовать
-        другую диалоговую форму выбора.
-    :param defaults: Список отметок по умолчанию.
-    :return: Признак выбранного элемента True-выбран/False-нет или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param label: Prompt text.
+    :param choices: Choice list.
+        Maximum 7 items.
+    :param defaults: Default selection list.
+    :return: Selected values or None if press <Cancel>.
     """
     value = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = iccheckboxdlg.icCheckBoxDialog(parent)
+    dlg = checkbox_dlg.iqCheckBoxDialog(parent)
     dlg.init(title=title, label=label, choices=choices, defaults=defaults)
     dlg.Centre()
 
@@ -418,25 +393,23 @@ def getCheckBoxDlg(parent=None, title=None, label=None, choices=(), defaults=())
 def getRadioChoiceMaxiDlg(parent=None, title=None, label=None,
                           choices=(), default=None):
     """
-    Выбор элемента wxRadioBox.
+    Select wxRadioBox item in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заголовок окна.
-    :param label: Текст приглашения ввода.
-    :param choices: Список выбора.
-        Максимальное количество элементов выбора 5.
-        При большем количестве элементов необходимо использовать
-        другую диалоговую форму выбора.
-    :param default: Индекс выбранного элемента по умолчанию.
-    :return: Индекс выбранного эдемента или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param label: Prompt text.
+    :param choices: Choice list.
+        Maximum 15 items.
+    :param default: Default selection list.
+    :return: Selected item index or None if press <Cancel>.
     """
     value = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = icradiochoicemaxidlg.icRadioChoiceMaxiDialog(parent)
+    dlg = radiochoicemaxi_dlg.iqRadioChoiceMaxiDialog(parent)
     dlg.init(title=title, label=label, choices=choices, default=default)
     dlg.Centre()
 
@@ -449,25 +422,23 @@ def getRadioChoiceMaxiDlg(parent=None, title=None, label=None,
 
 def getCheckBoxMaxiDlg(parent=None, title=None, label=None, choices=(), defaults=()):
     """
-    Выбор элементов wxCheckBox.
+    Select wxCheckBox items in dialog.
 
-    :param parent: Родительское окно. Если не определено, то
-        береться wx.GetApp().GetTopWindow()
-    :param title: Заголовок окна.
-    :param label: Текст приглашения ввода.
-    :param choices: Список выбора.
-        Максимальное количество элементов выбора 7.
-        При большем количестве элементов необходимо использовать
-        другую диалоговую форму выбора.
-    :param defaults: Список отметок по умолчанию.
-    :return: Признак выбранного элемента True-выбран/False-нет или None если нажата <отмена>.
+    :param parent: Parent window.
+        If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param label: Prompt text.
+    :param choices: Choice list.
+        Maximum 15 items.
+    :param defaults: Default selection list.
+    :return: Selected items index or None if press <Cancel>.
     """
     value = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
-    dlg = iccheckboxmaxidlg.icCheckBoxMaxiDialog(parent)
+    dlg = checkboxmaxi_dlg.iqCheckBoxMaxiDialog(parent)
     dlg.init(title=title, label=label, choices=choices, defaults=defaults)
     dlg.Centre()
 
@@ -476,58 +447,3 @@ def getCheckBoxMaxiDlg(parent=None, title=None, label=None, choices=(), defaults
     dlg.Destroy()
 
     return value
-
-
-def test():
-    """
-    Тестирование.
-    """
-    app = wx.PySimpleApp()
-    # ВНИМАНИЕ! Выставить русскую локаль
-    # Это необходимо для корректного отображения календарей,
-    # форматов дат, времени, данных и т.п.
-    locale = wx.Locale()
-    locale.Init(wx.LANGUAGE_RUSSIAN)
-
-    frame = wx.Frame(None, -1)
-
-    print((getDateDlg(frame)))
-
-    frame.Destroy()
-
-    app.MainLoop()
-
-
-def test_nsi_1():
-    """
-    Тестирование.
-    """
-    app = wx.PySimpleApp()
-    # ВНИМАНИЕ! Выставить русскую локаль
-    # Это необходимо для корректного отображения календарей,
-    # форматов дат, времени, данных и т.п.
-    locale = wx.Locale()
-    locale.Init(wx.LANGUAGE_RUSSIAN)
-
-    frame = wx.Frame(None, -1)
-
-    # Параметры подключения к БД
-    DB_HOST = '10.0.0.3'
-    DB_PORT = 5432
-    DB_USER = 'xhermit'
-    DB_PASSWORD = 'xhermit'
-    DB_NAME = 'testing'
-
-    DB_URL = 'postgres://%s:%s@%s:%d/%s' % (DB_USER, DB_PASSWORD,
-                                            DB_HOST, DB_PORT, DB_NAME)
-
-    print((getNSIListDlg(frame, db_url=DB_URL,
-                        nsi_sprav_tabname='nsi_tags')))
-
-    frame.Destroy()
-
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    test_nsi_1()

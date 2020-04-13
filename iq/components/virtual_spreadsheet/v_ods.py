@@ -955,7 +955,7 @@ class iqODS(object):
         """
         if not os.path.exists(filename):
             # If the file does not exist then return None
-            log_func.error(u'File <%s> not found' % filename)
+            log_func.error(u'ODS. File <%s> not found' % filename)
             return None
         else:
             try:

@@ -361,7 +361,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
                 self.SpreadsheetFileName = xml_file_name
                 self._data = self._workbooks[xml_file_name]
             else:
-                log_func.error(u'File <%s> not found' % xml_file_name)
+                log_func.error(u'SpreadSheet. File <%s> not found' % xml_file_name)
 
         except KeyError:
             log_func.error(u'Workbook <%s> not registred in <%s>' % (xml_file_name, self._workbooks.keys()))

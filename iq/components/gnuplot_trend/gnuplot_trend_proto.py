@@ -78,7 +78,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         # Value of division
         self._x_precision = DEFAULT_X_PRECISION
         self._y_precision = DEFAULT_Y_PRECISION
-        # Scale num_format
+        # Scale format
         self._x_format = trend_proto.DEFAULT_X_FORMAT
         self._y_format = trend_proto.DEFAULT_Y_FORMAT
 
@@ -160,10 +160,10 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         """
         Set scale formats.
 
-        :param x_format: X-axis scale num_format.
-            If None, then the num_format is not set.
-        :param y_format: Y-axis scale num_format.
-            If None, then the num_format is not set.
+        :param x_format: X-axis scale format.
+            If None, then the format is not set.
+        :param y_format: Y-axis scale format.
+            If None, then the format is not set.
         :return: Tuple (x_format, y_format) of current formats.
         """
         if x_format is not None:
@@ -268,7 +268,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
 
         return file_func.removeFile(frame_filename)
 
-    # Scale num_format replacement dictionary
+    # Scale format replacement dictionary
     _FMT2GNUPLOT_TYPE = {'numeric': 'N',
                          'time': 'T',
                          'date': 'D',
@@ -281,8 +281,8 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         Drawing a frame of trend data.
 
         :param size: Frame size in points.
-        :param x_format: Scale num_format X.
-        :param y_format: Y scale num_format.
+        :param x_format: Scale format X.
+        :param y_format: Y scale format.
         :param scene: The boundaries of the scene window in the data of the subject area.
         :param points: List of chart points.
             The list of points can also be specified by the name of the data file.
@@ -304,8 +304,8 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         Rendering a trend data frame as a PDF report.
 
         :param size: Frame size in points.
-        :param x_format: Scale num_format X.
-        :param y_format: Scale num_format Y.
+        :param x_format: Scale format X.
+        :param y_format: Scale format Y.
         :param scene: The boundaries of the scene window in the data of the subject area.
         :param points: List of chart points.
         :return: The file name of the rendered frame or None in case of an error.
@@ -326,8 +326,8 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         Drawing a frame of trend data.
 
         :param size: Frame size in points.
-        :param x_format: Scale num_format X.
-        :param y_format: Scale num_format Y.
+        :param x_format: Scale format X.
+        :param y_format: Scale format Y.
         :param scene: The boundaries of the scene window in the data of the subject area.
         :param points: List of chart points.
             The list of points can also be specified by the name of the data file.

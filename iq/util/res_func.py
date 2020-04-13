@@ -52,7 +52,7 @@ def loadRuntimeResource(res_filename):
     text_res_filename = file_func.setFilenameExt(res_filename, RESOURCE_FILE_EXT)
     pickle_res_filename = file_func.setFilenameExt(res_filename, PICKLE_RESOURCE_FILE_EXT)
 
-    if (os.path.isfile(text_res_filename) and not os.path.isfile(pickle_res_filename)) or \
+    if (os.path.isfile(text_res_filename) and not os.path.exists(pickle_res_filename)) or \
             (os.path.exists(text_res_filename) and os.path.exists(pickle_res_filename) and
              os.path.getmtime(pickle_res_filename) < os.path.getmtime(text_res_filename)):
         resource = loadResourceText(text_res_filename)

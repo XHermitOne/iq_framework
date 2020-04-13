@@ -2,40 +2,32 @@
 # -*- coding: utf-8 -*-
 
 """
-Диалоговое окно выбора элемента wxRadioBox.
-Элементы расположены вертикально.
-За счет этого можно использовать большее количество элементов.
-
-Максимальное количество элементов выбора 15.
-При большем количестве элементов необходимо использовать 
-другую диалоговую форму выбора.
+Select wxRadioBox item dialog.
+Elements are arranged vertically.
+Maximum 15 items.
 """
 
 import wx
 
-try:
-    from . import std_dialogs_proto
-except ValueError:
-    import std_dialogs_proto
+from . import std_dialogs_proto
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 0, 1)
 
-# Максимальное количество элементов выбора
+# Maximum items number
 MAX_ITEM_COUNT = 15
 
 
-class icRadioChoiceMaxiDialog(std_dialogs_proto.radioChoiceMaxiDialogProto):
+class iqRadioChoiceMaxiDialog(std_dialogs_proto.radioChoiceMaxiDialogProto):
     """
-    Диалоговое окно выбора элемента wxRadioBox.
+    Select wxRadioBox item dialog.
     """
-
     def __init__(self, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         std_dialogs_proto.radioChoiceMaxiDialogProto.__init__(self, *args, **kwargs)
 
-        # Выбранный элемент
+        # Selected item index
         self._item_idx = None
 
     def getValue(self):
@@ -44,17 +36,14 @@ class icRadioChoiceMaxiDialog(std_dialogs_proto.radioChoiceMaxiDialogProto):
     def init(self, title=None, label=None, choices=(), do_fit_dlg=True,
              default=None):
         """
-        Инициализация диалогового окна.
+        Init dialog.
 
-        :param title: Заголовок окна.
-        :param label: Текст приглашения ввода.
-        :param choices: Список выбора.
-            Максимальное количество элементов выбора 5.
-            При большем количестве элементов необходимо использовать 
-            другую диалоговую форму выбора.
-        :param do_fit_dlg: Переразмерить диалоговое окно для удаления
-            не заполненной области отсутствующих элементов?
-        :param default: ИНдекс выставляемый по умолчанию.
+        :param title: Dialog title.
+        :param label: Prompt text.
+        :param choices: Choice list.
+            Maximum 15 items.
+        :param do_fit_dlg: Fit dialog?
+        :param default: Default item index.
         """
         if title:
             self.SetTitle(title)
@@ -72,14 +61,12 @@ class icRadioChoiceMaxiDialog(std_dialogs_proto.radioChoiceMaxiDialogProto):
             if default is not None:
                 self.choice_radioBox.setSelection(default)
 
-        # Т.к не все элементы отображаются переразмерить окно для того чтобы
-        # не было пустого места
         if do_fit_dlg:
             self.doFit()
 
     def doFit(self):
         """
-        Образмерить диалоговое окно.
+        Fit dialog.
         """
         self.choice_radioBox.Layout()
         self.Fit()
@@ -93,40 +80,3 @@ class icRadioChoiceMaxiDialog(std_dialogs_proto.radioChoiceMaxiDialogProto):
         self._item_idx = self.choice_radioBox.GetSelection()
         self.EndModal(wx.ID_OK)
         event.Skip()
-
-
-def test():
-    """
-    Тестирование.
-    """
-    from ic.components import ictestapp
-    app = ictestapp.TestApp(0)
-
-    # ВНИМАНИЕ! Выставить русскую локаль
-    # Это необходимо для корректного отображения календарей,
-    # форматов дат, времени, данных и т.п.
-    locale = wx.Locale()
-    locale.Init(wx.LANGUAGE_RUSSIAN)
-
-    frame = wx.Frame(None, -1)
-
-    dlg = icRadioChoiceMaxiDialog(frame)
-    dlg.init(u'Заголовок окна', u'Выбор:',
-             (u'Элемент 1 Бла-Бла-Бла-Бла-Бла-Бла',
-              u'Элемент 2 Бла-Бла-Бла-Бла-Бла-Бла',
-              u'Элемент 3 Бла-Бла-Бла-Бла-Бла-Бла',
-              u'Элемент 4 Бла-Бла-Бла-Бла-Бла-Бла',
-              u'Элемент 5 Бла-Бла-Бла-Бла-Бла-Бла',
-              u'Элемент 6 Бла-Бла-Бла-Бла-Бла-Бла'),
-             default=5)
-
-    dlg.ShowModal()
-
-    dlg.Destroy()
-    frame.Destroy()
-
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    test()

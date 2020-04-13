@@ -2,55 +2,54 @@
 # -*- coding: utf-8 -*-
 
 """
-Диалоговое окно выбора квартала.
+Select quarter dialog.
 """
 
 import datetime
 import wx
+
 from . import std_dialogs_proto
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 0, 0, 1)
 
 TODAY = datetime.date.today()
 
-# Диапазон списка годов
 DEFAULT_YEAR_RANGE = 10
 
-# Список годов
+# Year list
 YEAR_LIST = [TODAY.year + i for i in range(-DEFAULT_YEAR_RANGE, DEFAULT_YEAR_RANGE)]
 
 
-class icQuarterDialog(std_dialogs_proto.quarterDialogProto):
+class iqQuarterDialog(std_dialogs_proto.quarterDialogProto):
     """
-    Диалоговое окно выбора квартала.
+    Select quarter dialog.
     """
-
     def __init__(self, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         std_dialogs_proto.quarterDialogProto.__init__(self, *args, **kwargs)
 
-        # Выбрать текущий месяц
-        cur_quarter = self.get_cur_quarter(today=TODAY)
+        # Select current quarter
+        cur_quarter = self.getCurQuarter(today=TODAY)
         self.quarter_choice.Select(cur_quarter - 1)
 
-        # Заполнить список годов
+        # Init year list
         self.year_choice.Clear()
         self.year_choice.AppendItems([str(n_year) for n_year in YEAR_LIST])
 
-        # Выбрать текущий год
+        # Select current year
         self.year_choice.Select(YEAR_LIST.index(TODAY.year))
 
         self._selected_quarter = None
 
-    def get_cur_quarter(self, today=None):
+    def getCurQuarter(self, today=None):
         """
-        Определить квартал относительно текущего дня.
+        Determine the quarter relative to the current day.
 
-        :param today: Текущий/сегодняшний день.
-            Если не определен, то берется datetime.date.today()
-        :return: Номер квартала.
+        :param today: Today.
+            If None then get datetime.date.today()
+        :return: Quarter number.
         """
         if today is None:
             today = datetime.date.today()
@@ -70,34 +69,3 @@ class icQuarterDialog(std_dialogs_proto.quarterDialogProto):
                                   self.quarter_choice.GetSelection() + 1)
         self.EndModal(wx.ID_OK)
         event.Skip()
-
-
-def test():
-    """
-    Тестирование.
-    """
-    from ic.components import ictestapp
-    app = ictestapp.TestApp(0)
-
-    # ВНИМАНИЕ! Выставить русскую локаль
-    # Это необходимо для корректного отображения календарей,
-    # форматов дат, времени, данных и т.п.
-    locale = wx.Locale()
-    locale.Init(wx.LANGUAGE_RUSSIAN)
-
-    frame = wx.Frame(None, -1)
-
-    dlg = icQuarterDialog(frame)
-
-    result = dlg.ShowModal()
-    if result == wx.ID_OK:
-        print(u'Selected quarter <%s>' % dlg.getSelectedQuarter())
-
-    dlg.Destroy()
-    frame.Destroy()
-
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    test()

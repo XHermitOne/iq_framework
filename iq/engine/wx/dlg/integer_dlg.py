@@ -2,30 +2,26 @@
 # -*- coding: utf-8 -*-
 
 """
-Диалоговое окно ввода целого числа.
+Entry integer number dialog.
 """
 
 import wx
 
-try:
-    from . import std_dialogs_proto
-except ValueError:
-    import std_dialogs_proto
+from . import std_dialogs_proto
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 0, 1)
 
 DEFAULT_MIN_VALUE = 0
 DEFAULT_MAX_VALUE = 500
 
 
-class icIntegerDialog(std_dialogs_proto.integerDialogProto):
+class iqIntegerDialog(std_dialogs_proto.integerDialogProto):
     """
-    Диалоговое окно ввода целого числа.
+    Entry integer number dialog.
     """
-
     def __init__(self, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         std_dialogs_proto.integerDialogProto.__init__(self, *args, **kwargs)
 
@@ -37,12 +33,12 @@ class icIntegerDialog(std_dialogs_proto.integerDialogProto):
     def init(self, title=None, label=None,
              min_value=DEFAULT_MIN_VALUE, max_value=DEFAULT_MAX_VALUE):
         """
-        Инициализация диалогового окна.
+        Init dialog.
 
-        :param title: Заголовок окна.
-        :param label: Текст приглашения ввода.
-        :param min_value: Минимально-допустимое значение.
-        :param max_value: Максимально-допустимое значение.
+        :param title: Dialog title.
+        :param label: Prompt text.
+        :param min_value: Minimum value.
+        :param max_value: Maximum value.
         """
         if title:
             self.SetTitle(title)
@@ -61,32 +57,3 @@ class icIntegerDialog(std_dialogs_proto.integerDialogProto):
         self._integer_value = self.value_spinCtrl.GetValue()
         self.EndModal(wx.ID_OK)
         event.Skip()
-
-
-def test():
-    """
-    Тестирование.
-    """
-    from ic.components import ictestapp
-    app = ictestapp.TestApp(0)
-
-    # ВНИМАНИЕ! Выставить русскую локаль
-    # Это необходимо для корректного отображения календарей,
-    # форматов дат, времени, данных и т.п.
-    locale = wx.Locale()
-    locale.Init(wx.LANGUAGE_RUSSIAN)
-
-    frame = wx.Frame(None, -1)
-
-    dlg = icIntegerDialog(frame)
-
-    dlg.ShowModal()
-
-    dlg.Destroy()
-    frame.Destroy()
-
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    test()

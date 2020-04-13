@@ -2,33 +2,25 @@
 # -*- coding: utf-8 -*-
 
 """
-Диалоговое окно выбора периода по датам.
+Select date range dialog.
 """
 
 import wx
 from . import std_dialogs_proto
 
-try:
-    from ic.std.utils import ic_time
-except ImportError:
-    from ic.utils import datetimefunc
+from iq.util import log_func
+from ....engine.wx import wxdatetime_func
 
-try:
-    from ic.log import log
-except ImportError:
-    pass
-
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 0, 0, 1)
 
 
-class icDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
+class iqDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
     """
-    Диалоговое окно выбора периода по датам.
+    Select date range dialog.
     """
-
     def __init__(self, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         std_dialogs_proto.dateRangeDialogProto.__init__(self, *args, **kwargs)
 
@@ -39,14 +31,15 @@ class icDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
 
     def getSelectedDateRangeAsDatetime(self):
         if self._selected_range:
-            return datetimefunc.wxdate2pydate(self._selected_range[0]), datetimefunc.wxdate2pydate(self._selected_range[1])
+            return wxdatetime_func.wxDateTime2date(self._selected_range[0]), \
+                   wxdatetime_func.wxDateTime2date(self._selected_range[1])
         return None
 
     def setConcreteDateCheck(self, checked=True):
         """
-        Вкл./выкл. режима установки конкретной даты.
+        On/Off concrete date mode.
 
-        :param checked: Установлена метка или нет. 
+        :param checked: On/Off.
         """
         self.concrete_date_checkBox.SetValue(checked)
         self.lastDatePicker.Enable(not checked)
@@ -67,7 +60,7 @@ class icDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
 
     def onFirstDateChanged(self, event):
         """
-        Обработчик изменения начальной даты диапазона. 
+        Change first date handler.
         """
         first_date = event.GetDate()
         last_date = self.lastDatePicker.GetValue()
@@ -81,15 +74,15 @@ class icDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
 
     def onLastDateChanged(self, event):
         """
-        Обработчик изменения конечной даты диапазона. 
+        Change last date handler.
         """
         first_date = self.firstDatePicker.GetValue()
         last_date = event.GetDate()
 
         try:
-            log.debug(u'Корректировка конечной даты <%d.%d.%d>' % (last_date.GetDay(),
-                                                                   last_date.GetMonth(),
-                                                                   last_date.GetYear()))
+            log_func.debug(u'Correct last date <%d.%d.%d>' % (last_date.GetDay(),
+                                                              last_date.GetMonth(),
+                                                              last_date.GetYear()))
         except:
             pass
         if first_date > last_date and len(str(last_date.GetYear())) == 4:
@@ -99,7 +92,7 @@ class icDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
 
     def onConcreteDateCheckBox(self, event):
         """
-        Обработчик вкл./выкл. флага конкретной даты.
+        On/Off concrete date handler.
         """
         checked = event.IsChecked()
         self.lastDatePicker.Enable(not checked)
@@ -107,32 +100,3 @@ class icDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
             first_date = self.firstDatePicker.GetValue()
             self.lastDatePicker.SetValue(first_date)
         event.Skip()
-
-
-def test():
-    """
-    Тестирование.
-    """
-    from ic.components import ictestapp
-    app = ictestapp.TestApp(0)
-
-    # ВНИМАНИЕ! Выставить русскую локаль
-    # Это необходимо для корректного отображения календарей,
-    # форматов дат, времени, данных и т.п.
-    locale = wx.Locale()
-    locale.Init(wx.LANGUAGE_RUSSIAN)
-
-    frame = wx.Frame(None, -1)
-
-    dlg = icDateRangeDialog(frame, -1)
-
-    dlg.ShowModal()
-
-    dlg.Destroy()
-    frame.Destroy()
-
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    test()

@@ -115,7 +115,7 @@ def getReportList(report_dir, is_sort=True):
         file_rep_list = [filename for filename in file_func.getFilesByMask(filename_mask)]
 
         for rep_file_name in file_rep_list:
-            rep_struct = res_func.loadRuntimeResource(rep_file_name)
+            rep_struct = res_func.loadResourcePickle(rep_file_name)
             img_idx = 2
             try:
                 if rep_struct['generator'][-3:].lower() == 'xml':

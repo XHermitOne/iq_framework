@@ -21,6 +21,7 @@ from . import style_library
 __version__ = (0, 0, 0, 1)
 
 DEFAULT_REPORT_FILE_EXT = report_browser.REPORT_FILENAME_EXT
+XML_REPORT_FILE_EXT = '.xml'
 
 
 def getReportResourceFilename(report_filename='', report_dir=''):
@@ -32,9 +33,12 @@ def getReportResourceFilename(report_filename='', report_dir=''):
     :return: The full name of the report file.
     """
     # Check extension
+    if not report_filename.endswith(DEFAULT_REPORT_FILE_EXT):
+        report_filename = os.path.splitext(report_filename)[0] + XML_REPORT_FILE_EXT
+
     rprt_filename = report_filename
     if not rprt_filename.endswith(DEFAULT_REPORT_FILE_EXT):
-        rprt_filename = os.path.splitext(rprt_filename)[0]+DEFAULT_REPORT_FILE_EXT
+        rprt_filename = os.path.splitext(rprt_filename)[0] + DEFAULT_REPORT_FILE_EXT
 
     # Check the relevance of the template
     full_src_filename = getPathFilename(report_filename, report_dir)
@@ -54,7 +58,7 @@ def getReportResourceFilename(report_filename='', report_dir=''):
         if not os.path.exists(filename):
             log_func.error(u'Report template file <%s> not found' % str(filename))
             filename = createReportResourceFile(filename)
-    log_func.debug(u'Report te,plate filename <%s>' % str(filename))
+    log_func.debug(u'Report template filename <%s>' % str(filename))
     return filename
 
 
@@ -72,7 +76,7 @@ def getPathFilename(filename='', report_dir=''):
 def isNewReportTemplateFile(src_filename, rprt_filename):
     """
     Check the relevance of the template.
-    If the original template is changed later than the working * .rprt
+    If the original template is changed later than the working * .rep
     template file, then you need to make changes.
 
     :return: True-changes to the original template/False-no changes.
@@ -89,7 +93,7 @@ def updateReportTemplateFile(src_filename, rprt_filename):
     Update the report template.
 
     :param src_filename: The name of the source template file.
-    :param rprt_filename: The name of the resulting template file is * .rprt.
+    :param rprt_filename: The name of the resulting template file is * .rep.
     :return: Corrected name of the created template file or None in case of error.
     """
     # Delete destination file

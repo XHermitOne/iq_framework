@@ -2,27 +2,23 @@
 # -*- coding: utf-8 -*-
 
 """
-Диалоговое окно ввода диапазона целых номеров.
+Entry integer range dialog.
 """
 
 import wx
 
-try:
-    from . import std_dialogs_proto
-except ValueError:
-    import std_dialogs_proto
+from . import std_dialogs_proto
 
 __version__ = (0, 0, 0, 1)
 
 
-class icIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
+class iqIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
     """
-    Диалоговое окно ввода диапазона целых номеров.
+    Entry integer range dialog.
     """
-
     def __init__(self, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
         std_dialogs_proto.intRangeDialogProto.__init__(self, *args, **kwargs)
 
@@ -34,13 +30,13 @@ class icIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
 
     def init(self, title=None, label_begin=None, label_end=None, min_value=1, max_value=1000):
         """
-        Инициализация диалогового окна.
+        Init dialog.
 
-        :param title: Заголовок окна.
-        :param label_begin: Текст приглашения ввода первого номера диапазона.
-        :param label_end: Текст приглашения ввода последнего номера диапазона.
-        :param min_value: Минимально-допустимое значение.
-        :param max_value: Максимально-допустимое значение.
+        :param title: Dialog title.
+        :param label_begin: First prompt text.
+        :param label_end: Last prompt text.
+        :param min_value: Minimum value.
+        :param max_value: Maximum value.
         """
         if title:
             self.SetTitle(title)
@@ -56,7 +52,7 @@ class icIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
 
     def onBeginSpinCtrl(self, event):
         """
-        Обработчик изменения значения первого номера диапазона.
+        Change first value handler.
         """
         value = self.begin_spinCtrl.GetValue()
         if value > self.end_spinCtrl.GetValue():
@@ -65,7 +61,7 @@ class icIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
 
     def onEndSpinCtrl(self, event):
         """
-        Обработчик изменения значения последнего номера диапазона.
+        Change last value handler.
         """
         value = self.end_spinCtrl.GetValue()
         if value < self.end_spinCtrl.GetValue():
@@ -74,7 +70,7 @@ class icIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
 
     def onCancelButtonClick(self, event):
         """
-        Обработчик кнопки <Отмена>.
+        Button <Cancel> click handler.
         """
         self._begin_integer_value = None
         self._end_integer_value = None
@@ -83,38 +79,9 @@ class icIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
 
     def onOkButtonClick(self, event):
         """
-        Обработчик кнопки <OK>.
+        Button <OK> click handler.
         """
         self._begin_integer_value = self.begin_spinCtrl.GetValue()
         self._end_integer_value = self.end_spinCtrl.GetValue()
         self.EndModal(wx.ID_OK)
         event.Skip()
-
-
-def test():
-    """
-    Тестирование.
-    """
-    from ic.components import ictestapp
-    app = ictestapp.TestApp(0)
-
-    # ВНИМАНИЕ! Выставить русскую локаль
-    # Это необходимо для корректного отображения календарей,
-    # форматов дат, времени, данных и т.п.
-    locale = wx.Locale()
-    locale.Init(wx.LANGUAGE_RUSSIAN)
-
-    frame = wx.Frame(None, -1)
-
-    dlg = icIntRangeDialog(frame)
-
-    dlg.ShowModal()
-
-    dlg.Destroy()
-    frame.Destroy()
-
-    app.MainLoop()
-
-
-if __name__ == '__main__':
-    test()

@@ -39,7 +39,7 @@ def getReportGeneratorSystem(rep_filename, parent=None, refresh=True):
     :return: Report generator system object or None if error.
     """
     try:
-        rep = res_func.loadRuntimeResource(rep_filename)
+        rep = res_func.loadResourcePickle(rep_filename)
         
         global REPORT_GEN_SYSTEM
 
@@ -54,8 +54,8 @@ def getReportGeneratorSystem(rep_filename, parent=None, refresh=True):
                 REPORT_GEN_SYSTEM.setRepData(rep)
                 REPORT_GEN_SYSTEM.RepTmplFileName = rep_filename
 
-        if REPORT_GEN_SYSTEM and REPORT_GEN_SYSTEM.getParentForm() is None:
-            REPORT_GEN_SYSTEM.setParentForm(parent)
+        if REPORT_GEN_SYSTEM and REPORT_GEN_SYSTEM.getParent() is None:
+            REPORT_GEN_SYSTEM.setParent(parent)
             
         return REPORT_GEN_SYSTEM
     except:

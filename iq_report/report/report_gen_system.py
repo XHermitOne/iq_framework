@@ -43,7 +43,7 @@ ODS_TEMPLATE_EXT = '.ods'
 XLS_TEMPLATE_EXT = '.xls'
 XML_TEMPLATE_EXT = '.xml'
 DEFAULT_TEMPLATE_EXT = ODS_TEMPLATE_EXT
-DEFAULT_REPORT_TEMPLATE_EXT = '.rprt'
+DEFAULT_REPORT_TEMPLATE_EXT = '.rep'
 
 DEFAULT_REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
                                                   'reports'))
@@ -142,7 +142,7 @@ class iqReportGeneratorSystem(object):
 
         :param tmpl_filename: Report template filename.
         """
-        self._report_template = res_func.loadRuntimeResource(tmpl_filename)
+        self._report_template = res_func.loadResourcePickle(tmpl_filename)
         
     def setRepData(self, report):
         """
@@ -363,7 +363,7 @@ class iqReportGeneratorSystem(object):
         self._query_table = query_table
 
         # 3. Adjust the template for normal processing by the generator
-        res = res_func.loadRuntimeResource(res_func.icGetTabResFileName())
+        res = res_func.loadResourcePickle(res_func.icGetTabResFileName())
         self._report_template = self.RepSQLObj2SQLite(self._report_template, res)
 
         # 5. Correction of database and query parameters

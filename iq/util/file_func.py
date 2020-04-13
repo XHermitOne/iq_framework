@@ -393,7 +393,7 @@ def getFileModifyDatetime(filename):
     :return: Date-time of file change or None in case of error.
     """
     if not os.path.exists(filename):
-        log_func.error(u'File <%s> not found' % filename)
+        log_func.error(u'Get file modify datetime. File <%s> not found' % filename)
         return None
 
     try:
