@@ -1293,7 +1293,7 @@ class iqXLSReportTemplate(iqODSReportTemplate):
         """
         try:
             ods_filename = os.path.splitext(tmpl_filename)[0] + '.ods'
-            cmd = 'unoconv --num_format=ods %s' % tmpl_filename
+            cmd = 'unoconv --format=ods %s' % tmpl_filename
             log_func.info(u'Execute command <%s>' % cmd)
             os.system(cmd)
 

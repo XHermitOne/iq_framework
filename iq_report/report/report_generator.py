@@ -943,6 +943,7 @@ class iqReportGenerator(object):
             # Therefore, after executing the code block, it is necessary
             # to return the variable back to the current function
             value = locals.get('value', u'')
+            log_func.debug(u'Execute code block <%s>. Value [%s]' % (exec_func, value))
         except:
             log_func.fatal(u'Error code block execute <%s>' % str_func.toUnicode(exec_func))
         return str(value)

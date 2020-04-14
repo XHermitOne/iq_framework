@@ -76,6 +76,7 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
         Button click handler <New project>.
         """
         self._project_manager.create(parent=self)
+        self.EndModal(wx.ID_OK)
         event.Skip()
 
     def onRunPrjButtonClick(self, event):
@@ -88,6 +89,8 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
                                                         choices=prj_names)
         if selected_prj_name:
             self._project_manager.run(selected_prj_name)
+
+        self.EndModal(wx.ID_OK)
         event.Skip()
 
     def onDbgPrjButtonClick(self, event):
@@ -101,18 +104,21 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
         if selected_prj_name:
             self._project_manager.debug(selected_prj_name)
 
+        self.EndModal(wx.ID_OK)
         event.Skip()
 
     def onToolsButtonClick(self, event):
         """
         Button click handler <Tools>.
         """
+        self.EndModal(wx.ID_OK)
         event.Skip()
 
     def onHelpButtonClick(self, event):
         """
         Button click handler <Help>.
         """
+        self.EndModal(wx.ID_OK)
         event.Skip()
 
 

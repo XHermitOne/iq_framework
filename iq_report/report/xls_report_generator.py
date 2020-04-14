@@ -141,7 +141,7 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             except:
                 log_func.fatal(u'Error delete file <%s>' % pdf_filename)
 
-        cmd = 'unoconv --num_format=pdf %s' % xls_filename
+        cmd = 'unoconv --format=pdf %s' % xls_filename
         log_func.info(u'UNOCONV. Execute command <%s>' % cmd)
         os.system(cmd)
 
