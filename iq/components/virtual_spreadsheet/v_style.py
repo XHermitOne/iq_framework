@@ -19,7 +19,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Styles', 'children': []}
+        self._attributes = {'name': 'Styles', '__children__': []}
         self._style_dict = {}
         
         # Vocabulary checksum style content: vocabulary style attributes
@@ -47,7 +47,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Initialization of the style dictionary.
         """
-        self._style_dict = dict([(style['ID'], style) for style in self._attributes['children']])
+        self._style_dict = dict([(style['ID'], style) for style in self._attributes['__children__']])
         return self._style_dict
 
     style_dict = property(getStyleDict)
@@ -76,7 +76,7 @@ class iqVStyles(v_prototype.iqVPrototype):
             style.setAttributes(self._style_dict[style_id])
         else:
             # Try searching in the list
-            find_style = [style_attr for style_attr in self._attributes['children']
+            find_style = [style_attr for style_attr in self._attributes['__children__']
                           if style_attr['name'] == 'Style' and style_attr['ID'] == style_id]
             if find_style:
                 style = iqVStyle(self)
@@ -124,11 +124,11 @@ class iqVStyles(v_prototype.iqVPrototype):
 
         # If child elements are defined, then recursively check them as well
         if equal:
-            if ('children' in style_element_attr1 and style_element_attr1['children']) or \
-               ('children' in style_element_attr2 and style_element_attr2['children']):
+            if ('__children__' in style_element_attr1 and style_element_attr1['__children__']) or \
+               ('__children__' in style_element_attr2 and style_element_attr2['__children__']):
 
-                children1 = style_element_attr1['children']
-                children2 = style_element_attr2['children']
+                children1 = style_element_attr1['__children__']
+                children2 = style_element_attr2['__children__']
 
                 if len(children1) != len(children2):
                     return False
@@ -147,7 +147,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         Comparison of the style element.
         """
         if element:
-            elements = [el for el in style['children'] if el['name'] == element_name]
+            elements = [el for el in style['__children__'] if el['name'] == element_name]
             if elements:
                 equal = self._equalStyleElement(elements[0], element)
             else:
@@ -183,12 +183,12 @@ class iqVStyles(v_prototype.iqVPrototype):
         find_result = md5_style in self._md5_styles_dict
         if not find_result:
             # Find style
-            for i in range(len(self._attributes['children'])):
-                style = self._attributes['children'][-i]
+            for i in range(len(self._attributes['__children__'])):
+                style = self._attributes['__children__'][-i]
                 # If the number of style elements does not match
                 # the number of elements you are looking for,
                 # then these styles are not equal
-                if len(style['children']) != len([element for element in [alignment, borders, font, interior,
+                if len(style['__children__']) != len([element for element in [alignment, borders, font, interior,
                                                                           number_format] if element is not None]):
                     find_result = False
                     continue
@@ -222,7 +222,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Alignment in the string view (for calculating the checksum).
         """
-        align = [element for element in style['children'] if element['name'] == 'Alignment']
+        align = [element for element in style['__children__'] if element['name'] == 'Alignment']
         if align:
             return self._getCrcElementStr(align[0])
         return ''        
@@ -231,10 +231,10 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Framing in a string view (for calculating the checksum).
         """
-        borders = [element for element in style['children'] if element['name'] == 'Borders']
+        borders = [element for element in style['__children__'] if element['name'] == 'Borders']
         if borders:
             borders_str = ''
-            for border in borders[0]['children']:
+            for border in borders[0]['__children__']:
                 borders_str += self._getCrcElementStr(border)
             return borders_str
         return ''        
@@ -243,7 +243,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Font in the string view (for calculating the checksum).
         """
-        font = [element for element in style['children'] if element['name'] == 'Font']
+        font = [element for element in style['__children__'] if element['name'] == 'Font']
         if font:
             return self._getCrcElementStr(font[0])
         return ''        
@@ -252,7 +252,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Interior in a string view (for calculating the checksum).
         """
-        interior = [element for element in style['children'] if element['name'] == 'Interior']
+        interior = [element for element in style['__children__'] if element['name'] == 'Interior']
         if interior:
             return self._getCrcElementStr(interior[0])
         return ''        
@@ -261,7 +261,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Format of numbers in a string representation (for calculating the checksum).
         """
-        num_fmt = [element for element in style['children'] if element['name'] == 'NumberFormat']
+        num_fmt = [element for element in style['__children__'] if element['name'] == 'NumberFormat']
         if num_fmt:
             return self._getCrcElementStr(num_fmt[0])
         return ''        
@@ -272,22 +272,22 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         To calculate the checksum for the attributes.
         """
-        new_style_attr = {'children': []}
+        new_style_attr = {'__children__': []}
         if alignment:
             alignment['name'] = 'Alignment'
-            new_style_attr['children'].append(alignment)
+            new_style_attr['__children__'].append(alignment)
         if borders:
             borders['name'] = 'Borders'
-            new_style_attr['children'].append(borders)
+            new_style_attr['__children__'].append(borders)
         if font:
             font['name'] = 'Font'
-            new_style_attr['children'].append(font)
+            new_style_attr['__children__'].append(font)
         if interior:
             interior['name'] = 'Interior'
-            new_style_attr['children'].append(interior)
+            new_style_attr['__children__'].append(interior)
         if number_format:
             number_format['name'] = 'NumberFormat'
-            new_style_attr['children'].append(number_format)
+            new_style_attr['__children__'].append(number_format)
         return self._getCrcStyle(new_style_attr)
         
     def _getCrcStyle(self, style):
@@ -330,7 +330,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         A list of the IDs of the styles.
         """
-        return [style['ID'] for style in self._attributes['children']]
+        return [style['ID'] for style in self._attributes['__children__']]
 
     def _createDefaultStyle(self):
         """
@@ -338,7 +338,7 @@ class iqVStyles(v_prototype.iqVPrototype):
 
         :return: Returns True if the Default style was created, and False if not.
         """
-        styles_id = [style_element['ID'] for style_element in self._attributes['children']]
+        styles_id = [style_element['ID'] for style_element in self._attributes['__children__']]
         if 'Default' not in styles_id:
             default_style = self.createStyle()
             default_style.setID('Default')
@@ -360,21 +360,21 @@ class iqVStyles(v_prototype.iqVPrototype):
         styles_id = self.getStylesID()
         # Defining the IDs of the styles used
         used_styles_id = ['Default']
-        work_sheets = [element for element in self._parent._attributes['children'] if element['name'] == 'Worksheet']
+        work_sheets = [element for element in self._parent._attributes['__children__'] if element['name'] == 'Worksheet']
         for work_sheet in work_sheets:
-            tables = [element for element in work_sheet['children'] if element['name'] == 'Table']
+            tables = [element for element in work_sheet['__children__'] if element['name'] == 'Table']
             for table in tables:
                 if 'StyleID' in table:
                     style_id = table['StyleID']
                     if style_id not in used_styles_id:
                         used_styles_id.append(style_id)
-                for tab_element in table['children']:
+                for tab_element in table['__children__']:
                     if 'StyleID' in tab_element:
                         style_id = tab_element['StyleID']
                         if style_id not in used_styles_id:
                             used_styles_id.append(style_id)
                     if tab_element['name'] == 'Row':
-                        for cell in tab_element['children']:
+                        for cell in tab_element['__children__']:
                             if 'StyleID' in cell:
                                 style_id = cell['StyleID']
                                 if style_id not in used_styles_id:
@@ -398,7 +398,7 @@ class iqVStyles(v_prototype.iqVPrototype):
             return False
         
         if style_idx >= 0:
-            del self._attributes['children'][style_idx]
+            del self._attributes['__children__'][style_idx]
             return True
         return False
 
@@ -413,7 +413,7 @@ class iqVStyle(v_prototype.iqVPrototype):
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         # self._attributes = dict(DEFAULT_STYLE_ATTR.items()+[('ID', self.newID())])
-        self._attributes = {'ID': self.newID(), 'name': 'Style', 'children': []}
+        self._attributes = {'ID': self.newID(), 'name': 'Style', '__children__': []}
 
     def getID(self):
         """
@@ -458,11 +458,11 @@ class iqVStyle(v_prototype.iqVPrototype):
         Delete an attribute by name from the style content.
         """
         try:
-            idx = [attr['name'] for attr in self._attributes['children']].index(name)
+            idx = [attr['name'] for attr in self._attributes['__children__']].index(name)
         except ValueError:
             idx = -1
         if idx >= 0:
-            del self._attributes['children'][idx]
+            del self._attributes['__children__'][idx]
         return self._attributes
     
     def setAttrs(self, alignment=None,
@@ -471,7 +471,7 @@ class iqVStyle(v_prototype.iqVPrototype):
         """
         Filling in the style content.
         """
-        self._attributes['children'] = []
+        self._attributes['__children__'] = []
         return self.updateAttrs(alignment, borders, font, interior, number_format)
         
     def updateAttrs(self, alignment=None,
@@ -481,7 +481,7 @@ class iqVStyle(v_prototype.iqVPrototype):
         Filling in the style content.
         """
         if update_attrs is None:
-            style_attrs = self._attributes['children']
+            style_attrs = self._attributes['__children__']
         else:
             style_attrs = update_attrs
             
@@ -505,7 +505,7 @@ class iqVStyle(v_prototype.iqVPrototype):
             self._delAttr('NumberFormat')
             number_format['name'] = 'NumberFormat'
             style_attrs.append(number_format)
-        self._attributes['children'] = style_attrs
+        self._attributes['__children__'] = style_attrs
         
         if self._parent:
             md5_attrs = self._parent._isCrcStyleID(self.getID())
@@ -520,7 +520,7 @@ class iqVStyle(v_prototype.iqVPrototype):
         :return: Dictionary of internal style content.
         """
         attrs = {}
-        for element in self._attributes['children']:
+        for element in self._attributes['__children__']:
             if element['name'] == 'Alignment':
                 attrs['alignment'] = element
             elif element['name'] == 'Borders':
@@ -611,7 +611,7 @@ class iqVBorders(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Borders', 'children': []}
+        self._attributes = {'name': 'Borders', '__children__': []}
 
 
 POSITION_ENUM = ('Left', 'Top', 'Right', 'Bottom', 'DiagonalLeft', 'DiagonalRight')

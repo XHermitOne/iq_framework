@@ -95,7 +95,7 @@ class iqReportGeneratorSystem(object):
         """
         my_generator_type = self._report_template.get('generator', None) if self._report_template else None
         if my_generator_type is None:
-            log_func.error(u'Failed to determine the type of reporting system in <%s>' % self.__class__.__name__)
+            log_func.error(u'Failed define the type of reporting system in <%s>' % self.__class__.__name__)
         elif isinstance(my_generator_type, str):
             my_generator_type = my_generator_type.lower()
         return my_generator_type

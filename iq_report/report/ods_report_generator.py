@@ -29,7 +29,7 @@ ODS_FILENAME_EXT = '.ods'
 PDF_FILENAME_EXT = '.pdf'
 
 
-class icODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
+class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
     """
     ODS file report generator system class.
     """
@@ -334,7 +334,7 @@ class icODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
                 spreadsheet.load(xml_rep_file_name)
                 spreadsheet.saveAs(rep_file_name)
             else:
-                cmd = 'unoconv --num_format=ods %s' % xml_rep_file_name
+                cmd = 'unoconv --format=ods %s' % xml_rep_file_name
                 log_func.info(u'UNOCONV. Convert report <%s> to file <%s>' % (str_func.toUnicode(xml_rep_file_name),
                                                                               str_func.toUnicode(rep_file_name)))
                 log_func.info(u'Execute command <%s>' % cmd)

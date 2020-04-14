@@ -121,36 +121,36 @@ class iqXMLReportData(iqReportData):
         try:
             rep_data = copy.deepcopy(REPORT_DATA)
 
-            workbook = src_rep_data['children'][0]
+            workbook = src_rep_data['__children__'][0]
             # Styles
             styles = dict()
-            styles_lst = [element for element in workbook['children'] if element['name'] == 'Styles']
+            styles_lst = [element for element in workbook['__children__'] if element['name'] == 'Styles']
             if styles_lst:
-                styles = dict([(style['ID'], style) for style in styles_lst[0]['children']])
+                styles = dict([(style['ID'], style) for style in styles_lst[0]['__children__']])
 
-            worksheets = [element for element in workbook['children'] if element['name'] == 'Worksheet']
+            worksheets = [element for element in workbook['__children__'] if element['name'] == 'Worksheet']
             # Variables
-            variables = [element for element in workbook['children'] if element['name'] == 'Variables']
+            variables = [element for element in workbook['__children__'] if element['name'] == 'Variables']
             #
-            coord_values = [element for element in workbook['children'] if element['name'] == 'CoordFill']
+            coord_values = [element for element in workbook['__children__'] if element['name'] == 'CoordFill']
 
             rep_worksheet = worksheets[0]
-            rep_data_tab = rep_worksheet['children'][0]
+            rep_data_tab = rep_worksheet['__children__'][0]
             # Rows
-            rep_data_rows = [element for element in rep_data_tab['children'] if element['name'] == 'Row']
+            rep_data_rows = [element for element in rep_data_tab['__children__'] if element['name'] == 'Row']
             # Columns
-            rep_data_cols = [element for element in rep_data_tab['children'] if element['name'] == 'Column']
+            rep_data_cols = [element for element in rep_data_tab['__children__'] if element['name'] == 'Column']
             if not rep_data_cols:
                 # If the columns are not defined in the data file,
                 # then automatically generate a list of columns
-                col_count = max([len(row['children']) for row in rep_data_rows])
+                col_count = max([len(row['__children__']) for row in rep_data_rows])
                 for col in range(col_count):
                     rep_data_cols.append({'name': 'Column'})
 
             rep_data['fields'] = self._getFields(rep_data_cols)
             rep_data['data'] = self._getData(rep_data_rows)
-            rep_data['__variables__'] = self._getVariables(variables[0]['children'])
-            rep_data['__coord_fill__'] = self._getCoordFill(coord_values[0]['children'])
+            rep_data['__variables__'] = self._getVariables(variables[0]['__children__'])
+            rep_data['__coord_fill__'] = self._getCoordFill(coord_values[0]['__children__'])
             
             return rep_data
         except:
@@ -199,10 +199,10 @@ class iqXMLReportData(iqReportData):
                     if idx > i_rec:
                         data += [[]]*(idx-i_rec)
 
-                for cell in row['children']:
+                for cell in row['__children__']:
                     cell_data = None
-                    if 'value' in cell['children'][0]:
-                        cell_data = cell['children'][0]['value']
+                    if 'value' in cell['__children__'][0]:
+                        cell_data = cell['__children__'][0]['value']
                     rec.append(cell_data)
                     
                 data.append(rec)

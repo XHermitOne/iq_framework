@@ -19,7 +19,7 @@ __version__ = (0, 0, 0, 1)
 REPORT_GEN_SYSTEM = None
 
 REPORT_GENERATOR_SYSTEM_TYPES = {'.xml': xml_report_generator.iqXMLReportGeneratorSystem,  # XMLSS generator
-                                 '.ods': ods_report_generator.icODSReportGeneratorSystem,  # ODS generator
+                                 '.ods': ods_report_generator.iqODSReportGeneratorSystem,  # ODS generator
                                  # '.xls': icxlsreportgenerator.icXLSReportGeneratorSystem,  # XLS generator
                                  # '.rep': reportman_generator.iqReportManagerGeneratorSystem,     # Report Manager
                                  '.rtf': rtf_report_generator.iqRTFReportGeneratorSystem,  # RTF generator
@@ -93,5 +93,5 @@ def getCurReportGeneratorSystem(report_browser_dialog=None):
     """
     global REPORT_GEN_SYSTEM
     if REPORT_GEN_SYSTEM is None:
-        REPORT_GEN_SYSTEM = ods_report_generator.icODSReportGeneratorSystem(parent=report_browser_dialog)
+        REPORT_GEN_SYSTEM = ods_report_generator.iqODSReportGeneratorSystem(parent=report_browser_dialog)
     return REPORT_GEN_SYSTEM

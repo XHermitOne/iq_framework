@@ -27,7 +27,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         v_prototype.iqVPrototype.__init__(self, None, *args, **kwargs)
 
         # Active workbook Data
-        self._data = {'name': 'Excel', 'children': []}
+        self._data = {'name': 'Excel', '__children__': []}
 
         # Dictionary of open books
         self._workbooks = {}
@@ -69,7 +69,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         """
         Create new.
         """
-        self._data = {'name': 'Excel', 'children': []}
+        self._data = {'name': 'Excel', '__children__': []}
 
         self.SpreadsheetFileName = None
 
@@ -246,7 +246,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         styles = work_book.getStyles()
         styles.clearUnUsedStyles()
 
-        save_data = self.getData()['children'][0]
+        save_data = self.getData()['__children__'][0]
         try:
             return dict2xml.dict2XmlssFile(save_data, self.SpreadsheetFileName, encoding=self.encoding)
         except IOError:
@@ -284,7 +284,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         Create workbook.
         """
         if self._data is None:
-            self._data = {'name': 'Excel', 'children': []}
+            self._data = {'name': 'Excel', '__children__': []}
             # Register an open book
             self._regWorkbook(self.SpreadsheetFileName, self._data)
         work_book = v_workbook.iqVWorkbook(self)
@@ -298,8 +298,8 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         :param name: Workbook name - XML file name.
         """
         if name is None:
-            if self._data['children']:
-                attrs = [element for element in self._data['children'] if element['name'] == 'Workbook']
+            if self._data['__children__']:
+                attrs = [element for element in self._data['__children__'] if element['name'] == 'Workbook']
                 if attrs:
                     work_book = v_workbook.iqVWorkbook(self)
                     work_book.setAttributes(attrs[0])
@@ -383,7 +383,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
             except KeyError:
                 log_func.error(u'Workbook <%s> not registered in <%s>' % (xml_file_name, self._workbooks.keys()))
                 raise
-        workbook_data = [data for data in workbook_data['children'] if 'name' in data and data['name'] == 'Workbook']
+        workbook_data = [data for data in workbook_data['__children__'] if 'name' in data and data['name'] == 'Workbook']
         if workbook_data:
             workbook_data = workbook_data[0]
         else:
@@ -404,7 +404,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         if workbook_data is None:
             return None
 
-        worksheet_data = [data for data in workbook_data['children'] if data['name'] == 'Worksheet']
+        worksheet_data = [data for data in workbook_data['__children__'] if data['name'] == 'Worksheet']
         if worksheet_data:
             if sheet_name is None:
                 worksheet_data = worksheet_data[0]
@@ -431,7 +431,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         if workbook_data is None:
             return None
 
-        styles_data = [data for data in workbook_data['children'] if data['name'] == 'Styles']
+        styles_data = [data for data in workbook_data['__children__'] if data['name'] == 'Styles']
         if not styles_data:
             log_func.warning(u'Styles not defined in workbook <%s>' % xml_filename)
             return None
@@ -521,18 +521,18 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
             return False
         # Find and delete sheet
         result = False
-        for i, data in enumerate(workbook_data['children']):
+        for i, data in enumerate(workbook_data['__children__']):
             if data['name'] == 'Worksheet':
                 if sheet_name is None:
                     # If the sheet name is not defined, then simply delete the first leaf
-                    del workbook_data['children'][i]
+                    del workbook_data['__children__'][i]
                     result = True
                     break
                 else:
                     # If a sheet name is specified, then check for matching sheet names
                     if data['Name'] == sheet_name:
                         log_func.info(u'Delete worksheet <%s>' % sheet_name)
-                        del workbook_data['children'][i]
+                        del workbook_data['__children__'][i]
                         result = True
                         break
         return result
@@ -554,17 +554,17 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
             return False
 
         not_del_first = True
-        for i, data in enumerate(workbook_data['children']):
+        for i, data in enumerate(workbook_data['__children__']):
             if data['name'] == 'Worksheet':
                 if sheet_name_ is None:
                     # If the sheet name is not defined, then simply delete the first leaf
                     if not not_del_first:
-                        del workbook_data['children'][i]
+                        del workbook_data['__children__'][i]
                     not_del_first = False
                 else:
                     # If a sheet name is specified, then check for matching sheet names
                     if data['Name'] != sheet_name_:
-                        del workbook_data['children'][i]
+                        del workbook_data['__children__'][i]
 
         return True
 
@@ -604,7 +604,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         if workbook_data is None:
             return None
         # List of book sheet names
-        worksheet_name_list = [data['Name'] for data in workbook_data['children'] if data['name'] == 'Worksheet']
+        worksheet_name_list = [data['Name'] for data in workbook_data['__children__'] if data['name'] == 'Worksheet']
 
         if type(self._worksheet_list_clipboard) in (list, tuple):
             for i, worksheet_name in enumerate(worksheet_name_list):
@@ -621,13 +621,13 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
             in case of an error.
         """
         try:
-            workbook_styles = [data for data in workbook_data['children'] if data['name'] == 'Styles'][0]
-            if style not in workbook_styles['children']:
-                workbook_styles_id = [data['ID'] for data in workbook_styles['children'] if data['name'] == 'Style']
+            workbook_styles = [data for data in workbook_data['__children__'] if data['name'] == 'Styles'][0]
+            if style not in workbook_styles['__children__']:
+                workbook_styles_id = [data['ID'] for data in workbook_styles['__children__'] if data['name'] == 'Style']
 
                 new_style_id = self._genNewStyleID(style['ID'], workbook_styles_id)
                 style['ID'] = new_style_id
-                workbook_styles['children'].append(style)
+                workbook_styles['__children__'].append(style)
                 return new_style_id
             else:
                 # Exactly such a style already exists and therefore you do not need to add it
@@ -651,9 +651,9 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
             return data
         if 'StyleID' in data and data['StyleID'] == old_style_id:
             data['StyleID'] = new_style_id
-        if 'children' in data and data['children']:
-            for i, child in enumerate(data['children']):
-                data['children'][i] = self._replaceStyleID(child, old_style_id, new_style_id)
+        if '__children__' in data and data['__children__']:
+            for i, child in enumerate(data['__children__']):
+                data['__children__'][i] = self._replaceStyleID(child, old_style_id, new_style_id)
         return data
 
     def _genNewWorksheetName(self, worksheet_name, worksheet_names):
@@ -694,7 +694,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         if is_cut is None:
             is_cut = self._is_cut_worksheet
         # Define a new sheet name
-        sheet_names = [data['Name'] for data in workbook_data['children'] if data['name'] == 'Worksheet']
+        sheet_names = [data['Name'] for data in workbook_data['__children__'] if data['name'] == 'Worksheet']
         worksheet_source, worksheet_data = [(key, value) for key, value in self._worksheet_clipboard.items()
                                             if isinstance(key, tuple)][0]
         if new_worksheet_name:
@@ -704,12 +704,12 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         worksheet_data['Name'] = self._genNewWorksheetName(sheet_name, sheet_names)
         # Paste styles
         if 'styles' in self._worksheet_clipboard:
-            for i, style in enumerate(self._worksheet_clipboard['styles']['children']):
+            for i, style in enumerate(self._worksheet_clipboard['styles']['__children__']):
                 old_style_id = style['ID']
                 new_style_id = self._pasteStyleIntoWorkbook(style, workbook_data)
                 worksheet_data = self._replaceStyleID(worksheet_data, old_style_id, new_style_id)
         # Insert data
-        workbook_data['children'].append(worksheet_data)
+        workbook_data['__children__'].append(worksheet_data)
 
         # If necessary, delete the old sheet.
         if is_cut:
@@ -850,19 +850,19 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         work_sheet = work_book.findWorksheet(sheet_name)
         table = work_sheet.getTable()
         cell = table.getCell(row, col)
-        borders = {'name': 'Borders', 'children': []}
+        borders = {'name': 'Borders', '__children__': []}
         if left_border:
             left_border['Position'] = 'Left'
-            borders['children'].append(left_border)
+            borders['__children__'].append(left_border)
         if right_border:
             right_border['Position'] = 'Right'
-            borders['children'].append(right_border)
+            borders['__children__'].append(right_border)
         if top_border:
             top_border['Position'] = 'Top'
-            borders['children'].append(top_border)
+            borders['__children__'].append(top_border)
         if bottom_border:
             bottom_border['Position'] = 'Bottom'
-            borders['children'].append(bottom_border)
+            borders['__children__'].append(bottom_border)
 
         return cell.setStyle(alignment=alignment, borders=borders, font=font,
                              interior=interior, number_format=number_format)

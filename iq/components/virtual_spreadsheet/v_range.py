@@ -127,7 +127,7 @@ class iqVRange(v_prototype.iqVPrototype):
         """
         Check if the specified border is in the style in the description of the frame.
         """
-        return bool([border for border in style['children'] if border['Position'] == border_position])
+        return bool([border for border in style['__children__'] if border['Position'] == border_position])
 
     def _getCellBorderAttrIdx(self, old_borders, i_row, i_col,
                               border_left=None, border_top=None, border_right=None, border_bottom=None):
@@ -135,10 +135,10 @@ class iqVRange(v_prototype.iqVPrototype):
         Define style attributes in a range depending
         from the coordinates of the current cell.
         """
-        if old_borders and 'children' in old_borders:
-            attrs = {'borders': {'name': 'Borders', 'children': copy.deepcopy(old_borders['children'])}}
+        if old_borders and '__children__' in old_borders:
+            attrs = {'borders': {'name': 'Borders', '__children__': copy.deepcopy(old_borders['__children__'])}}
         else:
-            attrs = {'borders': {'name': 'Borders', 'children': []}}
+            attrs = {'borders': {'name': 'Borders', '__children__': []}}
 
         if i_row == 0:
             # Upper border cell
@@ -147,7 +147,7 @@ class iqVRange(v_prototype.iqVPrototype):
                     cur_border = border_top
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Top'
-                    attrs['borders']['children'].append(cur_border)
+                    attrs['borders']['__children__'].append(cur_border)
             if i_col == 0:
                 # Upper left cell
                 if border_left:
@@ -155,7 +155,7 @@ class iqVRange(v_prototype.iqVPrototype):
                         cur_border = border_left
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Left'
-                        attrs['borders']['children'].append(cur_border)
+                        attrs['borders']['__children__'].append(cur_border)
             if i_col == self._width_1:
                 # Upper right cell
                 if border_right:
@@ -163,7 +163,7 @@ class iqVRange(v_prototype.iqVPrototype):
                         cur_border = border_right
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Right'
-                        attrs['borders']['children'].append(cur_border)
+                        attrs['borders']['__children__'].append(cur_border)
 
         if i_row == self._height_1:
             # Bottom border cell
@@ -172,7 +172,7 @@ class iqVRange(v_prototype.iqVPrototype):
                     cur_border = border_bottom
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Bottom'
-                    attrs['borders']['children'].append(cur_border)
+                    attrs['borders']['__children__'].append(cur_border)
             if i_col == 0:
                 # Lower left cell
                 if border_left:
@@ -180,7 +180,7 @@ class iqVRange(v_prototype.iqVPrototype):
                         cur_border = border_left
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Left'
-                        attrs['borders']['children'].append(cur_border)
+                        attrs['borders']['__children__'].append(cur_border)
             if i_col == self._width_1:
                 # Bottom right cell
                 if border_right:
@@ -188,7 +188,7 @@ class iqVRange(v_prototype.iqVPrototype):
                         cur_border = border_right
                         cur_border['name'] = 'Border'
                         cur_border['Position'] = 'Right'
-                        attrs['borders']['children'].append(cur_border)
+                        attrs['borders']['__children__'].append(cur_border)
 
         if i_col == 0:
             # Left border cell
@@ -197,7 +197,7 @@ class iqVRange(v_prototype.iqVPrototype):
                     cur_border = border_left
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Left'
-                    attrs['borders']['children'].append(cur_border)
+                    attrs['borders']['__children__'].append(cur_border)
         if i_col == self._width_1:
             # Right border cell
             if border_right:
@@ -205,7 +205,7 @@ class iqVRange(v_prototype.iqVPrototype):
                     cur_border = border_right
                     cur_border['name'] = 'Border'
                     cur_border['Position'] = 'Right'
-                    attrs['borders']['children'].append(cur_border)
+                    attrs['borders']['__children__'].append(cur_border)
 
         return attrs
 
@@ -232,12 +232,12 @@ class iqVRange(v_prototype.iqVPrototype):
                         if style:
                             style_attrs = style.getAttrs()
                         else:
-                            style_attrs = {'borders': {'name': 'Borders', 'children': []}}
+                            style_attrs = {'borders': {'name': 'Borders', '__children__': []}}
                     else:
-                        style_attrs = {'borders': {'name': 'Borders', 'children': []}}
+                        style_attrs = {'borders': {'name': 'Borders', '__children__': []}}
 
                     if 'borders' not in style_attrs:
-                        style_attrs['borders'] = {'name': 'Borders', 'children': []}
+                        style_attrs['borders'] = {'name': 'Borders', '__children__': []}
 
                     cur_style_borders = self._getCellBorderAttrIdx(style_attrs['borders'],
                                                                    i_row, i_col,
@@ -296,17 +296,17 @@ class iqVRange(v_prototype.iqVPrototype):
         copy_result = {'name': 'Range',
                        'width': self.width,
                        'height': self.height,
-                       'children': []}
+                       '__children__': []}
 
         for i_row in range(self.height):
-            cur_row = {'name': 'Row', 'children': []}
-            copy_result['children'].append(cur_row)
+            cur_row = {'name': 'Row', '__children__': []}
+            copy_result['__children__'].append(cur_row)
 
             cell = None
             for i_col in range(self.width):
                 cell = self._parent.getCell(self.row+i_row, self.col+i_col)
                 cell_attrs = copy.deepcopy(cell.getAttributes())
-                cur_row['children'].append(cell_attrs)
+                cur_row['__children__'].append(cell_attrs)
 
             if cell:
                 # Re-index all cells in a row
@@ -328,7 +328,7 @@ class iqVColumn(v_prototype.iqVIndexedPrototype, iqVRange):
         """
         v_prototype.iqVIndexedPrototype.__init__(self, parent, *args, **kwargs)
         iqVRange.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Column', 'children': []}
+        self._attributes = {'name': 'Column', '__children__': []}
 
     def setCaption(self, caption):
         """
@@ -391,7 +391,7 @@ class iqVRow(v_prototype.iqVIndexedPrototype, iqVRange):
         """
         v_prototype.iqVIndexedPrototype.__init__(self, parent, *args, **kwargs)
         iqVRange.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Row', 'children': []}
+        self._attributes = {'name': 'Row', '__children__': []}
 
         # Basis cell
         self._basis_cell = None
@@ -435,7 +435,7 @@ class iqVRow(v_prototype.iqVIndexedPrototype, iqVRange):
 
         if cell_attr is None:
             cell.setIndex(idx)
-        self._attributes['children'].insert(ins_i, cell.getAttributes())
+        self._attributes['__children__'].insert(ins_i, cell.getAttributes())
         return cell
 
     def createCellIdx(self, idx):
@@ -443,7 +443,7 @@ class iqVRow(v_prototype.iqVIndexedPrototype, iqVRange):
         Create / Add to row cell.
         """
         cell = self.createCell()
-        self._attributes['children'] = self._attributes['children'][:-1]
+        self._attributes['__children__'] = self._attributes['__children__'][:-1]
 
         # Move cell by index
         cell = self.insertCellIdx(cell, idx)

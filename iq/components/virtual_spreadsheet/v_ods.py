@@ -72,18 +72,19 @@ class iqODS(object):
         :param data_dict: Data dictionary.
         :return: True/False.
         """
-        if data_dict is None:
-            log_func.error(u'ODS. No save data defined')
+        if not data_dict:
+            log_func.error(u'ODS. Not save data defined')
 
         self.ods_document = None
         self._styles_ = {}
         
-        workbooks = data_dict.get('children', None)
+        workbooks = data_dict.get('__children__', None)
         if not workbooks:
-            workbook = {}
+            workbook = dict()
         else:
             workbook = workbooks[0]
-        
+
+        # log_func.debug(u'ODS.Save workbook - %s' % bool(workbook))
         self.setWorkbook(workbook)
         
         if self.ods_document:
@@ -104,7 +105,7 @@ class iqODS(object):
         :param data_dict: Data dictionary.
         :param name: Child item name.
         """
-        return [item for item in data_dict.get('children', []) if item['name'] == name]
+        return [item for item in data_dict.get('__children__', []) if item.get('name') == name]
         
     def setWorkbook(self, data_dict):
         """
@@ -131,7 +132,7 @@ class iqODS(object):
 
         :param data_dict: Data dictionary.
         """
-        styles = data_dict.get('children', [])
+        styles = data_dict.get('__children__', [])
         for style in styles:
             ods_style = self.setStyle(style)
             self.ods_document.automaticstyles.addElement(ods_style)
@@ -167,7 +168,7 @@ class iqODS(object):
 
     def _genNumberStyleName(self):
         """
-        Generating a style name for a numeric representation num_format.
+        Generating a style name for a numeric representation format.
         """
         # from services.ic_std.utils import uuid
         # return uuid.get_uuid()
@@ -176,7 +177,7 @@ class iqODS(object):
 
     def setNumberFormat(self, data_dict):
         """
-        Fill in the num_format of the numeric representation.
+        Fill in the format of the numeric representation.
 
         :param data_dict: Data dictionary.
         """
@@ -216,7 +217,7 @@ class iqODS(object):
         :param data_dict: Data dictionary.
         """
         borders = {}
-        for border in data_dict['children']:
+        for border in data_dict['__children__']:
             if border:
                 border_weight = border.get('Weight', '1')
                 color = border.get('Color', '#000000')
@@ -306,13 +307,13 @@ class iqODS(object):
         properties_args = {}
         number_format = self.getChildrenByName(data_dict, 'NumberFormat')
         if number_format:
-            # Filling in a numeric representation num_format
+            # Filling in a numeric representation format
             number_properties = self.setNumberFormat(number_format[0])
             number_style_name = self._genNumberStyleName()
             properties_args['datastylename'] = number_style_name
             
-            format = number_format[0].get('Format', '0')
-            if '%' in format:
+            num_format = number_format[0].get('Format', '0')
+            if '%' in num_format:
                 ods_number_style = odf.number.PercentageStyle(name=number_style_name)
                 ods_number_style.addElement(odf.number.Number(**number_properties))
                 ods_number_style.addElement(odf.number.Text(text='%'))
@@ -424,9 +425,9 @@ class iqODS(object):
         :param data_dict: Data dictionary.
         :param ods_table: ODS table object.
         """
-        row_breaks = data_dict['children'][0]['children']
+        row_breaks = data_dict['__children__'][0]['__children__']
         for row_break in row_breaks:
-            i_row = row_break['children'][0]['value']
+            i_row = row_break['__children__'][0]['value']
             self._setRowBreak(i_row, ods_table)
 
     def setWorksheetOptions(self, data_dict):
@@ -744,12 +745,12 @@ class iqODS(object):
                 type = 'string'
         return type            
     
-    # Excel column names in A1 num_format
+    # Excel column names in A1 format
     COLS_A1 = None
 
     def _getColsA1(self):
         """
-        Excel column names in A1 num_format.
+        Excel column names in A1 format.
         """
         if self.COLS_A1:
             return self.COLS_A1
@@ -769,7 +770,7 @@ class iqODS(object):
 
     def _getA1(self, r1c1):
         """
-        Convert an address from the num_format R1C1 to A1.
+        Convert an address from the format R1C1 to A1.
         """
         parse = re.findall(self.R1_FORMAT, r1c1)
         row = 1
@@ -787,7 +788,7 @@ class iqODS(object):
 
     def _getR1C1(self, a1):
         """
-        Convert an address from A1 num_format to R1C1.
+        Convert an address from A1 format to R1C1.
         """
         parse = re.findall(self.DIGIT_FORMAT, a1)
         row = 1
@@ -807,7 +808,7 @@ class iqODS(object):
 
     def _R1C1Fmt2A1Fmt(self, formula):
         """
-        Transfer formulas from R1C1 num_format to A1 num_format.
+        Transfer formulas from R1C1 format to A1 format.
 
         :param formula: The formula in a string.
         :return: String of translated formula.
@@ -840,7 +841,7 @@ class iqODS(object):
 
     def _A1Fmt2R1C1Fmt(self, formula):
         """
-        Translation of a formula from A1 num_format to R1C1 num_format.
+        Translation of a formula from A1 format to R1C1 format.
 
         :param formula: The formula as a string.
         :return: String of translated formula.
@@ -853,7 +854,7 @@ class iqODS(object):
         
     def _translateR1C1Formula(self, formula):
         """
-        Transfer formulas from R1C1 num_format to ODS file num_format.
+        Transfer formulas from R1C1 format to ODS file format.
 
         :param formula: The formula as a string.
         :return: String of translated formula.
@@ -862,7 +863,7 @@ class iqODS(object):
 
     def _translateA1Formula(self, formula):
         """
-        Translation of a formula from ODS (A1) num_format to R1C1 num_format.
+        Translation of a formula from ODS (A1) format to R1C1 format.
 
         :param formula: The formula as a string.
         :return: String of translated formula.
@@ -973,11 +974,11 @@ class iqODS(object):
         """
         self.ods_document = odf.opendocument.load(filename)
         
-        self.xmlss_data = {'name': 'Calc', 'children': []}
+        self.xmlss_data = {'name': 'Calc', '__children__': []}
         ods_workbooks = self.ods_document.getElementsByType(odf.opendocument.Spreadsheet)
         if ods_workbooks:
             workbook_data = self.readWorkbook(ods_workbooks[0])
-            self.xmlss_data['children'].append(workbook_data)
+            self.xmlss_data['__children__'].append(workbook_data)
         return self.xmlss_data
     
     def readWorkbook(self, ods_element=None):
@@ -986,22 +987,22 @@ class iqODS(object):
 
         :param ods_element: ODS element corresponding to an Excel workbook.
         """
-        data = {'name': 'Workbook', 'children': []}
+        data = {'name': 'Workbook', '__children__': []}
         
         styles_data = self.readStyles()
-        data['children'].append(styles_data)
+        data['__children__'].append(styles_data)
         
         ods_tables = ods_element.getElementsByType(odf.table.Table)
         if ods_tables:
             for ods_table in ods_tables:
                 worksheet_data = self.readWorksheet(ods_table)
-                data['children'].append(worksheet_data)
+                data['__children__'].append(worksheet_data)
         
         return data
 
     def readNumberStyles(self, *ods_styles):
         """
-        Read data on number num_format styles.
+        Read data on number format styles.
 
         :param ods_styles: Style list.
         """
@@ -1026,19 +1027,19 @@ class iqODS(object):
 
         :param ods_element: An ODS element that matches the styles of an Excel workbook.
         """
-        data = {'name': 'Styles', 'children': []}
+        data = {'name': 'Styles', '__children__': []}
         ods_styles = self.ods_document.automaticstyles.getElementsByType(odf.style.Style) + \
             self.ods_document.styles.getElementsByType(odf.style.Style) + \
             self.ods_document.masterstyles.getElementsByType(odf.style.Style)
 
-        # Number num_format styles
+        # Number format styles
         self._number_styles_ = self.readNumberStyles(self.ods_document.automaticstyles,
                                                      self.ods_document.styles,
                                                      self.ods_document.masterstyles)
         
         for ods_style in ods_styles:
             style = self.readStyle(ods_style)
-            data['children'].append(style)
+            data['__children__'].append(style)
                         
         return data
 
@@ -1048,7 +1049,7 @@ class iqODS(object):
 
         :param ods_element: ODS element corresponding to the style of Excel.
         """
-        data = {'name': 'Style', 'children': []}
+        data = {'name': 'Style', '__children__': []}
         id = ods_element.getAttribute('name')
         data['ID'] = id
         
@@ -1058,27 +1059,27 @@ class iqODS(object):
             if number_style:
                 number_format_data = self.readNumberFormat(number_style)
                 if number_format_data:
-                    data['children'].append(number_format_data)
+                    data['__children__'].append(number_format_data)
 
         # Read font
         txt_properties = ods_element.getElementsByType(odf.style.TextProperties)
         if txt_properties:
             font_data = self.readFont(txt_properties[0])
             if font_data:
-                data['children'].append(font_data)
+                data['__children__'].append(font_data)
 
         # Read borders
         tab_cell_properties = ods_element.getElementsByType(odf.style.TableCellProperties)
         if tab_cell_properties:
             borders_data = self.readBorders(tab_cell_properties[0])
             if borders_data:
-                data['children'].append(borders_data)
+                data['__children__'].append(borders_data)
 
         # Read interior
         if tab_cell_properties:
             interior_data = self.readInterior(tab_cell_properties[0])
             if interior_data:
-                data['children'].append(interior_data)
+                data['__children__'].append(interior_data)
 
         # Read align
         align_data = {}
@@ -1094,13 +1095,13 @@ class iqODS(object):
                 align_data.update(cell_align_data)
                 
         if align_data:
-            data['children'].append(align_data)
+            data['__children__'].append(align_data)
         
         return data
     
     def readNumberFormat(self, ods_element=None):
         """
-        Read number num_format data from ODS file.
+        Read number format data from ODS file.
 
         :param ods_element: ODS element corresponding to the style of numerical representation.
         """
@@ -1128,11 +1129,11 @@ class iqODS(object):
         percentage_format = '%' if percentage else ''
         
         if grouping and (grouping not in ('None', 'none', 'NONE', 'false')):
-            format = list(grouping_format + minintegerdigits_format)
+            grp_format = list(grouping_format + minintegerdigits_format)
             format_result = []
             count = 3
-            for i in range(len(format)-1, -1, -1):
-                format_result = [format[i]] + format_result
+            for i in range(len(grp_format)-1, -1, -1):
+                format_result = [grp_format[i]] + format_result
                 count = count - 1
                 if not count:
                     format_result = [' '] + format_result
@@ -1141,8 +1142,8 @@ class iqODS(object):
         else:
             number_format = minintegerdigits_format + decimalplaces_format + percentage_format
             
-        # log_func.debug('NUMBER FORMAT %s' % (number_format))
-        data = {'name': 'NumberFormat', 'children': [], 'Format': number_format}
+        log_func.debug('NUMBER FORMAT %s : %s' % (decimalplaces_str, number_format))
+        data = {'name': 'NumberFormat', '__children__': [], 'Format': number_format}
         return data
         
     def readFont(self, ods_element=None):
@@ -1163,7 +1164,7 @@ class iqODS(object):
         underline_style = ods_element.getAttribute('textunderlinestyle')
         # underline_width = ods_element.getAttribute('textunderlinewidth')
 
-        data = {'name': 'Font', 'children': []}
+        data = {'name': 'Font', '__children__': []}
         if name and (name not in ('None', 'none', 'NONE')):
             data['FontName'] = name
             
@@ -1191,7 +1192,7 @@ class iqODS(object):
 
         :param ods_element: An ODS element corresponding to the properties of a style sheet cell.
         """
-        data = {'name': 'Interior', 'children': []}
+        data = {'name': 'Interior', '__children__': []}
 
         color = ods_element.getAttribute('backgroundcolor')
 
@@ -1208,7 +1209,7 @@ class iqODS(object):
 
         :param ods_element: An ODS element corresponding to the properties of a style sheet cell.
         """
-        data = {'name': 'Borders', 'children': []}
+        data = {'name': 'Borders', '__children__': []}
         
         all_border = ods_element.getAttribute('border')
         left = ods_element.getAttribute('borderleft')
@@ -1221,36 +1222,36 @@ class iqODS(object):
         if all_border and (all_border not in ('None', 'none', 'NONE')):
             border = self.parseBorder(all_border, 'Left')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
             border = self.parseBorder(all_border, 'Right')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
             border = self.parseBorder(all_border, 'Top')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
             border = self.parseBorder(all_border, 'Bottom')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
                 
         if left and (left not in ('None', 'none', 'NONE')):
             border = self.parseBorder(left, 'Left')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
             
         if right and (right not in ('None', 'none', 'NONE')):
             border = self.parseBorder(right, 'Right')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
         
         if top and (top not in ('None', 'none', 'NONE')):
             border = self.parseBorder(top, 'Top')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
             
         if bottom and (bottom not in ('None', 'none', 'NONE')):
             border = self.parseBorder(bottom, 'Bottom')
             if border:
-                data['children'].append(border)
+                data['__children__'].append(border)
             
         return data
         
@@ -1260,7 +1261,7 @@ class iqODS(object):
 
         :param ods_element: ODS element corresponding to the properties of the paragraph.
         """
-        data = {'name': 'Alignment', 'children': []}
+        data = {'name': 'Alignment', '__children__': []}
 
         text_align = ods_element.getAttribute('textalign')
         vert_align = ods_element.getAttribute('verticalalign')
@@ -1293,7 +1294,7 @@ class iqODS(object):
 
         :param ods_element: ODS element corresponding to the properties of the cell.
         """
-        data = {'name': 'Alignment', 'children': []}
+        data = {'name': 'Alignment', '__children__': []}
 
         vert_align = ods_element.getAttribute('verticalalign')
         wrap_txt = ods_element.getAttribute('wrapoption')
@@ -1373,34 +1374,34 @@ class iqODS(object):
 
         :param ods_element: ODS element corresponding to the sheet.
         """
-        data = {'name': 'Worksheet', 'children': []}
+        data = {'name': 'Worksheet', '__children__': []}
         name = ods_element.getAttribute('name')
 
         # log_func.debug('WORKSHEET: <%s : %s>' % (type(name), name))
         
         data['Name'] = name
         
-        table = {'name': 'Table', 'children': []}
+        table = {'name': 'Table', '__children__': []}
         
         # Columns
         ods_columns = ods_element.getElementsByType(odf.table.TableColumn)
         for ods_column in ods_columns:
             column_data = self.readColumn(ods_column)
-            table['children'].append(column_data)
+            table['__children__'].append(column_data)
             
         # Rows
         ods_rows = ods_element.getElementsByType(odf.table.TableRow)
         for i, ods_row in enumerate(ods_rows):
             row_data = self.readRow(ods_row, table, data, i)
-            table['children'].append(row_data)
+            table['__children__'].append(row_data)
       
-        data['children'].append(table)
+        data['__children__'].append(table)
         
         # Worksheet options
         ods_pagelayouts = self.ods_document.automaticstyles.getElementsByType(odf.style.PageLayout)
         worksheet_options = self.readWorksheetOptions(ods_pagelayouts)
         if worksheet_options:
-            data['children'].append(worksheet_options)
+            data['__children__'].append(worksheet_options)
         
         return data
     
@@ -1416,8 +1417,8 @@ class iqODS(object):
 
         # log_func.debug(u'Set default worksheet options')
         options = {'name': 'WorksheetOptions',
-                   'children': [{'name': 'PageSetup',
-                                 'children': [{'name': 'Layout',
+                   '__children__': [{'name': 'PageSetup',
+                                 '__children__': [{'name': 'Layout',
                                                'Orientation': PORTRAIT_ORIENTATION},
                                               {'name': 'PageMargins',
                                                'Top': str(DEFAULT_XML_MARGIN_TOP),
@@ -1427,7 +1428,7 @@ class iqODS(object):
                                               ]
                                  },
                                 {'name': 'Print',
-                                 'children': [{'name': 'PaperSizeIndex',
+                                 '__children__': [{'name': 'PaperSizeIndex',
                                                'value': '9'}
                                               ]
                                  }
@@ -1460,26 +1461,26 @@ class iqODS(object):
                 # log_func.debug(u'Scale To: %s' % scale_to)
 
                 if orientation:
-                    options['children'][0]['children'][0]['Orientation'] = orientation.title()
+                    options['__children__'][0]['__children__'][0]['Orientation'] = orientation.title()
                 if margin:
-                    options['children'][0]['children'][1]['Top'] = self._dimensionCm2Inch(margin)
-                    options['children'][0]['children'][1]['Bottom'] = self._dimensionCm2Inch(margin)
-                    options['children'][0]['children'][1]['Left'] = self._dimensionCm2Inch(margin)
-                    options['children'][0]['children'][1]['Right'] = self._dimensionCm2Inch(margin)
+                    options['__children__'][0]['__children__'][1]['Top'] = self._dimensionCm2Inch(margin)
+                    options['__children__'][0]['__children__'][1]['Bottom'] = self._dimensionCm2Inch(margin)
+                    options['__children__'][0]['__children__'][1]['Left'] = self._dimensionCm2Inch(margin)
+                    options['__children__'][0]['__children__'][1]['Right'] = self._dimensionCm2Inch(margin)
                 if margin_top:
-                    options['children'][0]['children'][1]['Top'] = self._dimensionCm2Inch(margin_top)
+                    options['__children__'][0]['__children__'][1]['Top'] = self._dimensionCm2Inch(margin_top)
                 if margin_bottom:
-                    options['children'][0]['children'][1]['Bottom'] = self._dimensionCm2Inch(margin_bottom)
+                    options['__children__'][0]['__children__'][1]['Bottom'] = self._dimensionCm2Inch(margin_bottom)
                 if margin_left:
-                    options['children'][0]['children'][1]['Left'] = self._dimensionCm2Inch(margin_left)
+                    options['__children__'][0]['__children__'][1]['Left'] = self._dimensionCm2Inch(margin_left)
                 if margin_right:
-                    options['children'][0]['children'][1]['Right'] = self._dimensionCm2Inch(margin_right)
+                    options['__children__'][0]['__children__'][1]['Right'] = self._dimensionCm2Inch(margin_right)
                 if fit_to_page or (scale_to == (1, 1)):
-                    options['children'].append({'name': 'FitToPage'})
+                    options['__children__'].append({'name': 'FitToPage'})
 
                 if page_width and page_height:
                     # Set page size
-                    options['children'][1]['children'][0]['value'] = self._getExcelPaperSizeIndex(page_width, page_height)
+                    options['__children__'][1]['__children__'][0]['value'] = self._getExcelPaperSizeIndex(page_width, page_height)
                 # Typically, the print options indicated at the beginning are
                 # the default settings. Therefore, we skip all the others
                 break
@@ -1505,7 +1506,7 @@ class iqODS(object):
         
     def _getPaperSizeFormat(self, page_width, page_height):
         """
-        Determine the size of the sheet num_format.
+        Determine the size of the sheet format.
 
         :param page_width: Page width in cm.
         :param page_height: Page height in cm.
@@ -1544,7 +1545,7 @@ class iqODS(object):
 
         :param ods_element: ODS item corresponding column.
         """
-        data = {'name': 'Column', 'children': []}
+        data = {'name': 'Column', '__children__': []}
         style_name = ods_element.getAttribute('stylename')
         default_cell_style_name = ods_element.getAttribute('defaultcellstylename')
         repeated = ods_element.getAttribute('numbercolumnsrepeated')
@@ -1637,15 +1638,15 @@ class iqODS(object):
         :param worksheet: Worksheet data dictionary.
         :param row: Row number.
         """
-        find_page_breaks = [child for child in worksheet['children'] if child['name'] == 'PageBreaks']
+        find_page_breaks = [child for child in worksheet['__children__'] if child['name'] == 'PageBreaks']
         if find_page_breaks:
             data = find_page_breaks[0]
         else:
-            data = {'name': 'PageBreaks', 'children': [{'name': 'RowBreaks', 'children': []}]}
-            worksheet['children'].append(data)
+            data = {'name': 'PageBreaks', '__children__': [{'name': 'RowBreaks', '__children__': []}]}
+            worksheet['__children__'].append(data)
 
-        row_break = {'name': 'RowBreak', 'children': [{'name': 'Row', 'value': row}]}
-        data['children'][0]['children'].append(row_break)
+        row_break = {'name': 'RowBreak', '__children__': [{'name': 'Row', 'value': row}]}
+        data['__children__'][0]['__children__'].append(row_break)
         return data
 
     def readRow(self, ods_element=None, table=None, worksheet=None, row=-1):
@@ -1657,7 +1658,7 @@ class iqODS(object):
         :param worksheet: Worksheet data dictionary.
         :param row: Row number.
         """
-        data = {'name': 'Row', 'children': []}
+        data = {'name': 'Row', '__children__': []}
         style_name = ods_element.getAttribute('stylename')
         repeated = ods_element.getAttribute('numberrowsrepeated')
         hidden = ods_element.getAttribute('visibility')
@@ -1692,7 +1693,7 @@ class iqODS(object):
                 repeated = i_repeated-1
                 if table:
                     for i in range(repeated):
-                        table['children'].append(self.readRow(ods_element))
+                        table['__children__'].append(self.readRow(ods_element))
                 else:
                     data['Span'] = str(repeated)
 
@@ -1716,7 +1717,7 @@ class iqODS(object):
                     set_idx = True
             elif ods_cell.qname[-1] == 'table-cell':
                 cell_data = self.readCell(ods_cell, i if set_idx else None)
-                data['children'].append(cell_data)
+                data['__children__'].append(cell_data)
                 if set_idx:
                     set_idx = False
 
@@ -1727,7 +1728,7 @@ class iqODS(object):
                     if i_repeated < LIMIT_COLUMNS_REPEATED:
                         for ii in range(i_repeated-1):
                             cell_data = self.readCell(ods_cell)
-                            data['children'].append(cell_data)
+                            data['__children__'].append(cell_data)
                             i += 1
                         # Here you need to add 1 otherwise the tables / stamps can "float"
                         i += 1
@@ -1757,7 +1758,7 @@ class iqODS(object):
         :type index: C{int}
         :param index: Cell index, if necessary.
         """
-        data = {'name': 'Cell', 'children': []}
+        data = {'name': 'Cell', '__children__': []}
         if index:
             data['Index'] = str(index)
 
@@ -1794,7 +1795,7 @@ class iqODS(object):
                     cur_data = data_data
                 else:
                     cur_data['value'] += SPREADSHEETML_CR+data_data['value']
-            data['children'].append(cur_data)
+            data['__children__'].append(cur_data)
         
         # log_func.debug('CELL Style: %s MergeAcross: %s MergeDown: %s' % (style_name, merge_across, merge_down))
         
@@ -1808,7 +1809,7 @@ class iqODS(object):
         :param value: Value as string.
         :param value_type: Cell value type as string.
         """
-        data = {'name': 'Data', 'children': []}
+        data = {'name': 'Data', '__children__': []}
         if value and value != 'None':
             data['value'] = value
         else:

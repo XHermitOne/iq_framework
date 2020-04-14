@@ -16,13 +16,13 @@ from . import xml2dict
 
 __version__ = (0, 0, 0, 1)
 
-# XML Excel file num_format
+# XML Excel file format
 xlXMLSpreadsheet = 46
 
 
 def XlsFile2Dict(xls_filename):
     """
-    Function to convert Excel files in xls num_format to Python dictionary num_format.
+    Function to convert Excel files in xls format to Python dictionary format.
 
     :param xls_filename: xls file name.
     :return: The function returns a completed dictionary,

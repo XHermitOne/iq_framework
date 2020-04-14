@@ -20,14 +20,14 @@ __version__ = (0, 0, 0, 1)
 
 DEFAULT_XML_TAG = 'Excel'
 
-TAG_KEY = '__tag__'
+TAG_KEY = 'name'
 CHILDREN_KEY = '__children__'
-VALUE_KEY = '__value__'
+VALUE_KEY = 'value'
 
 
 def XmlFile2Dict(xml_filename, encoding='utf-8'):
     """
-    The function of converting Excel files in xml num_format to the Python dictionary.
+    The function of converting Excel files in xml format to the Python dictionary.
 
     :param xml_filename: xml file name.
     :return: The function returns a completed dictionary,
@@ -53,9 +53,8 @@ def XmlFile2Dict(xml_filename, encoding='utf-8'):
     except:
         if xml_file:
             xml_file.close()
-        info = str(sys.exc_info()[1])
-        print(u'Error read file <%s> : %s.' % (xml_filename, info))
-        return None
+        log_func.fatal(u'Error read file <%s>' % xml_filename)
+    return None
 
 
 class iqXML2DICTReader(xml.sax.handler.ContentHandler):
@@ -108,7 +107,7 @@ class iqXML2DICTReader(xml.sax.handler.ContentHandler):
         if content.strip():
             if self._cur_value is None:
                 self._cur_value = ''
-            self._cur_value += content.encode(self.encoding)
+            self._cur_value += content
 
     def startElementNS(self, name, qname, attrs):
         """
@@ -117,7 +116,7 @@ class iqXML2DICTReader(xml.sax.handler.ContentHandler):
         # The element name is specified by the tuple
         if isinstance(name, tuple):
             # Item name
-            element_name = name[1].encode(self.encoding)
+            element_name = name[1]
 
             # Create a structure corresponding to the element
             self._cur_path[-1][CHILDREN_KEY].append({TAG_KEY: element_name, CHILDREN_KEY: []})
@@ -130,9 +129,9 @@ class iqXML2DICTReader(xml.sax.handler.ContentHandler):
                 # Parsing item parameters
                 for cur_qname in element_qnames:
                     # Parameter name
-                    element_qname = attrs.getNameByQName(cur_qname)[1].encode(self.encoding)
+                    element_qname = attrs.getNameByQName(cur_qname)[1]
                     # Parameter value
-                    element_value = attrs.getValueByQName(cur_qname).encode(self.encoding)
+                    element_value = attrs.getValueByQName(cur_qname)
                     cur_node[element_qname] = element_value
 
     def endElementNS(self, name, qname): 

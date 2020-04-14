@@ -24,12 +24,12 @@ class iqVWorksheet(v_prototype.iqVPrototype):
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
         self._attributes = {'name': 'Worksheet', 'Name': 'default',
-                            'children': [{'name': 'WorksheetOptions',
-                                          'children': [{'name': 'PageSetup',
-                                                        'children': [{'name': 'PageMargins',
+                            '__children__': [{'name': 'WorksheetOptions',
+                                          '__children__': [{'name': 'PageSetup',
+                                                        '__children__': [{'name': 'PageMargins',
                                                                       'Bottom': 0.984251969, 'Left': 0.787401575,
                                                                       'Top': 0.984251969, 'Right': 0.787401575,
-                                                                      'children': []}]}]}]}
+                                                                      '__children__': []}]}]}]}
 
         # Worksheet table
         # Cached to increase performance
@@ -52,7 +52,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
         """
         Create a new name for the sheet.
         """
-        work_sheets = [element for element in self._parent.getAttributes()['children'] if element['name'] == 'Worksheet']
+        work_sheets = [element for element in self._parent.getAttributes()['__children__'] if element['name'] == 'Worksheet']
         i = 1
         new_name = u'Лист%d' % i
         while self._isWorksheetsName(work_sheets, new_name):
@@ -66,7 +66,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
         """
         attrs = self._parent.getAttributes()
         self._attributes['Name'] = self._createNewName()
-        attrs['children'].append(self._attributes)
+        attrs['__children__'].append(self._attributes)
         return self._attributes
 
     def getName(self):
@@ -96,7 +96,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
         if self._table:
             return self._table
 
-        tab_attr = [element for element in self._attributes['children'] if element['name'] == 'Table']
+        tab_attr = [element for element in self._attributes['__children__'] if element['name'] == 'Table']
 
         if tab_attr:
             self._table = iqVTable(self)
@@ -136,7 +136,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
         """
         Get worksheet options.
         """
-        options_attr = [element for element in self._attributes['children'] if element['name'] == 'WorksheetOptions']
+        options_attr = [element for element in self._attributes['__children__'] if element['name'] == 'WorksheetOptions']
         if options_attr:
             options = iqVWorksheetOptions(self)
             options.setAttributes(options_attr[0])
@@ -213,7 +213,7 @@ class iqVWorksheet(v_prototype.iqVPrototype):
         """
         Get page breaks.
         """
-        page_breaks_attr = [element for element in self._attributes['children'] if element['name'] == 'PageBreaks']
+        page_breaks_attr = [element for element in self._attributes['__children__'] if element['name'] == 'PageBreaks']
         if page_breaks_attr:
             page_breaks = iqVPageBreaks(self)
             page_breaks.setAttributes(page_breaks_attr[0])
@@ -239,7 +239,7 @@ class iqVTable(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Table', 'children': []}
+        self._attributes = {'name': 'Table', '__children__': []}
 
         # Basic row and column
         self._basis_row = None
@@ -283,7 +283,7 @@ class iqVTable(v_prototype.iqVPrototype):
         """
         column list. Attributes.
         """
-        return [element for element in self._attributes['children'] if element['name'] == 'Column']
+        return [element for element in self._attributes['__children__'] if element['name'] == 'Column']
 
     def getColumnCount(self):
         """
@@ -306,7 +306,7 @@ class iqVTable(v_prototype.iqVPrototype):
         """
         col = v_range.iqVColumn(self)
         idx = 0
-        for i, child in enumerate(self._attributes['children']):
+        for i, child in enumerate(self._attributes['__children__']):
             if child['name'] == 'Column':
                 if idx >= idx:
                     attrs = col.createIndex(idx)
@@ -350,10 +350,10 @@ class iqVTable(v_prototype.iqVPrototype):
         :return: Returns an object of the cloned string.
             If there are no rows in the table, it returns None.
         """
-        if self._attributes['children']:
-            row_attr = copy.deepcopy(self._attributes['children'][row])
+        if self._attributes['__children__']:
+            row_attr = copy.deepcopy(self._attributes['__children__'][row])
             if clear_cell:
-                row_attr['children'] = [dict(cell.items()+[('value', None)]) for cell in row_attr['children']]
+                row_attr['__children__'] = [dict(cell.items()+[('value', None)]) for cell in row_attr['__children__']]
 
             row_obj = v_range.iqVRow(self)
             row_obj.setAttributes(row_attr)
@@ -371,7 +371,7 @@ class iqVTable(v_prototype.iqVPrototype):
         Create row with index.
         """
         row = v_range.iqVRow(self)
-        for i, child in enumerate(self._attributes['children']):
+        for i, child in enumerate(self._attributes['__children__']):
             if child['name'] == 'Row':
                 if i >= idx:
                     attrs = row.createIndex(i)
@@ -385,7 +385,7 @@ class iqVTable(v_prototype.iqVPrototype):
         """
         Get row attributes list.
         """
-        return [element for element in self._attributes['children'] if element['name'] == 'Row']
+        return [element for element in self._attributes['__children__'] if element['name'] == 'Row']
 
     def getRowCount(self):
         """
@@ -561,7 +561,7 @@ class iqVTable(v_prototype.iqVPrototype):
             # Cell address (row, col)
             for i_row in range(paste['height']):
                 for i_col in range(paste['width']):
-                    cell_attrs = paste['children'][i_row][i_col]
+                    cell_attrs = paste['__children__'][i_row][i_col]
                     cell = self.getCell(to_row+i_row, to_col+i_col)
                     cell.set_attributes(cell_attrs)
             return True
@@ -590,10 +590,10 @@ class iqVTable(v_prototype.iqVPrototype):
         Dictionary of merged cells. As a key, a tuple of the cell coordinate.
         """
         merge_cells = {}
-        rows = [element for element in self._attributes['children'] if element['name'] == 'Row']
+        rows = [element for element in self._attributes['__children__'] if element['name'] == 'Row']
         for i_row, row in enumerate(rows):
             i_col = 0
-            for cell in row['children']:
+            for cell in row['__children__']:
                 if cell['name'] == 'Cell':
                     if 'Index' in cell:
                         new_i_col = int(cell['Index'])
@@ -687,13 +687,13 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'WorksheetOptions', 'children': []}
+        self._attributes = {'name': 'WorksheetOptions', '__children__': []}
 
     def getPageSetup(self):
         """
         Page setup.
         """
-        page_setup_attr = [element for element in self._attributes['children'] if element['name'] == 'PageSetup']
+        page_setup_attr = [element for element in self._attributes['__children__'] if element['name'] == 'PageSetup']
         if page_setup_attr:
             page_setup = iqVPageSetup(self)
             page_setup.setAttributes(page_setup_attr[0])
@@ -713,7 +713,7 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
         """
         Print setup.
         """
-        print_attr = [element for element in self._attributes['children'] if element['name'] == 'Print']
+        print_attr = [element for element in self._attributes['__children__'] if element['name'] == 'Print']
         if print_attr:
             print_setup = iqVPrint(self)
             print_setup.setAttributes(print_attr[0])
@@ -733,7 +733,7 @@ class iqVWorksheetOptions(v_prototype.iqVPrototype):
         """
         Page layout scale.
         """
-        fit_to_page = [element for element in self._attributes['children'] if element['name'] == 'FitToPage']
+        fit_to_page = [element for element in self._attributes['__children__'] if element['name'] == 'FitToPage']
         return bool(fit_to_page)
 
 
@@ -746,13 +746,13 @@ class iqVPageSetup(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'PageSetup', 'children': []}
+        self._attributes = {'name': 'PageSetup', '__children__': []}
 
     def getLayout(self):
         """
         Layout page.
         """
-        layout = [element for element in self._attributes['children'] if element['name'] == 'Layout']
+        layout = [element for element in self._attributes['__children__'] if element['name'] == 'Layout']
         if layout:
             return layout[0]
         return None
@@ -788,7 +788,7 @@ class iqVPageSetup(v_prototype.iqVPrototype):
         """
         Page margins.
         """
-        margins = [element for element in self._attributes['children'] if element['name'] == 'PageMargins']
+        margins = [element for element in self._attributes['__children__'] if element['name'] == 'PageMargins']
         if margins:
             return margins[0]
         return {}
@@ -829,13 +829,13 @@ class iqVPrint(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Print', 'children': []}
+        self._attributes = {'name': 'Print', '__children__': []}
 
     def getPaperSizeIndex(self):
         """
         Paper size.
         """
-        paper_size_lst = [element for element in self._attributes['children'] if element['name'] == 'PaperSizeIndex']
+        paper_size_lst = [element for element in self._attributes['__children__'] if element['name'] == 'PaperSizeIndex']
         if paper_size_lst:
             return int(paper_size_lst[0]['value'])
         # Default A4 size
@@ -854,7 +854,7 @@ class iqVPrint(v_prototype.iqVPrototype):
         """
         Paper scale.
         """
-        scale = [element for element in self._attributes['children'] if element['name'] == 'Scale']
+        scale = [element for element in self._attributes['__children__'] if element['name'] == 'Scale']
         if scale:
             return int(scale[0]['value'])
         # The default scale is 100%.
@@ -864,7 +864,7 @@ class iqVPrint(v_prototype.iqVPrototype):
         """
         Scale. Place no more than X pages wide.
         """
-        fit_width = [element for element in self._attributes['children'] if element['name'] == 'FitWidth']
+        fit_width = [element for element in self._attributes['__children__'] if element['name'] == 'FitWidth']
         if fit_width:
             try:
                 return int(fit_width[0]['value'])
@@ -877,7 +877,7 @@ class iqVPrint(v_prototype.iqVPrototype):
         """
         Scale. Place no more than X pages high.
         """
-        fit_height = [element for element in self._attributes['children'] if element['name'] == 'FitHeight']
+        fit_height = [element for element in self._attributes['__children__'] if element['name'] == 'FitHeight']
         if fit_height:
             try:
                 return int(fit_height[0]['value'])
@@ -896,7 +896,7 @@ class iqVPrint(v_prototype.iqVPrototype):
         """
         The number of copies of the sheet.
         """
-        n_copies = [element for element in self._attributes['children'] if element['name'] == 'NumberofCopies']
+        n_copies = [element for element in self._attributes['__children__'] if element['name'] == 'NumberofCopies']
         if n_copies:
             try:
                 return int(n_copies[0]['value'])
@@ -911,7 +911,7 @@ class iqVPrint(v_prototype.iqVPrototype):
         """
         number_of_copies = min(max(int(number_of_copies), 1), 256)
         n_copies = {'name': 'NumberofCopies', 'value': number_of_copies}
-        self._attributes['children'].append(n_copies)
+        self._attributes['__children__'].append(n_copies)
         return n_copies
 
 
@@ -924,7 +924,7 @@ class iqVPageBreaks(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'PageBreaks', 'children': [{'name': 'RowBreaks', 'children': []}]}
+        self._attributes = {'name': 'PageBreaks', '__children__': [{'name': 'RowBreaks', '__children__': []}]}
 
     def addRowBreak(self, row):
         """
@@ -932,5 +932,5 @@ class iqVPageBreaks(v_prototype.iqVPrototype):
 
         :param row: Row number.
         """
-        row_break = {'name': 'RowBreak', 'children': [{'name': 'Row', 'value': row}]}
-        self._attributes['children'][0]['children'].append(row_break)
+        row_break = {'name': 'RowBreak', '__children__': [{'name': 'Row', 'value': row}]}
+        self._attributes['__children__'][0]['__children__'].append(row_break)
