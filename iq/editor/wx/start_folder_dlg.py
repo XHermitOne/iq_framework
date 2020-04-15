@@ -11,8 +11,8 @@ import wx
 import wx.adv
 import wx.lib.gizmos
 
-import gettext
-_ = gettext.gettext
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqStartFolderDialogProto

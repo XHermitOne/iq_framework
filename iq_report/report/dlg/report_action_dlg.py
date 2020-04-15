@@ -5,17 +5,17 @@
 Dialog box for selecting an action on a report.
 """
 
-import gettext
 import wx
 
 from . import report_dlg_proto
 
 from iq.util import str_func
 from iq.util import log_func
+from iq.util import lang_func
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 DEFAULT_UNICODE = 'utf-8'
 

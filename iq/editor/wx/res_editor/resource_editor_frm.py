@@ -12,8 +12,8 @@ import wx.adv
 import wx.lib.gizmos
 import wx.propgrid as pg
 
-import gettext
-_ = gettext.gettext
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqResourceEditorFrameProto

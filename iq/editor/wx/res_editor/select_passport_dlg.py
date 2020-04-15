@@ -10,6 +10,7 @@
 import wx
 import wx.adv
 import wx.lib.gizmos
+import wx.aui
 
 ###########################################################################
 ## Class iqSelectPassportDialogProto
@@ -45,9 +46,9 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		self.prj_panel = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.prj_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.prj_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, agwStyle=wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT )
-		self.prj_treeListCtrl.AddColumn( u"Name", 200, wx.ALIGN_LEFT)
-		self.prj_treeListCtrl.AddColumn( u"Description", 300, wx.ALIGN_LEFT)
+		self.prj_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.prj_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_SINGLE )
+		prj_treeListCtrl.AddColumn( u"Name", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
+		prj_treeListCtrl.AddColumn( u"Description", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
 		
 		bSizer2.Add( self.prj_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		
@@ -58,9 +59,9 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		self.res_panel = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer3 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.res_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.res_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, agwStyle=wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT )
-		self.res_treeListCtrl.AddColumn( u"Name", 200, wx.ALIGN_LEFT)
-		self.res_treeListCtrl.AddColumn( u"Description", 300, wx.ALIGN_LEFT)
+		self.res_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.res_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_SINGLE )
+		res_treeListCtrl.AddColumn( u"Name", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
+		res_treeListCtrl.AddColumn( u"Description", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
 		
 		bSizer3.Add( self.res_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		

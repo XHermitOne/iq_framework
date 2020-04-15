@@ -10,6 +10,10 @@
 import wx
 import wx.adv
 import wx.lib.gizmos
+import wx.aui
+
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqStartEditorDialogProto
@@ -18,7 +22,7 @@ import wx.lib.gizmos
 class iqStartEditorDialogProto ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"iqFramework", pos = wx.DefaultPosition, size = wx.Size( 448,308 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"iqFramework"), pos = wx.DefaultPosition, size = wx.Size( 448,308 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
@@ -29,7 +33,7 @@ class iqStartEditorDialogProto ( wx.Dialog ):
 		self.new_prj_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_NORMAL_FILE, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.new_prj_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.new_prj_button = wx.Button( self, wx.ID_ANY, u"New project", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.new_prj_button = wx.Button( self, wx.ID_ANY, _(u"New project"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.new_prj_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		
@@ -40,7 +44,7 @@ class iqStartEditorDialogProto ( wx.Dialog ):
 		self.run_prj_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer21.Add( self.run_prj_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.run_prj_button = wx.Button( self, wx.ID_ANY, u"Run project", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.run_prj_button = wx.Button( self, wx.ID_ANY, _(u"Run project"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer21.Add( self.run_prj_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		
@@ -51,7 +55,7 @@ class iqStartEditorDialogProto ( wx.Dialog ):
 		self.dbg_prj_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_HELP_SIDE_PANEL, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer211.Add( self.dbg_prj_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.dbg_prj_button = wx.Button( self, wx.ID_ANY, u"Debug project", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.dbg_prj_button = wx.Button( self, wx.ID_ANY, _(u"Debug project"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer211.Add( self.dbg_prj_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		
@@ -62,7 +66,7 @@ class iqStartEditorDialogProto ( wx.Dialog ):
 		self.tools_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-preferences", wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer213.Add( self.tools_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.tools_button = wx.Button( self, wx.ID_ANY, u"External tools", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.tools_button = wx.Button( self, wx.ID_ANY, _(u"External tools"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer213.Add( self.tools_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		
@@ -73,7 +77,7 @@ class iqStartEditorDialogProto ( wx.Dialog ):
 		self.help_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_HELP, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer212.Add( self.help_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.help_button = wx.Button( self, wx.ID_ANY, u"Help", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.help_button = wx.Button( self, wx.ID_ANY, _(u"Help"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer212.Add( self.help_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		
@@ -84,7 +88,7 @@ class iqStartEditorDialogProto ( wx.Dialog ):
 		self.exit_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_QUIT, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer214.Add( self.exit_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.exit_button = wx.Button( self, wx.ID_ANY, u"Exit", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.exit_button = wx.Button( self, wx.ID_ANY, _(u"Exit"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer214.Add( self.exit_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
 		

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-04-15 15:10++07\n"
+"POT-Creation-Date: 2020-04-15 16:17++07\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,6 +44,7 @@ msgstr ""
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:59
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:269
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:341
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:75
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:44
 #: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:32
 #: ./iq_report/report/dlg/report_dlg_proto.py:60
@@ -56,6 +57,7 @@ msgstr ""
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:62
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:181
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:272
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:78
 #: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:35
 msgid "OK"
 msgstr ""
@@ -64,6 +66,7 @@ msgstr ""
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:150
 #: ./iq/components/data_ref_object/wx_editdlg.py:290
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:25
+#: ./iq_report/report/report_browser.py:257
 msgid "Edit"
 msgstr ""
 
@@ -126,6 +129,12 @@ msgstr ""
 #: ./iq/components/data_ref_object/wx_editdlg.py:765
 #: ./iq/components/data_ref_object/wx_editdlg.py:780
 #: ./iq/components/data_ref_object/wx_editdlg.py:854
+#: ./iq_report/report/report_browser.py:312
+#: ./iq_report/report/report_browser.py:328
+#: ./iq_report/report/report_browser.py:341
+#: ./iq_report/report/report_browser.py:423
+#: ./iq_report/report/report_browser.py:438
+#: ./iq_report/report/report_browser.py:471
 msgid "WARNING"
 msgstr ""
 
@@ -164,6 +173,31 @@ msgstr ""
 #:
 #: ./iq/components/gnuplot_trend_navigator/gnuplot_trend_navigator_proto.py:227
 msgid "This feature has not yet been implemented"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:25
+msgid "Create new resource"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:36
+msgid "Component:"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:43
+msgid "..."
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:51
+msgid "Name:"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:63
+msgid "Path:"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:67
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:205
+msgid "Select a folder"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:25
@@ -227,17 +261,42 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
+#: ./iq/editor/wx/start_editor_dlg.py:25
+msgid "iqFramework"
+msgstr ""
+
+#: ./iq/editor/wx/start_editor_dlg.py:36
+msgid "New project"
+msgstr ""
+
+#: ./iq/editor/wx/start_editor_dlg.py:47
+msgid "Run project"
+msgstr ""
+
+#: ./iq/editor/wx/start_editor_dlg.py:58
+msgid "Debug project"
+msgstr ""
+
+#: ./iq/editor/wx/start_editor_dlg.py:69
+msgid "External tools"
+msgstr ""
+
+#: ./iq/editor/wx/start_editor_dlg.py:80
+msgid "Help"
+msgstr ""
+
+#: ./iq/editor/wx/start_editor_dlg.py:91 ./iq/editor/wx/start_folder_dlg.py:57
+#: ./iq/editor/wx/start_py_dlg.py:68 ./iq/editor/wx/start_wxfb_dlg.py:68
+#: ./iq_report/report/report_browser.py:280
+msgid "Exit"
+msgstr ""
+
 #: ./iq/editor/wx/start_folder_dlg.py:24
 msgid "Project folder/package"
 msgstr ""
 
 #: ./iq/editor/wx/start_folder_dlg.py:46 ./iq/editor/wx/start_wxfb_dlg.py:35
 msgid "New wxFormBuilder project"
-msgstr ""
-
-#: ./iq/editor/wx/start_folder_dlg.py:57 ./iq/editor/wx/start_py_dlg.py:68
-#: ./iq/editor/wx/start_wxfb_dlg.py:68
-msgid "Exit"
 msgstr ""
 
 #: ./iq/editor/wx/start_py_dlg.py:24
@@ -310,15 +369,69 @@ msgid "Report:"
 msgstr ""
 
 #: ./iq_report/report/dlg/report_dlg_proto.py:41
+#: ./iq_report/report/report_browser.py:221
 msgid "Print"
 msgstr ""
 
 #: ./iq_report/report/dlg/report_dlg_proto.py:48
+#: ./iq_report/report/report_browser.py:214
 msgid "Preview"
 msgstr ""
 
 #: ./iq_report/report/dlg/report_dlg_proto.py:54
 msgid "Export to Office"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:228
+msgid "Page setup"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:235
+msgid "Export"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:243
+msgid "Report folder"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:250
+msgid "Create"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:264
+msgid "Update"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:313
+#: ./iq_report/report/report_browser.py:329
+#: ./iq_report/report/report_browser.py:342
+#: ./iq_report/report/report_browser.py:424
+#: ./iq_report/report/report_browser.py:439
+msgid "You must select a report"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:350
+msgid "Select report folder path:"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:449
+msgid "Rename"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:462
+msgid "Rename report"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:463
+msgid "Entry new report name"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:472
+msgid "A report with the same name already exists"
+msgstr ""
+
+#: ./iq_report/report/report_browser.py:541
+msgid "Reports"
 msgstr ""
 
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:25
@@ -382,10 +495,6 @@ msgstr ""
 
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:199
 msgid "Storage directory:"
-msgstr ""
-
-#: ./iq_scanner/scanner/scanner_dlg_proto.py:205
-msgid "Select a folder"
 msgstr ""
 
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:215

@@ -16,6 +16,7 @@ from iq.util import file_func
 from iq.util import res_func
 from iq.util import log_func
 from iq.util import global_func
+from iq.util import lang_func
 
 from iq.dialog import dlg_func
 from iq.engine import img_func
@@ -23,6 +24,8 @@ from iq.engine import img_func
 from . import report_gen_func
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 # Indexes
 REP_FILE_IDX = 0            # full file name / report directory
@@ -208,28 +211,28 @@ class iqReportBrowserDialog(wx.Dialog):
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.onSelectChanged, id=self.rep_tree.GetId())
 
         img = img_func.createIconImage('fatcow/report_magnify')
-        self.rep_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Preview',
+        self.rep_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Preview'),
                                                              size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                    REP_BROWSER_BUTTONS_HEIGHT),
                                                              pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 30))
         self.Bind(wx.EVT_BUTTON, self.onPreviewRepButton, id=self.rep_button.GetId())
 
         img = img_func.createIconImage('fatcow/printer')
-        self.print_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Print',
+        self.print_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Print'),
                                                                size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                      REP_BROWSER_BUTTONS_HEIGHT),
                                                                pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 70))
         self.Bind(wx.EVT_BUTTON, self.onPrintRepButton, id=self.print_button.GetId())
 
         img = img_func.createIconImage('fatcow/page_orientation')
-        self.page_setup_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Page setup',
+        self.page_setup_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Page setup'),
                                                                     size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                           REP_BROWSER_BUTTONS_HEIGHT),
                                                                     pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 110))
         self.Bind(wx.EVT_BUTTON, self.onPageSetupButton, id=self.page_setup_button.GetId())
 
         img = img_func.createIconImage('fatcow/excel_exports')
-        self.export_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Export',
+        self.export_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Export'),
                                                                 size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                       REP_BROWSER_BUTTONS_HEIGHT),
                                                                 pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 150))
@@ -237,28 +240,28 @@ class iqReportBrowserDialog(wx.Dialog):
 
         if mode == REPORT_EDITOR_MODE:
             img = img_func.createIconImage('fatcow/folder_vertical_document')
-            self.set_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Report folder',
+            self.set_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Report folder'),
                                                                  size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                        REP_BROWSER_BUTTONS_HEIGHT),
                                                                  pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 190))
             self.Bind(wx.EVT_BUTTON, self.onSetRepDirButton, id=self.set_button.GetId())
 
             img = img_func.createIconImage('fatcow/report_add')
-            self.new_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Create',
+            self.new_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Create'),
                                                                  size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                        REP_BROWSER_BUTTONS_HEIGHT),
                                                                  pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 230))
             self.Bind(wx.EVT_BUTTON, self.onNewRepButton, id=self.new_button.GetId())
 
             img = img_func.createIconImage('fatcow/report_design')
-            self.edit_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Edit',
+            self.edit_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Edit'),
                                                                 size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                       REP_BROWSER_BUTTONS_HEIGHT),
                                                                 pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 270))
             self.Bind(wx.EVT_BUTTON, self.onEditRepButton, id=self.edit_button.GetId())
 
             img = img_func.createIconImage('fatcow/arrow_refresh')
-            self.convert_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Update',
+            self.convert_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Update'),
                                                                      size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                            REP_BROWSER_BUTTONS_HEIGHT),
                                                                      pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 310))
@@ -274,7 +277,7 @@ class iqReportBrowserDialog(wx.Dialog):
             # self.Bind(wx.EVT_BUTTON, self.onModuleRepButton, id=self.module_button.GetId())
 
         img = img_func.createIconImage('fatcow/door_in')
-        self.exit_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, u'Exit',
+        self.exit_button = wx.lib.buttons.GenBitmapTextButton(self, wx.NewId(), img, _(u'Exit'),
                                                               size=(REP_BROWSER_BUTTONS_WIDTH,
                                                                     REP_BROWSER_BUTTONS_HEIGHT),
                                                               pos=wx.Point(REP_BROWSER_BUTTONS_POS_X, 390),
@@ -306,8 +309,8 @@ class iqReportBrowserDialog(wx.Dialog):
                                                      parent=self,
                                                      refresh=True).preview()
         else:
-            dlg_func.openWarningBox(title=u'WARNING',
-                                    message=u'You must select a report', parent=self)
+            dlg_func.openWarningBox(title=_(u'WARNING'),
+                                    message=_(u'You must select a report'), parent=self)
         event.Skip()
             
     def onPrintRepButton(self, event):
@@ -322,8 +325,8 @@ class iqReportBrowserDialog(wx.Dialog):
                                                      parent=self,
                                                      refresh=True).print()
         else:
-            dlg_func.openWarningBox(title=u'WARNING',
-                                    message=u'You must select a report', parent=self)
+            dlg_func.openWarningBox(title=_(u'WARNING'),
+                                    message=_(u'You must select a report'), parent=self)
         event.Skip()
 
     def onPageSetupButton(self, event):
@@ -335,8 +338,8 @@ class iqReportBrowserDialog(wx.Dialog):
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
             report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self).setPageSetup()
         else:
-            dlg_func.openWarningBox(title=u'WARNING',
-                                    message=u'You must select a report', parent=self)
+            dlg_func.openWarningBox(title=_(u'WARNING'),
+                                    message=_(u'You must select a report'), parent=self)
         event.Skip()
 
     def onSetRepDirButton(self, event):
@@ -344,7 +347,7 @@ class iqReportBrowserDialog(wx.Dialog):
         Report folder button click handler.
         """
         self._report_dirname = ini_func.loadParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir')
-        dir_dlg = wx.DirDialog(self, u'Select report folder path:',
+        dir_dlg = wx.DirDialog(self, _(u'Select report folder path:'),
                                style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
         if self._report_dirname:
             dir_dlg.SetPath(self._report_dirname)
@@ -417,8 +420,8 @@ class iqReportBrowserDialog(wx.Dialog):
                                                      parent=self,
                                                      refresh=True).convert()
         else:
-            dlg_func.openWarningBox(title=u'WARNING',
-                                    message=u'You must select a report', parent=self)
+            dlg_func.openWarningBox(title=_(u'WARNING'),
+                                    message=_(u'You must select a report'), parent=self)
 
         event.Skip()
 
@@ -432,8 +435,8 @@ class iqReportBrowserDialog(wx.Dialog):
             report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
                                                      parent=self).openModule(item_data[REP_FILE_IDX])
         else:
-            dlg_func.openWarningBox(title=u'WARNING',
-                                    message=u'You must select a report', parent=self)
+            dlg_func.openWarningBox(title=_(u'WARNING'),
+                                    message=_(u'You must select a report'), parent=self)
 
         event.Skip()
 
@@ -443,7 +446,7 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         popup_menu = wx.Menu()
         id_rename = wx.NewId()
-        popup_menu.Append(id_rename, u'Rename')
+        popup_menu.Append(id_rename, _(u'Rename'))
         self.Bind(wx.EVT_MENU, self.onRenameReport, id=id_rename)
         self.rep_tree.PopupMenu(popup_menu, event.GetPosition())
         event.Skip()
@@ -456,8 +459,8 @@ class iqReportBrowserDialog(wx.Dialog):
         item_data = self.rep_tree.GetItemData(item)
         if item_data is not None and item_data[REP_ITEMS_IDX] is None:
             old_rep_name = os.path.splitext(os.path.split(item_data[REP_FILE_IDX])[1])[0]
-            new_rep_name = dlg_func.getTextEntryDlg(self, u'Rename report',
-                                                    u'Entry new report name', old_rep_name)
+            new_rep_name = dlg_func.getTextEntryDlg(self, _(u'Rename report'),
+                                                    _(u'Entry new report name'), old_rep_name)
             if new_rep_name and new_rep_name != old_rep_name:
                 new_rep_file_name = os.path.join(os.path.split(item_data[REP_FILE_IDX])[0],
                                                  new_rep_name + REPORT_FILENAME_EXT)
@@ -465,8 +468,8 @@ class iqReportBrowserDialog(wx.Dialog):
                 if not os.path.isfile(new_rep_file_name):
                     self.renameReport(item_data[REP_FILE_IDX], new_rep_name)
                 else:
-                    dlg_func.openWarningBox(title=u'WARNING',
-                                            message=u'A report with the same name already exists',
+                    dlg_func.openWarningBox(title=_(u'WARNING'),
+                                            prompt_text=_(u'A report with the same name already exists'),
                                             parent=self)
 
         event.Skip()
@@ -535,7 +538,7 @@ class iqReportBrowserDialog(wx.Dialog):
             return
 
         self.rep_tree.DeleteAllItems()
-        root = self.rep_tree.AddRoot(u'Reports', image=0)
+        root = self.rep_tree.AddRoot(_(u'Reports'), image=0)
         self.rep_tree.SetItemData(root, None)
         self._appendItemsReportTree(root, rep_data)
         self.rep_tree.Expand(root)
