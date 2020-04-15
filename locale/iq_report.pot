@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2020-04-15 15:10++07\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: ./iq_report/report/dlg/report_action_dlg.py:49
+#: ./iq_report/report/dlg/report_dlg_proto.py:25
+msgid "Report:"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_dlg_proto.py:41
+msgid "Print"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_dlg_proto.py:48
+msgid "Preview"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_dlg_proto.py:54
+msgid "Export to Office"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_dlg_proto.py:60
+msgid "Cancel"
+msgstr ""
+

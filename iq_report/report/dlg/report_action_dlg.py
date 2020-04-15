@@ -5,6 +5,7 @@
 Dialog box for selecting an action on a report.
 """
 
+import gettext
 import wx
 
 from . import report_dlg_proto
@@ -13,6 +14,8 @@ from iq.util import str_func
 from iq.util import log_func
 
 __version__ = (0, 0, 0, 1)
+
+_ = gettext.gettext
 
 DEFAULT_UNICODE = 'utf-8'
 
@@ -43,7 +46,7 @@ class iqReportActionDialog(report_dlg_proto.iqReportActionDialogProto):
         """
         if not isinstance(report_name, str):
             report_name = str_func.toUnicode(report_name, DEFAULT_UNICODE)
-        title = u'Report: %s' % report_name
+        title = _(u'Report:') + ' ' + report_name
         self.SetLabel(title)
         return True
 

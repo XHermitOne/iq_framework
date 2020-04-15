@@ -1,0 +1,459 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2020-04-15 15:10++07\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: ./iq/components/data_ref_object/component.py:22
+msgid "Can edit ref objects"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:37
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:48
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:32
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:34
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:36
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:38
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:42
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:46
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:50
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:54
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:58
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:60
+msgid "tool"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:41
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:126
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:158
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:320
+msgid "Find:"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:59
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:269
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:341
+#: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:44
+#: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:32
+#: ./iq_report/report/dlg/report_dlg_proto.py:60
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:288
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:398
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:471
+msgid "Cancel"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:62
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:181
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:272
+#: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:35
+msgid "OK"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:113
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:150
+#: ./iq/components/data_ref_object/wx_editdlg.py:290
+#: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:25
+msgid "Edit"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:131
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:163
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:327
+msgid "Find"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:131
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:163
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:327
+msgid "Найти"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:148
+msgid "Add"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:148
+msgid "Добавить"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:150
+msgid "Редактировать"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:154
+msgid "Delete"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:154
+msgid "Удалить"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:253
+msgid "Record edit"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:338
+msgid "Edit..."
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:344
+#: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:47
+msgid "ОК"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_choicelistdlg.py:46
+msgid "Cod"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_choicelistdlg.py:47
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:73
+msgid "Name"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:717
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:732
+#: ./iq/components/data_ref_object/wx_editdlg.py:765
+#: ./iq/components/data_ref_object/wx_editdlg.py:780
+#: ./iq/components/data_ref_object/wx_editdlg.py:854
+msgid "WARNING"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:718
+#: ./iq/components/data_ref_object/wx_editdlg.py:766
+msgid "No records found matching search string"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:732
+msgid "No search bar selected"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_editdlg.py:710
+msgid "DELETE"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_editdlg.py:747
+#: ./iq/engine/wx/dlg/edit_masked_txt_dlg.py:43
+msgid "ERROR"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_editdlg.py:781
+#: ./iq/components/data_ref_object/wx_editdlg.py:855
+msgid "No search string selected"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_editdlg.py:843
+msgid "SEARCH"
+msgstr ""
+
+#:
+#: ./iq/components/gnuplot_trend_navigator/gnuplot_trend_navigator_proto.py:226
+msgid "SETTINGS"
+msgstr ""
+
+#:
+#: ./iq/components/gnuplot_trend_navigator/gnuplot_trend_navigator_proto.py:227
+msgid "This feature has not yet been implemented"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:25
+msgid "Resource editor"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:32
+#: ./iq/editor/wx/start_folder_dlg.py:35
+msgid "New resource"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:34
+msgid "Open resource"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:36
+msgid "Save resource"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:38
+msgid "Save as ..."
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:42
+msgid "Test"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:46
+msgid "Design"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:50
+msgid "Generate resource module"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:54
+msgid "Help ..."
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:58
+msgid "Hide object inspector"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:60
+msgid "Show object inspector"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:74
+msgid "Description"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:87
+msgid "Attributes"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:89
+msgid "Methods"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:91
+msgid "Events"
+msgstr ""
+
+#: ./iq/editor/wx/start_folder_dlg.py:24
+msgid "Project folder/package"
+msgstr ""
+
+#: ./iq/editor/wx/start_folder_dlg.py:46 ./iq/editor/wx/start_wxfb_dlg.py:35
+msgid "New wxFormBuilder project"
+msgstr ""
+
+#: ./iq/editor/wx/start_folder_dlg.py:57 ./iq/editor/wx/start_py_dlg.py:68
+#: ./iq/editor/wx/start_wxfb_dlg.py:68
+msgid "Exit"
+msgstr ""
+
+#: ./iq/editor/wx/start_py_dlg.py:24
+msgid "Python module"
+msgstr ""
+
+#: ./iq/editor/wx/start_py_dlg.py:35
+msgid "Adapt wxFormBuilder form module"
+msgstr ""
+
+#: ./iq/editor/wx/start_py_dlg.py:46
+msgid "Generate GUI module"
+msgstr ""
+
+#: ./iq/editor/wx/start_py_dlg.py:57
+msgid "Migrate python module"
+msgstr ""
+
+#: ./iq/editor/wx/start_wxfb_dlg.py:24
+msgid "wxFormBuilder"
+msgstr ""
+
+#: ./iq/editor/wx/start_wxfb_dlg.py:46
+msgid "Open wxFormBuilder project"
+msgstr ""
+
+#: ./iq/editor/wx/start_wxfb_dlg.py:57
+msgid "Migrate wxFormBuilder project"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:31
+msgid "Редактирование:"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:24
+msgid "Python script"
+msgstr ""
+
+#: ./iq/role/component.py:92
+msgid "Can create"
+msgstr ""
+
+#: ./iq/role/component.py:93
+msgid "Can read"
+msgstr ""
+
+#: ./iq/role/component.py:94
+msgid "Can write"
+msgstr ""
+
+#: ./iq/role/component.py:95
+msgid "Can add"
+msgstr ""
+
+#: ./iq/role/component.py:96
+msgid "Can delete"
+msgstr ""
+
+#: ./iq/role/component.py:97
+msgid "Can view"
+msgstr ""
+
+#: ./iq/role/component.py:98
+msgid "Can edit"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_action_dlg.py:49
+#: ./iq_report/report/dlg/report_dlg_proto.py:25
+msgid "Report:"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_dlg_proto.py:41
+msgid "Print"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_dlg_proto.py:48
+msgid "Preview"
+msgstr ""
+
+#: ./iq_report/report/dlg/report_dlg_proto.py:54
+msgid "Export to Office"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:25
+msgid "Scanning"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:43
+msgid "Scanner:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:59
+msgid "Source:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:65
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:82
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:126
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:237
+msgid "Combo!"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:76
+msgid "Scan mode:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:92
+msgid "Multipage scan"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:102
+msgid "View scan result"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:114
+msgid "Settings"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:120
+msgid "Page size:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:147
+msgid "Left border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:153
+msgid "Right border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:164
+msgid "Top border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:175
+msgid "Bottom border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:193
+msgid "Area"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:199
+msgid "Storage directory:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:205
+msgid "Select a folder"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:215
+msgid "File name num_format:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:231
+msgid "Result file num_format:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:248
+msgid "Depth:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:264
+msgid "Scan tool:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:282
+msgid "Addition"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:293
+msgid "Scan tool ..."
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:298
+msgid "Scan"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:351
+msgid "Loading sheets in the tray"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:359
+msgid "Prepare"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:370
+msgid "sheets"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:381
+msgid "for scan. "
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:387
+msgid "Load sheets in the tray."
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:403
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:476
+msgid "Next >>"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:442
+msgid "Check scan result"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:450
+msgid "Checking the preliminary scan result"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:461
+msgid "Preview ..."
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:466
+msgid "Rescan"
+msgstr ""
+

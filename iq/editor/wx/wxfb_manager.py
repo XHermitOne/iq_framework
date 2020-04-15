@@ -29,47 +29,52 @@ CONTAIN_SIGNATURE = '(..)'
 
 COMMENT_COMMAND_SIGNATIRE = '#'
 
-ADAPTATION_REPLACES = (dict(compare=STARTSWITH_SIGNATURE, src='import wx.combo', dst='# import wx.combo'),
-                       dict(compare=STARTSWITH_SIGNATURE, src='import wx.xrc', dst='import wx.adv\nimport wx.lib.gizmos\nimport wx.aui'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.combo.', dst='wx.adv.'),
-                       # Calendar
-                       dict(compare=STARTSWITH_SIGNATURE, src='import wx.calendar', dst='# import wx.calendar'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.calendar.', dst='wx.adv.'),
-                       # DatePickerCtrl
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.DatePickerCtrl', dst='wx.adv.DatePickerCtrl'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.DP_', dst='wx.adv.DP_'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_DATE_CHANGED', dst='wx.adv.EVT_DATE_CHANGED'),
-                       # Bitmap
-                       dict(compare=CONTAIN_SIGNATURE, src='.Ok()', dst='.IsOk()'),
-                       # Sizers
-                       dict(compare=CONTAIN_SIGNATURE, src='.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )', dst='.AddStretchSpacer()'),
-                       dict(compare=CONTAIN_SIGNATURE, src='.AddSpacer( ( 0, 0), 1, wx.EXPAND,', dst='.AddSpacer('),
-                       dict(compare=CONTAIN_SIGNATURE, src='.SetSizeHintsSz', dst='.SetSizeHints'),
-                       # ToolBar
-                       dict(compare=CONTAIN_SIGNATURE, src='.AddLabelTool(', dst='.AddTool('),
-                       # Wizard
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.wizard', dst='wx.adv'),
-                       # TextCtrl
-                       dict(compare=CONTAIN_SIGNATURE, src='.SetMaxLength', dst=COMMENT_COMMAND_SIGNATIRE),
-                       # TreeListCtrl
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.TreeListCtrl', dst='wx.lib.gizmos.TreeListCtrl'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.TL_DEFAULT_STYLE', dst='wx.lib.gizmos.TR_DEFAULT_STYLE'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.TL_SINGLE', dst='wx.lib.gizmos.TR_SINGLE'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.TR_FULL_ROW_HIGHLIGHT', dst='wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREELIST_SELECTION_CHANGED', dst='wx.EVT_TREE_SEL_CHANGED'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREELIST_SELECTION_CHANGING', dst='wx.EVT_TREE_SEL_CHANGING'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREE_ITEM_ACTIVATED', dst='wx.EVT_TREE_ITEM_ACTIVATED'),
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREELIST_ITEM_CONTEXT_MENU', dst='wx.EVT_TREE_ITEM_RIGHT_CLICK'),
-                       dict(compare=CONTAIN_SIGNATURE, src='_treeListCtrl.AppendColumn(', dst='_treeListCtrl.AddColumn('),
-                       dict(compare=CONTAIN_SIGNATURE, src=', wx.COL_RESIZABLE )', dst=')'),
-                       dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
-                       dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
-                       dict(compare=CONTAIN_SIGNATURE, src=', agwStyle=wx.lib.gizmos.TR_', dst=', agwStyle=wx.lib.gizmos.TR_'),
-                       # StatusBar
-                       dict(compare=CONTAIN_SIGNATURE, src='wx.ST_SIZEGRIP', dst='wx.STB_SIZEGRIP'),
-                       # Menu
-                       dict(compare=CONTAIN_SIGNATURE, src='.AppendItem( ', dst='.Append('),
-                       )
+ADAPTATION_REPLACES = (
+    # Gettext
+    dict(compare=STARTSWITH_SIGNATURE, src='import gettext', dst='from iq.util import lang_func'),
+    dict(compare=STARTSWITH_SIGNATURE, src='_ = gettext.gettext', dst='_ = lang_func.getTranslation().gettext'),
+    # Wx imports
+    dict(compare=STARTSWITH_SIGNATURE, src='import wx.combo', dst='# import wx.combo'),
+    dict(compare=STARTSWITH_SIGNATURE, src='import wx.xrc', dst='import wx.adv\nimport wx.lib.gizmos\nimport wx.aui'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.combo.', dst='wx.adv.'),
+    # Calendar
+    dict(compare=STARTSWITH_SIGNATURE, src='import wx.calendar', dst='# import wx.calendar'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.calendar.', dst='wx.adv.'),
+    # DatePickerCtrl
+    dict(compare=CONTAIN_SIGNATURE, src='wx.DatePickerCtrl', dst='wx.adv.DatePickerCtrl'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.DP_', dst='wx.adv.DP_'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_DATE_CHANGED', dst='wx.adv.EVT_DATE_CHANGED'),
+    # Bitmap
+    dict(compare=CONTAIN_SIGNATURE, src='.Ok()', dst='.IsOk()'),
+    # Sizers
+    dict(compare=CONTAIN_SIGNATURE, src='.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )', dst='.AddStretchSpacer()'),
+    dict(compare=CONTAIN_SIGNATURE, src='.AddSpacer( ( 0, 0), 1, wx.EXPAND,', dst='.AddSpacer('),
+    dict(compare=CONTAIN_SIGNATURE, src='.SetSizeHintsSz', dst='.SetSizeHints'),
+    # ToolBar
+    dict(compare=CONTAIN_SIGNATURE, src='.AddLabelTool(', dst='.AddTool('),
+    # Wizard
+    dict(compare=CONTAIN_SIGNATURE, src='wx.wizard', dst='wx.adv'),
+    # TextCtrl
+    dict(compare=CONTAIN_SIGNATURE, src='.SetMaxLength', dst=COMMENT_COMMAND_SIGNATIRE),
+    # TreeListCtrl
+    dict(compare=CONTAIN_SIGNATURE, src='wx.TreeListCtrl', dst='wx.lib.gizmos.TreeListCtrl'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.TL_DEFAULT_STYLE', dst='wx.lib.gizmos.TR_DEFAULT_STYLE'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.TL_SINGLE', dst='wx.lib.gizmos.TR_SINGLE'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.TR_FULL_ROW_HIGHLIGHT', dst='wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREELIST_SELECTION_CHANGED', dst='wx.EVT_TREE_SEL_CHANGED'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREELIST_SELECTION_CHANGING', dst='wx.EVT_TREE_SEL_CHANGING'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREE_ITEM_ACTIVATED', dst='wx.EVT_TREE_ITEM_ACTIVATED'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREELIST_ITEM_CONTEXT_MENU', dst='wx.EVT_TREE_ITEM_RIGHT_CLICK'),
+    dict(compare=CONTAIN_SIGNATURE, src='_treeListCtrl.AppendColumn(', dst='_treeListCtrl.AddColumn('),
+    dict(compare=CONTAIN_SIGNATURE, src=', wx.COL_RESIZABLE )', dst=')'),
+    dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
+    dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
+    dict(compare=CONTAIN_SIGNATURE, src=', agwStyle=wx.lib.gizmos.TR_', dst=', agwStyle=wx.lib.gizmos.TR_'),
+    # StatusBar
+    dict(compare=CONTAIN_SIGNATURE, src='wx.ST_SIZEGRIP', dst='wx.STB_SIZEGRIP'),
+    # Menu
+    dict(compare=CONTAIN_SIGNATURE, src='.AppendItem( ', dst='.Append('),
+    )
 
 
 def isWXFormBuilderProjectFile(filename):

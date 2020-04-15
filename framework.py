@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-iqFramework - RAD Software platform for developing applications in Python using the PyQt GUI.
+iqFramework - RAD Software platform for developing applications in Python using the wxPython GUI.
 
 Command line parameters:
 
@@ -28,10 +28,13 @@ Launch parameters:
 import sys
 import getopt
 import os.path
+import locale
+import gettext
 
 from iq import global_data
 from iq.util import log_func
 from iq.util import global_func
+from iq.util import file_func
 from iq import editor
 import iq
 
@@ -98,6 +101,11 @@ def main(*argv):
             log_func.warning(u'Not supported parameter <%s>' % option)
 
     log_func.info(u'iqFramework <Engine: %s / Mode: %s>... START' % (engine, mode))
+
+    # Set system locale
+    cur_locale = locale.getlocale()
+    locale.setlocale(locale.LC_ALL, cur_locale)
+    log_func.info(u'Set locale <%s.%s>' % tuple(cur_locale))
 
     if runtime_mode:
         kernel = iq.createKernel()

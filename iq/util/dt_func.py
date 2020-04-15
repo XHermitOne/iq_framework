@@ -11,11 +11,11 @@ import locale
 
 __version__ = (0, 0, 0, 1)
 
-MONTHS = (u'Январь', u'Февраль',
-          u'Март', u'Апрель', u'Май',
-          u'Июнь', u'Июль', u'Август',
-          u'Сентябрь', u'Октябрь', u'Ноябрь',
-          u'Декабрь')
+RU_MONTHS = (u'Январь', u'Февраль',
+             u'Март', u'Апрель', u'Май',
+             u'Июнь', u'Июль', u'Август',
+             u'Сентябрь', u'Октябрь', u'Ноябрь',
+             u'Декабрь')
 
 
 def getMonths():
@@ -26,6 +26,5 @@ def getMonths():
     """
     cur_locale = locale.getlocale()
     if cur_locale != 'ru_RU':
-        locale.setlocale(locale.LC_ALL, cur_locale)
         return tuple(calendar.month_name[1:])
-    return MONTHS
+    return RU_MONTHS

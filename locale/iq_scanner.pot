@@ -1,0 +1,159 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2020-04-15 15:10++07\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:25
+msgid "Scanning"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:43
+msgid "Scanner:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:59
+msgid "Source:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:65
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:82
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:126
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:237
+msgid "Combo!"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:76
+msgid "Scan mode:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:92
+msgid "Multipage scan"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:102
+msgid "View scan result"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:114
+msgid "Settings"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:120
+msgid "Page size:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:147
+msgid "Left border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:153
+msgid "Right border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:164
+msgid "Top border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:175
+msgid "Bottom border(mm):"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:193
+msgid "Area"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:199
+msgid "Storage directory:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:205
+msgid "Select a folder"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:215
+msgid "File name num_format:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:231
+msgid "Result file num_format:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:248
+msgid "Depth:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:264
+msgid "Scan tool:"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:282
+msgid "Addition"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:288
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:398
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:471
+msgid "Cancel"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:293
+msgid "Scan tool ..."
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:298
+msgid "Scan"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:351
+msgid "Loading sheets in the tray"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:359
+msgid "Prepare"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:370
+msgid "sheets"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:381
+msgid "for scan. "
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:387
+msgid "Load sheets in the tray."
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:403
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:476
+msgid "Next >>"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:442
+msgid "Check scan result"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:450
+msgid "Checking the preliminary scan result"
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:461
+msgid "Preview ..."
+msgstr ""
+
+#: ./iq_scanner/scanner/scanner_dlg_proto.py:466
+msgid "Rescan"
+msgstr ""
+
