@@ -246,7 +246,8 @@ class iqPassport(object):
                                                     object_name=passport.name,
                                                     object_guid=passport.guid)
             if not obj_resource:
-                log_func.error(u'Object <%s> not found in resource' % str(passport))
+                log_func.error(u'Object <%s> not found in resource <%s>' % (str(passport),
+                                                                            res_filename))
             return obj_resource
         else:
             log_func.error(u'Resource file <%s> not found' % str(passport))
