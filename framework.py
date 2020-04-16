@@ -100,7 +100,8 @@ def main(*argv):
         else:
             log_func.warning(u'Not supported parameter <%s>' % option)
 
-    log_func.info(u'iqFramework <Engine: %s / Mode: %s>... START' % (engine, mode))
+    log_func.info(u'iqFramework <Engine: %s / Mode: %s / Path: %s>... START' % (engine, mode,
+                                                                                file_func.getFrameworkPath()))
 
     # Set system locale
     cur_locale = locale.getlocale()

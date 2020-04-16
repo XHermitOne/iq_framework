@@ -16,6 +16,7 @@ from ..util import spc_func
 from ..util import res_func
 from ..util import exec_func
 from ..util import global_func
+from ..util import lang_func
 
 from ..passport import passport
 from .. import user
@@ -25,6 +26,8 @@ from .. import global_data
 from . import spc
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqProjectManager(object):
@@ -58,8 +61,9 @@ class iqProjectManager(object):
         :return: True/False.
         """
         if name is None:
-            name = dlg_func.getTextEntryDlg(parent=parent, title=u'PROJECT NAME',
-                                            prompt_text=u'Enter the name of the project:', default_value='new_name')
+            name = dlg_func.getTextEntryDlg(parent=parent,
+                                            title=_(u'PROJECT NAME'),
+                                            prompt_text=_(u'Enter the name of the project:'), default_value='new_name')
         if name:
             prj_path = self.getPath(name)
             result = self.createPath(prj_path)
