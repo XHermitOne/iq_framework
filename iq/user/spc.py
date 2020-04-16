@@ -12,6 +12,10 @@ from ..util import global_func
 from ..util import log_func
 from ..editor import property_editor_id
 from .. import global_data
+from ..util import file_func
+from ..util import res_func
+from ..util import spc_func
+from .. import role
 
 __version__ = (0, 0, 0, 1)
 
@@ -27,7 +31,18 @@ def getProjectRoles(prj_name=None, *args, **kwargs):
     """
     if prj_name is None:
         prj_name = global_func.getProjectName()
-    # log_func.debug(u'Project name <%s>' % prj_name)
+
+    if not prj_name:
+        log_func.error(u'Not define project name')
+        return list()
+
+    res_filename = os.path.join(file_func.getProjectPath(),
+                                prj_name + res_func.RESOURCE_FILE_EXT)
+    prj_resource = res_func.loadResource(res_filename)
+    if prj_resource:
+        children = prj_resource.get(spc_func.CHILDREN_ATTR_NAME, list())
+        child_names = [child.get('name', u'Unknown') for child in children if child.get('type', None) == role.COMPONENT_TYPE]
+        return child_names
     return list()
 
 

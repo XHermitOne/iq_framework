@@ -22,7 +22,8 @@ from ....util import spc_func
 from ....util import global_func
 from ....util import file_func
 from ....util import exec_func
-# from ....util import py_func
+from ....util import lang_func
+
 from ....engine.wx import wxbitmap_func
 from ....engine.wx import imglib_manager
 from ....engine.wx.dlg import wxdlg_func
@@ -39,6 +40,8 @@ from ....engine.wx import stored_wx_form_manager
 from ....engine.wx import splitter_manager
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
@@ -215,7 +218,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         resource = spc_func.fillAllResourcesBySpc(resource=resource)
         result = self.loadResource(resource)
         if result:
-            title = 'Resource editor <%s>' % os.path.basename(self.res_filename)
+            title = _('Resource editor') + ' <%s>' % os.path.basename(self.res_filename)
             self.SetTitle(title)
         return result
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-04-16 10:28++07\n"
+"POT-Creation-Date: 2020-04-16 11:09++07\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -200,6 +200,37 @@ msgstr ""
 msgid "Select a folder"
 msgstr ""
 
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:82
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:317
+msgid "Properties"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:84
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:358
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:89
+msgid "Methods"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:86
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:371
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:91
+msgid "Events"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:646
+msgid "Not define attribute editor"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:648
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:660
+msgid "VALIDATION"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:658
+msgid "Error valid property/attribute"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor.py:221
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:25
 msgid "Resource editor"
 msgstr ""
@@ -251,14 +282,6 @@ msgstr ""
 
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:87
 msgid "Attributes"
-msgstr ""
-
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:89
-msgid "Methods"
-msgstr ""
-
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:91
-msgid "Events"
 msgstr ""
 
 #: ./iq/editor/wx/start_editor_dlg.py:25

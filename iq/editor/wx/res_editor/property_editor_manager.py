@@ -16,6 +16,7 @@ from ....util import log_func
 from ....util import spc_func
 from ....util import icon_func
 from ....util import file_func
+from ....util import lang_func
 
 from ... import property_editor_id
 
@@ -28,6 +29,8 @@ from . import dir_property_editor
 from . import script_property_editor
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 VALIDATE_ENABLE = True
 
@@ -76,11 +79,11 @@ class iqPropertyEditorManager(object):
         if property_editor:
             property_editor.Clear()
             bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
-            property_editor.AddPage(u'Properties', bmp)
+            property_editor.AddPage(_(u'Properties'), bmp)
             bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
-            property_editor.AddPage(u'Methods', bmp)
+            property_editor.AddPage(_(u'Methods'), bmp)
             bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
-            property_editor.AddPage(u'Events', bmp)
+            property_editor.AddPage(_(u'Events'), bmp)
             return True
         else:
             log_func.error(u'Not define property editor')
@@ -311,7 +314,7 @@ class iqPropertyEditorManager(object):
         property_editor.Clear()
 
         bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
-        prop_page = property_editor.AddPage(u'Properties', bmp)
+        prop_page = property_editor.AddPage(_(u'Properties'), bmp)
         # ---------------------------------------
         #   1 - Basic attributes
         prop_page.Append(wx.propgrid.PropertyCategory(u'1 - Basic'))
@@ -352,7 +355,7 @@ class iqPropertyEditorManager(object):
                     property_editor.SetPropertyEditor(attr_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
         bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
-        methods_page = property_editor.AddPage(u'Methods', bmp)
+        methods_page = property_editor.AddPage(_(u'Methods'), bmp)
 
         # ----------------------------------------
         #   3 - Methods page
@@ -365,7 +368,7 @@ class iqPropertyEditorManager(object):
                 property_editor.SetPropertyEditor(method_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
         bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
-        events_page = property_editor.AddPage(u'Events', bmp)
+        events_page = property_editor.AddPage(_(u'Events'), bmp)
 
         # ----------------------------------------
         #   4 - Events page
@@ -640,9 +643,9 @@ class iqPropertyEditorManager(object):
         editor = self.findPropertyEditor(name, spc)
 
         if editor is None:
-            msg = u'Not define attribute editor <%s>' % name
+            msg = _(u'Not define attribute editor') + ' <%s>' % name
             log_func.error(msg)
-            wxdlg_func.openErrBox(u'VALIDATION', msg)
+            wxdlg_func.openErrBox(_(u'VALIDATION'), msg)
             valid = False
         elif isinstance(editor, int):
             # No need to valid
@@ -652,9 +655,9 @@ class iqPropertyEditorManager(object):
                 try:
                     valid = editor['valid'](value)
                 except:
-                    msg = 'Valid property/attribute <%s : %s> error' % (name, value)
+                    msg = _('Error valid property/attribute') + ' <%s : %s>' % (name, value)
                     log_func.fatal(msg)
-                    wxdlg_func.openFatalBox(u'VALIDATION', msg)
+                    wxdlg_func.openFatalBox(_(u'VALIDATION'), msg)
                     valid = False
         else:
             log_func.error(u'Not support property/attribute editor type <%s>' % type(editor))
