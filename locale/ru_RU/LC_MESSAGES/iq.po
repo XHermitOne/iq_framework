@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-04-15 16:17++07\n"
-"PO-Revision-Date: 2020-04-15 16:30+0700\n"
+"POT-Creation-Date: 2020-04-16 10:28++07\n"
+"PO-Revision-Date: 2020-04-16 10:35+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -107,7 +107,7 @@ msgstr ""
 
 #: iq/components/data_ref_object/refobj_dialogs_proto.py:253
 msgid "Record edit"
-msgstr ""
+msgstr "Редактирование записи"
 
 #: iq/components/data_ref_object/refobj_dialogs_proto.py:338
 msgid "Edit..."
@@ -182,7 +182,7 @@ msgstr "Создать новый ресурс"
 
 #: iq/editor/wx/res_editor/new_resource_dlg.py:36
 msgid "Component:"
-msgstr ""
+msgstr "Компонент:"
 
 #: iq/editor/wx/res_editor/new_resource_dlg.py:43
 msgid "..."
@@ -194,7 +194,7 @@ msgstr "Наименование:"
 
 #: iq/editor/wx/res_editor/new_resource_dlg.py:63
 msgid "Path:"
-msgstr ""
+msgstr "Путь:"
 
 #: iq/editor/wx/res_editor/new_resource_dlg.py:67
 #: iq_scanner/scanner/scanner_dlg_proto.py:205
@@ -240,27 +240,27 @@ msgstr "Помощь"
 
 #: iq/editor/wx/res_editor/resource_editor_frm.py:58
 msgid "Hide object inspector"
-msgstr ""
+msgstr "Скрыть инспектор объектов"
 
 #: iq/editor/wx/res_editor/resource_editor_frm.py:60
 msgid "Show object inspector"
-msgstr ""
+msgstr "Показать инспектор объектов"
 
 #: iq/editor/wx/res_editor/resource_editor_frm.py:74
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: iq/editor/wx/res_editor/resource_editor_frm.py:87
 msgid "Attributes"
-msgstr ""
+msgstr "Атрибуты"
 
 #: iq/editor/wx/res_editor/resource_editor_frm.py:89
 msgid "Methods"
-msgstr ""
+msgstr "Методы"
 
 #: iq/editor/wx/res_editor/resource_editor_frm.py:91
 msgid "Events"
-msgstr ""
+msgstr "События"
 
 #: iq/editor/wx/start_editor_dlg.py:25
 msgid "iqFramework"
@@ -272,15 +272,15 @@ msgstr "Новый проект"
 
 #: iq/editor/wx/start_editor_dlg.py:47
 msgid "Run project"
-msgstr ""
+msgstr "Запустить проект"
 
 #: iq/editor/wx/start_editor_dlg.py:58
 msgid "Debug project"
-msgstr ""
+msgstr "Отладка проекта"
 
 #: iq/editor/wx/start_editor_dlg.py:69
 msgid "External tools"
-msgstr ""
+msgstr "Дополнительные инструменты"
 
 #: iq/editor/wx/start_editor_dlg.py:80
 msgid "Help"
@@ -294,11 +294,11 @@ msgstr "Выход"
 
 #: iq/editor/wx/start_folder_dlg.py:24
 msgid "Project folder/package"
-msgstr ""
+msgstr "Папка/пакет проекта"
 
 #: iq/editor/wx/start_folder_dlg.py:46 iq/editor/wx/start_wxfb_dlg.py:35
 msgid "New wxFormBuilder project"
-msgstr ""
+msgstr "Новый проект wxFormBuilder"
 
 #: iq/editor/wx/start_py_dlg.py:24
 msgid "Python module"
@@ -377,7 +377,7 @@ msgstr "Печать"
 #: iq_report/report/dlg/report_dlg_proto.py:48
 #: iq_report/report/report_browser.py:214
 msgid "Preview"
-msgstr "Предварительный просмотр"
+msgstr "Пред. просмотр"
 
 #: iq_report/report/dlg/report_dlg_proto.py:54
 msgid "Export to Office"
@@ -397,11 +397,11 @@ msgstr "Папка отчетов"
 
 #: iq_report/report/report_browser.py:250
 msgid "Create"
-msgstr ""
+msgstr "Создать"
 
 #: iq_report/report/report_browser.py:264
 msgid "Update"
-msgstr ""
+msgstr "Обновить"
 
 #: iq_report/report/report_browser.py:313
 #: iq_report/report/report_browser.py:329
@@ -409,7 +409,7 @@ msgstr ""
 #: iq_report/report/report_browser.py:424
 #: iq_report/report/report_browser.py:439
 msgid "You must select a report"
-msgstr ""
+msgstr "Необходимо выбрать отчет"
 
 #: iq_report/report/report_browser.py:350
 msgid "Select report folder path:"
@@ -417,7 +417,7 @@ msgstr "Выберите папку отчетов:"
 
 #: iq_report/report/report_browser.py:449
 msgid "Rename"
-msgstr ""
+msgstr "Переименовать"
 
 #: iq_report/report/report_browser.py:462
 msgid "Rename report"
@@ -425,7 +425,7 @@ msgstr "Переименовать отчет"
 
 #: iq_report/report/report_browser.py:463
 msgid "Entry new report name"
-msgstr ""
+msgstr "Введите новое иия отчета"
 
 #: iq_report/report/report_browser.py:472
 msgid "A report with the same name already exists"
@@ -499,12 +499,12 @@ msgid "Storage directory:"
 msgstr "Папка хранения:"
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:215
-msgid "File name num_format:"
-msgstr ""
+msgid "File name format:"
+msgstr "Формат имени файла:"
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:231
-msgid "Result file num_format:"
-msgstr ""
+msgid "Result file format:"
+msgstr "Формат результирующего файла:"
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:248
 msgid "Depth:"
@@ -512,7 +512,7 @@ msgstr "Глубина:"
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:264
 msgid "Scan tool:"
-msgstr ""
+msgstr "Инструмент сканирования:"
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:282
 msgid "Addition"
@@ -561,7 +561,7 @@ msgstr ""
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:461
 msgid "Preview ..."
-msgstr "Предварительный просмотр..."
+msgstr "Пред. просмотр..."
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:466
 msgid "Rescan"

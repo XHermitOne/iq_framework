@@ -336,7 +336,7 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
 
     def setNumberFormat(self, data=None):
         """
-        Numner num_format start.
+        Numner format start.
         """
         attrs = {}
         if 'Format' in data:

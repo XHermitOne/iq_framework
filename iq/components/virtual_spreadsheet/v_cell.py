@@ -22,7 +22,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
 
         self._attributes = {'name': 'Cell', '__children__': []}
 
-        self._colsA1 = []   # Excel column names in A1 num_format
+        self._colsA1 = []   # Excel column names in A1 format
 
         self._row_idx = -1  # Cell index in rows
         self._col_idx = -1  # Cell index in columns
@@ -179,7 +179,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
 
     def _A1Fmt2R1C1Fmt(self, formula):
         """
-        Convert cell addressing from A1 num_format to R1C1 num_format.
+        Convert cell addressing from A1 format to R1C1 format.
         """
         parse_all = re.findall(self.A1_FORMAT, formula)
         for replace_addr in parse_all:
@@ -189,7 +189,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
 
     def setFormulaR1C1(self, formula):
         """
-        Set the formula in RC num_format.
+        Set the formula in RC format.
         """
         self._attributes['Formula'] = self._A1Fmt2R1C1Fmt(formula)
 
@@ -320,7 +320,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
 
     def set_xmlns(self, xmlns='http://www.w3.org/TR/REC-html40'):
         """
-        Set the way to num_format text in a cell.
+        Set the way to format text in a cell.
         """
         data = self.getData()
         data.setXmlns(xmlns)
@@ -387,6 +387,6 @@ class iqVData(v_prototype.iqVPrototype):
 
     def setXmlns(self, xmlns='http://www.w3.org/TR/REC-html40'):
         """
-        Set the way to num_format text in a cell.
+        Set the way to format text in a cell.
         """
         self._attributes['xmlns'] = str(xmlns)

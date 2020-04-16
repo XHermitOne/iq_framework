@@ -3,8 +3,8 @@
 
 """
 Report file module.
-The report file is an XML num_format file Excel xmlss.
-The documentation for this num_format is located:
+The report file is an XML format file Excel xmlss.
+The documentation for this format is located:
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnexcl2k2/html/odc_xmlss.asp.
 """
 
@@ -51,7 +51,7 @@ class iqReportFile(object):
 
 class iqXMLSpreadSheetReportFile(iqReportFile):
     """
-    XML report file in Excel XMLSS num_format.
+    XML report file in Excel XMLSS format.
     """
     def __init__(self):
         """
@@ -453,7 +453,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
         
     def _equalFormat(self, format1, format2):
         """
-        Equal num_format.
+        Equal format.
         """
         return bool(format1 == format2)
         
@@ -556,7 +556,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
         """
         if type(color) in (list, tuple):
             return '#%02X%02X%02X' % (color[0], color[1], color[2])
-        # If the color is specified in a non-RGB num_format, then leave it unchanged
+        # If the color is specified in a non-RGB format, then leave it unchanged
         return color
 
     def _getNumFmt(self, num_format):

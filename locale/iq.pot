@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-04-15 16:17++07\n"
+"POT-Creation-Date: 2020-04-16 10:28++07\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -498,11 +498,11 @@ msgid "Storage directory:"
 msgstr ""
 
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:215
-msgid "File name num_format:"
+msgid "File name format:"
 msgstr ""
 
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:231
-msgid "Result file num_format:"
+msgid "Result file format:"
 msgstr ""
 
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:248

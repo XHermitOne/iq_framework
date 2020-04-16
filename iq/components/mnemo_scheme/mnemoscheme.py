@@ -14,7 +14,7 @@ from ...engine.wx import wxbitmap_func
 
 __version__ = (0, 0, 0, 1)
 
-# Conversion start command num_format SVG -> PNG
+# Conversion start command format SVG -> PNG
 SVG2PNG_CONVERT_CMD_FMT = 'convert -background none -resize %dx%d -extent %dx%d -gravity center %s %s'
 
 

@@ -4,7 +4,7 @@
 """
 Report data preparation module.
 
-Data num_format:
+Data format:
 
 data={
     '__fields__': [('field_name1',), ('field_name2',) ,...],    # Field data

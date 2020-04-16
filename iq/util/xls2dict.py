@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Excel file converter module in xls to dictionary num_format.
+Excel file converter module in xls to dictionary format.
 """
 
 # --- Подключение библиотек ---
