@@ -82,3 +82,19 @@ def reloadPyModule(name, path=None):
             return None
     unloadPyModule(name)
     return loadPyModule(name, path)
+
+
+def canImportName(import_name):
+    """
+    Can import library name?
+
+    :param import_name: Imported library name.
+    :return: True/False.
+    """
+    import_cmd = 'import ' + str(import_name)
+    try:
+        exec(import_cmd)
+        return True
+    except ImportError:
+        log_func.error(u'It is not possible to import <%s>' % import_name)
+    return False

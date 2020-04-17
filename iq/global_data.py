@@ -49,15 +49,16 @@ USER = None
 WX_ENGINE_TYPE = 'WX'
 QT_ENGINE_TYPE = 'QT'
 CUI_ENGINE_TYPE = 'CUI'
-DEFAULT_ENGINE_TYPE = WX_ENGINE_TYPE
+
+# Set default engine type
+try:
+    import wx
+    DEFAULT_ENGINE_TYPE = WX_ENGINE_TYPE
+except ImportError:
+    DEFAULT_ENGINE_TYPE = CUI_ENGINE_TYPE
+
 ENGINE_TYPE = DEFAULT_ENGINE_TYPE
 ENGINE_TYPES = (WX_ENGINE_TYPE, QT_ENGINE_TYPE, CUI_ENGINE_TYPE)
-
-# Project settings saved to file INI
-# SETTINGS = None
-
-# Access to project objects
-# OBJECTS = None
 
 # Application object
 APPLICATION = None
