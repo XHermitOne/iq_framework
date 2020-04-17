@@ -38,8 +38,11 @@ def start%s():
     """
     Start.
     """
-    app = wx.App()
-    if show%s():
+    app = global_func.getApplication()
+    if app is None:
+        log_func.info(u'Create WX application')
+        app = global_func.createApplication()
+    if mainform_manager.show%s():
         app.MainLoop()
         
 if __name__ == '__main__':
