@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Reference data object model component.
+Unique data object model component.
 """
 
 from ... import object
@@ -14,9 +14,9 @@ from .. import data_model
 __version__ = (0, 0, 0, 1)
 
 
-class iqDataRefObjModel(data_model.COMPONENT):
+class iqDataUniObjModel(data_model.COMPONENT):
     """
-    Reference data object model component.
+    Unique data object model component.
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -30,4 +30,4 @@ class iqDataRefObjModel(data_model.COMPONENT):
         data_model.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context, *args, **kwargs)
 
 
-COMPONENT = iqDataRefObjModel
+COMPONENT = iqDataUniObjModel

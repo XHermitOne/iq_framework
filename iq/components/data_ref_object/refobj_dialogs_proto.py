@@ -13,8 +13,8 @@ import wx.lib.gizmos
 import wx.propgrid as pg
 import  wx.gizmos
 
-import gettext
-_ = gettext.gettext
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqChoiceListDlgProto

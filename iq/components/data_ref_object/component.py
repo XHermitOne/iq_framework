@@ -12,12 +12,13 @@ from ...components import data_navigator
 from . import spc
 from . import ref_object
 from ...util import log_func
+from ...util import lang_func
 
 from ...role import component as role
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 EDIT_PERMISSION = dict(name='edit_ref_objects', description=_('Can edit ref objects'), type='DATA')
 role.addPermision(**EDIT_PERMISSION)

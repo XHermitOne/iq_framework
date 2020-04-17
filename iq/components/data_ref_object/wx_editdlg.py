@@ -15,6 +15,7 @@ import sqlalchemy.types
 
 from ...util import log_func
 from ...util import spc_func
+from ...util import lang_func
 
 from ...engine.wx.dlg import wxdlg_func
 from ...engine.wx import wxbitmap_func
@@ -26,7 +27,7 @@ from . import wx_editcodeproperty
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 # Readonly fields
 NOT_EDITABLE_FIELDS = ('type', 'activate', 'dt_edit', 'computer', 'username')

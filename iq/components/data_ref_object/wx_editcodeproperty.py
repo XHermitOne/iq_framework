@@ -10,9 +10,10 @@ import wx
 import wx.propgrid
 
 from ...util import log_func
+from ...util import lang_func
 from ...engine.wx.dlg import edit_masked_txt_dlg
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 __version__ = (0, 0, 0, 1)
 

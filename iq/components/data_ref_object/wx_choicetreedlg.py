@@ -15,6 +15,7 @@ from . import refobj_dialogs_proto
 
 from ...util import log_func
 from ...util import str_func
+from ...util import lang_func
 
 from ...engine.wx import wxbitmap_func
 from ...engine.wx.dlg import wxdlg_func
@@ -25,7 +26,7 @@ from . import wx_editdlg
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 # Tree dummy text
 TREE_ITEM_LABEL = u'...'

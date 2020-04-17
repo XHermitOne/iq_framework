@@ -15,11 +15,12 @@ from . import refobj_dialogs_proto
 
 import iq
 from ...util import log_func
+from ...util import lang_func
 from ... import passport
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 
 class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
