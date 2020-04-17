@@ -59,6 +59,9 @@ ENGINE_TYPES = (WX_ENGINE_TYPE, QT_ENGINE_TYPE, CUI_ENGINE_TYPE)
 # Access to project objects
 # OBJECTS = None
 
+# Application object
+APPLICATION = None
+
 # Main window object
 MAIN_WINDOW = None
 

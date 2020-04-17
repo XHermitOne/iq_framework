@@ -87,27 +87,29 @@ def execTxtFunction(function, context=None):
     return None
 
 
-def runTask(command, run_filename=None):
+def runTask(command, run_filename=None, rewrite=True):
     """
     Running a command as a separate task.
 
     :type command: C{string}
     :param command: Command.
     :param run_filename: Run filename.
+    :param rewrite: Rewrite command file.
     :return: True/False.
     """
     if sys_func.isWindowsPlatform():
-        return runTaskWindows(command, run_filename=run_filename)
-    return runTaskLinux(command, run_filename=run_filename)
+        return runTaskWindows(command, run_filename=run_filename, rewrite=rewrite)
+    return runTaskLinux(command, run_filename=run_filename, rewrite=rewrite)
 
 
-def runTaskLinux(command, run_filename=None):
+def runTaskLinux(command, run_filename=None, rewrite=True):
     """
     Running a command as a separate task with a separate console in Linux.
 
     :type command: C{string}
     :param command: Command.
     :param run_filename: Run filename.
+    :param rewrite: Rewrite command file.
     :return: True/False.
     """
     if run_filename is None:
@@ -117,7 +119,7 @@ def runTaskLinux(command, run_filename=None):
                                                 cur_dir=file_func.getFrameworkPath())
     try:
         result = txtfile_func.saveTextFile(txt_filename=run_sh_filename,
-                                           txt=command, rewrite=False)
+                                           txt=command, rewrite=rewrite)
 
         if os.path.exists(run_sh_filename):
             sh_state = os.stat(run_sh_filename)
@@ -131,13 +133,15 @@ def runTaskLinux(command, run_filename=None):
     return False
 
 
-def runTaskWindows(command, run_filename=None):
+def runTaskWindows(command, run_filename=None, rewrite=True):
     """
     Running a command as a separate task with a separate console in Windows.
 
     :type command: C{string}
     :param command: Command.
     :param run_filename: Run filename.
+    :param rewrite: Rewrite command file.
+    :return: True/False.
     """
     if run_filename is None:
         run_filename = global_func.getProjectName() if global_func.getProjectName() else 'run'
@@ -146,7 +150,7 @@ def runTaskWindows(command, run_filename=None):
                                                  cur_dir=file_func.getFrameworkPath())
     try:
         result = txtfile_func.saveTextFile(txt_filename=run_bat_filename,
-                                           txt=command, rewrite=False)
+                                           txt=command, rewrite=rewrite)
 
         log_func.info(u'Run task <%s>' % run_bat_filename)
         os.startfile(run_bat_filename)

@@ -166,7 +166,7 @@ class iqProjectManager(object):
 cd %s
 python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s        
 ''' % (file_func.getFrameworkPath(), global_func.getEngineType(), name)
-        return exec_func.runTask(cmd, run_filename=name)
+        return exec_func.runTask(cmd, run_filename=name, rewrite=True)
 
     def debug(self, name=None):
         """
@@ -188,6 +188,17 @@ python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s
         :param password: User password.
         :return: True/False.
         """
+        result = False
+        if username is None:
+            result = dlg_func.getLoginDlg(title=_(u'LOGIN'),
+                                          reg_users=self.getUserNames())
+            if not result:
+                # If login failed then exit
+                log_func.error(u'Failed login')
+                return result
+            else:
+                username, password, password_hash = result
+
         user_psp = passport.iqPassport(prj=self.name, module=self.name,
                                        typename=user.COMPONENT_TYPE, name=username)
         log_func.debug(u'User passport <%s>' % user_psp.getAsStr())
@@ -195,14 +206,10 @@ python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s
 
         global_data.setGlobal('USER', user_obj)
 
-        # Login loop
-        result = False
-        for i in range(user.DEFAULT_LOGIN_LOOP_COUNT):
-            result = user_obj.login(password)
-            if result:
-                break
+        result = user_obj.login(password)
         if not result:
             # If login failed then exit
+            log_func.error(u'Failed login user <%s>' % user_obj.getName())
             return result
 
         global_data.setGlobal('USER', user_obj if result else None)
@@ -220,3 +227,11 @@ python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s
         if user_obj:
             return user_obj.logout()
         return False
+
+    def getUserNames(self):
+        """
+        Get project user names.
+
+        :return: User name list.
+        """
+        return ('admin', )

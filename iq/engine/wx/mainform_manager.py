@@ -12,6 +12,7 @@ import wx.lib.agw.aui
 
 from ...util import log_func
 from ...util import file_func
+from ...util import global_func
 from ..wx.dlg import wxdlg_func
 from ..wx import wxbitmap_func
 
@@ -31,7 +32,7 @@ def getMainWindow():
     """
     Main window object.
     """
-    app = wx.GetApp()
+    app = global_func.getApplication()
     if app:
         return app.GetTopWindow()
     return None
@@ -261,3 +262,26 @@ class iqMainFormManager(base_manager.iqBaseManager):
         :param title: Page title.
         """
         return self.getMainNotebook().openPageByTitle(title=title)
+
+
+def showMainForm(main_form_class):
+    """
+    Open main form.
+
+    :param main_form_class: Main form class.
+    :return: True/False.
+    """
+    frame = None
+    try:
+        frame = main_form_class(parent=None)
+        app = global_func.getApplication()
+        if app:
+            app.SetTopWindow(frame)
+        frame.init()
+        frame.Show()
+        return True
+    except:
+        if frame:
+            frame.Destroy()
+        log_func.fatal(u'Error show frame <%s>' % main_form_class.__name__)
+    return False

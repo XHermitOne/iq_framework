@@ -13,8 +13,12 @@ import wx
 import wx.lib.imagebrowser
 
 from ....util import log_func
+from ....util import global_func
+from ....util import lang_func
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):
@@ -576,11 +580,11 @@ class iqStrComboBoxDialog(wx.Dialog):
             self._text = wx.StaticText(self, -1, prompt_text, wx.Point(10, 10), wx.Size(-1, -1))
 
             id_ = wx.NewId()
-            self._ok_button = wx.Button(self, id_, u'OK', wx.Point(420, 80), wx.Size(60, -1))
+            self._ok_button = wx.Button(self, id_, _(u'OK'), wx.Point(420, 80), wx.Size(60, -1))
             self.Bind(wx.EVT_BUTTON, self.onOKButtonClick, id=id_)
 
             id_ = wx.NewId()
-            self._cancel_button = wx.Button(self, id_, u'Cancel', wx.Point(340, 80), wx.Size(60, -1))
+            self._cancel_button = wx.Button(self, id_, _(u'Cancel'), wx.Point(340, 80), wx.Size(60, -1))
             self.Bind(wx.EVT_BUTTON, self.onCancelButtonClick, id=id_)
 
             id_ = wx.NewId()
@@ -674,7 +678,7 @@ class iqAboutDialog(wx.Dialog):
             sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
 
             id_ = wx.NewId()
-            self._ok_button = wx.Button(self, id_, u'OK')
+            self._ok_button = wx.Button(self, id_, _(u'OK'))
             self.Bind(wx.EVT_BUTTON, self.onOKButtonClick, id=id_)
             sizer.Add(self._ok_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
 
@@ -707,38 +711,30 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
     :param reg_users: User name list.
     :return: Tuple: (username, password, password hash) or None if error.
     """
-    dlg = None
-    win_clear = False
-    try:
-        if parent is None:
-            id_ = wx.NewId()
-            parent = wx.Frame(None, id_, '')
-            win_clear = True
+    app = global_func.getApplication()
+    if app is None:
+        log_func.info(u'LOGIN. Create WX application')
+        app = global_func.createApplication()
 
+    dlg = None
+    result = None
+    try:
         dlg = iqLoginDialog(parent, title, default_username, reg_users)
         if dlg.ShowModal() == wx.ID_OK:
             result = (dlg.getUsername(), dlg.getPassword(), dlg.getPasswordHash())
-            dlg.Destroy()
-
-            if win_clear:
-                parent.Destroy()
-            return result
     except:
         log_func.fatal(u'Open login dialog error')
 
     if dlg:
        dlg.Destroy()
-
-    if win_clear:
-        parent.Destroy()
-    return None
+    return result
 
 
 class iqLoginDialog(wx.Dialog):
     """
     Login user dialog.
     """
-    def __init__(self, parent_, title='', default_username='', reg_users=None):
+    def __init__(self, parent, title='', default_username='', reg_users=None):
         """
         Constructor.
 
@@ -751,7 +747,7 @@ class iqLoginDialog(wx.Dialog):
             if not title:
                 title = ''
                 
-            wx.Dialog.__init__(self, parent_, -1, title=title,
+            wx.Dialog.__init__(self, parent, -1, title=title,
                                pos=wx.DefaultPosition, size=wx.Size(350, 150))
 
             from ic.PropertyEditor.images import editorimg
@@ -761,20 +757,20 @@ class iqLoginDialog(wx.Dialog):
                 self.SetIcon(icon)
 
             id_ = wx.NewId()
-            self._text = wx.StaticText(self, id_, u'User name:',
+            self._text = wx.StaticText(self, id_, _(u'User name:'),
                                        wx.Point(10, 10), wx.Size(-1, -1))
             id_ = wx.NewId()
-            self._text = wx.StaticText(self, id_, u'Password:',
+            self._text = wx.StaticText(self, id_, _(u'Password:'),
                                        wx.Point(10, 40), wx.Size(-1, -1))
 
             id_ = wx.NewId()
-            self._ok_button = wx.Button(self, id_, u'OK',
+            self._ok_button = wx.Button(self, id_, _(u'OK'),
                                         wx.Point(280, 80), wx.Size(60, -1))
             self.Bind(wx.EVT_BUTTON, self.onOKButtonClick, id=id_)
             self.Bind(wx.EVT_KEY_DOWN, self.onKeyDown)
 
             id_ = wx.NewId()
-            self._cancel_button = wx.Button(self, id_, u'Cancel',
+            self._cancel_button = wx.Button(self, id_, _(u'Cancel'),
                                             wx.Point(200, 80), wx.Size(60, -1))
             self.Bind(wx.EVT_BUTTON, self.onCancelButtonClick, id=id_)
 
@@ -787,6 +783,9 @@ class iqLoginDialog(wx.Dialog):
                                           value=default_username,
                                           pos=(120, 10), size=(220, -1),
                                           choices=reg_users)
+            if reg_users:
+                self._user_edit.Select(0)
+
             id_ = wx.NewId()
             self._password_edit = wx.TextCtrl(self, id_, '',
                                               wx.Point(120, 40), wx.Size(220, -1),

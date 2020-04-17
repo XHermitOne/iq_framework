@@ -46,5 +46,14 @@ class iqProject(object.iqObject, prj.iqProjectManager):
         """
         return self.filterChildrenByClass(child_class=role.COMPONENT)
 
+    def getUserNames(self):
+        """
+        Get project user names.
+
+        :return: User name list.
+        """
+        users = self.getUsers()
+        return tuple([user_obj.getName() for user_obj in users])
+
 
 COMPONENT = iqProject

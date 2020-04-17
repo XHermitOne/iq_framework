@@ -88,4 +88,5 @@ class iqUser(object.iqObject, user.iqUserManager):
         roles = [role for role in prj.getRoles() if role.getName() in role_names]
         return tuple(roles)
 
+
 COMPONENT = iqUser

@@ -182,6 +182,35 @@ def getDefaultShellEncoding():
     return global_data.getGlobal('DEFAULT_SHELL_ENCODING')
 
 
+def createApplication():
+    """
+    Create application object.
+
+    :return: Application object.
+    """
+    app = global_data.getGlobal('APPLICATION')
+    if app is None:
+        if isWXEngine():
+            import wx
+            app = wx.App()
+        elif isQTEngine():
+            app = None
+        elif isCUIEngine():
+            app = None
+
+        if app:
+            global_data.setGlobal('APPLICATION', app)
+    return app
+
+
+def getApplication():
+    """
+    Get application object.
+    """
+    app = global_data.getGlobal('APPLICATION')
+    return app
+
+
 def getMainWin():
     """
     Main window object.
@@ -189,8 +218,8 @@ def getMainWin():
     main_win = global_data.getGlobal('MAIN_WINDOW')
     if main_win is None:
         if isWXEngine():
-            from ..engine.wx import mainform_manager
-            main_win = mainform_manager.getMainWindow()
+            app = getApplication()
+            main_win = app.GetTopWindow() if app else None
         elif isQTEngine():
             main_win = None
         elif isCUIEngine():
