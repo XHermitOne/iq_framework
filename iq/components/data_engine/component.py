@@ -10,7 +10,12 @@ from ... import object
 from . import spc
 from . import db_engine
 
+from ...dialog import dlg_func
+from ...util import lang_func
+
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqDataEngine(db_engine.iqDBEngineManager, object.iqObject):
@@ -28,6 +33,22 @@ class iqDataEngine(db_engine.iqDBEngineManager, object.iqObject):
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         db_engine.iqDBEngineManager.__init__(self, *args, **kwargs)
+
+    def test(self):
+        """
+        Object test function.
+
+        :return: True/False.
+        """
+        check_connection = self.checkConnection()
+        if check_connection:
+            dlg_func.openMsgBox(_(u'MESSAGE'),
+                                _(u'Database connection established') + u' <%s>' % self.getDBUrl())
+            return True
+        else:
+            dlg_func.openErrBox(_(u'ERROR'),
+                                _(u'Database connection not established') + u' <%s>' % self.getDBUrl())
+        return False
 
     def getDialect(self):
         """

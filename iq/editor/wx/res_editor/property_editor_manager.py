@@ -753,7 +753,7 @@ class iqPropertyEditorManager(object):
 
     def setPropertyValue(self, property, name, value, spc=None):
         """
-        Set property value as string.
+        Set property value.
 
         :param property: Property object.
         :param name: Attribute name.

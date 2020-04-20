@@ -228,7 +228,11 @@ class iqPassport(object):
 
         if find_path is None:
             prj_name = global_func.getProjectName() if not passport.prj or passport.prj == DEFAULT_THIS_PROJECT_NAME else passport.prj
-            prj_path = os.path.join(file_func.getFrameworkPath(), prj_name)
+            prj_path = os.path.join(file_func.getFrameworkPath(), prj_name) if prj_name else None
+            if prj_name is None:
+                log_func.error(u'Project name not defined')
+                return None
+
             find_path = prj_path
 
         file_names = file_func.getFileNames(find_path)

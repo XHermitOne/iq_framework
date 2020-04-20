@@ -12,9 +12,15 @@ import wx.propgrid
 from iq.object import object_spc
 from ...editor import property_editor_id
 from ...util import str_func
+from ...util import log_func
+# from ...util import global_func
+from ...util import lang_func
+from ...dialog import dlg_func
+from ...kernel import kernel
 
 __version__ = (0, 0, 0, 1)
 
+_ = lang_func.getTranslation().gettext
 
 DB_DRIVERS = {
     'firebird': ('fdb', 'kinterbasdb'),
@@ -61,6 +67,18 @@ def onDialectChange(resource_editor=None, resource=None, *args, **kwargs):
             resource_editor.getProperty('driver').SetChoices(choices)
 
 
+def testComponent(spc, *args, **kwargs):
+    """
+    Test component.
+
+    :param spc: Component specification.
+    :return: True/False.
+    """
+    from . import component
+    obj = component.iqDataEngine(parent=None, resource=spc, context=dict())
+    return obj.test()
+
+
 COMPONENT_TYPE = 'iqDataEngine'
 
 DATAENGINE_SPC = {
@@ -94,6 +112,7 @@ DATAENGINE_SPC = {
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),
+    '__test__': testComponent,
     '__edit__': {
         'dialect': {
             'editor': property_editor_id.CHOICE_EDITOR,

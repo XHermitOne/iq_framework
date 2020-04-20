@@ -140,3 +140,27 @@ class iqDBEngineManager(object):
             db_url = self.getDBUrl()
 
         return sqlalchemy.create_engine(db_url, *args, **kwargs)
+
+    def checkConnection(self):
+        """
+        Connection check.
+
+        :return: True/False.
+        """
+        engine = self.create()
+
+        is_connect = False
+        if engine:
+            connection = None
+            try:
+                connection = engine.connect()
+                result = connection.execute('SELECT 1').fetchall()
+                if result:
+                    is_connect = True
+                connection.close()
+            except:
+                log_func.fatal(u'Error check connection <%s>' % self.getDBUrl())
+                if connection:
+                    connection.close()
+                is_connect = False
+        return is_connect

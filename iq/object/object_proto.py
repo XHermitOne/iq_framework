@@ -279,3 +279,12 @@ class iqObject(object):
         """
         children = self.getChildren()
         return [child for child in children if issubclass(child.__class__, child_class)]
+
+    def test(self):
+        """
+        Test object.
+
+        :return: True/False.
+        """
+        log_func.error(u'Not defined test function for component <%s : %s>' % (self.getName(), self.getType()))
+        return False
