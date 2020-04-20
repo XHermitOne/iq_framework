@@ -13,6 +13,7 @@ from . import spc
 from . import ref_object
 from ...util import log_func
 from ...util import lang_func
+from ...util import global_func
 
 from ...role import component as role
 
@@ -60,6 +61,19 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
             except:
                 log_func.fatal(u'Error level code lengths format <%s>' % cod_len)
         return cod_len
+
+    def test(self):
+        """
+        Object test function.
+
+        :return: True/False.
+        """
+        if global_func.isWXEngine():
+            import wx
+            app = wx.GetApp()
+            parent = app.GetTopWindow() if app else None
+            return self.edit(parent=parent)
+        return False
 
 
 COMPONENT = iqDataRefObject

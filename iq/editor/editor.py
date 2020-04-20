@@ -19,7 +19,7 @@ from ..editor.wx import wxfb_manager
 __version__ = (0, 0, 0, 1)
 
 
-def openEditor():
+def openFrameworkEditor():
     """
     Open main editor form.
 
@@ -45,7 +45,7 @@ def _openResourceEditor(res_filename):
     if global_func.isWXEngine():
         if os.path.isdir(res_filename) and res_filename == file_func.getFrameworkPath():
             log_func.info(u'Main editor <%s>' % res_filename)
-            return openEditor()
+            return openFrameworkEditor()
 
         elif res_func.isResourceFile(res_filename):
             log_func.info(u'Edit resource <%s>' % res_filename)

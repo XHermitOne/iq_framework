@@ -36,6 +36,18 @@ def validRefObjModelPsp(psp, *args, **kwargs):
     return psp_obj.getType() in REF_OBJ_MODEL_TYPES
 
 
+def testComponent(spc, *args, **kwargs):
+    """
+    Test function.
+
+    :param spc: Component specification.
+    :return: True/False.
+    """
+    from . import component
+    obj = component.iqDataRefObject(parent=None, resource=spc, context=dict())
+    return obj.test()
+
+
 COMPONENT_TYPE = 'iqDataRefObject'
 
 
@@ -55,6 +67,7 @@ DATAREFOBJECT_SPC = {
     '__parent__': data_navigator.SPC,
     '__doc__': None,
     '__content__': (),
+    '__test__': testComponent,
     '__edit__': {
         'model': {
             'editor': property_editor_id.PASSPORT_EDITOR,

@@ -113,7 +113,7 @@ def main(*argv):
         kernel.start(mode=mode, project_name=project, username=username, password=password)
         kernel.stop()
     elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
-        editor.openEditor()
+        editor.openFrameworkEditor()
     elif mode == iq.EDITOR_MODE_STATE:
         # kernel = iq.createKernel()
         editor.openResourceEditor(res_filename=res_filename)
