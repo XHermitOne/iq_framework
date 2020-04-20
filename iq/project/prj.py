@@ -126,6 +126,7 @@ class iqProjectManager(object):
         """
         if prj_path and os.path.exists(prj_path):
             log_func.warning(u'Project path <%s> exists' % prj_path)
+            return py_func.createInitModule(prj_path)
         elif not prj_path:
             log_func.warning(u'Project path <%s> not defined' % prj_path)
         elif prj_path and not os.path.exists(prj_path):

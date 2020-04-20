@@ -29,6 +29,27 @@ __version__ = (0, 0, 0, 1)
 '''
 
 
+def getInitPyFilename(package_path):
+    """
+    Get __init__.py full filename.
+
+    :param package_path: Package path.
+    :return: __init__.py full filename.
+    """
+    return os.path.join(package_path, INIT_PY_FILENAME)
+
+
+def isFolderPyPackage(folder_path):
+    """
+    Is the folder a Python package?
+
+    :param folder_path: Folder path.
+    :return: True/False.
+    """
+    init_py_filename = getInitPyFilename(folder_path)
+    return os.path.exists(init_py_filename)
+
+
 def createPyModule(package_path, py_modulename=None, py_file_body=None, rewrite=False):
     """
     Create py_modulename.py python module file.
