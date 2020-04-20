@@ -12,6 +12,9 @@ import wx.adv
 import wx.lib.gizmos
 import wx.aui
 
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
+
 ###########################################################################
 ## Class iqSelectPassportDialogProto
 ###########################################################################
@@ -19,7 +22,7 @@ import wx.aui
 class iqSelectPassportDialogProto ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Select passport", pos = wx.DefaultPosition, size = wx.Size( 939,345 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Select passport"), pos = wx.DefaultPosition, size = wx.Size( 939,345 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
@@ -27,7 +30,7 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		
 		bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Passport:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, _(u"Passport:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		bSizer5.Add( self.m_staticText2, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
@@ -47,8 +50,8 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.prj_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.prj_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_SINGLE )
-		prj_treeListCtrl.AddColumn( u"Name", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
-		prj_treeListCtrl.AddColumn( u"Description", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
+		self.prj_treeListCtrl.AddColumn( _(u"Name"), 200, wx.ALIGN_LEFT)
+		self.prj_treeListCtrl.AddColumn( _(u"Description"), 300, wx.ALIGN_LEFT)
 		
 		bSizer2.Add( self.prj_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		
@@ -60,8 +63,8 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		bSizer3 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.res_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.res_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.lib.gizmos.TR_DEFAULT_STYLE|wx.lib.gizmos.TR_SINGLE )
-		res_treeListCtrl.AddColumn( u"Name", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
-		res_treeListCtrl.AddColumn( u"Description", wx.COL_WIDTH_DEFAULT, wx.ALIGN_LEFT)
+		self.res_treeListCtrl.AddColumn( _(u"Name"), 200, wx.ALIGN_LEFT)
+		self.res_treeListCtrl.AddColumn( _(u"Description"), 300, wx.ALIGN_LEFT)
 		
 		bSizer3.Add( self.res_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
 		
@@ -74,10 +77,10 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
 		
-		self.cancel_button = wx.Button( self, wx.ID_ANY, u"Cancel", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.cancel_button = wx.Button( self, wx.ID_ANY, _(u"Cancel"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer4.Add( self.cancel_button, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		
-		self.ok_button = wx.Button( self, wx.ID_ANY, u"OK", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.ok_button = wx.Button( self, wx.ID_ANY, _(u"OK"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.ok_button.SetDefault() 
 		bSizer4.Add( self.ok_button, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 		

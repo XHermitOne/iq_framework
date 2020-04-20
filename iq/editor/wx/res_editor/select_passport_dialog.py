@@ -353,6 +353,7 @@ def selectPassportDlg(parent=None, prj_name=None, default_psp=None):
     :param default_psp: Default selected passport.
     :return: Passport as string or None if Cancel pressed or error.
     """
+    log_func.debug(u'Select passport')
     dlg = None
     try:
         dlg = iqSelectPassportDialog(parent=parent)

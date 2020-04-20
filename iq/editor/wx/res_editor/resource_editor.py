@@ -358,7 +358,12 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                                                      description=selected_resource.get('description', ''),
                                                      activate=selected_resource.get('activate', True))
                     else:
-                        log_func.error(u'Value <%s> of property [%s] not valid' % (str_value, name))
+                        msg = u'Value <%s> of property [%s] is not valid' % (str_value, name)
+                        log_func.error(msg)
+                        wxdlg_func.openWarningBox(title=_(u'VALIDATE'),
+                                                  prompt_text=msg, parent=self)
+                        self.setPropertyValueAsString(wx_property, name, None, spc)
+                        selected_resource[name] = None
 
         # event.Skip()
 

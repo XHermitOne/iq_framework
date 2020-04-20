@@ -9,10 +9,14 @@ import wx.propgrid
 
 from ....util import log_func
 from ....util import global_func
+from ....util import lang_func
+# from ....dialog import dlg_func
 
 from . import select_passport_dialog
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
@@ -40,7 +44,7 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
         If failed, return False or (False, None). If success, return tuple
             (True, newValue).
         """
-        value = text # self.str_to_val_user_property(text, self.property_edit_manager)
+        value = text    # self.str_to_val_user_property(text, self.property_edit_manager)
         return True, value
 
     def CreateControls(self, propgrid, property, pos, sz):
@@ -75,6 +79,12 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
         except:
             log_func.fatal(u'Create the actual controls error <%s>' % self.__class__.__name__)
 
+    def getResourceEditor(self):
+        """
+        Get resource editor object.
+        """
+        return self.property_edit_manager.GetParent().GetParent().GetParent() if self.property_edit_manager else None
+
     def OnEvent(self, propgrid, property, ctrl, event):
         """
         Return True if modified editor value should be committed to
@@ -88,9 +98,11 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
 
         if eventType == wx.wxEVT_COMMAND_BUTTON_CLICKED:
             property_value = property.GetValue()
+            # log_func.debug(u'Property <%s : %s>. Select passport' % (property.GetName(), str(property_value)))
             value = select_passport_dialog.selectPassportDlg(parent=None,
                                                              prj_name=global_func.getProjectName(),
                                                              default_psp=property_value)
+
             if value is not None:
                 property.SetValueInEvent(value)
             return True

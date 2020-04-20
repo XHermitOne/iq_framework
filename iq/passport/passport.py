@@ -66,6 +66,21 @@ class iqPassport(object):
         self.guid = guid
         return self
 
+    def getProject(self):
+        return self.prj
+
+    def getModule(self):
+        return self.module
+
+    def getType(self):
+        return self.typename
+
+    def getName(self):
+        return self.name
+
+    def getGUID(self):
+        return self.guid
+
     def getAsStr(self):
         """
         Convert to string.

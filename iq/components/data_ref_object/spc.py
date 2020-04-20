@@ -15,7 +15,25 @@ from .. import data_navigator
 from ...util import spc_func
 from ... import passport
 
+from .. import data_refobj_model
+
 __version__ = (0, 0, 0, 1)
+
+
+REF_OBJ_MODEL_TYPES = (data_refobj_model.COMPONENT_TYPE, )
+
+
+def validRefObjModelPsp(psp, *args, **kwargs):
+    """
+    Validate reference object model passport.
+
+    :param psp: Passport.
+    :param args:
+    :param kwargs:
+    :return: True/False.
+    """
+    psp_obj = passport.iqPassport().setAsAny(psp)
+    return psp_obj.getType() in REF_OBJ_MODEL_TYPES
 
 
 COMPONENT_TYPE = 'iqDataRefObject'
@@ -40,6 +58,7 @@ DATAREFOBJECT_SPC = {
     '__edit__': {
         'model': {
             'editor': property_editor_id.PASSPORT_EDITOR,
+            'valid': validRefObjModelPsp,
         },
 
         'cod_len': property_editor_id.STRINGLIST_EDITOR,

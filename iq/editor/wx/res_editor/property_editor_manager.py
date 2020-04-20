@@ -89,6 +89,22 @@ class iqPropertyEditorManager(object):
             log_func.error(u'Not define property editor')
         return False
 
+    def setSpecification(self, spc=None):
+        """
+        Set current component specification.
+
+        :param spc: Component specification.
+        """
+        self._specification = spc
+
+    def getSpecification(self):
+        """
+        Get current component specification.
+        """
+        if hasattr(self, '_specification'):
+            return self._specification
+        return None
+
     def createPropertyEditor(self, name, value, property_type=None, spc=None):
         """
         Create wx property.
@@ -312,6 +328,9 @@ class iqPropertyEditorManager(object):
             return False
 
         property_editor.Clear()
+
+        # Set current component specification
+        self.setSpecification(resource)
 
         bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
         prop_page = property_editor.AddPage(_(u'Properties'), bmp)
@@ -623,7 +642,7 @@ class iqPropertyEditorManager(object):
             editor = self.findPropertyEditor(name, spc[spc_func.PARENT_ATTR_NAME])
         return editor
 
-    def validatePropertyValue(self, name, value, spc):
+    def validatePropertyValue(self, name, value, spc=None):
         """
         Validate property value.
 
@@ -638,6 +657,12 @@ class iqPropertyEditorManager(object):
         if not VALIDATE_ENABLE:
             return True
         valid = True
+
+        if spc is None:
+            spc = self.getSpecification()
+        if spc is None:
+            log_func.error(u'Property editor. Current component specification not defined')
+            return True
 
         # Valid attribute type
         editor = self.findPropertyEditor(name, spc)
@@ -693,7 +718,7 @@ class iqPropertyEditorManager(object):
             property_type = self.findPropertyType(name, spc[spc_func.PARENT_ATTR_NAME])
         return property_type
 
-    def getPropertyValueAsString(self, property, name, spc):
+    def getPropertyValueAsString(self, property, name, spc=None):
         """
         Get property value as string.
 
@@ -702,6 +727,9 @@ class iqPropertyEditorManager(object):
         :param spc: Component specification.
         :return: Property value as string.
         """
+        if spc is None:
+            spc = self.getSpecification()
+
         editor = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, None)
         if editor == property_editor_id.PASSWORD_EDITOR:
             str_value = str(property.GetValue())
@@ -710,3 +738,28 @@ class iqPropertyEditorManager(object):
         # log_func.info(u'Property [%s]. New value <%s>' % (name, str_value))
         return str_value
 
+    def setPropertyValueAsString(self, property, name, value, spc=None):
+        """
+        Set property value as string.
+
+        :param property: Property object.
+        :param name: Attribute name.
+        :param value: Attribute value.
+        :param spc: Component specification.
+        :return: True/False.
+        """
+        property.SetValueFromString(str(value))
+        return True
+
+    def setPropertyValue(self, property, name, value, spc=None):
+        """
+        Set property value as string.
+
+        :param property: Property object.
+        :param name: Attribute name.
+        :param value: Attribute value.
+        :param spc: Component specification.
+        :return: True/False.
+        """
+        property.SetValue(value)
+        return True
