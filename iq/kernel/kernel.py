@@ -59,6 +59,7 @@ class iqKernel(object):
         :return: True/False.
         """
         global_func.setProjectName(project_name)
+        log_func.info(u'Set project <%s>' % project_name)
         return True
 
     def start(self, mode=None, project_name=None, username=None, password=None):

@@ -13,6 +13,8 @@ from ..util import res_func
 from ..util import py_func
 from ..util import file_func
 
+from ..kernel import kernel
+
 from ..dialog import dlg_func
 from ..editor.wx import wxfb_manager
 
@@ -89,15 +91,23 @@ def _openResourceEditor(res_filename):
     return False
 
 
-def openResourceEditor(res_filename):
+def openResourceEditor(res_filename, create_kernel=True):
     """
     Open resource editor form.
 
     :param res_filename: Resource filename.
         Resource file may be *.res or *.py file.
+    :param create_kernel: Create kernel?
     :return: True/False.
     """
     try:
+        if create_kernel:
+            # Create KERNEL object
+            kernel_obj = kernel.createKernel()
+            prj_res_path = res_filename.replace(file_func.getFrameworkPath(), '')
+            prj_name = [item for item in prj_res_path.split(os.path.sep) if item][0]
+            kernel_obj.setProject(prj_name)
+
         return _openResourceEditor(res_filename)
     except:
         log_func.fatal(u'Error open resource editor form')

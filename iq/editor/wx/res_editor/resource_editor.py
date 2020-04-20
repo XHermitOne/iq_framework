@@ -29,10 +29,8 @@ from ....engine.wx import imglib_manager
 from ....engine.wx.dlg import wxdlg_func
 from ....import components
 from .... import project
-from ....kernel import kernel
 from .. import clipboard
 
-# from ... import property_editor_id
 from . import property_editor_manager
 from . import select_component_menu
 from . import new_resource_dialog
@@ -916,23 +914,14 @@ def openResourceEditor(parent=None, res_filename=None):
     return False
 
 
-def runResourceEditor(res_filename=None, create_kernel=True):
+def runResourceEditor(res_filename=None):
     """
     Run resource editor.
 
     :param res_filename: Resource file name.
-    :param create_kernel: Create kernel?
     :return: True/False.
     """
     app = wx.App()
-
-    if create_kernel:
-        # Create KERNEL object
-        kernel_obj = kernel.createKernel()
-        prj_res_path = res_filename.replace(file_func.getFrameworkPath(), '')
-        prj_name = [item for item in prj_res_path.split(os.path.sep) if item][0]
-        kernel_obj.setProject(prj_name)
-
     openResourceEditor(res_filename=res_filename)
     app.MainLoop()
 
