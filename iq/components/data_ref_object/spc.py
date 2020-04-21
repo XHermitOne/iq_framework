@@ -60,7 +60,7 @@ DATAREFOBJECT_SPC = {
 
     '_children_': [],
 
-    'cod_len': None,
+    'cod_len': (2, ),
 
     '__package__': u'Data',
     '__icon__': 'fatcow/book_addresses',
