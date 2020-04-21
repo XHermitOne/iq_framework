@@ -56,6 +56,7 @@ class iqUser(object.iqObject, user.iqUserManager):
             if context:
                 context.update(dict(os.environ))
             result = exec_func.execTxtFunction(do_main_func, context=context)
+            log_func.info(u'User. Execute main function result <%s>' % str(result))
         else:
             log_func.warning(u'Not define main function for <%s> user' % self.getName())
         return result
