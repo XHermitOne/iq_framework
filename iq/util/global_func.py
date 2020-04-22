@@ -161,6 +161,16 @@ def getUser():
     return global_data.getGlobal('USER')
 
 
+def isUserAdministrator():
+    """
+    Is the user an administrator?
+
+    :return: True/False.
+    """
+    cur_user = getUser()
+    return cur_user.isAdministrator() if cur_user else False
+
+
 def getUsername():
     """
     Get current username.
@@ -168,9 +178,7 @@ def getUsername():
     :return: Username or None if error.
     """
     user = getUser()
-    if user:
-        return user.getName()
-    return None
+    return user.getName() if user else None
 
 
 def getDefaultShellEncoding():

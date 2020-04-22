@@ -371,3 +371,30 @@ class iqModelNavigatorManager(object):
         :return:
         """
         pass
+
+    def clear(self):
+        """
+        Clear reference data object tables.
+
+        :return: True/False.
+        """
+        try:
+            self.getModelQuery().delete(synchronize_session=False)
+            self.getScheme().getSession().commit()
+            log_func.info(u'Clear reference data object <%s>' % self.getName())
+            return True
+        except:
+            self.getScheme().getSession().rollback()
+            log_func.fatal(u'Error clear reference data object <%s>' % self.getName())
+        return False
+
+    def setDefault(self, records=()):
+        """
+        Set default data object tables.
+
+        :param records: Record list as tuple of record dictionaries.
+        :return: True/False.
+        """
+        if self.clear():
+            return self.addRecs(records)
+        return False

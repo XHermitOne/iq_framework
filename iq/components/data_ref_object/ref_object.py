@@ -49,22 +49,6 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         return DEFAULT_ACTIVE_COL_NAME
 
-    def clear(self):
-        """
-        Clear reference data object tables.
-
-        :return: True/False.
-        """
-        try:
-            self.getModelQuery().delete(synchronize_session=False)
-            self.getScheme().getSession().commit()
-            log_func.info(u'Clear reference data object <%s>' % self.getName())
-            return True
-        except:
-            self.getScheme().getSession().rollback()
-            log_func.fatal(u'Error clear reference data object <%s>' % self.getName())
-        return False
-
     def getRecByCod(self, cod):
         """
         Get record by cod.
