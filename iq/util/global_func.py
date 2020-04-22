@@ -161,7 +161,7 @@ def getUser():
     return global_data.getGlobal('USER')
 
 
-def isUserAdministrator():
+def isAdministratorUser():
     """
     Is the user an administrator?
 

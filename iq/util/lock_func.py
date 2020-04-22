@@ -302,7 +302,7 @@ def readLockRecord(lock_filename):
     return None
 
 
-def isLockedFile(filename):
+def isLockFile(filename):
     """
     Is locked file?
 
@@ -396,7 +396,7 @@ def getLockUsername(lock_filename):
 
     :param lock_filename: Lock filename.
     """
-    if isLockedFile(lock_filename):
+    if isLockFile(lock_filename):
         lock_rec = readLockRecord(lock_filename)
         return lock_rec.get('user', UNKNOWN_USER) if isinstance(lock_rec, dict) else UNKNOWN_USER
     return UNKNOWN_USER
@@ -408,7 +408,7 @@ def getLockComputer(lock_filename):
 
     :param lock_filename: Lock filename.
     """
-    if isLockedFile(lock_filename):
+    if isLockFile(lock_filename):
         lock_rec = readLockRecord(lock_filename)
         return lock_rec.get('computer', UNKNOWN_COMPUTER) if isinstance(lock_rec, dict) else UNKNOWN_COMPUTER
     return UNKNOWN_COMPUTER
@@ -444,14 +444,14 @@ def unLockObj(lock_name, *args, **kwargs):
     return unLockFile(getLockFilename(lock_name=lock_name), *args, **kwargs)
 
 
-def isLockedObj(lock_name):
+def isLockObj(lock_name):
     """
     Is locked object?
 
     :param lock_name: Lock name.
     :return:
     """
-    return isLockedFile(getLockFilename(lock_name=lock_name))
+    return isLockFile(getLockFilename(lock_name=lock_name))
 
 
 def getLockUsernameObj(lock_name):
