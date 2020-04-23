@@ -294,6 +294,20 @@ def copyFile(src_filename, dst_filename, rewrite=True):
         return False
 
 
+def copyToDir(src_filename, dst_dirname, rewrite=True):
+    """
+    Make a copy of the file in destination directory.
+
+    :param src_filename: Source file name.
+    :param dst_dirname: Destination directory name.
+    :param rewrite: Overwrite existing file?
+    :return: True/False.
+    """
+    base_filename = os.path.basename(src_filename)
+    dst_filename = os.path.join(dst_dirname, base_filename)
+    return copyFile(src_filename=src_filename, dst_filename=dst_filename, rewrite=rewrite)
+
+
 def getFilesByMask(filename_mask):
     """
     List of files by mask.
