@@ -88,6 +88,10 @@ pip3 install mtranslate
 
 sudo apt install --assume-yes python3-jinja2
 
+# SCADA
+sudo apt install --assume-yes gnuplot
+
+
 # 
 sudo apt --fix-broken install --assume-yes
 

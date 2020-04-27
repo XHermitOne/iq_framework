@@ -19,7 +19,7 @@ __version__ = (0, 0, 0, 1)
 
 WXFB_PROJECT_FILE_EXT = '.fbp'
 
-ALTER_WXFORMBUILDER = '~/dev/ide/wxFormBuilder/output/bin/wxformbuilder'
+ALTER_WXFORMBUILDER = 'flatpak run org.wxformbuilder.wxFormBuilder'
 
 WXFB_PY_MODULE_SIGNATURE = '## Python code generated with wxFormBuilder'
 
@@ -95,10 +95,7 @@ def getWXFormBuilderExecutable():
         return 'wxformbuilder'
     else:
         alter_wxfb_path = os.path.normpath(ALTER_WXFORMBUILDER)
-        if os.path.exists(alter_wxfb_path):
-            return alter_wxfb_path
-        else:
-            log_func.warning(u'Alter path wxFormBuilder <%s> not found' % alter_wxfb_path)
+        return alter_wxfb_path
     return None
 
 
