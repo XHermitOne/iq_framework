@@ -88,6 +88,9 @@ pip3 install mtranslate
 
 sudo apt install --assume-yes python3-jinja2
 
+# IDE
+sudo apt install poedit
+
 # SCADA
 sudo apt install --assume-yes gnuplot
 
@@ -97,8 +100,14 @@ sudo apt --fix-broken install --assume-yes
 
 # iq
 export IQ_PATH="$(dirname "$PWD")"
+
+# Ubuntu 18.04
 rm ~/.local/lib/python3.6/site-packages/iq.pth
 echo $IQ_PATH >> ~/.local/lib/python3.6/site-packages/iq.pth
+# Ubuntu 20.04
+rm ~/.local/lib/python3.8/site-packages/iq.pth
+echo $IQ_PATH >> ~/.local/lib/python3.8/site-packages/iq.pth
+
 
 echo
 echo " _     _____                                 _"
