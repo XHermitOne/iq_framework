@@ -28,8 +28,8 @@ import os
 import os.path
 import datetime
 
-from ic.log import log
-from ic.utils import txtfunc
+from iq.util import log_func
+from iq.util import txtfile_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -337,7 +337,7 @@ class iqGnuplotManager(object):
             cmd = cmd_sign + ', '.join(params)
         else:
             # If there is no data, then display an abstract graph
-            log.warning(u'Не найден файл данных графиков <%s>' % graph_filename)
+            log_func.warning(u'Graph data file <%s> not found' % graph_filename)
             cmd = 'plot [-pi:pi] sin(x), cos(x)'
 
         # The chart rendering command can only be the last command.
@@ -383,7 +383,7 @@ class iqGnuplotManager(object):
             record_list = [x_str] + [str(record.get(field, 0)) for field in fields]
             record_txt = ' '.join(record_list)
             txt += record_txt + '\n'
-        return txtfunc.save_file_text(graph_filename, txt)
+        return txtfile_func.saveTextFile(graph_filename, txt)
 
     def getRunCommand(self):
         """
@@ -402,7 +402,7 @@ class iqGnuplotManager(object):
         :return: True/False.
         """
         cmd = self.getRunCommand()
-        log.info(u'Command execution <%s>' % cmd)
+        log_func.info(u'Command execution <%s>' % cmd)
         os.system(cmd)
         return True
 

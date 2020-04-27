@@ -33,7 +33,11 @@ sudo apt install --assume-yes build-essential libgtk-3-dev
 sudo apt install --assume-yes libwebkit2gtk-4.0-dev
 
 # For Ubuntu 16.04
-pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
+# pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
+
+# For Ubuntu 20.04
+pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython
+
 
 # Upgrade:
 # pip3 install wxPython --upgrade
@@ -82,6 +86,8 @@ sudo apt install --assume-yes libreoffice-java-common
 
 pip3 install mtranslate
 
+sudo apt install --assume-yes python3-jinja2
+
 # 
 sudo apt --fix-broken install --assume-yes
 
@@ -91,10 +97,10 @@ rm ~/.local/lib/python3.6/site-packages/iq.pth
 echo $IQ_PATH >> ~/.local/lib/python3.6/site-packages/iq.pth
 
 echo
-echo  _     _____                                 _   
-echo |_|___|   __|___ ___ _____ ___ _ _ _ ___ ___| |_ 
-echo | | . |   __|  _| .'|     | -_| | | | . |  _| '_|
-echo |_|_  |__|  |_| |__,|_|_|_|___|_____|___|_| |_,_|
-echo     |_|     
+echo " _     _____                                 _"
+echo "|_|___|   __|___ ___ _____ ___ _ _ _ ___ ___| |_"
+echo "| | . |   __|  _| .'|     | -_| | | | . |  _| '_|"
+echo "|_|_  |__|  |_| |__,|_|_|_|___|_____|___|_| |_,_|"
+echo "    |_|"
 echo
 

@@ -15,6 +15,7 @@ import wx.lib.imagebrowser
 from ....util import log_func
 from ....util import global_func
 from ....util import lang_func
+from .. import wxbitmap_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -750,8 +751,7 @@ class iqLoginDialog(wx.Dialog):
             wx.Dialog.__init__(self, parent, -1, title=title,
                                pos=wx.DefaultPosition, size=wx.Size(350, 150))
 
-            from ic.PropertyEditor.images import editorimg
-            icon_img = editorimg.shield.GetBitmap()
+            icon_img = wxbitmap_func.createIconBitmap('fatcow/set_security_question')
             if icon_img:
                 icon = wx.Icon(icon_img)
                 self.SetIcon(icon)
