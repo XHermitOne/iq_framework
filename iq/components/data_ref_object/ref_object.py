@@ -66,7 +66,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 log_func.warning(u'Reference data code <%s> not found in <%s>' % (cod, self.getName()))
         except:
             log_func.fatal(u'Error get reference data object <%s> record by code' % self.getName())
-        return False
+        return None
 
     def isEmpty(self):
         """
