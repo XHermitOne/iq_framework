@@ -9,6 +9,8 @@ import calendar
 import datetime
 import locale
 
+from . import log_func
+
 __version__ = (0, 0, 0, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
@@ -28,3 +30,33 @@ def getMonths():
     if cur_locale != 'ru_RU':
         return tuple(calendar.month_name[1:])
     return RU_MONTHS
+
+
+def date2datetime(d):
+    """
+    Convert datetime.date to datetime.datetime.
+
+    :param d: Date as datetime.date
+    :return: Date as datetime.datetime.
+    """
+    if isinstance(d, datetime.datetime):
+        return d
+    elif isinstance(d, datetime.date):
+        return datetime.datetime.combine(d, datetime.datetime.min.time())
+    log_func.warning(u'Unsupported type <%s> for convert datetime.date -> datetime.datetime' % type(d))
+    return None
+
+
+def datetime2date(dt):
+    """
+    Convert datetime.datetime to datetime.date.
+
+    :param dt: Date as datetime.datetime.
+    :return: Date as datetime.date.
+    """
+    if isinstance(dt, datetime.datetime):
+        return dt.date()
+    elif isinstance(dt, datetime.date):
+        return dt
+    log_func.warning(u'Unsupported type <%s> for convert datetime.datetime -> datetime.date' % type(dt))
+    return None
