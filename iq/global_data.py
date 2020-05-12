@@ -75,6 +75,9 @@ FRAMEWORK_LOGO_TXT = u'''
 '''
 
 
+OPERATE_YEAR = datetime.datetime.now().year
+
+
 def getGlobal(name):
     """
     Read the global parameter value.

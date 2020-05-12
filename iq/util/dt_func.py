@@ -11,6 +11,9 @@ import locale
 
 from . import log_func
 
+from .. import global_data
+
+
 __version__ = (0, 0, 0, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
@@ -60,3 +63,17 @@ def datetime2date(dt):
         return dt
     log_func.warning(u'Unsupported type <%s> for convert datetime.datetime -> datetime.date' % type(dt))
     return None
+
+
+def getNowYear():
+    """
+    Get current system year.
+    """
+    return datetime.datetime.now().year
+
+
+def getOperateYear():
+    """
+    Get operate year.
+    """
+    return global_data.getGlobal('OPERATE_YEAR')
