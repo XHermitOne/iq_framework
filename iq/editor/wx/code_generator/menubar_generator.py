@@ -11,6 +11,8 @@ import inspect
 
 from ....util import log_func
 from ....util import py_func
+from ....util import str_func
+from ....util import txtfile_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -91,12 +93,12 @@ WXFB_PRJ_MENUBAR_FMT = '''<?xml version="1.0" encoding="UTF-8" standalone="yes" 
         <property name="embedded_files_path">res</property>
         <property name="encoding">UTF-8</property>
         <property name="event_generation">connect</property>
-        <property name="file">MyProject1</property>
+        <property name="file">%s</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
         <property name="indent_with_spaces"></property>
         <property name="internationalize">1</property>
-        <property name="name">MyProject1</property>
+        <property name="name">%s</property>
         <property name="namespace"></property>
         <property name="path">.</property>
         <property name="precompiled_header"></property>
@@ -116,10 +118,10 @@ WXFB_PRJ_MENUBAR_FMT = '''<?xml version="1.0" encoding="UTF-8" standalone="yes" 
             <property name="font"></property>
             <property name="hidden">0</property>
             <property name="id">wxID_ANY</property>
-            <property name="label">MyMenuBar</property>
+            <property name="label">%s</property>
             <property name="maximum_size"></property>
             <property name="minimum_size"></property>
-            <property name="name">MyMenuBar1</property>
+            <property name="name">%s</property>
             <property name="pos"></property>
             <property name="size"></property>
             <property name="style"></property>
@@ -129,8 +131,8 @@ WXFB_PRJ_MENUBAR_FMT = '''<?xml version="1.0" encoding="UTF-8" standalone="yes" 
             <property name="window_name"></property>
             <property name="window_style"></property>
             <object class="wxMenu" expanded="1">
-                <property name="label">MyMenu</property>
-                <property name="name">m_menu1</property>
+                <property name="label">Help</property>
+                <property name="name">help_menu</property>
                 <property name="permission">protected</property>
                 <object class="wxMenuItem" expanded="1">
                     <property name="bitmap"></property>
@@ -139,8 +141,8 @@ WXFB_PRJ_MENUBAR_FMT = '''<?xml version="1.0" encoding="UTF-8" standalone="yes" 
                     <property name="help"></property>
                     <property name="id">wxID_ANY</property>
                     <property name="kind">wxITEM_NORMAL</property>
-                    <property name="label">MyMenuItem</property>
-                    <property name="name">m_menuItem1</property>
+                    <property name="label">About...</property>
+                    <property name="name">about_menuItem</property>
                     <property name="permission">none</property>
                     <property name="shortcut"></property>
                     <property name="unchecked_bitmap"></property>
@@ -232,3 +234,18 @@ def genDefaultMenubarFormBuilderPrj(prj_filename=None, rewrite=False):
     package_dirname = os.path.dirname(prj_filename)
     py_func.createInitModule(package_path=package_dirname, rewrite=rewrite)
 
+    menubar_name = os.path.splitext(os.path.basename(prj_filename))[0].lower()
+    menubar_class_name = 'iq%s' % str_func.replaceLower2Upper(menubar_name)
+    wxfb_menubar_txt = WXFB_PRJ_MENUBAR_FMT % (menubar_name,
+                                               menubar_name,
+                                               menubar_name,
+                                               menubar_class_name)
+    save_ok = txtfile_func.saveTextFile(txt_filename=prj_filename,
+                                        txt=wxfb_menubar_txt,
+                                        rewrite=rewrite)
+    if save_ok:
+        from .. import wxfb_manager
+        wxformbuilder_manager = wxfb_manager.iqWXFormBuilderManager()
+        return wxformbuilder_manager.generate(prj_filename=prj_filename)
+
+    return False

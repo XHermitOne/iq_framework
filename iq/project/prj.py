@@ -68,7 +68,8 @@ class iqProjectManager(object):
             prj_path = self.getPath(name)
             result = self.createPath(prj_path)
             if result:
-                self.saveDefaultResource(prj_path, name)
+                self.createDefaultResources(parent=parent, prj_path=prj_path,
+                                            prj_name=name)
 
                 self.setName(name)
                 return True
@@ -102,25 +103,51 @@ class iqProjectManager(object):
                                                         default_idx=0)
         if 0 <= select_engine_idx < len(global_data.ENGINE_TYPES):
             selected_engine = global_data.ENGINE_TYPES[select_engine_idx]
-            save_ok = self.saveDefaultResource(prj_path=prj_path, prj_name=prj_name, default_engine=selected_engine)
+            save_ok = self.saveDefaultPrjResource(prj_path=prj_path, prj_name=prj_name, default_engine=selected_engine)
             if save_ok:
-                pass
+                return all([self.createDefaultMenubarResource(engine=selected_engine, prj_name=prj_name),
+                           self.createDefaultMainFormResource(engine=selected_engine, prj_name=prj_name)])
 
         return False
 
-    def createDefaultMenubarResource(self, engine=global_data.WX_ENGINE_TYPE):
+    def createDefaultMenubarResource(self, engine=global_data.WX_ENGINE_TYPE, prj_name=u'default'):
         """
         Create default menubar resources.
 
         :param engine: Engine type.
+        :param prj_name: Project name.
         :return: True/False.
         """
         if engine == global_data.WX_ENGINE_TYPE:
-            pass
+            menubar_res_filename = os.path.join(file_func.getFrameworkPath(),
+                                                prj_name,
+                                                'menubars',
+                                                'main_menubar_proto.fbp')
+
+            from ..editor.wx.code_generator import menubar_generator
+            return menubar_generator.genDefaultMenubarFormBuilderPrj(prj_filename=menubar_res_filename)
         return False
 
-    def saveDefaultResource(self, prj_path=None, prj_name=None, rewrite=False,
-                            default_engine=global_data.WX_ENGINE_TYPE):
+    def createDefaultMainFormResource(self, engine=global_data.WX_ENGINE_TYPE, prj_name=u'default'):
+        """
+        Create default main form resources.
+
+        :param engine: Engine type.
+        :param prj_name: Project name.
+        :return: True/False.
+        """
+        if engine == global_data.WX_ENGINE_TYPE:
+            mainform_res_filename = os.path.join(file_func.getFrameworkPath(),
+                                                 prj_name,
+                                                 'main_forms',
+                                                 'main_form_proto.fbp')
+
+            from ..editor.wx.code_generator import frame_generator
+            return frame_generator.genDefaultMainFormFormBuilderPrj(prj_filename=mainform_res_filename)
+        return False
+
+    def saveDefaultPrjResource(self, prj_path=None, prj_name=None, rewrite=False,
+                               default_engine=global_data.WX_ENGINE_TYPE):
         """
         Save default project resource.
 
@@ -154,6 +181,7 @@ class iqProjectManager(object):
             user_resource['roles'] = [role.ADMINISTRATORS_ROLE_NAME]
             if default_engine:
                 user_resource['engine'] = default_engine
+            user_resource['do_main'] = '''from %s.main_forms import main_form\nreturn main_form.startMainForm()''' % prj_name
 
             role_resource = spc_func.clearResourceFromSpc(role.SPC)
             role_resource['name'] = role.ADMINISTRATORS_ROLE_NAME

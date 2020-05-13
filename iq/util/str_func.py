@@ -45,6 +45,20 @@ def replaceUpper2Lower(txt):
     return ''.join([('_'+symb.lower() if symb.isupper() and i else symb.lower()) for i, symb in enumerate(list(txt))])
 
 
+def replaceLower2Upper(txt):
+    """
+    Replacing lowercase letters in a string with underscores
+    except the first character.
+
+    :param txt: Text string as abcd_efgh_iklmn.
+    :return: Modified text as  AbcdEfghIklmn.
+    """
+    if not isinstance(txt, str):
+        txt = str(txt)
+
+    return ''.join([(symb.upper() if not i or (i and symb.islower() and txt[i-1] == '_') else symb.lower()) for i, symb in enumerate(list(txt)) if symb != '_'])
+
+
 INDENT = '    '
 
 

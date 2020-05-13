@@ -5,9 +5,15 @@
 Python frame generate functions.
 """
 
+import os
+import os.path
 import inspect
 
 from ....util import log_func
+from ....util import str_func
+from ....util import py_func
+from ....util import txtfile_func
+
 
 __version__ = (0, 0, 0, 1)
 
@@ -122,6 +128,91 @@ class %s(%s.%s,
 '''
 
 
+WXFB_PRJ_MAINFORM_FMT = '''<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<wxFormBuilder_Project>
+    <FileVersion major="1" minor="15" />
+    <object class="Project" expanded="1">
+        <property name="class_decoration"></property>
+        <property name="code_generation">Python</property>
+        <property name="disconnect_events">1</property>
+        <property name="disconnect_mode">source_name</property>
+        <property name="disconnect_php_events">0</property>
+        <property name="disconnect_python_events">0</property>
+        <property name="embedded_files_path">res</property>
+        <property name="encoding">UTF-8</property>
+        <property name="event_generation">connect</property>
+        <property name="file">%s</property>
+        <property name="first_id">1000</property>
+        <property name="help_provider">none</property>
+        <property name="indent_with_spaces"></property>
+        <property name="internationalize">0</property>
+        <property name="name">%s</property>
+        <property name="namespace"></property>
+        <property name="path">.</property>
+        <property name="precompiled_header"></property>
+        <property name="relative_path">1</property>
+        <property name="skip_lua_events">1</property>
+        <property name="skip_php_events">1</property>
+        <property name="skip_python_events">1</property>
+        <property name="ui_table">UI</property>
+        <property name="use_enum">0</property>
+        <property name="use_microsoft_bom">0</property>
+        <object class="Frame" expanded="1">
+            <property name="aui_managed">0</property>
+            <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
+            <property name="bg"></property>
+            <property name="center">wxBOTH</property>
+            <property name="context_help"></property>
+            <property name="context_menu">1</property>
+            <property name="enabled">1</property>
+            <property name="event_handler">impl_virtual</property>
+            <property name="extra_style"></property>
+            <property name="fg"></property>
+            <property name="font"></property>
+            <property name="hidden">0</property>
+            <property name="id">wxID_ANY</property>
+            <property name="maximum_size"></property>
+            <property name="minimum_size"></property>
+            <property name="name">%s</property>
+            <property name="pos"></property>
+            <property name="size">929,574</property>
+            <property name="style">wxDEFAULT_FRAME_STYLE|wxMAXIMIZE</property>
+            <property name="subclass"></property>
+            <property name="title"></property>
+            <property name="tooltip"></property>
+            <property name="window_extra_style"></property>
+            <property name="window_name"></property>
+            <property name="window_style">wxTAB_TRAVERSAL</property>
+            <property name="xrc_skip_sizer">1</property>
+            <object class="wxStatusBar" expanded="1">
+                <property name="bg"></property>
+                <property name="context_help"></property>
+                <property name="context_menu">1</property>
+                <property name="enabled">1</property>
+                <property name="fg"></property>
+                <property name="fields">1</property>
+                <property name="font"></property>
+                <property name="hidden">0</property>
+                <property name="id">wxID_ANY</property>
+                <property name="maximum_size"></property>
+                <property name="minimum_size"></property>
+                <property name="name">mainform_statusBar</property>
+                <property name="permission">protected</property>
+                <property name="pos"></property>
+                <property name="size"></property>
+                <property name="style">wxSTB_SIZEGRIP</property>
+                <property name="subclass"></property>
+                <property name="tooltip"></property>
+                <property name="window_extra_style"></property>
+                <property name="window_name"></property>
+                <property name="window_style"></property>
+            </object>
+        </object>
+    </object>
+</wxFormBuilder_Project>
+'''
+
+
 def genFrameClassName(src_class_name):
     """
     Generate frame class name.
@@ -197,3 +288,34 @@ def genPythonFrame(src_module, src_class_name):
                                   frm_body_function, start_frm_body_function)
     log_func.info(u'Generate frame class ... STOP')
     return py_txt
+
+
+def genDefaultMainFormFormBuilderPrj(prj_filename=None, rewrite=False):
+    """
+    Generate default main form wxFormBuilder project file.
+
+    :param prj_filename: wxFormBuilder project filename.
+    :param rewrite: Rewrite it if exists?
+    :return: True/False.
+    """
+    if not prj_filename:
+        log_func.error(u'Not define wxFormBuilder project filename')
+        return False
+
+    package_dirname = os.path.dirname(prj_filename)
+    py_func.createInitModule(package_path=package_dirname, rewrite=rewrite)
+
+    mainform_name = os.path.splitext(os.path.basename(prj_filename))[0].lower()
+    mainform_class_name = 'iq%s' % str_func.replaceLower2Upper(mainform_name)
+    wxfb_mainform_txt = WXFB_PRJ_MAINFORM_FMT % (mainform_name,
+                                                 mainform_name,
+                                                 mainform_class_name)
+    save_ok = txtfile_func.saveTextFile(txt_filename=prj_filename,
+                                        txt=wxfb_mainform_txt,
+                                        rewrite=rewrite)
+    if save_ok:
+        from .. import wxfb_manager
+        wxformbuilder_manager = wxfb_manager.iqWXFormBuilderManager()
+        return wxformbuilder_manager.generate(prj_filename=prj_filename)
+
+    return False
