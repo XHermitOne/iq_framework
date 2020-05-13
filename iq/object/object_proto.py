@@ -217,6 +217,18 @@ class iqObject(object):
         value = self._resource.get(attribute_name, None) if self._resource else None
         return value
 
+    def isAttributeValue(self, attribute_name):
+        """
+        Defined attribute value?
+
+        :param attribute_name: Attribute name.
+        :return: True/False.
+        """
+        attr_value = self.getAttribute(attribute_name)
+        if isinstance(attr_value, str):
+            return attr_value.strip() not in ('None', '')
+        return attr_value is not None
+
     def getChildren(self):
         """
         Get children objects.

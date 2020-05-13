@@ -5,11 +5,9 @@
 Numerator specification module.
 """
 
-import os.path
 
 from iq.object import object_spc
 from ...editor import property_editor_id
-# from .. import wx_panel
 
 from . import numerator
 
