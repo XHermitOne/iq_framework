@@ -30,7 +30,7 @@ NUMERATOR_SPC = {
     'check_unique': False,
     'use_sys_dt': True,
 
-    '__package__': u'Service',
+    '__package__': u'Special',
     '__icon__': 'fatcow/paginator',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,

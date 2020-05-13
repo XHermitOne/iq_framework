@@ -74,13 +74,60 @@ class iqProjectManager(object):
                 return True
         return False
 
-    def saveDefaultResource(self, prj_path=None, prj_name=None, rewrite=False):
+    def createDefaultResources(self, parent=None, prj_path=None, prj_name=None, rewrite=False):
+        """
+        Create default project resources (menubars, forms and etc).
+
+        :param parent: Parent from.
+        :param prj_path: Project path.
+        :param prj_name: Project name.
+        :param rewrite: Rewrite resource file if it exists?
+        :return: True/False.
+        """
+        if not prj_path:
+            log_func.warning(u'Not define project path for save default project path')
+            return False
+
+        if not os.path.exists(prj_path):
+            if not self.createPath(prj_path):
+                return False
+
+        if not prj_name:
+            prj_name = os.path.splitext(os.path.basename(prj_path))[0]
+
+        select_engine_idx = dlg_func.getSingleChoiceDlg(parent=parent,
+                                                        title=_(u'ENGINE TYPE'),
+                                                        prompt_text=_(u'Select engine type of the project:'),
+                                                        choices=(u'WX project', u'QT project', u'CUI project'),
+                                                        default_idx=0)
+        if 0 <= select_engine_idx < len(global_data.ENGINE_TYPES):
+            selected_engine = global_data.ENGINE_TYPES[select_engine_idx]
+            save_ok = self.saveDefaultResource(prj_path=prj_path, prj_name=prj_name, default_engine=selected_engine)
+            if save_ok:
+                pass
+
+        return False
+
+    def createDefaultMenubarResource(self, engine=global_data.WX_ENGINE_TYPE):
+        """
+        Create default menubar resources.
+
+        :param engine: Engine type.
+        :return: True/False.
+        """
+        if engine == global_data.WX_ENGINE_TYPE:
+            pass
+        return False
+
+    def saveDefaultResource(self, prj_path=None, prj_name=None, rewrite=False,
+                            default_engine=global_data.WX_ENGINE_TYPE):
         """
         Save default project resource.
 
         :param prj_path: Project path.
         :param prj_name: Project name.
         :param rewrite: Rewrite resource file if it exists?
+        :param default_engine: Default engine type.
         :return: True/False.
         """
         if not prj_path:
@@ -105,6 +152,8 @@ class iqProjectManager(object):
             user_resource['name'] = 'admin'
             user_resource['description'] = u'Administrator'
             user_resource['roles'] = [role.ADMINISTRATORS_ROLE_NAME]
+            if default_engine:
+                user_resource['engine'] = default_engine
 
             role_resource = spc_func.clearResourceFromSpc(role.SPC)
             role_resource['name'] = role.ADMINISTRATORS_ROLE_NAME

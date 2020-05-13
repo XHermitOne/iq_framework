@@ -23,7 +23,7 @@ CATALOGLEVEL_SPC = {
 
     'get_folder_name': None,
 
-    '__package__': u'Service',
+    '__package__': u'Special',
     '__icon__': 'fatcow/folder_brick',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,

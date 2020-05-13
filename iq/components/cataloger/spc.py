@@ -28,7 +28,7 @@ CATALOGER_SPC = {
     'get_physic_func': None,
     'logic_catalogs': None,
 
-    '__package__': u'Service',
+    '__package__': u'Special',
     '__icon__': 'fatcow/folders_explorer',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
