@@ -246,6 +246,6 @@ def genDefaultMenubarFormBuilderPrj(prj_filename=None, rewrite=False):
     if save_ok:
         from .. import wxfb_manager
         wxformbuilder_manager = wxfb_manager.iqWXFormBuilderManager()
-        return wxformbuilder_manager.generate(prj_filename=prj_filename)
+        return wxformbuilder_manager.generate(prj_filename=prj_filename, asynchro=False)
 
     return False

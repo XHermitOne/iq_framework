@@ -246,7 +246,12 @@ def genStartFunctionBody(class_name):
     :return: Function text body.
     """
     function_name = class_name[2:] if class_name.startswith('iq') else class_name
-    frm_body_function = START_FRAME_FUNC_BODY_FMT % (function_name, function_name, function_name)
+    frm_body_function = START_FRAME_FUNC_BODY_FMT % (function_name,
+                                                     function_name,
+                                                     function_name,
+                                                     function_name,
+                                                     class_name,
+                                                     function_name)
     return frm_body_function
 
 
@@ -316,6 +321,6 @@ def genDefaultMainFormFormBuilderPrj(prj_filename=None, rewrite=False):
     if save_ok:
         from .. import wxfb_manager
         wxformbuilder_manager = wxfb_manager.iqWXFormBuilderManager()
-        return wxformbuilder_manager.generate(prj_filename=prj_filename)
+        return wxformbuilder_manager.generate(prj_filename=prj_filename, asynchro=False)
 
     return False

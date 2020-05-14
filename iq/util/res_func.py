@@ -109,12 +109,13 @@ def loadResourceText(res_filename):
     return None
 
 
-def saveResourcePickle(res_filename, resource_data):
+def saveResourcePickle(res_filename, resource_data, rewrite=True):
     """
     Save resource file as Pickle.
 
     :param res_filename: Resource file path.
     :param resource_data: Resource data structure.
+    :param rewrite: Rewrite resource file if it exists?
     :return: True/False.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
@@ -131,11 +132,12 @@ def saveResourcePickle(res_filename, resource_data):
             except:
                 log_func.fatal(u'Error create path <%s>' % dir_name)
 
-        f = open(res_filename, 'wb')
-        pickle.dump(resource_data, f)
-        f.close()
-        log_func.info(u'Pickle resource file <%s> saved' % res_filename)
-        return True
+        if not os.path.exists(res_filename) or rewrite:
+            f = open(res_filename, 'wb')
+            pickle.dump(resource_data, f)
+            f.close()
+            log_func.info(u'Pickle resource file <%s> saved' % res_filename)
+            return True
     except:
         if f:
             f.close()
@@ -143,12 +145,13 @@ def saveResourcePickle(res_filename, resource_data):
     return False
 
 
-def saveResourceText(res_filename, resource_data):
+def saveResourceText(res_filename, resource_data, rewrite=True):
     """
     Save resource file as Text.
 
     :param res_filename: Resource file path.
     :param resource_data: Resource data structure.
+    :param rewrite: Rewrite resource file if it exists?
     :return: True/False.
     """
     res_filename = file_func.getAbsolutePath(res_filename)
@@ -164,12 +167,13 @@ def saveResourceText(res_filename, resource_data):
             except:
                 log_func.fatal(u'Error create path <%s>' % dir_name)
 
-        f = open(res_filename, 'wt')
-        text = str(resource_data)
-        f.write(text)
-        f.close()
-        log_func.info(u'Text resource file <%s> saved' % res_filename)
-        return True
+        if not os.path.exists(res_filename) or rewrite:
+            f = open(res_filename, 'wt')
+            text = str(resource_data)
+            f.write(text)
+            f.close()
+            log_func.info(u'Text resource file <%s> saved' % res_filename)
+            return True
     except:
         if f:
             f.close()

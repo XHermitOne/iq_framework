@@ -99,7 +99,7 @@ def getWXFormBuilderExecutable():
     return None
 
 
-def runWXFormBuilder(filename=None, do_generate=False, language=None):
+def runWXFormBuilder(filename=None, do_generate=False, language=None, asynchro=True):
     """
     Run wxFormBuilder.
     For a more detailed description of the wxFormBuilder startup options, run: wxformbuilder --help.
@@ -108,17 +108,22 @@ def runWXFormBuilder(filename=None, do_generate=False, language=None):
         If not specified, then nothing opens.
     :param do_generate: Generate the resulting resource / project module.
     :param language: Explicit language specification for generation.
+    :param asynchro: Asynchronous start?
     :return: True/False
     """
     cmd = ''
     cmd_args = filename
     if cmd_args:
-        cmd_args += '--generate' if do_generate else ''
-        cmd_args += ('--language=%s' % language) if language else ''
+        cmd_args = ((' --language=%s ' % language) if language else '') + cmd_args
+        cmd_args = (' --generate ' if do_generate else '') + cmd_args
 
     wxformbuilder_exec = getWXFormBuilderExecutable()
     if wxformbuilder_exec:
-        cmd = '%s %s&' % (wxformbuilder_exec, cmd_args) if cmd_args else '%s &' % wxformbuilder_exec
+        async_symb = '&' if asynchro else ''
+        cmd = '%s %s%s' % (wxformbuilder_exec,
+                           cmd_args,
+                           async_symb) if cmd_args else '%s %s' % (wxformbuilder_exec,
+                                                                   async_symb)
 
     return exec_func.execSystemCommand(cmd)
 

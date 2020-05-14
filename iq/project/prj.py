@@ -66,13 +66,12 @@ class iqProjectManager(object):
                                             prompt_text=_(u'Enter the name of the project:'), default_value='new_name')
         if name:
             prj_path = self.getPath(name)
-            result = self.createPath(prj_path)
-            if result:
-                self.createDefaultResources(parent=parent, prj_path=prj_path,
-                                            prj_name=name)
+            self.createPath(prj_path)
+            self.createDefaultResources(parent=parent, prj_path=prj_path,
+                                        prj_name=name)
 
-                self.setName(name)
-                return True
+            self.setName(name)
+            return True
         return False
 
     def createDefaultResources(self, parent=None, prj_path=None, prj_name=None, rewrite=False):
@@ -96,17 +95,17 @@ class iqProjectManager(object):
         if not prj_name:
             prj_name = os.path.splitext(os.path.basename(prj_path))[0]
 
-        select_engine_idx = dlg_func.getSingleChoiceDlg(parent=parent,
-                                                        title=_(u'ENGINE TYPE'),
-                                                        prompt_text=_(u'Select engine type of the project:'),
-                                                        choices=(u'WX project', u'QT project', u'CUI project'),
-                                                        default_idx=0)
+        select_engine_idx = dlg_func.getSingleChoiceIdxDlg(parent=parent,
+                                                           title=_(u'ENGINE TYPE'),
+                                                           prompt_text=_(u'Select engine type of the project:'),
+                                                           choices=(u'WX project', u'QT project', u'CUI project'),
+                                                           default_idx=0)
         if 0 <= select_engine_idx < len(global_data.ENGINE_TYPES):
             selected_engine = global_data.ENGINE_TYPES[select_engine_idx]
             save_ok = self.saveDefaultPrjResource(prj_path=prj_path, prj_name=prj_name, default_engine=selected_engine)
-            if save_ok:
-                return all([self.createDefaultMenubarResource(engine=selected_engine, prj_name=prj_name),
-                           self.createDefaultMainFormResource(engine=selected_engine, prj_name=prj_name)])
+            return all([save_ok,
+                        self.createDefaultMenubarResource(engine=selected_engine, prj_name=prj_name),
+                        self.createDefaultMainFormResource(engine=selected_engine, prj_name=prj_name)])
 
         return False
 
@@ -123,9 +122,16 @@ class iqProjectManager(object):
                                                 prj_name,
                                                 'menubars',
                                                 'main_menubar_proto.fbp')
+            menubar_py_filename = file_func.setFilenameExt(menubar_res_filename, '.py')
 
             from ..editor.wx.code_generator import menubar_generator
-            return menubar_generator.genDefaultMenubarFormBuilderPrj(prj_filename=menubar_res_filename)
+            from ..editor.wx.code_generator import gui_generator
+            from ..editor.wx import wxfb_manager
+
+            return all([menubar_generator.genDefaultMenubarFormBuilderPrj(prj_filename=menubar_res_filename),
+                        wxfb_manager.adaptWXWFormBuilderPy(menubar_py_filename),
+                        gui_generator.gen(src_filename=menubar_py_filename)])
+
         return False
 
     def createDefaultMainFormResource(self, engine=global_data.WX_ENGINE_TYPE, prj_name=u'default'):
@@ -141,9 +147,15 @@ class iqProjectManager(object):
                                                  prj_name,
                                                  'main_forms',
                                                  'main_form_proto.fbp')
+            mainform_py_filename = file_func.setFilenameExt(mainform_res_filename, '.py')
 
             from ..editor.wx.code_generator import frame_generator
-            return frame_generator.genDefaultMainFormFormBuilderPrj(prj_filename=mainform_res_filename)
+            from ..editor.wx.code_generator import gui_generator
+            from ..editor.wx import wxfb_manager
+
+            return all([frame_generator.genDefaultMainFormFormBuilderPrj(prj_filename=mainform_res_filename),
+                        wxfb_manager.adaptWXWFormBuilderPy(mainform_py_filename),
+                        gui_generator.gen(src_filename=mainform_py_filename)])
         return False
 
     def saveDefaultPrjResource(self, prj_path=None, prj_name=None, rewrite=False,
@@ -181,7 +193,7 @@ class iqProjectManager(object):
             user_resource['roles'] = [role.ADMINISTRATORS_ROLE_NAME]
             if default_engine:
                 user_resource['engine'] = default_engine
-            user_resource['do_main'] = '''from %s.main_forms import main_form\nreturn main_form.startMainForm()''' % prj_name
+            user_resource['do_main'] = '''from %s.main_forms import main_form\nreturn main_form.runMainForm()''' % prj_name
 
             role_resource = spc_func.clearResourceFromSpc(role.SPC)
             role_resource['name'] = role.ADMINISTRATORS_ROLE_NAME
@@ -189,7 +201,7 @@ class iqProjectManager(object):
 
             prj_resource[spc_func.CHILDREN_ATTR_NAME] = [user_resource, role_resource]
 
-            return res_func.saveResourceText(prj_res_filename, prj_resource)
+            return res_func.saveResourceText(prj_res_filename, prj_resource, rewrite=rewrite)
         except:
             log_func.fatal(u'Error save default project resource')
         return False
