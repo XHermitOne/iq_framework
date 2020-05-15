@@ -89,7 +89,7 @@ class iqODS(object):
         
         if self.ods_document:
             # if isinstance(filename, text):
-            #    filename = unicode(filename, DEFAULT_ENCODE)
+            #    filename = unicode(filename, DEFAULT_ENCODING)
 
             # Add extension automatically to file name (True - yes)
             #                                    V
@@ -384,7 +384,7 @@ class iqODS(object):
         """
         sheet_name = data_dict.get('Name', 'Лист')
         if not isinstance(sheet_name, str):
-            sheet_name = str(sheet_name)    # DEFAULT_ENCODE)
+            sheet_name = str(sheet_name)    # DEFAULT_ENCODING)
         ods_table = odf.table.Table(name=sheet_name)
         tables = self.getChildrenByName(data_dict, 'Table')
         if tables:
@@ -718,7 +718,7 @@ class iqODS(object):
             dates = self.getChildrenByName(data_dict, 'Data')
             value = ''
             if dates:
-                value = str(dates[0].get('value', ''))  # DEFAULT_ENCODE)
+                value = str(dates[0].get('value', ''))  # DEFAULT_ENCODING)
             return value
         return None
         
@@ -921,7 +921,7 @@ class iqODS(object):
         dates = self.getChildrenByName(data_dict, 'Data')
         value = ''
         if dates:
-            value = str(dates[0].get('value', ''))  # DEFAULT_ENCODE)
+            value = str(dates[0].get('value', ''))  # DEFAULT_ENCODING)
         return value.split(SPREADSHEETML_CR)
     
     def setData(self, data_dict, style_id=None, value=None):

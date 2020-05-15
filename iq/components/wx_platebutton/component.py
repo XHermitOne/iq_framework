@@ -92,13 +92,13 @@ class iqWxPlateButton(wx.lib.platebtn.PlateButton, object.iqObject):
 
     def getForegroundColour(self):
         """
-        Panel foreground colour.
+        Get foreground colour.
         """
         return self.getAttribute('foreground_colour')
 
     def getBackgroundColour(self):
         """
-        Panel background colour.
+        Get background colour.
         """
         return self.getAttribute('background_colour')
 
