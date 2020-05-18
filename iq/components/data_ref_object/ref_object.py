@@ -5,6 +5,7 @@
 Reference data object manager.
 """
 
+import copy
 import sqlalchemy.sql
 
 from ..data_navigator import model_navigator
@@ -170,7 +171,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             else:
                 log_func.error(u'Not supported getting level record count in <%s>' % self.getName())
 
-            log_func.debug(u'Record count <%s : %s>' % (parent_cod, record_count))
+            # log_func.debug(u'Record count <%s : %s>' % (parent_cod, record_count))
             return bool(record_count)
         except:
             log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
@@ -188,4 +189,54 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             return wx_editdlg.editRefObjDlg(parent=parent, ref_obj=self)
         else:
             log_func.error(u'Not support edit ref object. Engine <%s>' % global_func.getEngineType())
+        return False
+
+    def isActive(self, cod):
+        """
+        Is active code?
+
+        :param cod: Code.
+        :return: True/False.
+        """
+        rec = self.getRecByCod(cod)
+        return rec.get(self.getActiveColumnName(), False) if rec else False
+
+    def getLevelIdxByCod(self, cod):
+        """
+        Get level index by cod.
+
+        :param cod: Code.
+        :return: Level index or -1 if error.
+        """
+        cod_len_tuple = self.getCodLen()
+        for i, level_cod_len in enumerate(cod_len_tuple):
+            if len(cod) == sum(cod_len_tuple[:i+1]):
+                return i
+        return -1
+
+    def save(self, cod, **record):
+        """
+        Save ref object record by cod.
+        If there is such a code, then the values are overwritten.
+        Otherwise, a new entry is added.
+
+        :param cod: Code.
+        :param record: Record data.
+        :return: True/False.
+        """
+        if self.hasCod(cod):
+            cod_col_name = self.getCodColumnName()
+            model = self.getModel()
+            find_cod_param = [getattr(model, cod_col_name) == cod]
+            find_rec = self.findRec(*find_cod_param)
+            find_id = find_rec.get('id', None)
+            # log_func.debug(u'Find ID %d' % find_id)
+            if find_id:
+                return self.saveRec(id=find_id, record=record)
+            else:
+                log_func.warning(u'Record not found fo cod <%s>' % cod)
+        else:
+            new_record = copy.deepcopy(record)
+            new_record[self.getCodColumnName()] = cod
+            return self.addRec(record=new_record)
         return False

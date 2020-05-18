@@ -511,6 +511,9 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
             # If plowing is defined, then open the root level
             if self._expand:
                 self._combo_popup.tree.Expand(self._combo_popup.tree.GetRootItem())
+
+            if self.view_all:
+                self._combo_popup.tree.ExpandAll()
         else:
             log_func.error(u'Not define data source in init <%s> component' % self.__class__.__name__)
 
@@ -649,8 +652,8 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
             get_label_func = self.getLabelFunc(child)
             label = child.getLabel(get_label_func)
             code = child.getCode()
-            sprav = self.getRefObj()
-            if sprav and sprav.isActive(code):
+            ref_obj = self.getRefObj()
+            if ref_obj and ref_obj.isActive(code):
                 item = self._combo_popup.AddItem(label, parent=parent_item, data=child)
                 if self._isDisabledItem(self.view_code, self.getLevelEnable(), child):
                     self._combo_popup.tree.SetItemTextColour(item, DEFAULT_DISABLE_ITEM_COLOUR)

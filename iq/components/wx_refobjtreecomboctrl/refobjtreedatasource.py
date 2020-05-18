@@ -12,22 +12,27 @@ from ...util import log_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqRefObjItemDataSource(object):
+class iqRefObjItemDataSourceBase(object):
     """
-    Ref object item.
+    Base class.
     """
-    def __init__(self, parent_item, cod):
+    def getData(self):
         """
-        Constructor.
-
-        :param parent_item: Parent item.
+        Item data.
         """
-        self._parent_item = parent_item
-        self._code = cod
+        assert None, 'Abstract method getData in class %s!' % self.__class__.__name__
 
-        # Item data
-        self._data = None
-        self._children = None
+    def setData(self, item_data):
+        """
+        Set item data.
+        """
+        assert None, 'Abstract method setData in class %s!' % self.__class__.__name__
+
+    def getChildren(self):
+        """
+        Get children items.
+        """
+        assert None, 'Abstract method getChildren in class %s!' % self.__class__.__name__
 
     def __getitem__(self, i):
         return self.getChildren()[i]
@@ -52,6 +57,42 @@ class iqRefObjItemDataSource(object):
         Validation is the current root element.
         """
         return self.getParent() is None
+
+    def getParent(self):
+        """
+        Get parent item.
+        """
+        assert None, 'Abstract method getParent in class %s!' % self.__class__.__name__
+
+    def hasChildren(self):
+        """
+        Does the item have child items?
+        """
+        assert None, 'Abstract method hasChildren in class %s!' % self.__class__.__name__
+
+
+class iqRefObjItemDataSource(iqRefObjItemDataSourceBase):
+    """
+    Ref object item.
+    """
+    def __init__(self, parent_item, cod):
+        """
+        Constructor.
+
+        :param parent_item: Parent item.
+        """
+        self._parent_item = parent_item
+        self._code = cod
+
+        # Item data
+        self._data = None
+        self._children = None
+
+    def __getitem__(self, i):
+        return self.getChildren()[i]
+
+    def __len__(self):
+        return len(self.getChildren())
 
     def getRecDict(self):
         """
@@ -90,9 +131,7 @@ class iqRefObjItemDataSource(object):
         root = self.getRoot()
         ref_obj = root.getRefObj()
         if ref_obj:
-            storage = ref_obj.getStorage()
-            level_idx = ref_obj.getLevelByCod(self.getCode()).getIndex()
-            rec = storage.getSpravFieldDict(self._data, level_idx=level_idx)
+            rec = self._data
             return rec['name']
         return u'Unknown'
     
@@ -111,7 +150,7 @@ class iqRefObjItemDataSource(object):
         root = self.getRoot()
         ref_obj = root.getRefObj()
         if ref_obj:
-            return ref_obj.isSubCodes(self._code)
+            return ref_obj.hasChildrenCodes(self._code)
         return False
 
     def _loadChildren(self, cod=None, auto_sort=True):
@@ -125,19 +164,15 @@ class iqRefObjItemDataSource(object):
         root = self.getRoot()
         ref_obj = root.getRefObj()
         if ref_obj:
-            level_idx = ref_obj.getLevelByCod(cod).getIndex() + 1 if cod else 0
-            storage = ref_obj.getStorage()
-            tab_data = storage.getLevelTable(cod)
+            tab_data = ref_obj.getLevelRecsByCod(cod)
             if auto_sort:
                 try:
-                    i_cod = storage.getSpravFieldNames(level_idx=level_idx).index('cod')
-                    tab_data = sorted(tab_data, key=lambda rec: rec[i_cod])
+                    tab_data = sorted(tab_data, key=lambda rec: rec[ref_obj.getCodColumnName()])
                 except ValueError:
-                    log_func.fatal(u'Error sort by cod. Level [%d]' % level_idx)
+                    log_func.fatal(u'Error sort by cod [%s]' % cod)
 
             for rec in tab_data:
-                rec_dict = storage.getSpravFieldDict(rec, level_idx=level_idx)
-                child_code = rec_dict['cod']
+                child_code = rec[ref_obj.getCodColumnName()]
                 if ref_obj.isActive(child_code):
                     item = iqRefObjItemDataSource(self, child_code)
                     item.setData(rec)
@@ -161,9 +196,7 @@ class iqRefObjItemDataSource(object):
         ref_obj = self.getRoot().getRefObj()
         if ref_obj:
             cod = self.getCode()
-            level = ref_obj.getLevelByCod(cod)
-            if level:
-                return level.getIndex()
+            return ref_obj.getLevelIdxByCod(cod)
         return -1
 
     def findItemByCode(self, cod):
@@ -183,7 +216,7 @@ class iqRefObjItemDataSource(object):
         return None
 
 
-class iqRefObjTreeDataSource(object):
+class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
     """
     Reference object data source as tree.
     """
@@ -196,6 +229,13 @@ class iqRefObjTreeDataSource(object):
         """
         self._ref_object = self._createRefObj(refobj_psp)
         self._children = self._loadChildren(root_code)
+
+    def getParent(self):
+        """
+        Parent item.
+        Tree root has no parent.
+        """
+        return None
 
     def getRefObj(self):
         """
@@ -215,7 +255,7 @@ class iqRefObjTreeDataSource(object):
         """
         kernel = iq.getKernel()
         if kernel:
-            return kernel.Create(refobj_psp)
+            return kernel.createByPsp(psp=refobj_psp)
         return None
     
     def _loadChildren(self, cod=None):
@@ -224,16 +264,13 @@ class iqRefObjTreeDataSource(object):
 
         :return: Children item list.
         """
-        children = []
+        children = list()
         if self._ref_object:
-            storage = self._ref_object.getStorage()
-            tab_data = storage.getLevelTable(cod)
-            for rec in tab_data or []:
-                level_idx = self._ref_object.getLevelByCod(cod).getIndex() + 1 if cod else 0
-                rec_dict = storage.getSpravFieldDict(rec, level_idx=level_idx)
-                child_code = rec_dict['cod']
+            tab_data = self._ref_object.getLevelRecsByCod(parent_cod=cod)
+            for rec in tab_data or list():
+                child_code = rec[self._ref_object.getCodColumnName()]
 
-                item = iqRefObjItemDataSource(self, child_code)
+                item = iqRefObjItemDataSource(parent_item=self, cod=child_code)
                 item.setData(rec)
                 children.append(item)
         
@@ -253,7 +290,9 @@ class iqRefObjTreeDataSource(object):
         """
         if self._ref_object:
             cod = find_text
-            find_dict = self._ref_object.Find(cod, ['cod', 'name'])
+            find_dict = self._ref_object.Find(cod,
+                                              [self._ref_object.getCodColumnName(),
+                                               self._ref_object.getNameColumnName()])
             if not find_dict:
                 label = None
             else:

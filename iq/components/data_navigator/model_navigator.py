@@ -122,33 +122,41 @@ class iqModelNavigatorManager(object):
             return self.__dataset__[rec_no]
         return None
 
-    def findRec(self, **find_params):
+    def findRec(self, *find_args, **find_kwargs):
         """
         Find record in model. Get first record found.
 
-        :param find_params: Search options.
+        :param find_args: Search options.
+        :param find_kwargs: Search options.
         :return: Record dictionary or None if record not found.
         """
-        records = self.searchRecs(**find_params)
+        records = self.searchRecs(*find_args, **find_kwargs)
         return records[0] if records else None
 
-    def searchRecs(self, **search_params):
+    def searchRecs(self, *search_args, **search_kwargs):
         """
         Search records in model.
 
-        :param search_params: Search options.
+        :param search_args: Search options.
+        :param search_kwargs: Search options.
         :return: Record dictionary list or None if records not found.
         """
+        try:
+            records = self.getModelQuery().filter(*search_args, **search_kwargs)
+            return [vars(record) for record in records]
+        except:
+            log_func.fatal(u'Error search records by %s %s' % (str(search_args), str(search_kwargs)))
         return list()
 
-    def filterRecs(self, **filter_params):
+    def filterRecs(self, *filter_args, **filter_kwargs):
         """
         Filter records in model.
 
-        :param filter_params: Filter options.
+        :param filter_args: Filter options.
+        :param filter_kwargs: Filter options.
         :return: Record dictionary list or None if records not found.
         """
-        return list()
+        return self.searchRecs(*filter_args, **filter_kwargs)
 
     def sortDatasetRecs(self, *field_names):
         """
@@ -245,7 +253,23 @@ class iqModelNavigatorManager(object):
         :param id_field: Identifier field name.
         :return: True/False.
         """
-        pass
+        if id_field is None:
+            id_field = 'id'
+
+        session = self.getScheme().getSession()
+        try:
+            model = self.getModel()
+            query = self.getModelQuery()
+            values = dict([(getattr(model, col_name), value) for col_name, value in record.items()])
+            query.filter(getattr(model, id_field) == id).update(values=values, synchronize_session=False)
+            if session:
+                session.commit()
+            return True
+        except:
+            if session:
+                session.rollback()
+            log_func.fatal(u'Error save record [%s]' % str(id))
+        return False
 
     def saveDatasetRecs(self, id_field=None):
         """

@@ -12,6 +12,7 @@ from ... import object
 from . import spc
 
 from ...util import log_func
+from ...util import exec_func
 
 from . import refobjtreecomboctrl
 
@@ -48,6 +49,13 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
         if background_colour is not None:
             self.SetBackgroundColour(wx.Colour(background_colour[0], background_colour[1], background_colour[2]))
 
+        self.init(refobj_psp=self.getRefObjPsp(),
+                  root_code=self.getRootCode(),
+                  view_all=self.getViewAll(),
+                  complex_load=self.getComplexLoad())
+
+        self.Bind(wx.EVT_TEXT, self.onTextChange, id=self.GetId())
+
     def getPosition(self):
         """
         Control position.
@@ -77,6 +85,46 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
         Get background colour.
         """
         return self.getAttribute('background_colour')
+
+    def getRefObjPsp(self):
+        """
+        Get ref object passport.
+        """
+        return self.getAttribute('ref_obj')
+
+    def getRootCode(self):
+        """
+        Get root item code.
+        """
+        return self.getAttribute('root_code')
+
+    def getViewAll(self):
+        """
+        Display all items?
+        """
+        return self.getAttribute('view_all')
+
+    def getComplexLoad(self):
+        """
+        Integrated loading of all elements?
+        """
+        return self.getAttribute('complex_load')
+
+    def getLevelEnable(self):
+        """
+        The index of the level from which you can choose.
+        """
+        return self.getAttribute('level_enable')
+
+    def onTextChange(self, event):
+        """
+        Control text change handler.
+        """
+        function_body = self.getAttribute('on_change')
+        if function_body:
+            context = self.getContext()
+            exec_func.execTxtFunction(function_body, context=context)
+        event.Skip()
 
 
 COMPONENT = iqWxRefObjTreeComboCtrl
