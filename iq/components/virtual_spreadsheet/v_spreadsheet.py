@@ -647,7 +647,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         :return: Returns data with a corrected style.
         """
         if old_style_id == new_style_id:
-            # Identifiers are getEqual - no replacement required
+            # Identifiers are mask - no replacement required
             return data
         if 'StyleID' in data and data['StyleID'] == old_style_id:
             data['StyleID'] = new_style_id
@@ -670,7 +670,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
 
     def pasteWorksheet(self, xml_filename=None, is_cut=None, new_worksheet_name=None):
         """
-        Paste the sheet from the clipboard getInto the specified book.
+        Paste the sheet from the clipboard into the specified book.
 
         :param xml_filename: The name of the XML file of the book to insert.
             If not defined, it means an active book.

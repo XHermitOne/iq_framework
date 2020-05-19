@@ -5,7 +5,6 @@
 Controls used in filter constructor.
 """
 
-import gettext
 import wx
 import wx.adv
 import wx.lib.platebtn
@@ -14,11 +13,12 @@ from ...engine.wx.dlg import wxdlg_func
 from ...engine.wx import wxbitmap_func
 from . import label_event
 from ...util import log_func
+from ...util import lang_func
 
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 DEFAULT_COMBO_SIZE = (200, -1)
 DEFAULT_EDIT_SIZE = (100, -1)
@@ -62,7 +62,7 @@ class iqCustomComboCtrl(wx.ComboCtrl):
         dc.DrawText(label, (bw-tw)/2, (bw-tw)/2)
         del dc
 
-        # now apply a getMask using the bgcolor
+        # now apply a mask using the bgcolor
         bmp.SetMaskColour(bgcolor)
 
         # and tell the ComboCtrl to use it

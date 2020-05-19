@@ -51,7 +51,7 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
 
     def _getMask(self, ref_obj, code):
         """
-        Identify getMask by code.
+        Identify mask by code.
 
         Masks:
 
@@ -67,9 +67,9 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
             &       Allow string.punctuation only (doesn't include all unicode symbols)
             \*      Allow any visible character
             |       explicit field boundary (takes no space in the control; allows mix
-                    of adjacent getMask characters to be treated as separate fields,
+                    of adjacent mask characters to be treated as separate fields,
                     eg: '&|###' means "field 0 = '&', field 1 = '###'", but there's
-                    no fixed characters in getBetween.
+                    no fixed characters in between.
         =========  ==========================================================
 
         :param ref_obj: Ref object.
@@ -119,7 +119,7 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
         """
         if property_editor:
             mask = self._getMask(self.ref_obj, value)
-            log_func.debug(u'Code editor getMask <%s>' % mask)
+            log_func.debug(u'Code editor mask <%s>' % mask)
             reg_exp = self._getRegExp(self.ref_obj, value)
             log_func.debug(u'Code editor control regular expression <%s>' % reg_exp)
             

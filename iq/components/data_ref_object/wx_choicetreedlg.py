@@ -331,7 +331,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         sort_field = None
         if isinstance(sort_column, int):
             # An increase of 1 is made in order to take
-            # getInto account the first column with index 0
+            # into account the first column with index 0
             #                      V
             i = abs(sort_column) - 1
             sort_field = self.refobj_col_names[i]
@@ -357,7 +357,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         sort_field_idx = None
         if isinstance(sort_column, int):
             # An increase of 1 is made in order to take
-            # getInto account the first column with index 0
+            # into account the first column with index 0
             #                         V
             return abs(sort_column) - 1
         elif isinstance(sort_column, str):
@@ -881,7 +881,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         find_col = self.getSelectedColIdx(event.GetX())
 
         if find_col >= 0:
-            # An increase of 1 was made in order to take getInto account
+            # An increase of 1 was made in order to take into account
             # the first column with index 0
             find_col_name = self.getSortField(find_col + 1)
             if self.sort_column is None:

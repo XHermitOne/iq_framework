@@ -49,7 +49,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :return: Filtered list of entries.
         """
@@ -71,7 +71,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :return: List of dictionaries for wide format entries of the specified range.
              Or None in case of an error.
@@ -82,7 +82,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
         model = self.getModel()
         if model:
             dt_field = getattr(model, self.getDTColumnName())
-            recordset = self.getModelQuery().filter(dt_field.getBetween(start_dt, stop_dt))
+            recordset = self.getModelQuery().filter(dt_field.between(start_dt, stop_dt))
             records = [vars(record) for record in recordset]
 
             if rec_filter:
@@ -106,7 +106,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :return: Record list {'dt': date-time from the specified range,
                               'data': value}.
@@ -127,7 +127,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :param rec_limit: Limit the number of entries.
         :return: The last registered wide format entry in the form of a dictionary.
@@ -168,7 +168,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :param rec_limit: Limit the number of entries.
         :return: Dictionary {'dt': date-time of last registration,
@@ -191,7 +191,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :param rec_limit: Limit the number of entries.
         :return: The first registered wide format entry in the form of a dictionary.
@@ -230,7 +230,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :param rec_limit: Limit the number of entries.
         :return: Dictionary {'dt': date-time of last registration,

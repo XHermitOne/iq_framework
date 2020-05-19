@@ -5,18 +5,18 @@
 Filter constructor dialog_func.
 """
 
-import gettext
 import wx
 
 from ...engine.wx import wxbitmap_func
 from ...util import log_func
+from ...util import lang_func
 
 from . import filter_constructor
 from . import filter_builder_env
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 
 def getFilterConstructorDlg(parent=None, default_filter_data=None, env=None):

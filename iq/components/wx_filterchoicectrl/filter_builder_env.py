@@ -46,10 +46,10 @@ Function registration:
     For example: PY_REF_FUNCS
 """
 
-import gettext
 import wx.adv
 
 from ...util import log_func
+from ...util import lang_func
 from ...engine.wx import wxbitmap_func
 
 from . import filter_py_funcs
@@ -64,7 +64,7 @@ except ImportError:
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 REQUISITE_TYPE_STR = 'str'
 REQUISITE_TYPE_INT = 'int'

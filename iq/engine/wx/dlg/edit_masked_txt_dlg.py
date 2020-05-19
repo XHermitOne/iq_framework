@@ -53,7 +53,7 @@ class iqEditMaskedTextDlg(edit_masked_txt_dlg_proto.iqEditMaskedTextDlgProto):
         :param title: Dialog title.
         :param label: Prompt text label.
         :param default_txt: Default text.
-        :param mask: Text getMask.
+        :param mask: Text mask.
         :param reg_exp: Regular expression.
         """
         # Check input parameters
@@ -67,7 +67,7 @@ class iqEditMaskedTextDlg(edit_masked_txt_dlg_proto.iqEditMaskedTextDlgProto):
         log_func.debug(u'Set default value <%s> for editing' % default_txt)
         self.masked_textCtrl.SetMaskParameters(mask=mask,
                                                validRegex=reg_exp)
-        # Setting the value m. only after setting the getMask parameters
+        # Setting the value m. only after setting the mask parameters
         # SetValue provides additional value control
         self.masked_textCtrl.SetValue(default_txt)
 

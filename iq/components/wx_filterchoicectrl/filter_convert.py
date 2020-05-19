@@ -211,11 +211,11 @@ class iqFilter2SQLAlchemyConverter(object):
                 return getattr(self.table.c, requisite['requisite']) <= requisite['arg_1']
             elif requisite['function'] == 'between':
                 # <Between>
-                return getattr(self.table.c, requisite['requisite']).getBetween(requisite['arg_1'],
+                return getattr(self.table.c, requisite['requisite']).between(requisite['arg_1'],
                                                                                 requisite['arg_2'])
             elif requisite['function'] == 'not_between':
                 # <Not between>
-                return sqlalchemy.not_(getattr(self.table.c, requisite['requisite']).getBetween(requisite['arg_1'],
+                return sqlalchemy.not_(getattr(self.table.c, requisite['requisite']).between(requisite['arg_1'],
                                                                                                 requisite['arg_2']))
             elif requisite['function'] == 'contain':
                 return getattr(self.table.c, requisite['requisite']).contains(requisite['arg_1'])

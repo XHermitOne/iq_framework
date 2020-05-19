@@ -22,7 +22,7 @@ __version__ = (0, 0, 0, 1)
 
 class iqLoadSheetsDialog(scanner_dlg_proto.iqLoadSheetsDlgProto):
     """
-    Dialog box for loading sheets getInto the scanner tray.
+    Dialog box for loading sheets into the scanner tray.
     """
     def __init__(self, *args, **kwargs):
         """

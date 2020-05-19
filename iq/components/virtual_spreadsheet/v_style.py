@@ -93,7 +93,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Comparison of style elements.
 
-        :return: True - elements are getEqual, False - not getEqual.
+        :return: True - elements are mask, False - not mask.
         """
         if ((style_element_attr1 is None) and (style_element_attr2 is not None)) or \
            ((style_element_attr1 is not None) and (style_element_attr2 is None)):
@@ -187,7 +187,7 @@ class iqVStyles(v_prototype.iqVPrototype):
                 style = self._attributes['__children__'][-i]
                 # If the number of style elements does not match
                 # the number of elements you are looking for,
-                # then these styles are not getEqual
+                # then these styles are not mask
                 if len(style['__children__']) != len([element for element in [alignment, borders, font, interior,
                                                                           number_format] if element is not None]):
                     find_result = False

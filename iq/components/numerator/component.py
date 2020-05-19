@@ -66,7 +66,7 @@ class iqNumerator(numerator.iqNumeratorProto, object.iqObject):
     def getNumCodeFormat(self):
         """
         Get number-code format.
-        The numbering code format can getContain all temporary formats,
+        The numbering code format can contain all temporary formats,
         and
              <%N> - the identifier number of the row of the numbering table.
              <%E> - additional parameters passed to the function

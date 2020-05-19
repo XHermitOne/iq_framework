@@ -100,7 +100,7 @@ class iqVPrototype(object):
 
     def paste(self, paste, to=None):
         """
-        Insert object attributes copy getInto curent object to the address.
+        Insert object attributes copy into curent object to the address.
         If to None, then there is a replacement.
         """
         pass

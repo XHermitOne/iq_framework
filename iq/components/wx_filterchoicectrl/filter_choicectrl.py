@@ -10,19 +10,20 @@ import os
 import os.path
 import uuid
 import operator
-import gettext
 import wx
 
 from ...engine.wx.dlg import wxdlg_func 
 from ...util import res_func
 from ...util import log_func
+from ...util import lang_func
 
 from . import filter_choice_dlg
 from . import filter_constructor_dlg
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
+
 
 DEFAULT_LIMIT_LABEL_FMT = _(u'Limit the number of objects') + ': %d'
 ERROR_LIMIT_LABEL_FMT = u'(!)' + _(u'Limit exceeded') + ': %d'
@@ -471,7 +472,7 @@ class iqFilterChoiceCtrlProto(wx.ComboCtrl):
         dc.DrawText(label, (bw-tw)/2, (bw-tw)/2)
         del dc
 
-        # now apply a getMask using the bgcolor
+        # now apply a mask using the bgcolor
         bmp.SetMaskColour(bgcolor)
 
         # and tell the ComboCtrl to use it

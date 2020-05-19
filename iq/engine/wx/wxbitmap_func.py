@@ -22,7 +22,7 @@ def createBitmap(img_filename, mask_colour=None):
     Create wx.Bitmap from image filename.
 
     :param img_filename: Image filename.
-    :param mask_colour: Colour for create image getMask. If None then getMask not create.
+    :param mask_colour: Colour for create image mask. If None then mask not create.
     :return: wx.Bitmap object or None if error.
     """
     try:
@@ -84,7 +84,7 @@ def createIconBitmap(icon_filename=None, mask_colour=None):
 
     :param icon_filename: Icon filename as 'library/img_filename.png'
         If None then create missing image bitmap.
-    :param mask_colour: Colour for create image getMask. If None then getMask not create.
+    :param mask_colour: Colour for create image mask. If None then mask not create.
     :return: wx.Bitmap object or None if error.
     """
     if icon_filename is None:

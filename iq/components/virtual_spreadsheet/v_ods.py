@@ -1598,7 +1598,7 @@ class iqODS(object):
 
     def _dimensionXML2ODS(self, dimension):
         """
-        Translating dimensions from an XML view getInto ODS.
+        Translating dimensions from an XML view into ODS.
 
         :param dimension: String representation of the size in inches.
         """

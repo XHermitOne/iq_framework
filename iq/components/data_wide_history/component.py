@@ -50,7 +50,7 @@ class iqDataWideHistory(wide_history.iqWideHistoryManager, data_navigator.COMPON
             If the function is specified by a text block of code:
             As an argument, the function takes the current entry as a dictionary.
             There is a RECORD variable in the namespace that points to the current record.
-            The function returns True for the record that falls getInto the resulting list,
+            The function returns True for the record that falls into the resulting list,
             False - if missed.
         :return: Filtered list of entries.
         """

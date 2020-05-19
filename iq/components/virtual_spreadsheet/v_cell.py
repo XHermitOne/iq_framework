@@ -258,7 +258,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
 
     def getOffset(self, offset_row=0, offset_column=0):
         """
-        Get cell by offset taking getInto account merged cells.
+        Get cell by offset taking into account merged cells.
 
         :param offset_row: Row offset.
         :param offset_column: Column offset.

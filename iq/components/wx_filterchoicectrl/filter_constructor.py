@@ -5,12 +5,12 @@
 Filter constructor control.
 """
 
-import gettext
 import wx
 from wx.lib.agw import hypertreelist
 
 from ...engine.wx import wxbitmap_func
 from ...util import log_func
+from ...util import lang_func
 
 from . import label_event
 
@@ -19,7 +19,7 @@ from . import filter_builder_ctrl
 
 __version__ = (0, 0, 0, 1)
 
-_ = gettext.gettext
+_ = lang_func.getTranslation().gettext
 
 DEFAULT_ITEM_LABEL = ''
 
