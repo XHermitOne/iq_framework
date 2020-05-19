@@ -843,7 +843,7 @@ class iqReportGenerator(object):
                 else:
                     log_func.error(u'Unsupported function <%s>' % str(cur_func))
 
-                # The cell value may also contain control codes
+                # The cell value may also getContain control codes
                 value = self._genTxt({'value': value}, record)
                 func_str.append(value)
 
@@ -1176,7 +1176,7 @@ class iqReportGenerator(object):
 
     def parseFuncText(self, text, patterns=ALL_PATTERNS):
         """
-        Parse a text into format and executable code.
+        Parse a text getInto format and executable code.
 
         :param text: Parse text.
         :param patterns: List of string patterns of tags to indicate the beginning and end of the functional.

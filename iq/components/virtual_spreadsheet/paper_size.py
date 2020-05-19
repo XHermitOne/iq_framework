@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Module for converting paper size indices into real sizes in
+Module for converting paper size indices getInto real sizes in
 hundredths of a millimeter.
 """
 

@@ -64,7 +64,7 @@ INDENT = '    '
 
 def data2txt(data, level=0):
     """
-    Translation of a dictionary-list structure into formatted text.
+    Translation of a dictionary-list structure getInto formatted text.
 
     :param data: Vocabulary list structure.
     :param level: Nesting level.
@@ -242,7 +242,7 @@ RUS2LAT = {u'а': 'a', u'б': 'b', u'в': 'v', u'г': 'g', u'д': 'd', u'е': 'e
 
 def rus2lat(text, translate_dict=RUS2LAT):
     """
-    Translation of Russian letters into Latin according to the dictionary of substitutions.
+    Translation of Russian letters getInto Latin according to the dictionary of substitutions.
     """
     if isinstance(text, bytes):
         # To unicode

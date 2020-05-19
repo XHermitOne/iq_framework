@@ -269,7 +269,7 @@ class iqNumeratorProto(object):
         """
         Determine the maximum value of the numbering counter.
         The maximum value of the counter must be produced
-        taking into account the current program year.
+        taking getInto account the current program year.
 
         :param session: SQLAlchemy session.
         :param numerator_table: Numerator table.

@@ -271,7 +271,7 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
 
     def _parseFuncText(self, text, patterns=ALL_PATERNS):
         """
-        Parse the string into format and executable code.
+        Parse the string getInto format and executable code.
 
         :param text: Parsed text.
         :param patterns: A list of strings of patterns of tags

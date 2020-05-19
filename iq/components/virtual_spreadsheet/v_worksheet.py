@@ -423,10 +423,10 @@ class iqVTable(v_prototype.iqVPrototype):
             for i in range(row - row_count):
                 self.createRow()
 
-        # Check for getting into the merged cell
+        # Check for getting getInto the merged cell
         if self.isInMergeCell(row, col):
             sheet_name = self.getParentByName('Worksheet').getName()
-            err_txt = 'Getting new_cell (sheet: %s, row: %d, column: %d) into merge new_cell!' % (sheet_name, row, col)
+            err_txt = 'Getting new_cell (sheet: %s, row: %d, column: %d) getInto merge new_cell!' % (sheet_name, row, col)
             raise exceptions.iqMergeCellError((100, err_txt))
 
         cur_row = self.getRow(row)
@@ -459,11 +459,11 @@ class iqVTable(v_prototype.iqVPrototype):
             for i in range(row-row_count):
                 self.createRow()
 
-        # Check for getting into the merged cell
+        # Check for getting getInto the merged cell
         if self.isInMergeCell(row, col):
             if DETECT_MERGE_CELL_ERROR:
                 sheet_name = self.getParentByName('Worksheet').getName()
-                err_txt = 'Getting new_cell (sheet: %s, row: %d, column: %d) into merge new_cell!' % (sheet_name, row, col)
+                err_txt = 'Getting new_cell (sheet: %s, row: %d, column: %d) getInto merge new_cell!' % (sheet_name, row, col)
                 raise exceptions.iqMergeCellError((100, err_txt))
             else:
                 cell = self.getInMergeCell(row, col)
@@ -554,7 +554,7 @@ class iqVTable(v_prototype.iqVPrototype):
 
     def _pasteRange(self, paste, to):
         """
-        Insert a range into the table at the cell address.
+        Insert a range getInto the table at the cell address.
         """
         if isinstance(to, tuple) and len(to) == 2:
             to_row, to_col = to

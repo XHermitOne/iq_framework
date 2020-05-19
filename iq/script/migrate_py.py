@@ -91,7 +91,7 @@ def migrateTxtFile(txt_filename, do_translate=True,
     Make python module migration replacements.
 
     :param txt_filename: Text file path.
-    :param do_translate: Automatically translate into English?
+    :param do_translate: Automatically translate getInto English?
     :return: True/False.
     """
     if not os.path.exists(txt_filename):

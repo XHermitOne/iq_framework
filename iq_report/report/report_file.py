@@ -774,7 +774,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
 
     def _setCellMergeAcross(self, row, column, merge_across, sheet):
         """
-        Reset all cells that fall into the horizontal pool area.
+        Reset all cells that fall getInto the horizontal pool area.
 
         :param row: Row.
         :param column: Column.
@@ -792,7 +792,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
 
     def _setCellMergeDown(self, row, column, merge_down, sheet):
         """
-        Reset all cells that fall into the vertical pool area.
+        Reset all cells that fall getInto the vertical pool area.
 
         :param row: Row.
         :param column: Column.
@@ -810,7 +810,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
 
     def _setCellMerge(self, row, column, merge_across, merge_down, sheet):
         """
-        Reset all cells that fall into the pool zone.
+        Reset all cells that fall getInto the pool zone.
 
         :param row: Row.
         :param column: Column.

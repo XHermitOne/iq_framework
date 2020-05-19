@@ -169,7 +169,7 @@ class iqMnemoAnchorManager(object):
         svg_width, svg_height = svg_size
         svg_offset_x, svg_offset_y = svg_pos_x, svg_pos_y
 
-        # Calculation of the second point taking into account the direction of displacement
+        # Calculation of the second point taking getInto account the direction of displacement
         if direction & spc.ANCHOR_DIRECTION_FROM_LEFT_TO_RIGHT:
             svg_offset_x = svg_pos_x + svg_width
         if direction & spc.ANCHOR_DIRECTION_FROM_RIGHT_TO_LEFT:

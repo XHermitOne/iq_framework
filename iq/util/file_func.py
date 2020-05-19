@@ -310,9 +310,9 @@ def copyToDir(src_filename, dst_dirname, rewrite=True):
 
 def getFilesByMask(filename_mask):
     """
-    List of files by mask.
+    List of files by getMask.
 
-    :param filename_mask: File mask. For example /home/user/tmp/*.pyc.
+    :param filename_mask: File getMask. For example /home/user/tmp/*.pyc.
     :return: File path list or empty list if error
     """
     try:
@@ -322,7 +322,7 @@ def getFilesByMask(filename_mask):
                 filenames = glob.glob(pathname=filename_mask, recursive=False)
                 return [os.path.abspath(file_name) for file_name in filenames]
             else:
-                log_func.error(u'Folder <%s> not found. to determine the list of files by mask <%s>' % (dir_path, filename_mask))
+                log_func.error(u'Folder <%s> not found. to determine the list of files by getMask <%s>' % (dir_path, filename_mask))
         elif isinstance(filename_mask, tuple) or isinstance(filename_mask, list):
             filenames = list()
             for file_mask in filename_mask:
@@ -330,15 +330,15 @@ def getFilesByMask(filename_mask):
                 filenames += [os.path.abspath(file_name) for file_name in filenames]
             return filenames
         else:
-            log_func.error(u'Error type mask <%s>' % filename_mask)
+            log_func.error(u'Error type getMask <%s>' % filename_mask)
     except:
-        log_func.fatal(u'Error define file list by mask <%s>' % str(filename_mask))
+        log_func.fatal(u'Error define file list by getMask <%s>' % str(filename_mask))
     return list()
 
 
 def delFilesByMask(delete_dir, *mask_filters):
     """
-    Delete all files from a folder filtered by file mask.
+    Delete all files from a folder filtered by file getMask.
     Delete recursively by subdirectory.
 
     :param delete_dir: Source folder.
@@ -357,7 +357,7 @@ def delFilesByMask(delete_dir, *mask_filters):
                 log_func.info(u'File <%s> deleted' % del_file)
         return True
     except:
-        log_func.fatal(u'Error delete files by mask <%s> from folder <%s>' % (str(mask_filters), delete_dir))
+        log_func.fatal(u'Error delete files by getMask <%s> from folder <%s>' % (str(mask_filters), delete_dir))
     return False
 
 

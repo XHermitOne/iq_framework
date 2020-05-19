@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-The module for converting a dictionary-list structure into an xml file.
+The module for converting a dictionary-list structure getInto an xml file.
 """
 
 import sys
