@@ -14,7 +14,6 @@ from ...util import lang_func
 
 from . import label_event
 
-from . import filter_builder_env
 from . import filter_builder_ctrl
 
 __version__ = (0, 0, 0, 1)
@@ -235,6 +234,8 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
         Set the controls for editing the arguments corresponding
         to the selected function to the specified element.
         """
+        from . import filter_builder_env
+
         func = function_combobox.getSelectedFunc()
         args_lst = func['args']
         # If there are already controls in the element that depend

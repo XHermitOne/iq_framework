@@ -436,16 +436,22 @@ class iqFilterChoiceCtrlProto(wx.ComboCtrl):
         """
         self._environment = env
 
-    def getUUID(self):
+    def getEnvironment(self):
+        """
+        Get environment.
+        """
+        return self._environment
+
+    def getGUID(self):
         if not self._uuid:
-            self._uuid = self._genUUID()
+            self._uuid = self._genGUID()
         return self._uuid
 
-    def _genUUID(self):
+    def _genGUID(self):
         """
-        Generate UUID.
+        Generate GUID.
 
-        :return: UUID.
+        :return: GUID.
         """
         return str(uuid.uuid4())
 

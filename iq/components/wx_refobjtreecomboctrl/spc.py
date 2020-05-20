@@ -86,6 +86,7 @@ WXREFOBJTREECOMBOCTRL_SPC = {
             'editor': property_editor_id.FLAG_EDITOR,
             'choices': WXREFOBJTREECOMBOCTRL_STYLE,
         },
+        'font': property_editor_id.FONT_EDITOR,
 
         'ref_obj': {
             'editor': property_editor_id.PASSPORT_EDITOR,
@@ -112,6 +113,7 @@ WXREFOBJTREECOMBOCTRL_SPC = {
         'foreground_colour': u'Foreground colour',
         'background_colour': u'Background colour',
         'style': u'Control style',
+        'font': u'Text font',
 
         'ref_obj': u'Reference object passport',
         'root_code': u'Reference object root item cod',

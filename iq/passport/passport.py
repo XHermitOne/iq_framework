@@ -12,6 +12,8 @@ The composition of the passport includes:
 """
 
 import os.path
+import uuid
+import hashlib
 
 from ..util import file_func
 from ..util import global_func
@@ -80,6 +82,20 @@ class iqPassport(object):
 
     def getGUID(self):
         return self.guid
+
+    def genGUID(self):
+        return str(uuid.uuid4())
+
+    def getGUIDCheckSum(self):
+        """
+        Get GUID as passport check sum.
+
+        :return: Passport check sum GUID as XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX.
+        """
+        str_psp = self.getAsStr()
+        data = hashlib.md5(str_psp.encode()).hexdigest()
+        guid = data[:8] + '-' + data[8:12] + '-' + data[12:16] + '-' + data[16:20] + '-' + data[20:]
+        return guid
 
     def getAsStr(self):
         """

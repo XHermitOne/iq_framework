@@ -12,7 +12,6 @@ from ...util import log_func
 from ...util import lang_func
 
 from . import filter_constructor
-from . import filter_builder_env
 
 __version__ = (0, 0, 0, 1)
 
@@ -29,7 +28,7 @@ def getFilterConstructorDlg(parent=None, default_filter_data=None, env=None):
     """
     if env is None:
         log_func.error(u'Not define filter constructor environment')
-
+        from . import filter_builder_env
         env = filter_builder_env.FILTER_ENVIRONMENT
 
     dlg = None
