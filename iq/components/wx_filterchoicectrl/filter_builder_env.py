@@ -1218,7 +1218,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getEqual,
         'description': _(u'System data'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_sys_date,
+        'get_args': filter_ext_funcs.getArgsSysDate,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1227,7 +1227,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getBetween,
         'description': _(u'System month'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_sys_month,
+        'get_args': filter_ext_funcs.getArgsSysMonth,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1236,7 +1236,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getBetween,
         'description': _(u'System year'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_sys_year,
+        'get_args': filter_ext_funcs.getArgsSysYear,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1245,7 +1245,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getEqual,
         'description': _(u'Date'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_date,
+        'get_args': filter_ext_funcs.getArgsChoiceDate,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1254,7 +1254,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getBetween,
         'description': _(u'Month'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_month,
+        'get_args': filter_ext_funcs.getArgsChoiceMonth,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1263,7 +1263,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getBetween,
         'description': _(u'Year'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_year,
+        'get_args': filter_ext_funcs.getArgsChoiceYear,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1272,7 +1272,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getBetween,
         'description': _(u'Date range'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_date_range,
+        'get_args': filter_ext_funcs.getArgsChoiceDateRange,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1281,7 +1281,7 @@ DEFAULT_ENV_DATE_FUNCS = {
         'function': getBetween,
         'description': _(u'Month range'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_month_range,
+        'get_args': filter_ext_funcs.getArgsChoiceMonthRange,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
@@ -1414,7 +1414,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'System date'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_sys_date_datetime,
+        'get_args': filter_ext_funcs.getArgsSysDateDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1423,7 +1423,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Yesterday'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_yesterday_datetime,
+        'get_args': filter_ext_funcs.getArgsYesterdayDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1432,7 +1432,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Two days ago'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_two_days_ago_datetime,
+        'get_args': filter_ext_funcs.getArgsTwoDaysAgoDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1441,7 +1441,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'System month'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_sys_month_datetime,
+        'get_args': filter_ext_funcs.getArgsSysMonthDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1450,7 +1450,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'System year'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_sys_year_datetime,
+        'get_args': filter_ext_funcs.getArgsSysYearDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1459,7 +1459,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Operational year'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_oper_year_datetime,
+        'get_args': filter_ext_funcs.getArgsOperYearDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1468,7 +1468,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Date'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_date_datetime,
+        'get_args': filter_ext_funcs.getArgsChoiceDateDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1477,7 +1477,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Month'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_month_datetime,
+        'get_args': filter_ext_funcs.getArgsChoiceMonthDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1486,7 +1486,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Year'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_year_datetime,
+        'get_args': filter_ext_funcs.getArgsChoiceYearDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1495,7 +1495,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Date range'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_date_range_datetime,
+        'get_args': filter_ext_funcs.getArgsChoiceDateRangeDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
@@ -1504,7 +1504,7 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'function': getBetween,
         'description': _(u'Month range'),
         'args': [],
-        'get_args': filter_ext_funcs.get_args_choice_month_range_datetime,
+        'get_args': filter_ext_funcs.getArgsChoiceMonthRangeDatetime,
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
