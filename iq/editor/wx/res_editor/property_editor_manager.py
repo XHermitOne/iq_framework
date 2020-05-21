@@ -223,7 +223,8 @@ class iqPropertyEditorManager(object):
 
         elif property_type == property_editor_id.FONT_EDITOR:
             value = value if value else dict()
-            font = wx.Font(value)
+            log_func.debug(u'Font %s' % str(value))
+            font = wx.Font(**value)
             wx_property = wx.propgrid.FontProperty(name, value=font)
 
         elif property_type == property_editor_id.POINT_EDITOR:
@@ -517,6 +518,7 @@ class iqPropertyEditorManager(object):
                 value = (colour.Red(), colour.Green(), colour.Blue())
 
         elif property_type == property_editor_id.FONT_EDITOR:
+            log_func.debug(u'Get font %s' % str_value)
             value = dict()
             value_list = str_value.split('; ')
             value['type'] = 'Font'
