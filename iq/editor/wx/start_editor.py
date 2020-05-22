@@ -83,11 +83,17 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
         """
         Button click handler <Run project>.
         """
-        prj_names = prj_func.getProjectNames()
-        selected_prj_name = dlg_func.getSingleChoiceDlg(parent=self, title='PROJECTS',
-                                                        prompt_text=u'Select a project to run:',
-                                                        choices=prj_names)
-        if selected_prj_name:
+        prj_descriptions = prj_func.getProjectDescriptions()
+
+        prj_data = list(prj_descriptions.items())
+        prj_data.sort()
+        prj_names = [name for name, description in prj_data]
+        prj_items = [u'%s\t:\t%s' % (name, description) for name, description in prj_data]
+        selected_prj_idx = dlg_func.getSingleChoiceIdxDlg(parent=self, title='PROJECTS',
+                                                          prompt_text=u'Select a project to run:',
+                                                          choices=prj_items)
+        if selected_prj_idx >= 0:
+            selected_prj_name = prj_names[selected_prj_idx]
             self._project_manager.run(selected_prj_name)
 
         self.EndModal(wx.ID_OK)
