@@ -104,7 +104,7 @@ class icMultiCheckTreeDialog:
         Возвратить результат редактирования.
         """
         tree_ctrl = self.evalSpace.GetObject('multi_check_tree_ctrl')
-        return tree_ctrl.get_check_list()
+        return tree_ctrl.getCheckList()
 
 
 def test(par=0):

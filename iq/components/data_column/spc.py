@@ -11,7 +11,29 @@ import sqlalchemy.types
 from iq.object import object_spc
 from ...editor import property_editor_id
 
+from ... import passport
+
 __version__ = (0, 0, 0, 1)
+
+
+def validObjLinkPsp(psp, *args, **kwargs):
+    """
+    Validate object link passport.
+
+    :param psp: Passport.
+    :param args:
+    :param kwargs:
+    :return: True/False.
+    """
+    from .. import data_ref_object
+    from .. import data_uni_object
+
+    data_object_types = (data_ref_object.COMPONENT_TYPE,
+                         data_uni_object.COMPONENT_TYPE)
+
+    psp_obj = passport.iqPassport().setAsAny(psp)
+    return psp_obj.getType() in data_object_types
+
 
 COMPONENT_TYPE = 'iqDataColumn'
 
@@ -26,6 +48,7 @@ DATACOLUMN_SPC = {
 
     'field_type': 'Text',
     'field_attr': None,
+    'link': None,
 
     'autoincrement': False,
     'default': None,
@@ -52,6 +75,10 @@ DATACOLUMN_SPC = {
             'choices': sqlalchemy.types.__all__,
         },
         'field_attr': property_editor_id.SCRIPT_EDITOR,
+        'link': {
+            'editor': property_editor_id.PASSPORT_EDITOR,
+            'valid': validObjLinkPsp,
+        },
 
         'autoincrement': property_editor_id.CHECKBOX_EDITOR,
         'default': property_editor_id.SCRIPT_EDITOR,
@@ -70,6 +97,7 @@ DATACOLUMN_SPC = {
     '__help__': {
         'field_type': u'The column\'s type',
         'field_attr': u'Additional field type attributes',
+        'link': u'Data object link',
 
         'autoincrement': u'Autoincrement flag',
         'default': u'Scalar or Python callable representing the default value for this column',

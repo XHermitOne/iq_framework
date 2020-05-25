@@ -26,7 +26,7 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
-        Standart component constructor.
+        Standard component constructor.
 
         :param parent: Parent object.
         :param resource: Object resource dictionary.

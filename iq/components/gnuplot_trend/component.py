@@ -22,7 +22,7 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
-        Standart component constructor.
+        Standard component constructor.
 
         :param parent: Parent object.
         :param resource: Object resource dictionary.

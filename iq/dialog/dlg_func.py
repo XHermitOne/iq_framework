@@ -14,8 +14,7 @@ elif global_func.isQTEngine():
     _dlg_func = None
     log_func.error(u'Dialog functions. Not support QT engine')
 elif global_func.isCUIEngine():
-    _dlg_func = None
-    log_func.error(u'Dialog functions. Not support CUI engine')
+    from ..engine.cui.dlg import cui_dlg_func as _dlg_func
 
 
 __version__ = (0, 0, 0, 1)

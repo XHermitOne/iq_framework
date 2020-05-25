@@ -16,9 +16,11 @@ __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqDataUniObjModel'
 
+GUID_FIELD_NAME = 'guid'
+
 # Automatically add reference object model columns
 GUID_COLUMN_SPC = copy.deepcopy(data_column.SPC)
-GUID_COLUMN_SPC['name'] = 'guid'
+GUID_COLUMN_SPC['name'] = GUID_FIELD_NAME
 GUID_COLUMN_SPC['description'] = 'Object global unique ID'
 GUID_COLUMN_SPC['field_type'] = 'Text'
 

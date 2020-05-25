@@ -13,10 +13,9 @@ from iq.object import object_spc
 from ...editor import property_editor_id
 from ...util import str_func
 from ...util import log_func
-# from ...util import global_func
 from ...util import lang_func
 from ...dialog import dlg_func
-from ...kernel import kernel
+from ... import passport
 
 __version__ = (0, 0, 0, 1)
 
@@ -80,6 +79,21 @@ def testComponent(spc, *args, **kwargs):
 
 
 COMPONENT_TYPE = 'iqDataEngine'
+DB_ENGINE_TYPES = (COMPONENT_TYPE, )
+
+
+def validDBEnginePsp(psp, *args, **kwargs):
+    """
+    Validate DB engine passport.
+
+    :param psp: Passport.
+    :param args:
+    :param kwargs:
+    :return: True/False.
+    """
+    psp_obj = passport.iqPassport().setAsAny(psp)
+    return psp_obj.getType() in DB_ENGINE_TYPES
+
 
 DATAENGINE_SPC = {
     'name': 'default',
