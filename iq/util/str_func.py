@@ -274,3 +274,21 @@ def isRUSText(text):
     # This is not a string
     return False
 
+
+def isWordsInText(text, *words):
+    """
+    Are there words in the text?
+    The search is conducted before the first finding of one of the indicated words.
+
+    :param text: Text.
+    :param words: Words.
+    :return: True (there are such words in the text)/False (no words found).
+    """
+    if not isinstance(text, str):
+        text = toUnicode(text)
+    find = False
+    for word in words:
+        find = word in text
+        if find:
+            break
+    return find

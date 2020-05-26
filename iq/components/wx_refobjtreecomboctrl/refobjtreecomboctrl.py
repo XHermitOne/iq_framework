@@ -44,7 +44,7 @@ class iqBoxTree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
 
 
 # # Constants
-# SPC_IC_SPRAVTREECOMBOCTRL = {'sprav': None,      # Паспорт справочника-источника данных
+# SPC_IC_SPRAVTREECOMBOCTRL = {'ref_obj': None,      # Паспорт справочника-источника данных
 #                              'root_code': None,  # Код корневого элемента ветки справочника
 #                              'view_all': False,  # Показывать все элементы справочника
 #                              'level_enable': -1,  # Номер уровня с которого включаются элементы для выбора
