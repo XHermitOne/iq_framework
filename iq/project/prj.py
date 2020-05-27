@@ -281,7 +281,8 @@ python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s
         result = False
         if username is None:
             result = dlg_func.getLoginDlg(title=_(u'LOGIN'),
-                                          reg_users=self.getUserNames())
+                                          reg_users=self.getUserNames(),
+                                          user_descriptions=[user.getDescription() for user in self.getUsers()])
             if not result:
                 # If login failed then exit
                 log_func.error(u'Failed login')

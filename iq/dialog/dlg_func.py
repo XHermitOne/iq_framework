@@ -282,7 +282,7 @@ def openAboutDlg(parent=None, title='', prompt_text='', logo_bitmap=None):
     return None
 
 
-def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
+def getLoginDlg(parent=None, title='', default_username='', reg_users=None, user_descriptions=None):
     """
     Open login user dialog.
 
@@ -290,9 +290,12 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
     :param title: Dialog form title.
     :param default_username: Default user name.
     :param reg_users: User name list.
+    :param user_descriptions: User description list.
     :return: Tuple: (username, password, password hash) or None if error.
     """
     if _dlg_func:
         return _dlg_func.getLoginDlg(parent=parent, title=title,
-                                     default_username=default_username, reg_users=reg_users)
+                                     default_username=default_username,
+                                     reg_users=reg_users,
+                                     user_descriptions=user_descriptions)
     return None

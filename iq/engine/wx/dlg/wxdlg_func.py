@@ -17,6 +17,8 @@ from ....util import global_func
 from ....util import lang_func
 from .. import wxbitmap_func
 
+from . import login_dialog_proto
+
 __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
@@ -702,7 +704,7 @@ LOGIN_PASSWORD_IDX = 1
 LOGIN_PASSWORD_MD5_IDX = 2
 
 
-def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
+def getLoginDlg(parent=None, title='', default_username='', reg_users=None, user_descriptions=None):
     """
     Open login user dialog.
 
@@ -710,6 +712,7 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
     :param title: Dialog form title.
     :param default_username: Default user name.
     :param reg_users: User name list.
+    :param user_descriptions: User description list.
     :return: Tuple: (username, password, password hash) or None if error.
     """
     app = global_func.getApplication()
@@ -720,7 +723,7 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
     dlg = None
     result = None
     try:
-        dlg = iqLoginDialog(parent, title, default_username, reg_users)
+        dlg = iqLoginDialog(parent, title, default_username, reg_users, user_descriptions)
         if dlg.ShowModal() == wx.ID_OK:
             result = (dlg.getUsername(), dlg.getPassword(), dlg.getPasswordHash())
     except:
@@ -731,92 +734,62 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
     return result
 
 
-class iqLoginDialog(wx.Dialog):
+USER_ITEM_DELIMETER = '\t:\t'
+
+
+class iqLoginDialog(login_dialog_proto.iqLoginDialogProto):
     """
     Login user dialog.
     """
-    def __init__(self, parent, title='', default_username='', reg_users=None):
+    def __init__(self, parent, title='', default_username='', reg_users=None, user_descriptions=None):
         """
         Constructor.
 
         :param parent: Parent form.
         :param title: Dialog form title.
         :param default_username: Default user name.
+        :param user_descriptions: User description list.
         :param reg_users: User name list.
         """
+        login_dialog_proto.iqLoginDialogProto.__init__(self, parent=parent)
+
+        if title:
+            self.SetTitle(title=title)
+
+        icon_img = wxbitmap_func.createIconBitmap('fatcow/set_security_question')
+        if icon_img:
+            icon = wx.Icon(icon_img)
+            self.SetIcon(icon)
+
         try:
-            if not title:
-                title = ''
-                
-            wx.Dialog.__init__(self, parent, -1, title=title,
-                               pos=wx.DefaultPosition, size=wx.Size(350, 150))
-
-            icon_img = wxbitmap_func.createIconBitmap('fatcow/set_security_question')
-            if icon_img:
-                icon = wx.Icon(icon_img)
-                self.SetIcon(icon)
-
-            id_ = wx.NewId()
-            self._text = wx.StaticText(self, id_, _(u'User name:'),
-                                       wx.Point(10, 10), wx.Size(-1, -1))
-            id_ = wx.NewId()
-            self._text = wx.StaticText(self, id_, _(u'Password:'),
-                                       wx.Point(10, 40), wx.Size(-1, -1))
-
-            id_ = wx.NewId()
-            self._ok_button = wx.Button(self, id_, _(u'OK'),
-                                        wx.Point(280, 80), wx.Size(60, -1))
-            self.Bind(wx.EVT_BUTTON, self.onOKButtonClick, id=id_)
-            self.Bind(wx.EVT_KEY_DOWN, self.onKeyDown)
-
-            id_ = wx.NewId()
-            self._cancel_button = wx.Button(self, id_, _(u'Cancel'),
-                                            wx.Point(200, 80), wx.Size(60, -1))
-            self.Bind(wx.EVT_BUTTON, self.onCancelButtonClick, id=id_)
-
-            id_ = wx.NewId()
             if reg_users is None:
-                reg_users = []
+                reg_users = list()
             if default_username is None:
                 default_username = ''
-            self._user_edit = wx.ComboBox(self, id_,
-                                          value=default_username,
-                                          pos=(120, 10), size=(220, -1),
-                                          choices=reg_users)
-            if reg_users:
-                self._user_edit.Select(0)
 
-            id_ = wx.NewId()
-            self._password_edit = wx.TextCtrl(self, id_, '',
-                                              wx.Point(120, 40), wx.Size(220, -1),
-                                              style=wx.TE_PASSWORD)
+            user_choices = reg_users
+            if user_descriptions:
+                user_choices = [u'%s%s%s' % (username,
+                                             USER_ITEM_DELIMETER,
+                                             user_descriptions[i]) for i, username in enumerate(reg_users)]
+
+            self.username_comboBox.SetItems(user_choices)
+            if user_choices:
+                self.username_comboBox.Select(0)
 
             self._user = default_username
             self._password = ''
 
-            self._user_edit.SetFocus()
+            self.username_comboBox.SetFocus()
         except:
-            log_func.fatal(u'Login dialog create error')
+            log_func.fatal(u'Error init login dialog')
 
-    def onKeyDown(self, event):
-        """
-        Keyboard handler.
-        """
-        key = event.GetKeyCode()
-        if key == wx.WXK_ESCAPE:
-            self.EndModal(wx.ID_CANCEL)
-        elif key == wx.WXK_RETURN:
-            self._user = self._getSelectedUsername()
-            self._password = self._password_edit.GetValue()
-            self.EndModal(wx.ID_OK)
-        # event.Skip()
-
-    def onOKButtonClick(self, event):
+    def onOkButtonClick(self, event):
         """
         Button click handler <OK>.
         """
         self._user = self._getSelectedUsername()
-        self._password = self._password_edit.GetValue()
+        self._password = self.password_textCtrl.GetValue()
         self.EndModal(wx.ID_OK)
         event.Skip()
 
@@ -831,9 +804,9 @@ class iqLoginDialog(wx.Dialog):
         """
         Get selected username in combobox.
         """
-        value = self._user_edit.GetValue()
+        value = self.username_comboBox.GetValue()
         if value:
-            return value.split(' ')[0].strip() 
+            return value.split(USER_ITEM_DELIMETER)[0].strip()
         return ''
     
     def getUsername(self):
