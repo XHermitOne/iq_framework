@@ -50,6 +50,19 @@ def testComponent(spc, *args, **kwargs):
 
 COMPONENT_TYPE = 'iqDataRefObject'
 
+REF_OBJ_TYPES = (COMPONENT_TYPE, )
+
+
+def validRefObjPsp(psp, *args, **kwargs):
+    """
+    Validate reference object passport.
+
+    :param psp: Passport.
+    :return: True/False.
+    """
+    psp_obj = passport.iqPassport().setAsAny(psp)
+    return psp_obj.getType() in REF_OBJ_TYPES
+
 
 DATAREFOBJECT_SPC = {
     'name': 'default',

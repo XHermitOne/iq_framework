@@ -10,25 +10,9 @@ import wx
 from iq.object import object_spc
 from ...editor import property_editor_id
 
-from ... import passport
-
-from .. import data_ref_object
+from ..data_ref_object import spc as data_ref_object_spc
 
 __version__ = (0, 0, 0, 1)
-
-
-REF_OBJ_TYPES = (data_ref_object.COMPONENT_TYPE, )
-
-
-def validRefObjPsp(psp, *args, **kwargs):
-    """
-    Validate reference object passport.
-
-    :param psp: Passport.
-    :return: True/False.
-    """
-    psp_obj = passport.iqPassport().setAsAny(psp)
-    return psp_obj.getType() in REF_OBJ_TYPES
 
 
 COMPONENT_TYPE = 'iqWxRefObjTreeComboCtrl'
@@ -90,7 +74,7 @@ WXREFOBJTREECOMBOCTRL_SPC = {
 
         'ref_obj': {
             'editor': property_editor_id.PASSPORT_EDITOR,
-            'valid': validRefObjPsp,
+            'valid': data_ref_object_spc.validRefObjPsp,
         },
         'root_code': property_editor_id.STRING_EDITOR,
         'view_all': property_editor_id.CHECKBOX_EDITOR,
