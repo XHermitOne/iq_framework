@@ -67,7 +67,7 @@ class iqDataObjectHistory(obj_registry.iqObjRegistry, object.iqObject):
         db_psp = self.getDBPsp()
         db = None
         if db_psp:
-            db = self.getKernel().createByPsp(db_psp)
+            db = self.getKernel().createByPsp(psp=db_psp)
         return db
 
     def getChildrenRequisites(self):

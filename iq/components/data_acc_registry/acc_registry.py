@@ -126,6 +126,21 @@ class iqAccRegistry(object):
             self.createResultTable()
         return self._result_table
 
+    def getDataset(self):
+        """
+        Get result table dataset.
+
+        :return: Result table record dictionary list
+            or empty list if error.
+        """
+        try:
+            result_table = self.getResultTable()
+            dataset = result_table.select().execute()
+            return [vars(record) for record in dataset]
+        except:
+            log_func.fatal(u'Error get result table dataset')
+        return list()
+
     def isConnected(self):
         """
         Is a connection with the database established?

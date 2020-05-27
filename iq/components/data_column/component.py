@@ -33,6 +33,12 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
 
         self.link_obj = None
 
+    def getFieldType(self):
+        """
+        Get column type.
+        """
+        return self.getAttribute('field_type')
+
     def getLinkPsp(self):
         """
         Get link data object passport.
@@ -48,7 +54,7 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
         if self.link_obj is None:
             link_psp = self.getLinkPsp()
             if link_psp:
-                self.link_obj = self.getKernel().createByPsp(link_psp)
+                self.link_obj = self.getKernel().createByPsp(psp=link_psp)
             else:
                 log_func.error(u'Not define link object in column <%s>' % self.getName())
         return self.link_obj

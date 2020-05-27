@@ -5,6 +5,7 @@
 Data model column specification module.
 """
 
+import copy
 import os.path
 import sqlalchemy.types
 
@@ -14,6 +15,9 @@ from ...editor import property_editor_id
 from ... import passport
 
 __version__ = (0, 0, 0, 1)
+
+SQLALCHEMY_FIELD_TYPES = copy.deepcopy(sqlalchemy.types.__all__)
+SQLALCHEMY_FIELD_TYPES.sort()
 
 
 def validObjLinkPsp(psp, *args, **kwargs):
@@ -72,7 +76,7 @@ DATACOLUMN_SPC = {
     '__edit__': {
         'field_type': {
             'editor': property_editor_id.CHOICE_EDITOR,
-            'choices': sqlalchemy.types.__all__,
+            'choices': SQLALCHEMY_FIELD_TYPES,
         },
         'field_attr': property_editor_id.SCRIPT_EDITOR,
         'link': {

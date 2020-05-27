@@ -62,6 +62,27 @@ class iqModelNavigatorManager(object):
             return session.query(model)
         return None
 
+    def getDataset(self):
+        """
+        Get current dataset.
+
+        :return:
+        """
+        if not self.__dataset__:
+            return self.updateDataset()
+        return self.__dataset__
+
+    def updateDataset(self, *filter_args, **filter_kwargs):
+        """
+        Update dataset by filter.
+
+        :param filter_args: Filter options.
+        :param filter_kwargs: Filter options.
+        :return: Dataset.
+        """
+        self.__dataset__ = self.filterRecs(*filter_args, **filter_kwargs)
+        return self.__dataset__
+
     def getFirstDatasetRec(self):
         """
         Get first record of dataset or None if dataset is empty.

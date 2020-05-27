@@ -492,7 +492,7 @@ class iqPropertyEditorManager(object):
 
         elif property_type == property_editor_id.STRINGLIST_EDITOR:
             try:
-                value = eval(str_value)
+                value = tuple([eval(item) if item.isdigit() else item for item in str_value.split(', ')])
             except:
                 log_func.fatal(u'Error casting to a string list <%s>' % str_value)
 

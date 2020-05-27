@@ -50,26 +50,26 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
 
         dimension_requisite_names = self.getDimensionRequisiteNames()
         dimension_requisites = [requisite for requisite in self.getChildrenRequisites() if
-                                requisite.name in dimension_requisite_names]
+                                requisite.getName() in dimension_requisite_names]
         for requisite in dimension_requisites:
-            requisite_name = requisite.name
-            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getTypeValue(), 'text')
+            requisite_name = requisite.getName()
+            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
             self.addDimensionRequisite(requisite_name, requisite_type)
 
         resource_requisite_names = self.getResourceRequisiteNames()
         resource_requisites = [requisite for requisite in self.getChildrenRequisites() if
-                               requisite.name in resource_requisite_names]
+                               requisite.getName() in resource_requisite_names]
         for requisite in resource_requisites:
-            requisite_name = requisite.name
-            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getTypeValue(), 'text')
+            requisite_name = requisite.getName()
+            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
             self.addResourceRequisite(requisite_name, requisite_type)
 
         extended_requisite_names = self.getExtendedRequisiteNames()
         extended_requisites = [requisite for requisite in self.getChildrenRequisites() if
-                               requisite.name in extended_requisite_names]
+                               requisite.getName() in extended_requisite_names]
         for requisite in extended_requisites:
-            requisite_name = requisite.name
-            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getTypeValue(), 'text')
+            requisite_name = requisite.getName()
+            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
             self.addExtendedRequisite(requisite_name, requisite_type)
 
     def getDBPsp(self):
@@ -85,7 +85,7 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         db_psp = self.getDBPsp()
         db = None
         if db_psp:
-            db = self.getKernel().createByPsp(db_psp)
+            db = self.getKernel().createByPsp(psp=db_psp)
         return db
 
     def getChildrenRequisites(self):
@@ -123,7 +123,7 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         Get extended requisite names.
         """
         used_requisite_names = self.getDimensionRequisiteNames() + self.getResourceRequisiteNames()
-        return [requisite.name for requisite in self.getChildrenRequisites() if requisite.name not in used_requisite_names]
+        return [requisite.getName() for requisite in self.getChildrenRequisites() if requisite.getName() not in used_requisite_names]
 
 
 COMPONENT = iqDataAccumulateRegistry

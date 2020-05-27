@@ -236,7 +236,7 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
         if self._data_src_obj:
             if data_src_filter:
                 self._data_src_obj.setFilter(data_src_filter)
-            return self._data_src_obj.getDataDict()
+            return self._data_src_obj.getDataset()
         else:
             log_func.error(u'Not define data source in control <%s>' % self.getName())
         return None
