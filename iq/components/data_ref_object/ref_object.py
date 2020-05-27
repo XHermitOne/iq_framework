@@ -104,6 +104,13 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         return ()
 
+    def getLevelCount(self):
+        """
+        Get level number.
+        """
+        cod_len = self.getCodLen()
+        return len(cod_len) if cod_len else 0
+
     def getLevelRecsByCod(self, parent_cod=None):
         """
         Get level records by code.

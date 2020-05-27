@@ -74,6 +74,7 @@ DATAREFOBJECT_SPC = {
     '_children_': [],
 
     'cod_len': (2, ),
+    'level_labels': None,
 
     '__package__': u'Data',
     '__icon__': 'fatcow/book_addresses',
@@ -88,9 +89,11 @@ DATAREFOBJECT_SPC = {
         },
 
         'cod_len': property_editor_id.STRINGLIST_EDITOR,
+        'level_labels': property_editor_id.STRINGLIST_EDITOR,
     },
     '__help__': {
         'cod_len': u'List of level code lengths',
+        'level_labels': u'Level label list',
     },
 }
 

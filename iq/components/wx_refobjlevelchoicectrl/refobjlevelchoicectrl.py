@@ -68,26 +68,25 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
 
         if self._ref_obj:
             # Title
-            label = self.GetLabel()
+            label = self.getLabel()
             if not label:
                 # If title not defined then get from ref object
                 label = self._ref_obj.getDescription()
-                self.SetLabel(label)
+            self.SetLabel(label)
 
             # Level choice controls
             self._selected_code = [None] * self._ref_obj.getLevelCount()
             self._choice_ctrl_list = []
-            for i, level in enumerate(self._ref_obj.getLevels()):
-                description = level.getDescription() if level.getDescription() else u''
-                label = wx.StaticText(self.scrolled_win, wx.ID_ANY, description,
+            for i, level_label in enumerate(self._ref_obj.getLevelLabels()):
+                label = wx.StaticText(self.scrolled_win, wx.ID_ANY, level_label,
                                       wx.DefaultPosition, wx.DefaultSize, 0)
 
                 level_choices = list()
                 if not i:
-                    for rec in self._ref_obj.getStorage().getLevelTable():
-                        rec_dict = self._ref_obj.getStorage().getSpravFieldDict(rec, level_idx=i)
-                        if self._ref_obj.isActive(rec_dict['cod']):
-                            level_choice = (rec_dict['cod'], rec_dict['name'])
+                    for rec in self._ref_obj.getLevelRecsByCod():
+                        if self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
+                            level_choice = (rec[self._ref_obj.getCodColumnName()],
+                                            rec[self._ref_obj.getNameColumnName()])
                             level_choices.append(level_choice)
 
                 choice_id = wx.NewId()
@@ -107,6 +106,12 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
                 self.sizer.Add(choice, 1, wx.ALL | wx.EXPAND, 5)
             self.scrolled_win.Layout()
             self.sizer.Fit(self.scrolled_win)
+
+    def getLabel(self):
+        """
+        Get label.
+        """
+        return self.GetLabel()
 
     def getRefObj(self):
         """
@@ -234,10 +239,10 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
             str_code = ''.join(code_list)
 
             level_choices = list()
-            for rec in self._ref_obj.getStorage().getLevelTable(str_code):
-                rec_dict = self._ref_obj.getStorage().getSpravFieldDict(rec, level_idx=level_index)
-                if self._ref_obj and self._ref_obj.isActive(rec_dict['cod']):
-                    level_choice = (rec_dict['cod'][len(str_code):], rec_dict['name'])
+            for rec in self._ref_obj.getLevelRecsByCod(str_code):
+                if self._ref_obj and self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
+                    level_choice = (rec[self._ref_obj.getCodColumnName()][len(str_code):],
+                                    rec[self._ref_obj.getNameColumnName()])
                     level_choices.append(level_choice)
 
             for code, name in level_choices:

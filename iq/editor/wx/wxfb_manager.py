@@ -74,6 +74,9 @@ ADAPTATION_REPLACES = (
     dict(compare=CONTAIN_SIGNATURE, src='wx.ST_SIZEGRIP', dst='wx.STB_SIZEGRIP'),
     # Menu
     dict(compare=CONTAIN_SIGNATURE, src='.AppendItem( ', dst='.Append('),
+    # DateViewListCtrl
+    dict(compare=CONTAIN_SIGNATURE, src='wx.DATAVIEW_CELL_', dst='wx.dataview.DATAVIEW_CELL_'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.DATAVIEW_COL_', dst='wx.COL_'),
     )
 
 

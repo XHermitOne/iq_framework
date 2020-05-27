@@ -41,7 +41,7 @@ class iqWxRefObjLevelChoiceCtrl(refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlPro
                                                                     style=self.getStyle())
 
         refobj_psp = self.getRefObjPsp()
-        ref_obj = self.getKernel().createByPsp(refobj_psp) if refobj_psp else None
+        ref_obj = self.getKernel().createByPsp(psp=refobj_psp) if refobj_psp else None
         self.setRefObj(ref_obj)
 
     def getPosition(self):
@@ -86,6 +86,12 @@ class iqWxRefObjLevelChoiceCtrl(refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlPro
         """
         return self.getAttribute('auto_select')
 
+    def getLabel(self):
+        """
+        Get label.
+        """
+        return self.getAttribute('label')
+
     def onSelectCode(self):
         """
         Select code handler.
@@ -93,8 +99,13 @@ class iqWxRefObjLevelChoiceCtrl(refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlPro
         context = self.getContext()
         context['SELECTED_CODE'] = self._selected_code
 
-        function_body = self.getAttribute('on_select_code')
+        if self.isAttributeValue('on_select_code'):
+            function_body = self.getAttribute('on_select_code')
 
-        result = exec_func.execTxtFunction(function=function_body,
-                                           context=context)
-        return result
+            result = exec_func.execTxtFunction(function=function_body,
+                                               context=context)
+            return result
+        return None
+
+
+COMPONENT = iqWxRefObjLevelChoiceCtrl

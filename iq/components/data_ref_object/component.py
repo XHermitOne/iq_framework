@@ -62,6 +62,15 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
                 log_func.fatal(u'Error level code lengths format <%s>' % cod_len)
         return cod_len
 
+    def getLevelLabels(self):
+        """
+        Get level label list.
+        """
+        level_count = self.getLevelCount()
+        labels = self.getAttribute('level_labels')
+        labels = list(labels) + [u''] * (level_count-len(labels)) if labels else [u''] * level_count
+        return tuple(labels)
+
     def test(self):
         """
         Object test function.
