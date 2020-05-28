@@ -14,7 +14,6 @@ from .. import user
 from .. import role
 
 from ..util import log_func
-# from ..util import imp_func
 from ..util import file_func
 
 __version__ = (0, 0, 0, 1)
@@ -32,7 +31,6 @@ def getComponentSpc(py_pkg, py_pkg_path):
 
     :return: Component SPC dictionary or None if not find it.
     """
-    # component_module = imp_func.loadPyModule(py_pkg, py_pkg_path)
     component_module = importComponent(py_pkg)
     if component_module and hasattr(component_module, 'SPC'):
         return component_module.SPC
@@ -63,20 +61,28 @@ def buildComponentSpcCache():
             py_pkg_path = os.path.join(components_dirname, py_pkg)
             component_spc = getComponentSpc(py_pkg, py_pkg_path)
             if component_spc is not None:
-                pkg_name = component_spc.get('__package__', UNKNOWN_PACKAGE_NAME)
-                if pkg_name not in result:
-                    result[pkg_name] = list()
-                result[pkg_name].append(component_spc)
-                log_func.info(u'Component <%s> is registered' % component_spc.get('type'))
+                pkg_name = component_spc.get('__package__', None)
+                if not pkg_name:
+                    log_func.warning(u'Not define package for <%s> component' % component_spc.get('type'))
+                else:
+                    if pkg_name not in result:
+                        result[pkg_name] = list()
+                    result[pkg_name].append(component_spc)
+                    log_func.info(u'Component <%s> is registered in package <%s>' % (component_spc.get('type'),
+                                                                                     pkg_name))
             else:
                 py_pkg_path = os.path.join(components_dirname, py_pkg, DEFAULT_SPC_PY)
                 component_spc = getComponentSpc(py_pkg, py_pkg_path)
                 if component_spc is not None:
-                    pkg_name = component_spc.get('__package__', UNKNOWN_PACKAGE_NAME)
-                    if pkg_name not in result:
-                        result[pkg_name] = list()
-                    result[pkg_name].append(component_spc)
-                    log_func.info(u'Component <%s> is registered' % component_spc.get('type'))
+                    pkg_name = component_spc.get('__package__', None)
+                    if not pkg_name:
+                        log_func.warning(u'Not define package for <%s> component' % component_spc.get('type'))
+                    else:
+                        if pkg_name not in result:
+                            result[pkg_name] = list()
+                        result[pkg_name].append(component_spc)
+                        log_func.info(u'Component <%s> is registered in package <%s>' % (component_spc.get('type'),
+                                                                                         pkg_name))
                 else:
                     log_func.error(u'Error find component <%s> SPC' % py_pkg)
 
@@ -175,27 +181,14 @@ def buildComponents():
         component_names = file_func.getDirectoryNames(components_dirname)
 
         for py_pkg in component_names:
-            # py_pkg_path = os.path.join(components_dirname, py_pkg)
-
-            # component_pkg = imp_func.loadPyModule(py_pkg, py_pkg_path)
             component_pkg = importComponent(py_pkg)
             component_type = None
             if component_pkg and hasattr(component_pkg, 'SPC'):
                 component_type = component_pkg.SPC.get('type', None)
-            # else:
-            #     spc_module_path = os.path.join(py_pkg_path, DEFAULT_SPC_PY)
-            #     spc_module = imp_func.loadPyModule(py_pkg, spc_module_path)
-            #     if spc_module and hasattr(spc_module, 'SPC'):
-            #         component_type = spc_module.SPC.get('type', None)
 
             component_class = None
             if component_pkg and hasattr(component_pkg, 'COMPONENT'):
                 component_class = component_pkg.COMPONENT
-            # else:
-            #     component_module_path = os.path.join(py_pkg_path, DEFAULT_COMPONENT_PY)
-            #     component_module = imp_func.loadPyModule(py_pkg, component_module_path)
-            #     if component_module and hasattr(component_module, 'COMPONENT'):
-            #         component_class = component_module.COMPONENT
 
             if component_type is None:
                 log_func.error(u'Not find component type in <%s>' % py_pkg)

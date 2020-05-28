@@ -21,6 +21,7 @@ WXCOLUMN_SPC = {
 
     'label': 'column',
     'width': 50,
+    'data_name': None,
 
     'background_colour': None,
     'foreground_colour': None,
@@ -40,6 +41,7 @@ WXCOLUMN_SPC = {
     '__edit__': {
         'label': property_editor_id.STRING_EDITOR,
         'width': property_editor_id.INTEGER_EDITOR,
+        'data_name': property_editor_id.STRING_EDITOR,
 
         'background_colour': property_editor_id.COLOUR_EDITOR,
         'foreground_colour': property_editor_id.COLOUR_EDITOR,
@@ -66,6 +68,7 @@ WXCOLUMN_SPC = {
     '__help__': {
         'label': u'Column label',
         'width': u'Column width',
+        'data_name': u'Data column name',
 
         'background_colour': u'Column background colour',
         'foreground_colour': u'Column text colour',

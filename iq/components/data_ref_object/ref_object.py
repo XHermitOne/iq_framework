@@ -57,17 +57,82 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :param cod: Reference data code.
         :return: Record dictionary or None if error.
         """
+        return self.getRecByColValue(column_name=self.getCodColumnName(),
+                                     column_value=cod)
+
+    def getRecByColValue(self, column_name=None, column_value=None):
+        """
+        Get first record by column value.
+
+        :param column_name: Column name.
+            If None then get cod column name.
+        :param column_value: Column value.
+        :return: Record dictionary or None if error.
+        """
+        if column_name is None:
+            column_name = self.getCodColumnName()
+
         try:
             model = self.getModel()
-            records = self.getModelQuery().filter(getattr(model, self.getCodColumnName()) == cod)
+            records = self.getModelQuery().filter(getattr(model, column_name) == column_value)
             if records.count():
                 # Presentation of query result in the form of a dictionary
                 return records.first().__dict__
             else:
-                log_func.warning(u'Reference data code <%s> not found in <%s>' % (cod, self.getName()))
+                log_func.warning(u'Reference data column <%s : %s> not found in <%s>' % (column_name,
+                                                                                         column_value,
+                                                                                         self.getName()))
         except:
-            log_func.fatal(u'Error get reference data object <%s> record by code' % self.getName())
+            log_func.fatal(u'Error get reference data record by column <%s : %s> in <%s>' % (column_name,
+                                                                                             column_value,
+                                                                                             self.getName()))
         return None
+
+    def getColumnValues(self, cod, *column_names):
+        """
+        Get column values by cod.
+
+        :param cod: Reference data code.
+        :param column_names: Column names.
+            If not defined then get column 'name'.
+        :return: Column dictionary:
+            {
+            'column_name': Column value if activate,
+            ...
+            }
+            or None if error.
+        """
+        if not column_names:
+            column_names = (self.getNameColumnName(), )
+
+        rec = self.getRecByCod(cod)
+        if rec:
+            activate = rec.get(self.getActiveColumnName(), False)
+            if activate:
+                return dict([(column_name, rec.get(column_name, None)) for column_name in column_names])
+            else:
+                log_func.warning(u'Ref object <%s> cod <%s> not activate' % (self.getName(), cod))
+        return None
+
+    def getColumnNameValue(self, cod):
+        """
+        Get column name value by cod.
+
+        :param cod: Reference data code.
+        :return: Column 'name' value if cod activate or None.
+        """
+        column_name = self.getNameColumnName()
+        column_values = self.getColumnValues(cod, column_name)
+        return column_values.get(column_name, None)
+
+    def getDataObjectRec(self, value):
+        """
+        Get data object record by value.
+
+        :param value: Reference data code.
+        :return: Record dictionary or None if error.
+        """
+        return self.getRecByCod(cod=value)
 
     def isEmpty(self):
         """

@@ -7,7 +7,7 @@ Wx GroupListView specification module.
 
 import wx
 
-from iq.object import object_spc
+from ..wx_widget import SPC as wx_widget_spc
 from ...editor import property_editor_id
 
 __version__ = (0, 0, 0, 1)
@@ -43,10 +43,6 @@ WXGROUPLISTVIEW_SPC = {
 
     '_children_': [],
 
-    'position': (-1, -1),
-    'size': (100, 100),
-    'foreground_colour': None,
-    'background_colour': None,
     'style': wx.TAB_TRAVERSAL,
 
     'even_rows_background_colour': None,
@@ -69,14 +65,10 @@ WXGROUPLISTVIEW_SPC = {
 
     '__package__': u'wxPython',
     '__icon__': 'fatcow/table_heatmap',
-    '__parent__': object_spc.OBJECT_SPC,
+    '__parent__': wx_widget_spc,
     '__doc__': None,
     '__content__': ('iqWxColumn', ),
     '__edit__': {
-        'position': property_editor_id.POINT_EDITOR,
-        'size': property_editor_id.SIZE_EDITOR,
-        'foreground_colour': property_editor_id.COLOUR_EDITOR,
-        'background_colour': property_editor_id.COLOUR_EDITOR,
         'style': {
             'editor': property_editor_id.FLAG_EDITOR,
             'choices': WXGROUPLISTVIEW_STYLE,
@@ -105,12 +97,6 @@ WXGROUPLISTVIEW_SPC = {
 
     },
     '__help__': {
-        'position': u'Panel position',
-        'size': u'Panel size',
-        'foreground_colour': u'Foreground colour',
-        'background_colour': u'Background colour',
-        'style': u'Control style',
-
         'even_rows_background_colour': u'Even rows background colour',
         'odd_rows_background_colour': u'Odd rows background colour',
 

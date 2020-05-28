@@ -71,5 +71,12 @@ class iqWxColumn(object.iqObject):
         """
         return self.getAttribute('sort')
 
+    def getDataName(self):
+        """
+        Get data column name.
+        """
+        data_name = self.getAttribute('data_name')
+        return data_name if data_name else self.getName()
+
 
 COMPONENT = iqWxColumn

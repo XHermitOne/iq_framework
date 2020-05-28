@@ -7,7 +7,7 @@ Wx RefObjTreeComboCtrl specification module.
 
 import wx
 
-from iq.object import object_spc
+from ..wx_widget import SPC as wx_widget_spc
 from ...editor import property_editor_id
 
 from ..data_ref_object import spc as data_ref_object_spc
@@ -34,13 +34,6 @@ WXREFOBJTREECOMBOCTRL_SPC = {
 
     '_children_': [],
 
-    'style': 0,
-    'position': (-1, -1),
-    'size': (-1, -1),
-    'font': {},
-    'foreground_colour': None,
-    'background_colour': None,
-
     'ref_obj': None,
     'root_code': None,
     'view_all': False,
@@ -58,20 +51,10 @@ WXREFOBJTREECOMBOCTRL_SPC = {
 
     '__package__': u'wxPython',
     '__icon__': 'fatcow/combo_box_light_blue',
-    '__parent__': object_spc.OBJECT_SPC,
+    '__parent__': wx_widget_spc,
     '__doc__': None,
     '__content__': (),
     '__edit__': {
-        'position': property_editor_id.POINT_EDITOR,
-        'size': property_editor_id.SIZE_EDITOR,
-        'foreground_colour': property_editor_id.COLOUR_EDITOR,
-        'background_colour': property_editor_id.COLOUR_EDITOR,
-        'style': {
-            'editor': property_editor_id.FLAG_EDITOR,
-            'choices': WXREFOBJTREECOMBOCTRL_STYLE,
-        },
-        'font': property_editor_id.FONT_EDITOR,
-
         'ref_obj': {
             'editor': property_editor_id.PASSPORT_EDITOR,
             'valid': data_ref_object_spc.validRefObjPsp,
@@ -92,13 +75,6 @@ WXREFOBJTREECOMBOCTRL_SPC = {
 
     },
     '__help__': {
-        'position': u'Control position',
-        'size': u'Control size',
-        'foreground_colour': u'Foreground colour',
-        'background_colour': u'Background colour',
-        'style': u'Control style',
-        'font': u'Text font',
-
         'ref_obj': u'Reference object passport',
         'root_code': u'Reference object root item cod',
         'view_all': u'View all items',

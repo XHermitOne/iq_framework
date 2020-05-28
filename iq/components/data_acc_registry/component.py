@@ -125,5 +125,17 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         used_requisite_names = self.getDimensionRequisiteNames() + self.getResourceRequisiteNames()
         return [requisite.getName() for requisite in self.getChildrenRequisites() if requisite.getName() not in used_requisite_names]
 
+    def _updateLinkDataDataset(self, dataset, columns=None):
+        """
+        Update dataset by link object data
+
+        :param dataset: Dataset list.
+        :param columns: Column object list.
+        :return: Updated dataset.
+        """
+        if columns is None:
+            columns = self.getChildren()
+        return acc_registry.iqAccRegistry._updateLinkDataDataset(self, dataset=dataset, columns=columns)
+
 
 COMPONENT = iqDataAccumulateRegistry

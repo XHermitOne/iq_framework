@@ -8,7 +8,7 @@ Wx panel specification module.
 import os.path
 import wx
 
-from iq.object import object_spc
+from ..wx_widget import SPC as wx_widget_spc
 from ...editor import property_editor_id
 
 __version__ = (0, 0, 0, 1)
@@ -51,14 +51,10 @@ WXPANEL_SPC = {
 
     '__package__': u'wxPython',
     '__icon__': 'fatcow/panel_blank',
-    '__parent__': object_spc.OBJECT_SPC,
+    '__parent__': wx_widget_spc,
     '__doc__': None,
     '__content__': (),
     '__edit__': {
-        'position': property_editor_id.POINT_EDITOR,
-        'size': property_editor_id.SIZE_EDITOR,
-        'foreground_colour': property_editor_id.COLOUR_EDITOR,
-        'background_colour': property_editor_id.COLOUR_EDITOR,
         'style': {
             'editor': property_editor_id.FLAG_EDITOR,
             'choices': WXPANEL_STYLE,

@@ -7,7 +7,7 @@ Wx RefObjTreeComboCtrl component.
 
 import wx
 
-from ... import object
+from ..wx_widget import component
 
 from . import spc
 
@@ -20,7 +20,7 @@ __version__ = (0, 0, 0, 1)
 
 
 class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
-                              object.iqObject):
+                              component.iqWxWidget):
     """
     Wx RefObjTreeComboCtrl component.
     """
@@ -33,7 +33,7 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
         :param context: Context dictionary.
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
+        component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         refobjtreecomboctrl.iqRefObjTreeComboCtrlProto.__init__(self, parent=parent,
                                                                 id=wx.NewId(),
@@ -55,36 +55,6 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
                   complex_load=self.getComplexLoad())
 
         self.Bind(wx.EVT_TEXT, self.onTextChange, id=self.GetId())
-
-    def getPosition(self):
-        """
-        Control position.
-        """
-        return self.getAttribute('position')
-
-    def getSize(self):
-        """
-        Control size.
-        """
-        return self.getAttribute('size')
-
-    def getStyle(self):
-        """
-        Control style.
-        """
-        return self.getAttribute('style')
-
-    def getForegroundColour(self):
-        """
-        Get foreground colour.
-        """
-        return self.getAttribute('foreground_colour')
-
-    def getBackgroundColour(self):
-        """
-        Get background colour.
-        """
-        return self.getAttribute('background_colour')
 
     def getRefObjPsp(self):
         """

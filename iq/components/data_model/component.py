@@ -29,5 +29,7 @@ class iqDataModel(model.iqModelManager, object.iqObject):
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         model.iqModelManager.__init__(self, *args, **kwargs)
 
+        self.createChildren()
+
 
 COMPONENT = iqDataModel

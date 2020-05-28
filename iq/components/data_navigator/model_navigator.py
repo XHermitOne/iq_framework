@@ -7,10 +7,12 @@ Data model navigator manager.
 
 from ...util import log_func
 
+from ..data_model import data_object
+
 __version__ = (0, 0, 0, 1)
 
 
-class iqModelNavigatorManager(object):
+class iqModelNavigatorManager(data_object.iqDataObject):
     """
     Data model navigator manager.
     """
@@ -50,6 +52,12 @@ class iqModelNavigatorManager(object):
         self.__dataset__ = list()
         self.__rec_no__ = -1
 
+    def getModelObj(self):
+        """
+        Get model resource object.
+        """
+        return None
+
     def getModelQuery(self):
         """
         Get model query object.
@@ -81,6 +89,9 @@ class iqModelNavigatorManager(object):
         :return: Dataset.
         """
         self.__dataset__ = self.filterRecs(*filter_args, **filter_kwargs)
+
+        # Update dataset by link object data
+        self.__dataset__ = self._updateLinkDataDataset(self.__dataset__)
         return self.__dataset__
 
     def getFirstDatasetRec(self):

@@ -8,7 +8,7 @@ Wx GroupListView component.
 import wx
 import ObjectListView
 
-from ... import object
+from ..wx_widget import component
 
 from . import spc
 
@@ -21,7 +21,8 @@ from ... import passport
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
+class iqWxGroupListView(ObjectListView.GroupListView,
+                        component.iqWxWidget):
     """
     Wx group list view component.
     """
@@ -34,7 +35,7 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
         :param context: Context dictionary.
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
+        component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         ObjectListView.GroupListView.__init__(self, parent=parent, id=wx.NewId(),
                                               style=self.getStyle(),
@@ -51,15 +52,18 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
             self.SetBackgroundColour(wx.Colour(background_colour[0], background_colour[1], background_colour[2]))
 
         colour = self.getEvenRowsBackgroundColour()
-        self._even_rows_background_colour = colour if colour else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
+        self.evenRowsBackColor = colour if colour else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
         colour = self.getOddRowsBackgroundColour()
-        self._odd_rows_background_colour = colour if colour else wxcolour_func.getTintColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX))
+        self.oddRowsBackColor = colour if colour else wxcolour_func.getTintColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX))
 
         self._data_src_obj = None
 
         # Set columns
-        resource = self.getResource()
-        self.setColumns(*resource['_children_'])
+        self.createChildren()
+        # resource = self.getResource()
+        # self.setColumns(*resource['_children_'])
+        columns = self.getChildren()
+        self.setColumns(*columns)
         self.rowFormatter = self.rowFormatterFunction
 
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.onItemSelected, id=self.GetId())
@@ -68,36 +72,6 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
         self.SetFocus()
 
         self.refreshDataset()
-
-    def getPosition(self):
-        """
-        Control position.
-        """
-        return self.getAttribute('position')
-
-    def getSize(self):
-        """
-        Control size.
-        """
-        return self.getAttribute('size')
-
-    def getStyle(self):
-        """
-        Control style.
-        """
-        return self.getAttribute('style')
-
-    def getForegroundColour(self):
-        """
-        Control foreground colour.
-        """
-        return self.getAttribute('foreground_colour')
-
-    def getBackgroundColour(self):
-        """
-        Control background colour.
-        """
-        return self.getAttribute('background_colour')
 
     def getSortable(self):
         """
@@ -142,19 +116,19 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
         """
         Create columns.
 
-        :param columns: Column data list.
+        :param columns: Column object list.
         """
         cols = list()
         auto_sort_col = None
         for column in columns:
-            activate = column['activate']
+            activate = column.isActivate()
             if not activate:
                 # Skip disabled columns
                 continue
 
-            name = column['name']
-            label = str(column['label'])
-            width = column.get('width', 100)
+            name = column.getDataName()
+            label = column.getLabel()
+            width = column.getWidth()
             new_col = ObjectListView.ColumnDefn(title=label,
                                                 align='left',
                                                 width=width,
@@ -164,7 +138,7 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
                                                 groupKeyGetter=self._create_getColGroupKeyFunction(column),
                                                 groupKeyConverter=self._create_convertColGroupKeyFunction(column)
                                                 )
-            if column['sort']:
+            if column.isSort():
                 auto_sort_col = new_col
 
             cols.append(new_col)
@@ -180,15 +154,16 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
 
         :param column: Column data.
         """
-        get_grp_key = column.get('get_group_key', None)
-        if get_grp_key:
+        if column.isAttributeValue('get_group_key'):
             def getColGroupKey(RECORD):
                 """
                 Get column group key.
 
                 :param RECORD: Record dictionary.
                 """
-                result = exec_func.execTxtFunction(get_grp_key, context=locals())
+                function_body = column.getAttribute('get_group_key')
+                result = exec_func.execTxtFunction(function=function_body,
+                                                   context=locals())
                 log_func.info(u'Get column <%s> group key. Result <%s>' % (column['name'], result))
                 return result
 
@@ -201,15 +176,16 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
 
         :param column: Column data.
         """
-        get_grp_title = column.get('get_group_title', None)
-        if get_grp_title:
+        if column.isAttributeValue('get_group_title'):
             def convertColGroupKey(GROUP_KEY):
                 """
                 Convert group key to group title.
 
                 :param GROUP_KEY: Group key.
                 """
-                result = exec_func.execTxtFunction(get_grp_title, context=locals())
+                function_body = column.getAttribute('get_group_title')
+                result = exec_func.execTxtFunction(function=function_body,
+                                                   context=locals())
                 log_func.info(u'Get column <%s> group title. Result <%s>' % (column['name'], result))
                 return result
 
@@ -236,7 +212,8 @@ class iqWxGroupListView(ObjectListView.GroupListView, object.iqObject):
         if self._data_src_obj:
             if data_src_filter:
                 self._data_src_obj.setFilter(data_src_filter)
-            return self._data_src_obj.getDataset()
+            dataset = self._data_src_obj.getDataset()
+            return dataset
         else:
             log_func.error(u'Not define data source in control <%s>' % self.getName())
         return None

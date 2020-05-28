@@ -19,6 +19,8 @@ from ...util import log_func
 
 from ..data_uniobj_model.spc import GUID_FIELD_NAME
 
+from ..data_model import data_object
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -45,7 +47,7 @@ DT_OPERATION_FIELD = 'dt_operation'
 OWNER_OPERATION_FIELD = 'owner'
 
 
-class iqAccRegistry(object):
+class iqAccRegistry(data_object.iqDataObject):
     """
     Accumulate registry manager class.
 
@@ -136,7 +138,9 @@ class iqAccRegistry(object):
         try:
             result_table = self.getResultTable()
             dataset = result_table.select().execute()
-            return [vars(record) for record in dataset]
+            dataset = [dict(record) for record in dataset]
+            dataset = self._updateLinkDataDataset(dataset)
+            return dataset
         except:
             log_func.fatal(u'Error get result table dataset')
         return list()

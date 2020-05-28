@@ -7,16 +7,15 @@ Wx panel component.
 
 import wx
 
-from ... import object
-
 from . import spc
 
 from ...util import log_func
+from ..wx_widget import component
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxPanel(wx.Panel, object.iqObject):
+class iqWxPanel(wx.Panel, component.iqWxWidget):
     """
     Wx panel component.
     """
@@ -29,7 +28,7 @@ class iqWxPanel(wx.Panel, object.iqObject):
         :param context: Context dictionary.
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
+        component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         wx.Panel.__init__(self, parent=parent, id=wx.NewId(),
                           pos=self.getPosition(),
@@ -46,36 +45,6 @@ class iqWxPanel(wx.Panel, object.iqObject):
             self.SetBackgroundColour(wx.Colour(background_colour[0], background_colour[1], background_colour[2]))
 
         self.createChildren()
-
-    def getPosition(self):
-        """
-        Panel position.
-        """
-        return self.getAttribute('position')
-
-    def getSize(self):
-        """
-        Panel size.
-        """
-        return self.getAttribute('size')
-
-    def getStyle(self):
-        """
-        Panel style.
-        """
-        return self.getAttribute('style')
-
-    def getForegroundColour(self):
-        """
-        Panel foreground colour.
-        """
-        return self.getAttribute('foreground_colour')
-
-    def getBackgroundColour(self):
-        """
-        Panel background colour.
-        """
-        return self.getAttribute('background_colour')
 
     def drawDCBitmap(self, dc=None, bmp=None, pos_x=0, pos_y=0):
         """

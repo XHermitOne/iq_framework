@@ -37,12 +37,12 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
         self.sizer.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_ALL)
 
         self.scrolled_win.SetSizer(self.sizer)
-        self.scrolled_win.Layout()
-        self.sizer.Fit(self.scrolled_win)
+        # self.scrolled_win.Layout()
+        # self.sizer.Fit(self.scrolled_win)
 
         self.box_sizer.Add(self.scrolled_win, 1, wx.EXPAND | wx.ALL, 5)
         self.SetSizer(self.box_sizer)
-        self.Layout()
+        # self.Layout()
 
         # Ref object
         self._ref_obj = None
@@ -104,8 +104,8 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
 
                 self.sizer.Add(label, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
                 self.sizer.Add(choice, 1, wx.ALL | wx.EXPAND, 5)
-            self.scrolled_win.Layout()
-            self.sizer.Fit(self.scrolled_win)
+            # self.scrolled_win.Layout()
+            # self.sizer.Fit(self.scrolled_win)
 
     def getLabel(self):
         """

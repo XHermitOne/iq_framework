@@ -58,7 +58,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
 
     def createModel(self):
         """
-        Create model object.
+        Create sqlalchemy model object.
 
         :return: Model or None if error.
         """
@@ -76,6 +76,30 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         else:
             log_func.error(u'Error create data scheme object')
         return None
+
+    def getModelObj(self):
+        """
+        Get model resource object.
+        """
+        model_psp = self.getModelPsp()
+
+        if not model_psp:
+            log_func.error(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
+            return None
+        model_obj = self.getKernel().createByPsp(psp=model_psp)
+        return model_obj
+
+    def _updateLinkDataDataset(self, dataset, columns=None):
+        """
+        Update dataset by link object data
+
+        :param dataset: Dataset list.
+        :param columns: Column object list.
+        :return: Updated dataset.
+        """
+        if columns is None:
+            columns = self.getModelObj().getChildren()
+        return model_navigator.iqModelNavigatorManager._updateLinkDataDataset(self, dataset=dataset, columns=columns)
 
 
 COMPONENT = iqDataNavigator

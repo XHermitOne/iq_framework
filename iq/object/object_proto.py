@@ -72,6 +72,13 @@ class iqObject(object):
             return res.get('type', u'Unknown')
         return u'Unknown'
 
+    def isActivate(self):
+        """
+        Is activate object?
+        :return: True/False.
+        """
+        return self.getAttribute('activate')
+
     def getDescription(self):
         """
         Object description.

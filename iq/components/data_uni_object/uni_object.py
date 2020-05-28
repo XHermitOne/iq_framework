@@ -91,6 +91,15 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error get unique data object <%s> record by guid' % self.getName())
         return False
 
+    def getDataObjectRec(self, value):
+        """
+        Get data object record by value.
+
+        :param value: Unique data GUID.
+        :return: Record dictionary or None if error.
+        """
+        return self.getRecByGuid(guid=value)
+
     def isEmpty(self):
         """
         Is the ref object empty?

@@ -8,7 +8,7 @@ Wx PlateButton component.
 import wx
 import wx.lib.platebtn
 
-from ... import object
+from ..wx_widget import component
 
 from . import spc
 
@@ -20,7 +20,8 @@ from ...engine.wx import wxbitmap_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxPlateButton(wx.lib.platebtn.PlateButton, object.iqObject):
+class iqWxPlateButton(wx.lib.platebtn.PlateButton,
+                      component.iqWxWidget):
     """
     Wx PlateButton component.
     """
@@ -33,7 +34,7 @@ class iqWxPlateButton(wx.lib.platebtn.PlateButton, object.iqObject):
         :param context: Context dictionary.
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
+        component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         wx.lib.platebtn.PlateButton.__init__(self, parent, wx.NewId(),
                                              label=self.getLabel(),
@@ -53,24 +54,6 @@ class iqWxPlateButton(wx.lib.platebtn.PlateButton, object.iqObject):
 
         self.Bind(wx.EVT_BUTTON, self.onButtonClick)
 
-    def getPosition(self):
-        """
-        Control position.
-        """
-        return self.getAttribute('position')
-
-    def getSize(self):
-        """
-        Control size.
-        """
-        return self.getAttribute('size')
-
-    def getStyle(self):
-        """
-        Control style.
-        """
-        return self.getAttribute('style')
-
     def getLabel(self):
         """
         Button label.
@@ -89,18 +72,6 @@ class iqWxPlateButton(wx.lib.platebtn.PlateButton, object.iqObject):
         """
         img_name = self.getImageName()
         return wxbitmap_func.createIconBitmap(img_name)
-
-    def getForegroundColour(self):
-        """
-        Get foreground colour.
-        """
-        return self.getAttribute('foreground_colour')
-
-    def getBackgroundColour(self):
-        """
-        Get background colour.
-        """
-        return self.getAttribute('background_colour')
 
     def onButtonClick(self, event):
         """

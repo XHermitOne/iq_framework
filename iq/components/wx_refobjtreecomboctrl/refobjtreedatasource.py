@@ -310,9 +310,9 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
         """
         if self._ref_object:
             if field_name is None:
-                rec_dict = self._ref_object.getRec(find_text)
+                rec_dict = self._ref_object.getRecByCod(find_text)
             else:
-                rec_dict = self._ref_object.getStorage().getRecByFieldValue(field_name, find_text)
+                rec_dict = self._ref_object.getRecByColValue(field_name, find_text)
             return rec_dict
         return None
 

@@ -7,7 +7,7 @@ Wx filter choice control component.
 
 import wx
 
-from ... import object
+# from ... import object
 
 from . import spc
 
@@ -19,6 +19,8 @@ from . import filter_choicectrl
 
 from ...role import component as role
 
+from ..wx_widget import component
+
 __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
@@ -27,7 +29,8 @@ EDIT_PERMISSION = dict(name='edit_filter', description=_('Can edit filters'), ty
 role.addPermision(**EDIT_PERMISSION)
 
 
-class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto, object.iqObject):
+class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto,
+                           component.iqWxWidget):
     """
     Wx filter choice control component.
     """
@@ -40,7 +43,7 @@ class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto, object.iqO
         :param context: Context dictionary.
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
+        component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         filter_choicectrl.iqFilterChoiceCtrlProto.__init__(self, parent=parent, id=wx.NewId(),
                                                            pos=self.getPosition(),
@@ -65,36 +68,6 @@ class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto, object.iqO
         # Load filters
         self.loadFilter()
         self.SetValue(self.getStrFilter())
-
-    def getPosition(self):
-        """
-        Panel position.
-        """
-        return self.getAttribute('position')
-
-    def getSize(self):
-        """
-        Panel size.
-        """
-        return self.getAttribute('size')
-
-    def getStyle(self):
-        """
-        Panel style.
-        """
-        return self.getAttribute('style')
-
-    def getForegroundColour(self):
-        """
-        Panel foreground colour.
-        """
-        return self.getAttribute('foreground_colour')
-
-    def getBackgroundColour(self):
-        """
-        Panel background colour.
-        """
-        return self.getAttribute('background_colour')
 
     def getGUID(self):
         """
