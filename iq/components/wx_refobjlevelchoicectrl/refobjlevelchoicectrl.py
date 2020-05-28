@@ -154,7 +154,7 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
         if self._ref_obj is not None:
             # self._selected_code sets in selectLevelChoice method
             # Do not need to initialize it
-            selected_code = self._ref_obj.StrCode2ListCode(code)
+            selected_code = self._ref_obj.getCodAsTuple(code)
             for i, subcode in enumerate(selected_code):
                 item = self.findItemIdxByCode(i, subcode)
                 if item >= 0:

@@ -59,3 +59,25 @@ class iqFormManager(stored_ctrl_manager.iqStoredCtrlManager):
                                     name)
         data = res_func.loadResourcePickle(res_filename)
         return self._setCtrlData(data)
+
+
+class iqDialogManager(panel_manager.iqPanelManager,
+                      iqFormManager):
+    """
+    Dialog form manager class.
+    """
+    setDialogCtrlValue = panel_manager.iqPanelManager.setPanelCtrlValue
+    getDialogCtrlValues = panel_manager.iqPanelManager.getPanelCtrlValues
+    setDialogCtrlValues = panel_manager.iqPanelManager.setPanelCtrlValues
+    clearDialogCtrlValue = panel_manager.iqPanelManager.clearPanelCtrlValue
+
+    getDialogCtrlData = panel_manager.iqPanelManager.getPanelCtrlData
+    setDialogCtrlData = panel_manager.iqPanelManager.setPanelCtrlData
+    clearDialogData = panel_manager.iqPanelManager.clearPanelData
+
+    setDialogAccord = panel_manager.iqPanelManager.setPanelAccord
+    addDialogAccord = panel_manager.iqPanelManager.addPanelAccord
+    getDialogAccord = panel_manager.iqPanelManager.getPanelAccord
+    getDialogAccordCtrlData = panel_manager.iqPanelManager.getPanelAccordCtrlData
+    setDialogAccordCtrlData = panel_manager.iqPanelManager.setPanelAccordCtrlData
+    findDialogAccord = panel_manager.iqPanelManager.findPanelAccord

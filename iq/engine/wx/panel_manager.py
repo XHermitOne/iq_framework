@@ -44,7 +44,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         """
         result = False
         if hasattr(ctrl, 'setValue'):
-            ctrl.setVaue(value)
+            ctrl.setValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.CheckBox):
             ctrl.SetValue(value)
@@ -58,9 +58,13 @@ class iqPanelManager(validate_manager.iqValidateManager):
             ctrl.SetValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
-            wx_dt = wxdatetime_func.datetime2wxDateTime(value)
-            ctrl.SetValue(wx_dt)
-            result = True
+            try:
+                wx_dt = wxdatetime_func.datetime2wxDateTime(value)
+                ctrl.SetValue(wx_dt)
+                result = True
+            except:
+                log_func.fatal(u'Error set value <%s : %s> in DatePickerCtrl' % (str(value),
+                                                                                 value.__class__.__name__))
         elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
             ctrl.SetPath(value)
             result = True
@@ -224,7 +228,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             Format:
             {'name': 'control value', ...}
         """
-        ctrl_data = dict([(self.__accord[name], data[name]) for name in data.keys()])
+        ctrl_data = dict([(self.__accord[name], data[name]) for name in data.keys() if name in self.__accord])
         self.setPanelCtrlData(ctrl_data, *ctrl_data.keys())
 
     def findPanelAccord(self, panel):

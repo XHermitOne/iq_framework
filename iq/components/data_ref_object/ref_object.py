@@ -169,6 +169,20 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         return ()
 
+    def getCodAsTuple(self, cod):
+        """
+        Get ref object cod as tuple.
+
+        :param cod: Code as string.
+        :return: Code as tuple.
+        """
+        cod_len = self.getCodLen()
+        if cod_len:
+            cod_tuple = tuple([cod[sum(cod_len[:i]):sum(cod_len[:i+1])] for i in range(len(cod_len))])
+        else:
+            cod_tuple = (cod,)
+        return cod_tuple
+
     def getLevelCount(self):
         """
         Get level number.

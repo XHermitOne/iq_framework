@@ -55,14 +55,15 @@ def datetime2wxDateTime(dt):
         return None
 
     assert isinstance(dt, (datetime.datetime, datetime.date))
-    tt = dt.timetuple()
-    dmy = (tt[2], tt[1]-1, tt[0])
-    hms = (tt[2], tt[1]-1, tt[0])
-    result = wx.DateTime.FromDMY(*dmy)
-    result.SetHour(hms[0])
-    result.SetMinute(hms[1])
-    result.SetSecond(hms[2])
-    return result
+    wx_dt = wx.DateTime()
+    print(dt.year)
+    wx_dt.SetYear(dt.year)
+    wx_dt.SetMonth(dt.month)
+    wx_dt.SetDay(dt.day)
+    wx_dt.SetHour(dt.hour)
+    wx_dt.SetMinute(dt.minute)
+    wx_dt.SetSecond(dt.second)
+    return wx_dt
 
 
 def wxDateTime2datetime(dt):
