@@ -59,7 +59,9 @@ class iqPanelManager(validate_manager.iqValidateManager):
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
             try:
+                print(value)
                 wx_dt = wxdatetime_func.datetime2wxDateTime(value)
+                print(wx_dt)
                 ctrl.SetValue(wx_dt)
                 result = True
             except:
@@ -77,6 +79,15 @@ class iqPanelManager(validate_manager.iqValidateManager):
         else:
             log_func.warning(u'Panel manager. Control <%s> not support' % ctrl.__class__.__name__)
         return result
+
+    def getPanelCtrlValue(self, ctrl):
+        """
+        Get control value.
+
+        :param ctrl: Control object.
+        :return: Control value.
+        """
+        return validate_manager.iqValidateManager.getCtrlValue(self, ctrl=ctrl)
 
     def getPanelCtrlValues(self, panel, data_dict=None, *ctrl_names):
         """
@@ -100,9 +111,9 @@ class iqPanelManager(validate_manager.iqValidateManager):
                 continue
 
             ctrl = getattr(panel, ctrlname)
-            if issubclass(ctrl.__class__, wx.Window) and ctrl.IsEnabled():
+            if issubclass(ctrl.__class__, wx.Window):
                 if issubclass(ctrl.__class__, wx.Panel):
-                    data = self.getPanelCtrlValues(ctrl, data_dict, *ctrl_names)
+                    data = self.getPanelCtrlValues(panel=ctrl, data_dict=data_dict, *ctrl_names)
                     result.update(data)
                 else:
                     value = self.getPanelCtrlValue(ctrl)
@@ -216,8 +227,9 @@ class iqPanelManager(validate_manager.iqValidateManager):
             Format:
             {'name': 'control value', ...}
         """
-        ctrl_data = self.getPanelCtrlData(*self.__accord.values())
-        result_data = dict([(name, ctrl_data[self.__accord[name]]) for name in self.__accord.keys()])
+        accord_values = self.__accord.values()
+        ctrl_data = self.getPanelCtrlData(None, *accord_values)
+        result_data = dict([(name, ctrl_data.get(ctrl_name, None)) for name, ctrl_name in self.__accord.items()])
         return result_data
 
     def setPanelAccordCtrlData(self, **data):
@@ -384,7 +396,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         children = panel.GetChildren()
 
         for ctrl in children:
-            if issubclass(ctrl.__class__, wx.Window) and ctrl.IsEnabled():
+            if issubclass(ctrl.__class__, wx.Window):
                 if issubclass(ctrl.__class__, wx.Panel) and not wxobj_func.isSameWxObject(ctrl, panel):
                     self._clearPanelData(ctrl)
                 else:

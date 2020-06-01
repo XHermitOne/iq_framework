@@ -42,7 +42,8 @@ class iqImageLibManager(base_manager.iqBaseManager):
 
         :return:
         """
-        assert hasattr(self, '_imagelist'), u'Image library not init'
+        if not hasattr(self, '_imagelist'):
+            self.initImageLib()
         return self._imagelist
 
     def addImageLibImage(self, img_name=None):
@@ -69,6 +70,9 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param bmp: wx.Bitmap object.
         :return: wx.Bitmap object or None if error.
         """
+        if not hasattr(self, '_imagelist'):
+            self.initImageLib()
+
         img_idx = self._imagelist.Add(bmp)
         self.__img_idx[img_name] = img_idx
         return bmp
@@ -80,6 +84,9 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param img_name: Image as icon name.
         :return: Image index or None if error.
         """
+        if not hasattr(self, '__img_idx'):
+            self.initImageLib()
+
         if img_name not in self.__img_idx:
             self.addImageLibImage(img_name)
 
@@ -94,6 +101,9 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param img_name: Image as icon name.
         :return: Image bitmap or None if error.
         """
+        if not hasattr(self, '__img_idx'):
+            self.initImageLib()
+
         if img_name not in self.__img_idx:
             bmp = self.addImageLibImage(img_name)
             return bmp

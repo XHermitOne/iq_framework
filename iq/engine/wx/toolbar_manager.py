@@ -32,7 +32,7 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
             The tool object is searched among the form attributes by type wx.ToolBarToolBase.
         :return: True/False.
         """
-        assert issubclass(toolbar, wx.ToolBar), u'ToolBar manager type error'
+        assert issubclass(toolbar.__class__, wx.ToolBar), u'ToolBar manager type error'
 
         result = True
         for tool_name, enable in tools.items():
@@ -57,7 +57,7 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
                 edit_tool = 'fatcaw/document'
         :return: True/False.
         """
-        assert issubclass(toolbar, wx.ToolBar), u'ToolBar manager type error'
+        assert issubclass(toolbar.__class__, wx.ToolBar), u'ToolBar manager type error'
 
         if not tools:
             log_func.warning(u'Not define tools for set images')
@@ -96,7 +96,7 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
         :param toolbar: wx.ToolBar object.
         :param tool: wx.ToolBarToolBase toolbar tool object.
         """
-        assert issubclass(toolbar, wx.ToolBar), u'ToolBar manager type error'
+        assert issubclass(toolbar.__class__, wx.ToolBar), u'ToolBar manager type error'
         if tool is None:
             log_func.warning(u'Not define tool')
             return None

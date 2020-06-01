@@ -174,7 +174,7 @@ class iqValidateManager(object):
         :return: Control value.
         """
         value = None
-        if issubclass(ctrl.__class__, wx.Window) and ctrl.IsEnabled():
+        if issubclass(ctrl.__class__, wx.Window):
             if hasattr(ctrl, 'getValue'):
                 value = ctrl.getValue()
             elif issubclass(ctrl.__class__, wx.CheckBox):

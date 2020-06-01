@@ -32,7 +32,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param do_expand_all: Auto expand all items?
         :return: True/False.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         if not tree_data:
             log_func.error(u'Not define tree data of wx.TreeListCtrl control')
@@ -78,7 +78,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param ext_func: Extended function.
         :return: True/False.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         if parent_item is None:
             if (isinstance(node, list) or isinstance(node, tuple)) and len(node) > 1:
@@ -143,7 +143,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
 
         :return:
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         label = str(node.get(columns[0], base_manager.UNKNOWN))
         parent_item = treelistctrl.GetMainWindow().AddRoot(label)
@@ -168,7 +168,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
             If None then get root item.
         :return: Item struct data or None if error.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         if item is None:
             item = treelistctrl.GetMainWindow().GetRootItem()
@@ -186,7 +186,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param treelistctrl: wx.TreeListCtrl control.
         :return: Item struct data or None if error.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         selected_item = treelistctrl.GetMainWindow().GetSelection()
         if selected_item:
@@ -202,7 +202,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param data: Item data.
         :return: True/False.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         if item is None:
             item = treelistctrl.GetMainWindow().GetRootItem()
@@ -218,7 +218,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param data: Item data.
         :return: True/False.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         selected_item = treelistctrl.GetMainWindow().GetSelection()
         if selected_item:
@@ -233,7 +233,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param item: Item. If None then get root item.
         :return: Children list or None if error.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         try:
             if item is None:
@@ -263,7 +263,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param item: Item. If None then get root item.
         :return: Item children count or None if error.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         try:
             if item is None:
@@ -286,7 +286,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param item: Current item.
         :return: True/False.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         if expression is None:
             log_func.warning(u'Not define expression')
@@ -319,7 +319,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param colour: Foreground colour.
         :return: True/False.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         try:
             treelistctrl.GetMainWindow().SetItemTextColour(item, colour)
@@ -337,7 +337,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param colour: Backgrouind colour.
         :return: True/False.
         """
-        assert issubclass(treelistctrl, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         try:
             treelistctrl.GetMainWindow().SetItemBackgroundColour(item, colour)
