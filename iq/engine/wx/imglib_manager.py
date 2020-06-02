@@ -84,7 +84,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param img_name: Image as icon name.
         :return: Image index or None if error.
         """
-        if not hasattr(self, '__img_idx'):
+        if not hasattr(self, '_imagelist'):
             self.initImageLib()
 
         if img_name not in self.__img_idx:
@@ -101,7 +101,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param img_name: Image as icon name.
         :return: Image bitmap or None if error.
         """
-        if not hasattr(self, '__img_idx'):
+        if not hasattr(self, '_imagelist'):
             self.initImageLib()
 
         if img_name not in self.__img_idx:

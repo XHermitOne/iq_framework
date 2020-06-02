@@ -132,12 +132,35 @@ class iqAccRegistry(data_object.iqDataObject):
         """
         Get result table dataset.
 
+        :param column_values: Filter by column values:
+            {
+            'column name': column value,
+            ...
+            }
+        :return: Result table record dictionary list
+            or empty list if error.
+        """
+        return self.filterByColValues()
+
+    def filterByColValues(self, **column_values):
+        """
+        Get result table dataset.
+
+        :param column_values: Filter by column values:
+            {
+            'column name': column value,
+            ...
+            }
         :return: Result table record dictionary list
             or empty list if error.
         """
         try:
             result_table = self.getResultTable()
-            dataset = result_table.select().execute()
+            query = result_table.select()
+            if column_values:
+                filter_data = [getattr(result_table.c, column_name) == value for column_name, value in column_values.items()]
+                query = query.filter(sqlalchemy.and_(*filter_data))
+            dataset = query.execute()
             dataset = [dict(record) for record in dataset]
             dataset = self._updateLinkDataDataset(dataset)
             return dataset

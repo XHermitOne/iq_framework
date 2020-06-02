@@ -72,20 +72,38 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         if column_name is None:
             column_name = self.getCodColumnName()
 
+        filter_data = {column_name: column_value}
+        records = self.searchRecsByColValues(**filter_data)
+        return records[0] if records else None
+
+    def searchRecsByColValues(self, **column_values):
+        """
+        Get records by column values.
+
+        :param column_values: Column value data:
+            {
+            'column name': column value,
+            ...
+            }
+        :return: Record dictionary list or None if error.
+        """
+        if not column_values:
+            log_func.error(u'Not define column values for search in <%s>' % self.getName())
+            return None
+
         try:
             model = self.getModel()
-            records = self.getModelQuery().filter(getattr(model, column_name) == column_value)
+            filter_data = [getattr(model, column_name) == value for column_name, value in column_values.items()]
+            records = self.getModelQuery().filter(*filter_data)
             if records.count():
                 # Presentation of query result in the form of a dictionary
-                return records.first().__dict__
+                return [vars(record) for record in records.fetchall()]
             else:
-                log_func.warning(u'Reference data column <%s : %s> not found in <%s>' % (column_name,
-                                                                                         column_value,
-                                                                                         self.getName()))
+                log_func.warning(u'Reference data columns %s not found in <%s>' % (column_values,
+                                                                                   self.getName()))
         except:
-            log_func.fatal(u'Error get reference data record by column <%s : %s> in <%s>' % (column_name,
-                                                                                             column_value,
-                                                                                             self.getName()))
+            log_func.fatal(u'Error get reference data records by column values %s in <%s>' % (column_values,
+                                                                                              self.getName()))
         return None
 
     def getColumnValues(self, cod, *column_names):

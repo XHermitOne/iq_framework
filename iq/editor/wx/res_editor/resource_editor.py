@@ -95,7 +95,6 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
         :return:
         """
-        # self.initImageLib()
         self.component_icons[None] = self.getImageLibImageIdx(None)
 
         component_spc_cache = components.getComponentSpcPalette()
