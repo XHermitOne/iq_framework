@@ -94,10 +94,11 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         try:
             model = self.getModel()
             filter_data = [getattr(model, column_name) == value for column_name, value in column_values.items()]
-            records = self.getModelQuery().filter(*filter_data)
-            if records.count():
+            query = self.getModelQuery().filter(*filter_data)
+            if query.count():
                 # Presentation of query result in the form of a dictionary
-                return [vars(record) for record in records.fetchall()]
+                records = query.all()
+                return [vars(record) for record in records]
             else:
                 log_func.warning(u'Reference data columns %s not found in <%s>' % (column_values,
                                                                                    self.getName()))

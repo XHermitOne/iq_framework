@@ -156,10 +156,11 @@ class iqAccRegistry(data_object.iqDataObject):
         """
         try:
             result_table = self.getResultTable()
-            query = result_table.select()
             if column_values:
                 filter_data = [getattr(result_table.c, column_name) == value for column_name, value in column_values.items()]
-                query = query.filter(sqlalchemy.and_(*filter_data))
+                query = result_table.select(sqlalchemy.and_(*filter_data))
+            else:
+                query = result_table.select()
             dataset = query.execute()
             dataset = [dict(record) for record in dataset]
             dataset = self._updateLinkDataDataset(dataset)
