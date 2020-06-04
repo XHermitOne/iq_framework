@@ -255,6 +255,16 @@ class iqAccRegistry(data_object.iqDataObject):
                          requisite_type=requisite_type)
         self._resource_requisites.append(requisite)
 
+    def clearResourceRequisites(self):
+        """
+        Clear resource requisites list.
+
+        :return: True/False.
+        """
+        # Resource requisites
+        self._resource_requisites = list()
+        return True
+
     def getResourceRequisiteNames(self):
         """
         Get resource requisite name list.
@@ -276,6 +286,16 @@ class iqAccRegistry(data_object.iqDataObject):
                          requisite_type=requisite_type)
         self._dimension_requisites.append(requisite)
 
+    def clearDimensionRequisites(self):
+        """
+        Clear dimension requisites list.
+
+        :return: True/False.
+        """
+        # Dimension requisites
+        self._dimension_requisites = list()
+        return True
+
     def getDimensionRequisiteNames(self):
         """
         Get dimension requisite name list.
@@ -296,6 +316,16 @@ class iqAccRegistry(data_object.iqDataObject):
         requisite = dict(requisite_name=requisite_name,
                          requisite_type=requisite_type)
         self._extended_requisites.append(requisite)
+
+    def clearExtendedRequisites(self):
+        """
+        Clear extended requisites list.
+
+        :return: True/False.
+        """
+        # Extended requisites
+        self._extended_requisites = list()
+        return True
 
     def getExtendedRequisiteNames(self):
         """
@@ -751,3 +781,13 @@ class iqAccRegistry(data_object.iqDataObject):
                 log_func.fatal(u'Error delete not actual operations')
             return True
         return False
+
+    def clearRequisites(self):
+        """
+        Clear all requisite lists.
+
+        :return: True/False
+        """
+        return all((self.clearResourceRequisites(),
+                    self.clearDimensionRequisites(),
+                    self.clearExtendedRequisites()))
