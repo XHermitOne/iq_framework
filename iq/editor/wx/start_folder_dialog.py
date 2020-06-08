@@ -24,6 +24,8 @@ from .res_editor import resource_editor
 
 from ...engine.wx import stored_wx_form_manager
 
+from ...project import prj
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -63,11 +65,18 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
         bmp = wxbitmap_func.createIconBitmap('fatcow/application_form_edit')
         self.wxfb_bitmap.SetBitmap(bmp)
 
+        bmp = wxbitmap_func.createIconBitmap('fatcow/resultset_next')
+        self.run_bitmap.SetBitmap(bmp)
+
     def initControls(self):
         """
         Init controls method.
         """
-        pass
+        if self.folder_path:
+            folder_basename = os.path.basename(self.folder_path)
+            prj_basename = folder_basename + res_func.RESOURCE_FILE_EXT
+            prj_filename = os.path.join(self.folder_path, prj_basename)
+            self.run_button.Enable(os.path.exists(prj_filename))
 
     def onExitButtonClick(self, event):
         """
@@ -97,6 +106,17 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
         Button click handler <New wxFormBuilder project>.
         """
         wxfb_manager.runWXFormBuilder()
+        self.EndModal(wx.ID_OK)
+        event.Skip()
+
+    def onRunButtonClick(self, event):
+        """
+        Button click handler <Run project>.
+        """
+        project_manager = prj.iqProjectManager()
+        selected_prj_name = os.path.basename(self.folder_path) if self.folder_path else None
+        project_manager.run(selected_prj_name)
+
         self.EndModal(wx.ID_OK)
         event.Skip()
 
