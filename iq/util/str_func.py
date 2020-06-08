@@ -286,9 +286,5 @@ def isWordsInText(text, *words):
     """
     if not isinstance(text, str):
         text = toUnicode(text)
-    find = False
-    for word in words:
-        find = word in text
-        if find:
-            break
+    find = any([word in text for word in words])
     return find

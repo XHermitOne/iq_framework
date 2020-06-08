@@ -58,6 +58,7 @@ ADAPTATION_REPLACES = (
     dict(compare=CONTAIN_SIGNATURE, src='.SetMaxLength', dst=COMMENT_COMMAND_SIGNATIRE),
     # TreeListCtrl
     dict(compare=CONTAIN_SIGNATURE, src='wx.TreeListCtrl', dst='wx.lib.gizmos.TreeListCtrl'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.dataview.TreeListCtrl', dst='wx.lib.gizmos.TreeListCtrl'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.TL_DEFAULT_STYLE', dst='wx.lib.gizmos.TR_DEFAULT_STYLE'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.TL_SINGLE', dst='wx.lib.gizmos.TR_SINGLE'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.TR_FULL_ROW_HIGHLIGHT', dst='wx.lib.gizmos.TR_FULL_ROW_HIGHLIGHT'),
@@ -67,6 +68,7 @@ ADAPTATION_REPLACES = (
     dict(compare=CONTAIN_SIGNATURE, src='wx.EVT_TREELIST_ITEM_CONTEXT_MENU', dst='wx.EVT_TREE_ITEM_RIGHT_CLICK'),
     dict(compare=CONTAIN_SIGNATURE, src='_treeListCtrl.AppendColumn(', dst='_treeListCtrl.AddColumn('),
     dict(compare=CONTAIN_SIGNATURE, src=', wx.COL_RESIZABLE )', dst=')'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.COL_WIDTH_AUTOSIZE', dst='300'),
     dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
     dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
     dict(compare=CONTAIN_SIGNATURE, src=', agwStyle=wx.lib.gizmos.TR_', dst=', agwStyle=wx.lib.gizmos.TR_'),

@@ -105,8 +105,10 @@ def openResourceEditor(res_filename, create_kernel=True):
             # Create KERNEL object
             kernel_obj = kernel.createKernel()
             prj_res_path = res_filename.replace(file_func.getFrameworkPath(), '')
-            prj_name = [item for item in prj_res_path.split(os.path.sep) if item][0]
-            kernel_obj.setProject(prj_name)
+            sub_dirnames = [item for item in prj_res_path.split(os.path.sep) if item]
+            if sub_dirnames:
+                prj_name = sub_dirnames[0]
+                kernel_obj.setProject(prj_name)
 
         return _openResourceEditor(res_filename)
     except:
