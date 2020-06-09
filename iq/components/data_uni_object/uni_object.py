@@ -77,13 +77,12 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
                                                                           order_by=sort_columns)
                 # Execute SQL
                 try:
-                    print(self._filter)
                     records = sql_filter.all()
                 except:
                     log_func.fatal(u'Error execute SQL filter <%s>' % str(sql_filter))
                     records = list()
 
-                return [vars(record) for record in records]
+                self.__dataset__ = [vars(record) for record in records]
             return self.getDataset()
         except:
             log_func.fatal(u'Error filter dataset unic object <%s>' % self.getName())
@@ -196,3 +195,18 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         if not record.get(DEFAULT_GUID_COL_NAME, None):
             record[DEFAULT_GUID_COL_NAME] = id_func.genGUID()
         return model_navigator.iqModelNavigatorManager.newRec(self, record=record)
+
+    def save(self, guid=None, save_record=None):
+        """
+        Save object by GUID.
+
+        :param guid: GUID object.
+        :param save_record: Save record dictionary.
+        :return: True/False.
+        """
+        if guid is None:
+            log_func.error(u'Not define unic object GUID for save')
+            return False
+        log_func.debug(u'Save unic object <%s>' % guid)
+        return self.saveRec(id=guid, record=save_record,
+                            id_field=DEFAULT_GUID_COL_NAME)

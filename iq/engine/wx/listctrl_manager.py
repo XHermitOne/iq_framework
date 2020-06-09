@@ -499,7 +499,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         """
         if isinstance(listctrl_or_event, wx.ListEvent):
             return listctrl_or_event.Index
-        elif issubclass(listctrl_or_event, wx.ListCtrl):
+        elif issubclass(listctrl_or_event.__class__, wx.ListCtrl):
             return listctrl_or_event.GetFirstSelected()
         return -1
 

@@ -270,6 +270,8 @@ def convertFilter2SQLAlchemyQuery(filter_data, model, query, fields=('*',), limi
     if limit:
         query = query.limit(int(limit))
     if order_by:
+        if isinstance(order_by, str):
+            order_by = (order_by, )
         order_by_columns = [getattr(model, fld_name) for fld_name in order_by]
         query = query.order_by(*order_by_columns)
     return query

@@ -203,7 +203,7 @@ def addFilterCompareToGroup(filter_group, filter_compare, do_clone=False):
                    to correctly join the necessary rows of this key.
         }
     :param do_clone: Pre-clone source group?
-    :return: Filled ilter group data:
+    :return: Filled filter group data:
         {
         'name': Group name.
         'type': Group type. <group> string.
