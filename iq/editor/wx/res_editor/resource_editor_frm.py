@@ -116,8 +116,8 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.Bind( wx.EVT_TOOL, self.onHelpToolClicked, id = self.help_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onCollapseToolClicked, id = self.collapse_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onExpandToolClicked, id = self.expand_tool.GetId() )
-		self.resource_treeListCtrl.Bind( wx.dataview.EVT_TREELIST_ITEM_CONTEXT_MENU, self.onResTreelistItemContextMenu )
-		self.resource_treeListCtrl.Bind( wx.dataview.EVT_TREELIST_SELECTION_CHANGED, self.onResItemTreelistSelectionChanged )
+		self.resource_treeListCtrl.Bind( wx.EVT_TREE_ITEM_RIGHT_CLICK, self.onResTreelistItemContextMenu )
+		self.resource_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onResItemTreelistSelectionChanged )
 		self.object_propertyGridManager.Bind( pg.EVT_PG_CHANGED, self.onObjPropertyGridChanged )
 
 	def __del__( self ):

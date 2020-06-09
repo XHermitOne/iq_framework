@@ -5,6 +5,7 @@
 Panel manager.
 """
 
+import types
 import datetime
 import wx
 import wx.adv
@@ -28,6 +29,7 @@ from . import wxdatetime_func
 __version__ = (0, 0, 0, 1)
 
 SKIP_ACCORD_NAMES = ('Handle', 'EventHandler', 'Parent', 'GrandParent')
+SKIP_FUNCTION_TYPES = (types.FunctionType, types.MethodType, types.BuiltinFunctionType, types.BuiltinMethodType)
 
 
 class iqPanelManager(validate_manager.iqValidateManager):
@@ -76,6 +78,9 @@ class iqPanelManager(validate_manager.iqValidateManager):
         elif issubclass(ctrl.__class__, wx.dataview.DataViewListCtrl):
             self._set_wxDataViewListCtrl_data(ctrl, value)
             result = True
+        elif issubclass(ctrl.__class__, wx.RadioBox):
+            ctrl.SetSelection(int(value))
+            result = True
         else:
             log_func.warning(u'Panel manager. Control <%s> not support' % ctrl.__class__.__name__)
         return result
@@ -105,9 +110,14 @@ class iqPanelManager(validate_manager.iqValidateManager):
             ctrl_names = self.__accord.values()
 
         for ctrlname in dir(panel):
-            if ctrl_names and ctrlname not in ctrl_names:
-                continue
             if ctrlname in SKIP_ACCORD_NAMES:
+                continue
+            if ctrlname.startswith('__'):
+                continue
+            # if isinstance(getattr(panel, ctrlname), SKIP_FUNCTION_TYPES):
+            #     continue
+            if ctrl_names and ctrlname not in ctrl_names:
+                # log_func.warning(u'Not find control <%s> in %s' % (ctrlname, ctrl_names))
                 continue
 
             ctrl = getattr(panel, ctrlname)
@@ -118,6 +128,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
                 else:
                     value = self.getPanelCtrlValue(ctrl)
                     result[ctrlname] = value
+                    log_func.debug(u'Get control <%s> value <%s>' % (ctrlname, value))
         return result
 
     def setPanelCtrlValues(self, panel, data_dict=None, *ctrl_names):
@@ -219,29 +230,35 @@ class iqPanelManager(validate_manager.iqValidateManager):
         """
         return self.__accord
 
-    def getPanelAccordCtrlData(self):
+    def getPanelAccordCtrlData(self, panel=None):
         """
         Get consistent data.
 
+        :param panel: Panel object.
         :return: Matching dictionary control values and names.
             Format:
             {'name': 'control value', ...}
         """
+        if panel is None:
+            panel = self
         accord_values = self.__accord.values()
-        ctrl_data = self.getPanelCtrlData(None, *accord_values)
+        ctrl_data = self.getPanelCtrlData(panel, None, *accord_values)
         result_data = dict([(name, ctrl_data.get(ctrl_name, None)) for name, ctrl_name in self.__accord.items()])
         return result_data
 
-    def setPanelAccordCtrlData(self, **data):
+    def setPanelAccordCtrlData(self, panel=None, **data):
         """
         Set consistent data.
 
+        :param panel: Panel object.
         :return: Matching dictionary control values and names.
             Format:
             {'name': 'control value', ...}
         """
+        if panel is None:
+            panel = self
         ctrl_data = dict([(self.__accord[name], data[name]) for name in data.keys() if name in self.__accord])
-        self.setPanelCtrlData(ctrl_data, *ctrl_data.keys())
+        self.setPanelCtrlData(panel, ctrl_data, *ctrl_data.keys())
 
     def findPanelAccord(self, panel):
         """
@@ -533,10 +550,11 @@ class iqPanelManager(validate_manager.iqValidateManager):
                 toolbar.EnableTool(expand_tool.GetId(), False)
         return True
 
-    def getPanelCtrlData(self, data_dict=None, *ctrl_names):
+    def getPanelCtrlData(self, panel=None, data_dict=None, *ctrl_names):
         """
         Get control values.
 
+        :param panel: Panel object.
         :param data_dict: Data dictionary.
             If None then create new dictionary.
         :param ctrl_names: Take only controls with names...
@@ -544,16 +562,21 @@ class iqPanelManager(validate_manager.iqValidateManager):
             then controls are processed
             indicated in the matches (accord).
         """
-        return self.getPanelCtrlValues(self, data_dict, *ctrl_names)
+        if panel is None:
+            panel = self
+        return self.getPanelCtrlValues(panel, data_dict, *ctrl_names)
 
-    def setPanelCtrlData(self, data_dict=None, *ctrl_names):
+    def setPanelCtrlData(self, panel=None, data_dict=None, *ctrl_names):
         """
         Set control values.
 
+        :param panel: Panel object.
         :param data_dict: Data dictionary.
         :param ctrl_names: Take only controls with names...
             If no control names are defined,
             then controls are processed
             indicated in the matches (accord).
         """
-        return self.setPanelCtrlValues(self, data_dict, *ctrl_names)
+        if panel is None:
+            panel = self
+        return self.setPanelCtrlValues(panel, data_dict, *ctrl_names)

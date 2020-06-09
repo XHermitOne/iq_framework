@@ -18,3 +18,12 @@ def genNewId(limit_len=5):
     :return: New id as string.
     """
     return str(uuid.uuid4().fields[-1])[:limit_len]
+
+
+def genGUID():
+    """
+    Generate new GUID.
+
+    :return: New GUID as string.
+    """
+    return str(uuid.uuid4())

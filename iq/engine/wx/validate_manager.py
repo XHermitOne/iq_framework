@@ -190,6 +190,8 @@ class iqValidateManager(object):
                 value = ctrl.GetValue()
             elif issubclass(ctrl.__class__, wx.dataview.DataViewListCtrl):
                 value = self._get_wxDataViewListCtrl_data(ctrl)
+            elif issubclass(ctrl.__class__, wx.RadioBox):
+                value = ctrl.GetSelection()
             else:
                 log_func.warning(u'iqValidateManager. Get control value <%s> not support' % ctrl.__class__.__name__)
         return value

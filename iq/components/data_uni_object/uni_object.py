@@ -11,6 +11,9 @@ from ..data_navigator import model_navigator
 
 from ...util import log_func
 from ...util import global_func
+from ...util import id_func
+
+from ..wx_filterchoicectrl import filter_convert
 
 __version__ = (0, 0, 0, 1)
 
@@ -31,6 +34,60 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param model: Model.
         """
         model_navigator.iqModelNavigatorManager.__init__(self, model=model)
+
+        # Current filter data
+        self._filter = None
+
+    def setFilter(self, filter_data=None):
+        """
+        Set current filter data.
+
+        :param filter_data: Filter data.
+            If None then not filtered.
+        :return: True/False.
+        """
+        self._filter = filter_data
+
+    def getFilterData(self):
+        """
+        Get current filter data.
+        """
+        return self._filter
+
+    def filterDataset(self, filter_data=None, limit=None, sort_columns=None):
+        """
+        Get filtered dataset.
+
+        :param filter_data: Filter data.
+        :param limit: Record number limit.
+        :param sort_columns: Sort columns names.
+        :return: Dataset.
+        """
+        if filter_data:
+            self.setFilter(filter_data)
+
+        try:
+            if self._filter:
+                model = self.getModel()
+                query = self.getModelQuery()
+                sql_filter = filter_convert.convertFilter2SQLAlchemyQuery(filter_data=self._filter,
+                                                                          model=model,
+                                                                          query=query,
+                                                                          limit=limit,
+                                                                          order_by=sort_columns)
+                # Execute SQL
+                try:
+                    print(self._filter)
+                    records = sql_filter.all()
+                except:
+                    log_func.fatal(u'Error execute SQL filter <%s>' % str(sql_filter))
+                    records = list()
+
+                return [vars(record) for record in records]
+            return self.getDataset()
+        except:
+            log_func.fatal(u'Error filter dataset unic object <%s>' % self.getName())
+        return list()
 
     def getGuidColumnName(self):
         """
@@ -129,3 +186,13 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error check GUID unique object <%s>' % self.getName())
         return None
 
+    def newRec(self, record):
+        """
+        Create new record.
+
+        :param record: Record dictionary.
+        :return: New model object or None if error.
+        """
+        if not record.get(DEFAULT_GUID_COL_NAME, None):
+            record[DEFAULT_GUID_COL_NAME] = id_func.genGUID()
+        return model_navigator.iqModelNavigatorManager.newRec(self, record=record)

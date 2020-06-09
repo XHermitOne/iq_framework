@@ -106,7 +106,7 @@ LOGIC_NAME2SQLALCHEMY_LOGIC = {'AND': sqlalchemy.and_,
                                }
 
 
-def convertFilter2SQLAlchemy(filter_data, table, fields=('*',), limit=None):
+def convertFilter2SQLAlchemySelect(filter_data, table, fields=('*',), limit=None):
     """
     Convert filter data to SQLAlchemy view.
 
@@ -116,7 +116,7 @@ def convertFilter2SQLAlchemy(filter_data, table, fields=('*',), limit=None):
     :param limit: Record limit. If not defined, then there is no limit.
     :return: sqlalchemy.sql.selectable.Select object.
     """
-    converter = iqFilter2SQLAlchemyConverter(filter_data, table)
+    converter = iqFilter2SQLAlchemySelectConverter(filter_data, table)
     where = converter.convert()
     columns = None
     if '*' not in fields:
@@ -129,7 +129,7 @@ def convertFilter2SQLAlchemy(filter_data, table, fields=('*',), limit=None):
     return query
 
 
-class iqFilter2SQLAlchemyConverter(object):
+class iqFilter2SQLAlchemySelectConverter(object):
     """
     Filter data to SQLAlchemy converter class.
     """
@@ -244,4 +244,160 @@ class iqFilter2SQLAlchemyConverter(object):
         except:
             log_func.fatal(u'Error convert filter requisite <%s>' % requisite)
             
+        return None
+
+
+def convertFilter2SQLAlchemyQuery(filter_data, model, query, fields=('*',), limit=None, order_by=None):
+    """
+    Convert filter data to SQLAlchemy model query.
+
+    :param filter_data: Filter data.
+    :param model: Model object.
+    :param query: Model sqlalchemy.orm.query.Query object.
+    :param fields: Filed name list.
+    :param limit: Record limit. If not defined, then there is no limit.
+    :return: sqlalchemy.orm.query.Query object.
+    """
+    if '*' not in fields:
+        columns = [getattr(model, fld_name) for fld_name in fields]
+        query.add_columns(*columns)
+
+    converter = iqFilter2SQLAlchemyQueryConverter(filter_data, model, query)
+    where = converter.convert()
+
+    # log_func.debug(u'Filter: %s' % str(where))
+    query = query.filter(*where)
+    if limit:
+        query = query.limit(int(limit))
+    if order_by:
+        order_by_columns = [getattr(model, fld_name) for fld_name in order_by]
+        query = query.order_by(*order_by_columns)
+    return query
+
+
+class iqFilter2SQLAlchemyQueryConverter(object):
+    """
+    Filter data to SQLAlchemy converter class.
+    """
+
+    def __init__(self, filter_data, model, query, code_page='utf-8'):
+        """
+        Constructor.
+
+        :param filter_data: Filter data.
+        :param model: Model object.
+        :param query: Model sqlalchemy.orm.query.Query object.
+        """
+        self.filter = filter_data
+        self.model = model
+        self.query = query
+        self.codepage = code_page
+
+    def convert(self):
+        """
+        Run convert.
+        """
+        if self.filter:
+            if isinstance(self.filter, dict):
+                filter_list = self.filter.get('children', list())
+            elif isinstance(self.filter, (list, tuple)):
+                filter_list = self.filter
+            else:
+                log_func.error(u'Not valid filter data type <%s>' % self.filter.__class__.__name__)
+            query = [self.genRequisiteSection(element) if element['type'] == 'compare' else self.genGroupSection(element) for element in filter_list]
+            return query
+        else:
+            log_func.error(u'Filter not defined <%s>' % self.filter)
+        return None
+
+    def genGroupSection(self, group_data):
+        """
+        Generate group section.
+
+        :param group_data: Group data.
+        """
+        sql_alchemy_elements = list()
+        children = group_data.get('children', list())
+        for element in children:
+            if element['type'] == 'group':
+                sql_alchemy_element = self.genGroupSection(element)
+            elif element['type'] == 'compare':
+                sql_alchemy_element = self.genRequisiteSection(element)
+            else:
+                log_func.error(u'Not defined filter item type <%s>' % element['type'])
+                continue
+
+            if sql_alchemy_element is not None:
+                sql_alchemy_elements.append(sql_alchemy_element)
+
+        sql_alchemy_elements = tuple(sql_alchemy_elements)
+        return LOGIC_NAME2SQLALCHEMY_LOGIC.get(group_data['logic'].upper())(*sql_alchemy_elements)
+
+    def genRequisiteSection(self, requisite):
+        """
+        Generate filter requisite section.
+
+        :param requisite: Requisite data.
+        """
+        try:
+            if 'get_args' in requisite and requisite['get_args']:
+                ext_dict = requisite['get_args']()
+                requisite.update(ext_dict)
+        except:
+            log_func.fatal(u'Error get arguments')
+
+        try:
+            if requisite['function'] == 'equal':
+                # <Equal> verify
+                return getattr(self.model, requisite['requisite']) == requisite['arg_1']
+            elif requisite['function'] == 'not_equal':
+                # <Not equal> verify
+                return getattr(self.model, requisite['requisite']) != requisite['arg_1']
+            elif requisite['function'] == 'great':
+                # <Great>
+                return getattr(self.model, requisite['requisite']) > requisite['arg_1']
+            elif requisite['function'] == 'great_or_equal':
+                # <Great or equal>
+                return getattr(self.model, requisite['requisite']) >= requisite['arg_1']
+            elif requisite['function'] == 'lesser':
+                # <Lesser>
+                return getattr(self.model, requisite['requisite']) < requisite['arg_1']
+            elif requisite['function'] == 'lesser_or_equal':
+                # <Lesser or equal>
+                return getattr(self.model, requisite['requisite']) <= requisite['arg_1']
+            elif requisite['function'] == 'between':
+                # <Between>
+                return getattr(self.model, requisite['requisite']).between(requisite['arg_1'],
+                                                                             requisite['arg_2'])
+            elif requisite['function'] == 'not_between':
+                # <Not between>
+                return sqlalchemy.not_(getattr(self.model, requisite['requisite']).between(requisite['arg_1'],
+                                                                                             requisite['arg_2']))
+            elif requisite['function'] == 'contain':
+                return getattr(self.model, requisite['requisite']).contains(requisite['arg_1'])
+            elif requisite['function'] == 'not_contain':
+                return sqlalchemy.not_(getattr(self.model, requisite['requisite']).contains(requisite['arg_1']))
+            elif requisite['function'] == 'startswith':
+                return getattr(self.model, requisite['requisite']).startswith(requisite['arg_1'])
+            elif requisite['function'] == 'endswith':
+                return getattr(self.model, requisite['requisite']).endswith(requisite['arg_1'])
+            elif requisite['function'] == 'mask':
+                log_func.warning(u'Unsupported compare <mask>')
+                return None
+            elif requisite['function'] == 'not_mask':
+                log_func.warning(u'Unsupported compare <not mask>')
+                return None
+            elif requisite['function'] == 'is_null':
+                return getattr(self.model, requisite['requisite']) is None
+            elif requisite['function'] == 'is_not_null':
+                return getattr(self.model, requisite['requisite']) is not None
+            elif requisite['function'] == 'into':
+                return getattr(self.model, requisite['requisite']).in_(requisite['arg_1'])
+            elif requisite['function'] == 'not_into':
+                return sqlalchemy.not_(getattr(self.model, requisite['requisite']).in_(requisite['arg_1']))
+
+            log_func.error(u'Not define function type <%s> filter requisite in convert' % requisite['function'])
+        except:
+            log_func.fatal(u'Error convert filter requisite <%s>' % requisite)
+
         return None

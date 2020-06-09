@@ -11,7 +11,6 @@ from ..data_model import data_object
 
 __version__ = (0, 0, 0, 1)
 
-
 class iqModelNavigatorManager(data_object.iqDataObject):
     """
     Data model navigator manager.
@@ -35,6 +34,15 @@ class iqModelNavigatorManager(data_object.iqDataObject):
             model = self.createModel()
             self.setModel(model)
         return self.__model__
+
+    def getTable(self):
+        """
+        Get table object.
+        """
+        model = self.getModel()
+        if model:
+            return model.__table__
+        return None
 
     def createModel(self):
         """

@@ -115,6 +115,19 @@ def createFilterGroupNOT(*compare_requisites):
 
 
 # Compare operations analogs
+EQUAL_COMPARE = '=='
+NOT_EQUAL_COMPARE = '<>'
+LESSER_OR_EQUAL_COMPARE = '<='
+GREAT_OR_EQUAL_COMPARE = '>='
+GREAT_COMPARE = '>'
+LESSER_COMPARE = '<'
+BETWEEN_COMPARE = '>..<'
+NOT_BETWEEN_COMPARE = '.<>.'
+IS_NULL_COMPARE = 'N'
+STARTSWITH_COMPARE = '..)'
+ENDSWITH_COMPARE = '(..'
+CONTAIN_COMPARE = '(..)'
+
 COMPARE_OPERATION_TRANSLATE = {'==': 'equal',
                                '<>': 'not_equal',
                                '<=': 'lesser_or_equal',
@@ -130,7 +143,7 @@ COMPARE_OPERATION_TRANSLATE = {'==': 'equal',
                                '(..)': 'contain',
                                }
 
-DEFAULT_COMPARE_OPERATE = '=='
+DEFAULT_COMPARE_OPERATE = EQUAL_COMPARE
 
 
 def createFilterCompareRequisite(name, compare_operate=DEFAULT_COMPARE_OPERATE,
