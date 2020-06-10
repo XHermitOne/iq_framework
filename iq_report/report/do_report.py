@@ -304,6 +304,7 @@ def selectReport(parent_form=None, report_filename='', report_dir='',
         else:
             stylelib = loadStyleLib(stylelib_filename)
             repgen_system = report_gen_func.getReportGeneratorSystem(report_filename, parent_form)
+            log_func.info(u'Use report generate system <%s>' % repgen_system.__class__.__name__)
             return repgen_system.selectAction(res_func.loadResource(report_filename),
                                               stylelib=stylelib,
                                               variables=variables)

@@ -513,6 +513,8 @@ class iqReportGeneratorSystem(object):
                             if isinstance(dataset_dict, dict):
                                 query.update(dataset_dict)
                         return query
+                    else:
+                        log_func.error(u'Error query result type <%s>' % query.__class__.__name__)
                 else:
                     query = report['query']
                 # Query not defined

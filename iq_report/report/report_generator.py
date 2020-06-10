@@ -5,7 +5,7 @@
 Report generator module.
 
 Report cell tags:
-["..."] - Access to the query table field.
+['...'] - Access to the query table field.
 
 [&...&] - Accessing a report variable.
 Report variables are set in the query table

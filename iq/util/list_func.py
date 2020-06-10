@@ -134,3 +134,53 @@ def findTextInListIdx(items, find_text, compare_contain=True):
         if find:
             return i
     return -1
+
+
+def dataset2queryTable(dataset):
+    """
+    Convert dataset format data to query table format data.
+
+    :param dataset: Dataset format data:
+        [
+        {'column1 name': value1, 'column2 name': value1, ...},
+        ...
+        ]
+    :return: Query table format data:
+        {
+        '__fields__': ('column1 name', 'column2 name', ...),
+        '__data__': [
+            (value1, value2, ...),
+            ...
+            ]
+        }
+    """
+    assert isinstance(dataset, (list, tuple)), u'Dataset type error'
+
+    query_table = dict()
+    query_table['__fields__'] = tuple(dataset[0].keys()) if dataset else tuple()
+    query_table['__data__'] = [tuple(record.values()) for record in dataset] if dataset else list()
+    return query_table
+
+
+def queryTable2dataset(query_table):
+    """
+    Convert query table format data to dataset format data.
+
+    :param query_table: Query table format data:
+        {
+        '__fields__': ('column1 name', 'column2 name', ...),
+        '__data__': [
+            (value1, value2, ...),
+            ...
+            ]
+        }
+    :return: Dataset format data:
+        [
+        {'column1 name': value1, 'column2 name': value1, ...},
+        ...
+        ]
+    """
+    assert isinstance(query_table, dict), u'Query table type error'
+
+    dataset = [dict([(col_name, row[i]) for i, col_name in enumerate(query_table.get('__fields__', list()))]) for row in query_table.get('__data__', list())]
+    return dataset
