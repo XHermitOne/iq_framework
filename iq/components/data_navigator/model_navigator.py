@@ -320,6 +320,31 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         """
         pass
 
+    def deleteRec(self, id, id_field=None):
+        """
+        Delete record in model.
+
+        :param id: Record identifier in model.
+        :param id_field: Identifier field name.
+        :return: True/False.
+        """
+        if id_field is None:
+            id_field = 'id'
+
+        session = self.getScheme().getSession()
+        try:
+            model = self.getModel()
+            query = self.getModelQuery()
+            query.filter(getattr(model, id_field) == id).delete()
+            if session:
+                session.commit()
+            return True
+        except:
+            if session:
+                session.rollback()
+            log_func.fatal(u'Error delete record [%s]' % str(id))
+        return False
+
     def loadRec(self, id, id_field=None):
         """
         Load record from model.

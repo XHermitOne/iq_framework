@@ -504,7 +504,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         return -1
 
     def selectListCtrlItem(self, listctrl=None, item=-1,
-                           is_focus=True, deselect_prev=False):
+                           is_focus=True, deselect_prev=True):
         """
         Select a list control by index.
 
@@ -706,7 +706,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
                 listctrl.SetItemBackgroundColour(item, colour)
 
     def findListCtrlRowIdxExpression(self, listctrl=None, rows=(),
-                                     expression=None, auto_select=False):
+                                     expression=None, start_row=0, auto_select=False):
         """
         Find the index of a list string by a specific condition.
 
@@ -717,8 +717,10 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             Return True/False.
             If True, then we consider that the string satisfies the condition.
             False - row does not satisfy.
+        :param start_row: Start row.
         :param auto_select: Automatically select a line in the control.
-        :return: The index of the row found, or None if the row is not found.
+        :return: The index of the row found, or -1 if the row is not found.
+            And None if error.
         """
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
@@ -727,16 +729,20 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             return False
 
         try:
+            if start_row >= len(rows):
+                start_row = 0
+
             for i, row in enumerate(rows):
-                is_found = expression(i, row)
-                if is_found:
-                    if auto_select:
-                        self.selectListCtrlItem(listctrl, item=i, is_focus=True, deselect_prev=True)
-                    return i
-            return True
+                if i >= start_row:
+                    is_found = expression(i, row)
+                    if is_found:
+                        if auto_select:
+                            self.selectListCtrlItem(listctrl, item=i, is_focus=True, deselect_prev=True)
+                        return i
+            return -1
         except:
             log_func.fatal(u'Find the index of a list string by a specific condition error')
-        return False
+        return None
 
     def selectListCtrlRowExpression(self, listctrl=None, rows=(), expression=None):
         """

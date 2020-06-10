@@ -10,12 +10,15 @@ import sqlalchemy.sql
 from ..data_navigator import model_navigator
 
 from ...util import log_func
-from ...util import global_func
+from ...util import lang_func
 from ...util import id_func
+from ...dialog import dlg_func
 
 from ..wx_filterchoicectrl import filter_convert
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 DEFAULT_GUID_COL_NAME = 'guid'
 DEFAULT_NAME_COL_NAME = 'name'
@@ -210,3 +213,21 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         log_func.debug(u'Save unic object <%s>' % guid)
         return self.saveRec(id=guid, record=save_record,
                             id_field=DEFAULT_GUID_COL_NAME)
+
+    def delete(self, guid=None, ask=True):
+        """
+        Delete object by GUID.
+
+        :param guid: GUID object.
+        :param ask: Ask user to delete?
+        :return: True/False.
+        """
+        if guid is None:
+            log_func.error(u'Not define unic object GUID for delete')
+            return False
+
+        can_delete = dlg_func.openAskBox(title=_('DELETE'),
+                                         prompt_text=_(u'Confirm deletion')) if ask else True
+        if can_delete:
+            return self.deleteRec(id=guid, id_field=DEFAULT_GUID_COL_NAME)
+        return False
