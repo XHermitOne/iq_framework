@@ -17,6 +17,7 @@ from ..util import res_func
 from ..util import exec_func
 from ..util import global_func
 from ..util import lang_func
+from ..util import txtfile_func
 
 from ..passport import passport
 from .. import user
@@ -105,11 +106,13 @@ class iqProjectManager(object):
             save_ok = self.saveDefaultPrjResource(prj_path=prj_path, prj_name=prj_name, default_engine=selected_engine)
             return all([save_ok,
                         self.createDefaultMenubarResource(engine=selected_engine, prj_name=prj_name),
-                        self.createDefaultMainFormResource(engine=selected_engine, prj_name=prj_name)])
+                        self.createDefaultMainFormResource(engine=selected_engine, prj_name=prj_name),
+                        self.createDefaultReportsFolder(engine=selected_engine, prj_name=prj_name)])
 
         return False
 
-    def createDefaultMenubarResource(self, engine=global_data.WX_ENGINE_TYPE, prj_name=u'default'):
+    def createDefaultMenubarResource(self, engine=global_data.WX_ENGINE_TYPE,
+                                     prj_name=u'default'):
         """
         Create default menubar resources.
 
@@ -134,7 +137,8 @@ class iqProjectManager(object):
 
         return False
 
-    def createDefaultMainFormResource(self, engine=global_data.WX_ENGINE_TYPE, prj_name=u'default'):
+    def createDefaultMainFormResource(self, engine=global_data.WX_ENGINE_TYPE,
+                                      prj_name=u'default'):
         """
         Create default main form resources.
 
@@ -157,6 +161,25 @@ class iqProjectManager(object):
                         wxfb_manager.adaptWXWFormBuilderPy(mainform_py_filename),
                         gui_generator.gen(src_filename=mainform_py_filename)])
         return False
+
+    def createDefaultReportsFolder(self, engine=global_data.WX_ENGINE_TYPE,
+                                   prj_name=u'default'):
+        """
+        Create default reports folder.
+
+        :param engine: Engine type.
+        :param prj_name: Project name.
+        :return: True/False.
+        """
+        reports_folder = os.path.join(file_func.getFrameworkPath(),
+                                      prj_name,
+                                      'reports')
+        description_filename = os.path.join(reports_folder, 'descript.ion')
+
+        return all([file_func.createDir(reports_folder),
+                    py_func.createInitModule(reports_folder),
+                    txtfile_func.saveTextFile(txt_filename=description_filename,
+                                              txt=u'%s <%s>' % (_('Reports folder'), prj_name))])
 
     def saveDefaultPrjResource(self, prj_path=None, prj_name=None, rewrite=False,
                                default_engine=global_data.WX_ENGINE_TYPE):

@@ -435,3 +435,20 @@ def getProjectSettingsFilename():
     else:
         log_func.error(u'Not define project')
     return None
+
+
+def createDir(dirname):
+    """
+    Create directory if not exists.
+
+    :param dirname: Dir path.
+    :return: True/False.
+    """
+    try:
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+            log_func.info(u'Create directory <%s>' % dirname)
+            return True
+    except:
+        log_func.fatal(u'Error create directory <%s>' % dirname)
+    return False
