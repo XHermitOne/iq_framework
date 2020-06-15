@@ -126,3 +126,53 @@ def getDayBeforeYesterdayDT():
     Get day before yesterday as datetime.
     """
     return date2datetime(getDayBeforeYesterday())
+
+
+def getNextDay(day=None):
+    """
+    Get next day as date.
+
+    :param day: Current day.
+         If None then get today.
+    :return: Next day after current.
+    """
+    if day is None:
+        day = getToday()
+
+    return day + datetime.timedelta(days=1)
+
+
+def getNextDayDT(day=None):
+    """
+    Get next day as datetime.
+
+    :param day: Current day.
+         If None then get today.
+    :return: Next day after current.
+    """
+    return date2datetime(getNextDay(day))
+
+
+def getPrevDay(day=None):
+    """
+    Get prev day as date.
+
+    :param day: Current day.
+         If None then get today.
+    :return: Prev day before current.
+    """
+    if day is None:
+        day = getToday()
+
+    return day - datetime.timedelta(days=1)
+
+
+def getPrevDayDT(day=None):
+    """
+    Get prev day as datetime.
+
+    :param day: Current day.
+         If None then get today.
+    :return: Prev day before current.
+    """
+    return date2datetime(getPrevDay(day))
