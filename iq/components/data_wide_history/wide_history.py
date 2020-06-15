@@ -33,7 +33,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
         """
         Get datetime column name.
         """
-        return 'dt'
+        return DEFAULT_DT_FIELDNAME
 
     def getFilter(self):
         """
@@ -183,6 +183,22 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             return tag_data
         return dict()
 
+    def getLastDateTime(self, rec_filter=None, rec_limit=1):
+        """
+        Get the lastest recorded historical data datetime.
+
+        :param rec_filter: Function of additional filter of records.
+            If the function is specified by a text block of code:
+            As an argument, the function takes the current entry as a dictionary.
+            There is a RECORD variable in the namespace that points to the current record.
+            The function returns True for the record that falls into the resulting list,
+            False - if missed.
+        :param rec_limit: Limit the number of entries.
+        :return: Date-time of last registration or None if error.
+        """
+        last_record = self.getLastRecord(rec_filter=rec_filter, rec_limit=rec_limit)
+        return last_record.get(self.getDTColumnName(), None)
+
     def getFirstRecord(self, rec_filter=None, rec_limit=1):
         """
         Get the first recorded historical data.
@@ -244,3 +260,19 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
                             data=first_record.get(col_name))
             return tag_data
         return dict()
+
+    def getFirstDateTime(self, rec_filter=None, rec_limit=1):
+        """
+        Get the first recorded historical data datetime.
+
+        :param rec_filter: Function of additional filter of records.
+            If the function is specified by a text block of code:
+            As an argument, the function takes the current entry as a dictionary.
+            There is a RECORD variable in the namespace that points to the current record.
+            The function returns True for the record that falls into the resulting list,
+            False - if missed.
+        :param rec_limit: Limit the number of entries.
+        :return: Date-time of first registration or None if error.
+        """
+        first_record = self.getFirstRecord(rec_filter=rec_filter, rec_limit=rec_limit)
+        return first_record.get(self.getDTColumnName(), None)

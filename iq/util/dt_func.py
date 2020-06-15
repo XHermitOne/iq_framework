@@ -77,3 +77,52 @@ def getOperateYear():
     Get operate year.
     """
     return global_data.getGlobal('OPERATE_YEAR')
+
+
+def getNow():
+    """
+    Now datetime.
+    """
+    return datetime.datetime.now()
+
+
+def getToday():
+    """
+    Today as date.
+    """
+    return datetime.date.today()
+
+
+def getTodayDT():
+    """
+    Today as datetime.
+    """
+    return date2datetime(datetime.date.today())
+
+
+def getYesterday():
+    """
+    Yesterday as date.
+    """
+    return datetime.date.today() - datetime.timedelta(days=1)
+
+
+def getYesterdayDT():
+    """
+    Yesterday as datetime.
+    """
+    return date2datetime(getYesterday())
+
+
+def getDayBeforeYesterday():
+    """
+    Get day before yesterday as date.
+    """
+    return datetime.date.today() - datetime.timedelta(days=2)
+
+
+def getDayBeforeYesterdayDT():
+    """
+    Get day before yesterday as datetime.
+    """
+    return date2datetime(getDayBeforeYesterday())

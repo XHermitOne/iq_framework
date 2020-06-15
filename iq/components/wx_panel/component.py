@@ -73,5 +73,15 @@ class iqWxPanel(wx.Panel, component.iqWxWidget):
             log_func.error(u'Not define wx.Bitmap object for drawing on <%s> panel' % self.getName())
         return False
 
+    def getControl(self, ctrl_name):
+        """
+        Get panel control by name.
+
+        :param ctrl_name: Control name.
+        :return: Control object or None if not found.
+        """
+        find_control = self.findChild(name=ctrl_name)
+        return find_control if issubclass(find_control.__class__, wx.Window) else None
+
 
 COMPONENT = iqWxPanel

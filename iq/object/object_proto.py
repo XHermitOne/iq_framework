@@ -244,6 +244,14 @@ class iqObject(object):
             self._children = self.createChildren()
         return self._children
 
+    def hasChildren(self):
+        """
+        Has children objects?
+
+        :return: True/False.
+        """
+        return bool(self._children)
+
     def createChildren(self):
         """
         Create children objects.
@@ -287,6 +295,27 @@ class iqObject(object):
                 return child
 
         log_func.warning(u'Child <%s> not found in <%s : %s>' % (name, self.getName(), self.getType()))
+        return None
+
+    def findChild(self, name):
+        """
+        Find child object recursively by name.
+
+        :param name: Child object name.
+        :return: Child object or None if not found.
+        """
+        children = self.getChildren()
+
+        for child in children:
+            if name == child.getName():
+                return child
+
+        for child in children:
+            if child.hasChildren():
+                find_child = child.findChild(name)
+                if find_child:
+                    return find_child
+
         return None
 
     def filterChildrenByClass(self, child_class):
