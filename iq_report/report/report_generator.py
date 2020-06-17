@@ -19,7 +19,7 @@ Code block system variables:
     record - Dictionary of the current query table entry
 For example:
     [=value=record['dt'].strftime('%B')=]
-    [=new_cell['color']=dict(background=(128, 0 , 0)) if record['is_alarm'] else None; value=record['field_name']=]
+    [=cell['color']=dict(background=(128, 0 , 0)) if record['is_alarm'] else None; value=record['field_name']=]
 
 [^...^] - Generator system functions.
 For example:
