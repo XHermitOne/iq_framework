@@ -782,7 +782,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         """
         return self.getSelectedCode()
     
-    def setValue(self, value):
+    def setValue(self, value=None):
         """
         Set control value.
 

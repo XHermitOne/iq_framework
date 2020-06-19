@@ -86,6 +86,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
                     records = list()
 
                 self.__dataset__ = [vars(record) for record in records]
+                self.__dataset__ = self._updateLinkDataDataset(self.__dataset__)
             return self.getDataset()
         except:
             log_func.fatal(u'Error filter dataset unic object <%s>' % self.getName())

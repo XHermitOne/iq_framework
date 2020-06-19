@@ -11,6 +11,7 @@ from ..data_model import data_object
 
 __version__ = (0, 0, 0, 1)
 
+
 class iqModelNavigatorManager(data_object.iqDataObject):
     """
     Data model navigator manager.
@@ -300,7 +301,9 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         try:
             model = self.getModel()
             query = self.getModelQuery()
-            values = dict([(getattr(model, col_name), value) for col_name, value in record.items()])
+
+            save_record = [(col_name, value) for col_name, value in record.items() if hasattr(model, col_name)]
+            values = dict([(getattr(model, col_name), value) for col_name, value in save_record])
             query.filter(getattr(model, id_field) == id).update(values=values, synchronize_session=False)
             if session:
                 session.commit()

@@ -55,8 +55,13 @@ def datetime2wxDateTime(dt):
         return None
 
     assert isinstance(dt, (datetime.datetime, datetime.date))
-    wx_dt = wx.DateTime(day=dt.day, month=dt.month - 1, year=dt.year,
-                        hour=dt.hour, minute=dt.minute, second=dt.second)
+    wx_dt = None
+    if isinstance(dt, datetime.datetime):
+        wx_dt = wx.DateTime(day=dt.day, month=dt.month - 1, year=dt.year,
+                            hour=dt.hour, minute=dt.minute, second=dt.second)
+    elif isinstance(dt, datetime.date):
+        wx_dt = wx.DateTime(day=dt.day, month=dt.month - 1, year=dt.year,
+                            hour=0, minute=0, second=0)
     return wx_dt
 
 
