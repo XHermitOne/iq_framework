@@ -12,6 +12,7 @@ from . import numerator
 
 from ...util import log_func
 from ...util import dt_func
+from ...util import exec_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -31,7 +32,8 @@ class iqNumerator(numerator.iqNumeratorProto, object.iqObject):
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
-        numerator.iqNumeratorProto.__init__(db_url=self.getDBUrl(),
+        numerator.iqNumeratorProto.__init__(self,
+                                            db_url=self.getDBUrl(),
                                             numerator_table_name=self.getTabName(),
                                             num_code_format=self.getNumCodeFormat(),
                                             check_unique=self.getCheckUnique())
@@ -43,7 +45,7 @@ class iqNumerator(numerator.iqNumeratorProto, object.iqObject):
         db_psp = self.getAttribute('db_engine')
         db = None
         if db_psp:
-            db = self.getKernel().get(db_psp)
+            db = self.getKernel().getObject(db_psp)
         else:
             log_func.error(u'Not define DB engine in <%s>' % self.getName())
         return db
@@ -54,7 +56,7 @@ class iqNumerator(numerator.iqNumeratorProto, object.iqObject):
         """
         db = self.getDB()
         if db:
-            return db.getURL()
+            return db.getDBUrl()
         return None
 
     def getTabName(self):
@@ -97,6 +99,40 @@ class iqNumerator(numerator.iqNumeratorProto, object.iqObject):
 
         operate_year = dt_func.getOperateYear()
         return operate_year if operate_year else dt_func.getNowYear()
+
+    def onDo(self, **kwargs):
+        """
+        It is executed when a new number is generated.
+
+        :return: True/False.
+        """
+        try:
+            context = self.getContext()
+            context.update(kwargs)
+            function_body = self.getAttribute('on_do')
+            exec_func.execTxtFunction(function=function_body,
+                                      context=context)
+            return True
+        except:
+            log_func.fatal(u'Error execute numerator <%s> DO handler' % self.getName())
+        return False
+
+    def onUndo(self, **kwargs):
+        """
+        It is executed when a new number is generated.
+
+        :return: True/False.
+        """
+        try:
+            context = self.getContext()
+            context.update(kwargs)
+            function_body = self.getAttribute('on_undo')
+            exec_func.execTxtFunction(function=function_body,
+                                      context=context)
+            return True
+        except:
+            log_func.fatal(u'Error execute numerator <%s> UNDO handler' % self.getName())
+        return False
 
 
 COMPONENT = iqNumerator

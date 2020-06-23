@@ -265,7 +265,26 @@ class iqNumeratorProto(object):
         """
         return datetime.date.today().year
 
-    def getMaxCount(self, session, numerator_table, cur_year=None):
+    def getMaxDT(self, session=None, numerator_table=None):
+        """
+        Determine the maximum value of the numbering counter.
+        The maximum value of the counter must be produced
+        taking into account the current program year.
+
+        :param session: SQLAlchemy session.
+        :param numerator_table: Numerator table.
+        :return: Maximum numerator counter value.
+        """
+        if numerator_table is None:
+            numerator_table = self.createTable()
+        if session is None:
+            session = sqlalchemy.orm.session.sessionmaker(bind=self._connection)
+
+        session_query = sqlalchemy.orm.scoping.scoped_session(session)
+        max_dt = session_query.query(sqlalchemy.sql.functions.max(numerator_table.c.dt_num).label('max_dt')).one()[0]
+        return max_dt
+
+    def getMaxCount(self, session=None, numerator_table=None, cur_year=None):
         """
         Determine the maximum value of the numbering counter.
         The maximum value of the counter must be produced
@@ -277,8 +296,13 @@ class iqNumeratorProto(object):
             If not defined then get actual year.
         :return: Maximum numerator counter value.
         """
+        if numerator_table is None:
+            numerator_table = self.createTable()
+        if session is None:
+            session = sqlalchemy.orm.session.sessionmaker(bind=self._connection)
         if cur_year is None:
             cur_year = self.getActualYear()
+
         min_date = datetime.date(cur_year, 1, 1)
         max_date = datetime.date(cur_year, 12, 31)
 
@@ -400,6 +424,14 @@ class iqNumeratorProto(object):
             return True
         return False
 
+    def clear(self):
+        """
+        Clear numerator.
+
+        :return: True/False.
+        """
+        return self.delNotActual()
+
     def doGen(self, *args, **kwargs):
         """
         Generate new number-code.
@@ -408,11 +440,17 @@ class iqNumeratorProto(object):
         """
         self.connect()
         num_code = self.doGenNumCode(*args, **kwargs)
+        self.onDo(NEW_NUM=num_code)
         self.disconnect()
         return num_code
 
-    # Other name of the method
-    gen = doGen
+    def onDo(self, **kwargs):
+        """
+        It is executed when a new number is generated.
+
+        :return: True/False.
+        """
+        return True
 
     def undoGen(self):
         """
@@ -421,6 +459,21 @@ class iqNumeratorProto(object):
         :return: True/False.
         """
         self.connect()
+        num = self.getMaxCount()
         result = self.undoGenNumCode()
+        self.onUndo(NUM=num)
         self.disconnect()
         return result
+
+    def onUndo(self, **kwargs):
+        """
+        It is executed when a new number is generated.
+
+        :return: True/False.
+        """
+        return True
+
+    # Other name of the method
+    gen = doGen
+    do = doGen
+    undo = undoGen

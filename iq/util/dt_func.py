@@ -72,6 +72,30 @@ def getNowYear():
     return datetime.datetime.now().year
 
 
+def getStartYearDT(year=None):
+    """
+    Get start year datetime as 01.01.year 00:00:00.
+
+    :param year: Year. If None ten get current system year.
+    :return: 01.01.year 00:00:00 as datetime.
+    """
+    if year is None:
+        year = getNowYear()
+    return datetime.datetime(year=year, month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+
+
+def getStopYearDT(year=None):
+    """
+    Get stop year datetime as 31.12.year 23:59:59.
+
+    :param year: Year. If None ten get current system year.
+    :return: 31.12.year 23:59:59 as datetime.
+    """
+    if year is None:
+        year = getNowYear()
+    return datetime.datetime(year=year, month=12, day=31, hour=23, minute=59, second=59, microsecond=999999)
+
+
 def getOperateYear():
     """
     Get operate year.

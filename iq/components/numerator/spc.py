@@ -30,6 +30,9 @@ NUMERATOR_SPC = {
     'check_unique': False,
     'use_sys_dt': True,
 
+    'on_do': None,
+    'on_undo': None,
+
     '__package__': u'Special',
     '__icon__': 'fatcow/paginator',
     '__parent__': object_spc.OBJECT_SPC,
@@ -44,6 +47,8 @@ NUMERATOR_SPC = {
         'num_code_fmt': property_editor_id.STRING_EDITOR,
         'check_unique': property_editor_id.CHECKBOX_EDITOR,
         'use_sys_dt': property_editor_id.CHECKBOX_EDITOR,
+        'on_do': property_editor_id.EVENT_EDITOR,
+        'on_undo': property_editor_id.EVENT_EDITOR,
     },
     '__help__': {
         'db_engine': u'Database engine',
@@ -51,6 +56,8 @@ NUMERATOR_SPC = {
         'num_code_fmt': u'Number-code format',
         'check_unique': u'Check unique number-code?',
         'use_sys_dt': u'Use system datetime?',
+        'on_do': u'It is executed when a new number is generated',
+        'on_undo': u'It is executed when the number generation is canceled',
     },
 }
 
