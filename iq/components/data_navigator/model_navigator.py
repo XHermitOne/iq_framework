@@ -24,7 +24,7 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         """
         self.__model__ = model
 
-        self.__dataset__ = list()
+        self.__dataset__ = None
         self.__rec_no__ = -1
 
     def getModel(self):
@@ -85,7 +85,7 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
         :return:
         """
-        if not self.__dataset__:
+        if self.__dataset__ is None:
             return self.updateDataset()
         return self.__dataset__
 
