@@ -81,7 +81,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
                 # Execute SQL
                 try:
                     records = sql_filter.all()
-                    # log_func.debug(u'Filter uni object <%s>:\n%s\nRecord count [%d]' % (self.getName(), str(sql_filter), len(records)))
+                    log_func.debug(u'Filter uni object <%s>:\n%s\nRecord count [%d]' % (self.getName(), str(sql_filter), len(records)))
                 except:
                     log_func.fatal(u'Error execute SQL filter <%s>' % str(sql_filter))
                     records = list()

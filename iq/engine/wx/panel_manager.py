@@ -61,9 +61,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
             try:
-                print(value)
                 wx_dt = wxdatetime_func.datetime2wxDateTime(value)
-                print(wx_dt)
                 ctrl.SetValue(wx_dt)
                 result = True
             except:
