@@ -11,7 +11,6 @@ import gettext
 import operator
 import wx
 import wx.propgrid
-import sqlalchemy.types
 
 from ...util import log_func
 from ...util import spc_func
@@ -25,6 +24,8 @@ from ...engine.wx import treectrl_manager
 from . import refobj_dialogs_proto
 from . import wx_editcodeproperty
 
+from ...components.data_column import column_types
+
 __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
@@ -34,32 +35,6 @@ NOT_EDITABLE_FIELDS = ('type', 'activate', 'dt_edit', 'computer', 'username')
 
 # Tree dummy text
 TREE_ITEM_LABEL = u'...'
-
-SQLALCHEMY_TEXT_TYPES = (sqlalchemy.types.Text,
-                         sqlalchemy.types.TEXT,
-                         sqlalchemy.types.UnicodeText,
-                         )
-
-SQLALCHEMY_FLOAT_TYPES = (sqlalchemy.types.Float,
-                          sqlalchemy.types.FLOAT,
-                          sqlalchemy.types.DECIMAL,
-                          )
-
-SQLALCHEMY_INT_TYPES = (sqlalchemy.types.Integer,
-                        sqlalchemy.types.INTEGER,
-                        sqlalchemy.types.BigInteger,
-                        sqlalchemy.types.SmallInteger,
-                        sqlalchemy.types.BIGINT,
-                        sqlalchemy.types.SMALLINT,
-                        )
-
-SQLALCHEMY_DATE_TYPES = (sqlalchemy.types.Date,
-                         sqlalchemy.types.DATE,
-                         )
-
-SQLALCHEMY_DATETIME_TYPES = (sqlalchemy.types.DateTime,
-                             sqlalchemy.types.DATETIME,
-                             )
 
 
 class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
@@ -120,7 +95,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
             property = wx_editcodeproperty.iqEditCodeProperty(label=label, name=field.name, value=default_value)
             property.setRefObj(self.ref_obj)
             property.setPropertyGrid(self.record_propertyGrid)
-        elif field.type in SQLALCHEMY_TEXT_TYPES:
+        elif field.type in column_types.SQLALCHEMY_TEXT_TYPES:
             if not isinstance(default_value, str):
                 try:
                     default_value = str(default_value)
@@ -128,25 +103,25 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
                     default_value = u''
             # Text field
             property = wx.propgrid.StringProperty(label=label, name=field.name, value=default_value)
-        elif field.type in SQLALCHEMY_FLOAT_TYPES:
+        elif field.type in column_types.SQLALCHEMY_FLOAT_TYPES:
             if not isinstance(default_value, float):
                 try:
                     default_value = float(default_value)
                 except:
                     default_value = 0.0
             property = wx.propgrid.FloatProperty(label=label, name=field.name, value=default_value)
-        elif field.type in SQLALCHEMY_INT_TYPES:
+        elif field.type in column_types.SQLALCHEMY_INT_TYPES:
             if not isinstance(default_value, int):
                 try:
                     default_value = int(default_value)
                 except:
                     default_value = 0
             property = wx.propgrid.IntProperty(label=label, name=field.name, value=default_value)
-        elif field.type in SQLALCHEMY_DATE_TYPES:
+        elif field.type in column_types.SQLALCHEMY_DATE_TYPES:
             py_date = datetimefunc.strDateFmt2DateTime(default_value)
             wx_date = datetimefunc.pydate2wxdate(py_date)
             property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
-        elif field.type in SQLALCHEMY_DATETIME_TYPES:
+        elif field.type in column_types.SQLALCHEMY_DATETIME_TYPES:
             wx_date = datetimefunc.pydate2wxdate(default_value)
             property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
         else:
@@ -206,33 +181,36 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         value = None
 
-        if property_type in SQLALCHEMY_TEXT_TYPES:
+        if property_type in column_types.SQLALCHEMY_TEXT_TYPES:
             value = str_value
-        elif property_type in SQLALCHEMY_INT_TYPES:
+        elif property_type in column_types.SQLALCHEMY_INT_TYPES:
             if str_value.strip().isdigit():
                 value = int(str_value.strip())
-        elif property_type in SQLALCHEMY_FLOAT_TYPES:
+        elif property_type in column_types.SQLALCHEMY_FLOAT_TYPES:
             if str_value.strip().isdigit():
                 value = float(str_value.strip())
-        elif property_type in SQLALCHEMY_DATE_TYPES:
+        elif property_type in column_types.SQLALCHEMY_DATE_TYPES:
             value = str_value
-        elif property_type in SQLALCHEMY_DATETIME_TYPES:
+        elif property_type in column_types.SQLALCHEMY_DATETIME_TYPES:
             value = datetimefunc.strDateTimeFmt2DateTime(str_value.strip())
         else:
             log_func.warning(u'Not supported property type <%s> ' % property_type)
             value = str_value
         return value
 
-    def findSpravTabFieldSpc(self, field_name):
+    def findRefObjTabFieldSpc(self, field_name):
         """
         Get table field specification by name.
 
         :param field_name: Field name.
         """
-        model_res = self.getRefObjModelRes()
-        for field_spc in model_res[spc_func.CHILDREN_ATTR_NAME]:
-            if field_name == field_spc['name']:
-                return field_spc
+        try:
+            model_res = self.ref_obj.getModelObj().getResource()
+            for field_spc in model_res[spc_func.CHILDREN_ATTR_NAME]:
+                if field_name == field_spc['name']:
+                    return field_spc
+        except:
+            log_func.fatal(u'Error get table field specification by name <%s>' % field_name)
         return None
         
     def onRecordPropertyGridChanged(self, event):
@@ -245,8 +223,8 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
             str_value = property.GetValueAsString()
             log_func.debug(u'Property [%s]. New value <%s>' % (name, str_value))
             
-            field_spc = self.findSpravTabFieldSpc(name)
-            value = self.convertPropertyValue(name, str_value, field_spc['type_val'])
+            field_spc = self.findRefObjTabFieldSpc(name)
+            value = self.convertPropertyValue(name, str_value, field_spc['field_type'])
             if self.validate(name, value):
                 self.edit_record[name] = value
             else:
@@ -716,52 +694,71 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                 self.delRefObjListItem(del_code)
         event.Skip()
 
-    def onAddToolClicked(self, event):
+    def addRecord(self):
         """
-        Add new record tool handler.
+        Add new record of ref object.
+
+        :return: True/False.
         """
         # Filling a record with default values
         model = self.ref_obj.getModel()
-        default_record = dict([(col_name, col.default) for col_name, col in model.__table__.columns.items() if col_name != 'id'])
+        default_record = dict(
+            [(col_name, col.default) for col_name, col in model.__table__.columns.items() if col_name != 'id'])
         # Set default code
         parent_rec = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=self.refobj_treeCtrl.GetSelection())
-        struct_parent_code = self.ref_obj.StrCode2ListCode(parent_rec['cod']) if parent_rec else list()
+        struct_parent_code = self.ref_obj.getCodAsTuple(parent_rec['cod']) if parent_rec else list()
         struct_parent_code = [sub_code for sub_code in struct_parent_code if sub_code]
-        level = self.ref_obj.getLevelByIdx(len(struct_parent_code))
+        level_idx = len(struct_parent_code)
         struct_code = struct_parent_code
-        if level:
-            struct_code += ['0' * level.getCodLen()]            
+        struct_code += ['0' * self.ref_obj.getCodLen()[level_idx]]
         default_record['cod'] = ''.join(struct_code)
-        
+
         add_rec = editRefObjRecordDlg(parent=self, ref_obj=self.ref_obj,
                                       record=default_record)
         if add_rec:
             # Existing code control
-            if not self.ref_obj.isCod(add_rec['cod']):
-                self.ref_obj.addRec(add_rec['cod'], add_rec)
+            if not self.ref_obj.hasCod(add_rec['cod']):
+                self.ref_obj.addRec(add_rec)
                 self.addRefObjTreeItem(self.refobj_treeCtrl.GetSelection(),
                                        add_rec)
                 self.addRefObjListItem(add_rec)
             else:
-                msg = u'Code <%s> already present in the ref object <%s>' % (add_rec['cod'], self.ref_obj.getDescription())
+                msg = u'Code <%s> already present in the ref object <%s>' % (add_rec['cod'],
+                                                                             self.ref_obj.getDescription())
                 log_func.warning(msg)
                 wxdlg_func.openWarningBox(_(u'ERROR'), msg)
+
+    def onAddToolClicked(self, event):
+        """
+        Add new record tool handler.
+        """
+        try:
+            self.addRecord()
+        except:
+            log_func.fatal(u'Error add new record of ref object <%s>' % self.ref_obj.getName())
             
         event.Skip()
 
-    def onSearchToolClicked(self, event):
+    def findAndSelectItem(self, find_text=None):
         """
-        Record name search tool handler.
+        Search/Find item by text.
+
+        :param find_text: Find text.
+        :return: True/False.
         """
-        search_txt = self.search_textCtrl.GetValue()
-        if search_txt:
+        if find_text is None:
+            find_text = self.search_textCtrl.GetValue()
+
+        if find_text:
             do_find = True
             if self.not_actual_search:
-                search_codes = self.ref_obj.getStorage().search(search_txt)
+                # search_codes = self.ref_obj.getStorage().search(find_text)
+                search_records = self.ref_obj.searchRecsByColValues()
+                search_codes = self.ref_obj.searchCodes(find_text)
                 if search_codes:
                     self.search_codes = search_codes
                     self.search_codes.sort()
-                    self.search_code_idx = 0                    
+                    self.search_code_idx = 0
                 else:
                     wxdlg_func.openWarningBox(_(u'WARNING'),
                                               _(u'No records found matching search string'))
@@ -773,14 +770,23 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                 self.search_code_idx += 1
                 if self.search_code_idx >= len(self.search_codes):
                     self.search_code_idx = 0
-                    
+
             if do_find:
                 find_code = self.search_codes[self.search_code_idx]
                 self.selectRefObjTreeItem(find_code)
         else:
             wxdlg_func.openWarningBox(_(u'WARNING'),
                                       _(u'No search string selected'))
-            
+
+    def onSearchToolClicked(self, event):
+        """
+        Record name search tool handler.
+        """
+        try:
+            self.findAndSelectItem()
+        except:
+            log_func.fatal(u'Error find item by text')
+
         event.Skip()        
 
     def findWordInRecords(self, find_word, start_row=None, start_col=None):

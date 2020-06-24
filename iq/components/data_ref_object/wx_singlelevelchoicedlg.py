@@ -44,11 +44,11 @@ def selectSingleLevelChoiceDlg(parent=None, ref_obj=None, n_level=0, parent_code
     try:
         sprav_storage = ref_obj.getStorage()
         level_table = sprav_storage.getLevelTable(parent_code) if sprav_storage else list()
-        level = ref_obj.getLevelByIdx(n_level)
+        level_label = ref_obj.getLevelLabels()[n_level]
         records = [sprav_storage.record_tuple2record_dict(rec) for rec in level_table]
         choices = [rec.get('name', u'-')for rec in records]
 
-        select_idx = wxdlg_func.getSingleChoiceIdxDlg(parent, ref_obj.getDescription(), level.getDescription(), choices)
+        select_idx = wxdlg_func.getSingleChoiceIdxDlg(parent, ref_obj.getDescription(), level_label, choices)
         if select_idx >= 0:
             selected_code = records[select_idx].get(sprav_storage.getCodeFieldName(), None)
         return selected_code

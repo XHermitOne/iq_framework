@@ -698,7 +698,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
             log_func.fatal(u'Error searching codes by text')
             search_codes = list()
 
-        # log_func.debug(u'Search codes: %s Order by: %s Is desc: %s' % (search_codes, order_by, is_desc))
+        # log_func.debug(u'Search codes: %s Order by: %s Is desc: %s' % (search_codes, sort_columns, reverse))
         if search_codes:
             # Remember the codes found in the buffer
             self.search_codes = search_codes

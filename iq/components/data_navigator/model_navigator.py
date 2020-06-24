@@ -226,6 +226,7 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         """
         try:
             if not isinstance(record, dict):
+                # log_func.debug(u'Record type <%s>' % record.__class__.__name__)
                 record = dict(record)
 
             model = self.getModel()

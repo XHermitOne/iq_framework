@@ -83,7 +83,7 @@ class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
         :param code: Code.
         :return: Current level code.
         """
-        code_list = [subcode for subcode in self._ref_object.StrCode2ListCode(code) if subcode]
+        code_list = [subcode for subcode in self._ref_object.getCodAsTuple(code) if subcode]
         self._cur_cod = tuple(code_list)
 
         code_path = self.getCodePath(self._cur_cod)
@@ -165,7 +165,7 @@ class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
         """
         Select a code and display it in the list.
         """
-        code_list = self._ref_object.StrCode2ListCode(code)
+        code_list = self._ref_object.getCodAsTuple(code)
         if code_list:
             code_list = [sub_code for sub_code in code_list if sub_code]
             self._cur_cod = code_list[:-1]

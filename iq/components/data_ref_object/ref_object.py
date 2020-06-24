@@ -13,6 +13,8 @@ from ..data_navigator import model_navigator
 from ...util import log_func
 from ...util import global_func
 
+from ...components.data_column import column_types
+
 __version__ = (0, 0, 0, 1)
 
 DEFAULT_COD_COL_NAME = 'cod'
@@ -106,6 +108,62 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error get reference data records by column values %s in <%s>' % (column_values,
                                                                                               self.getName()))
         return None
+
+    def searchCodes(self, search_value, search_colname=None,
+                    sort_columns=None, reverse=False):
+        """
+        Search codes by field.
+
+        :param search_value: Search value.
+        :param search_colname: Search column name.
+            If None then get name column.
+        :param sort_columns: Sort order as column name list or
+            column name if sort by one column.
+        :param reverse: Reverse sort?
+        :return: Code list or empty list if not found.
+        """
+        if search_colname is None:
+            search_colname = self.getNameColumnName()
+        if isinstance(sort_columns, str):
+            sort_columns = (sort_columns, )
+
+        result = list()
+        try:
+            model = self.getModel()
+            column_type = model.__table__.columns[search_colname].type
+            column = getattr(model, search_colname)
+
+            query = None
+            if column_type in column_types.SQLALCHEMY_TEXT_TYPES:
+                search_like = '%%%s%%' % search_value
+                query = self.getModelQuery().filter(column.ilike(search_like))
+            elif column_type in column_types.SQLALCHEMY_INT_TYPES:
+                num_value = int(search_value)
+                query = self.getModelQuery().filter(column == num_value)
+            elif column_type in column_types.SQLALCHEMY_FLOAT_TYPES:
+                num_value = float(search_value)
+                query = self.getModelQuery().filter(column == num_value)
+            elif column_type in column_types.SQLALCHEMY_DATETIME_TYPES or column_type in column_types.SQLALCHEMY_DATE_TYPES:
+                # dt_value = datetimefunc.strDateFmt2DateTime(search_value)
+                query = self.getModelQuery().filter(column == search_value)
+            else:
+                log_func.warning(u'Find by column type <%s : %s> not supported' % (search_colname, column_type))
+
+            if query is not None and sort_columns:
+                if isinstance(sort_columns, (list, tuple)):
+                    query = query.order_by(*[
+                            getattr(model, col_name) if not reverse else getattr(model, col_name).desc() for
+                            col_name in sort_columns])
+                else:
+                    log_func.error(u'Error ORDER BY columns type <%s>' % type(sort_columns))
+
+            records = None if query is None else query.all()
+
+            if records:
+                result = [record.cod for record in records]
+        except:
+            log_func.fatal(u'Error search codes by column <%s> value <%s>' % (search_colname, search_value))
+        return result
 
     def getColumnValues(self, cod, *column_names):
         """

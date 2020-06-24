@@ -19,6 +19,8 @@ __version__ = (0, 0, 0, 1)
 
 DEFAULT_ENCODE = 'utf-8'
 
+CODE_SEPARATOR = '|'
+
 
 class iqEditCodeProperty(wx.propgrid.StringProperty):
     """
@@ -76,7 +78,7 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
         :param code: Ref object code.
         """
         # Get the structural code
-        struct_code = self.ref_obj.StrCode2ListCode(code)
+        struct_code = self.ref_obj.getCodAsTuple(code)
         # Filter out last empty subcodes
         struct_mask = [sub_code for sub_code in struct_code if sub_code]
         # We can only edit the last subcode
@@ -94,7 +96,7 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
         :param code: Ref object record code.
         """
         # Get the structural code
-        struct_code = self.ref_obj.StrCode2ListCode(code)
+        struct_code = self.ref_obj.getCodAsTuple(code)
         # Filter out last empty subcodes
         struct_exp = [sub_code for sub_code in struct_code if sub_code]
         # We can only edit the last subcode
@@ -168,6 +170,5 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
         Control / validation function.
         """
         if isinstance(value, str):
-            return True, value
-        else:
-            return False
+            return True
+        return False
