@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Wx RefObjLevelChoiceCtrl component.
+Wx RefObjCodConstructor component.
 """
 
 import wx
@@ -14,15 +14,15 @@ from . import spc
 from ...util import log_func
 from ...util import exec_func
 
-from . import refobjlevelchoicectrl
+from . import refobjcodconstructor
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxRefObjLevelChoiceCtrl(refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlProto,
-                                component.iqWxWidget):
+class iqWxRefObjCodConstructor(refobjcodconstructor.iqRefObjCodConstructorProto,
+                               component.iqWxWidget):
     """
-    Wx RefObjLevelChoiceCtrl component.
+    Wx RefObjCodConstructor component.
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -35,10 +35,10 @@ class iqWxRefObjLevelChoiceCtrl(refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlPro
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
-        refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlProto.__init__(self, parent=parent, id=wx.NewId(),
-                                                                    size=self.getSize(),
-                                                                    pos=self.getPosition(),
-                                                                    style=self.getStyle())
+        refobjcodconstructor.iqRefObjCodConstructorProto.__init__(self, parent=parent, id=wx.NewId(),
+                                                                  size=self.getSize(),
+                                                                  pos=self.getPosition(),
+                                                                  style=self.getStyle())
 
         refobj_psp = self.getRefObjPsp()
         ref_obj = self.getKernel().getObject(psp=refobj_psp) if refobj_psp else None
@@ -78,4 +78,4 @@ class iqWxRefObjLevelChoiceCtrl(refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlPro
         return None
 
 
-COMPONENT = iqWxRefObjLevelChoiceCtrl
+COMPONENT = iqWxRefObjCodConstructor

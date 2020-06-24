@@ -1,0 +1,1 @@
+{'name': 'cod_constructor', 'type': 'iqWxRefObjCodConstructor', 'description': 'Cod constructor', 'activate': True, 'uuid': None, '_children_': [], 'ref_obj': None, 'label': None, 'auto_select': True, 'on_select_code': None, 'position': (-1, -1), 'size': (100, 100), 'foreground_colour': None, 'background_colour': None, 'style': 0, 'font': {}, 'guid': None, 'module': None}

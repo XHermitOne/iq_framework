@@ -31,7 +31,7 @@ __version__ = (0, 0, 0, 1)
 _ = lang_func.getTranslation().gettext
 
 # Readonly fields
-NOT_EDITABLE_FIELDS = ('type', 'activate', 'dt_edit', 'computer', 'username')
+NOT_EDITABLE_FIELDS = ('cod', 'type', 'activate', 'dt_edit', 'computer', 'username')
 
 # Tree dummy text
 TREE_ITEM_LABEL = u'...'
@@ -140,6 +140,10 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         Dialog initialization function.
         """
+        # Init cod constructor
+        self.cod_constructor.setRefObj(self.ref_obj)
+
+        # Init property editors
         model = self.ref_obj.getModel()
         columns = [col for col_name, col in model.__table__.columns.items()]
         fields = [col for col in columns if col.name != 'id' and col.name not in NOT_EDITABLE_FIELDS]

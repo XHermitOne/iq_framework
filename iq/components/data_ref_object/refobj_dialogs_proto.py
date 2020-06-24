@@ -11,6 +11,7 @@ import wx
 import wx.adv
 import wx.lib.gizmos
 import wx.aui
+import iq
 import wx.propgrid as pg
 import  wx.gizmos
 
@@ -263,6 +264,9 @@ class iqRecEditDlgProto ( wx.Dialog ):
 		bSizer6 = wx.BoxSizer( wx.VERTICAL )
 
 		bSizer7 = wx.BoxSizer( wx.VERTICAL )
+
+		self.cod_constructor = iq.KERNEL.obj.iq.cod_constructor.create(parent=self)
+		bSizer7.Add( self.cod_constructor, 1, wx.ALL|wx.EXPAND, 5 )
 
 		self.record_propertyGrid = pg.PropertyGrid(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PG_DEFAULT_STYLE)
 		bSizer7.Add( self.record_propertyGrid, 1, wx.ALL|wx.EXPAND, 5 )
