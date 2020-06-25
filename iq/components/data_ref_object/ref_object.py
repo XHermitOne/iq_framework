@@ -246,6 +246,20 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         return ()
 
+    def getLevelCodLen(self, level=0):
+        """
+        Get level cod length.
+
+        :param level: Level index.
+        :return: Level cod length or -1 if error.
+        """
+        cod_len = self.getCodLen()
+        if cod_len and (0 <= level < len(cod_len)):
+            return cod_len[level]
+        else:
+            log_func.error(u'Not valid level index [%s]' % level)
+        return -1
+
     def getCodAsTuple(self, cod):
         """
         Get ref object cod as tuple.

@@ -41,26 +41,32 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
         data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         ref_object.iqRefObjectManager.__init__(self, *args, **kwargs)
 
+        # Cache cod len
+        self._cod_len = None
+
     def getCodLen(self):
         """
         Get list of level code lengths.
         """
-        cod_len = tuple()
+        if self._cod_len is not None:
+            return self._cod_len
+
+        self._cod_len = ()
         cod_len_value = self.getAttribute('cod_len')
         if cod_len_value:
             try:
                 if isinstance(cod_len_value, int):
-                    cod_len = (cod_len_value, )
+                    self._cod_len = (cod_len_value, )
                 elif isinstance(cod_len_value, list):
-                    cod_len = tuple(cod_len_value)
+                    self._cod_len = tuple(cod_len_value)
                 elif isinstance(cod_len_value, tuple):
-                    cod_len = cod_len_value
+                    self._cod_len = cod_len_value
                 else:
                     log_func.error(u'Error type cod len <%s> in ref object <%s>' % (type(cod_len_value),
                                                                                     self.getName()))
             except:
                 log_func.fatal(u'Error level code lengths format <%s>' % cod_len)
-        return cod_len
+        return self._cod_len
 
     def getLevelLabels(self):
         """

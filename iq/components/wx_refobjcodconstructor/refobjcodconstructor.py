@@ -14,6 +14,8 @@ __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
 
+DEFAULT_COD_SIGN = '0'
+
 
 class iqRefObjCodConstructorProto(wx.StaticBox):
     """
@@ -62,6 +64,20 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         """
         return tuple(self._selected_code)
 
+    def refreshTitle(self):
+        """
+        Refresh title cod constructor.
+
+        :return:
+        """
+        label = self.getLabel()
+        if not label:
+            # If title not defined then get from ref object
+            label = self._ref_obj.getDescription()
+        current_cod = u''.join([sub_cod if sub_cod else '' for sub_cod in self._selected_code])
+        title = u'%s (%s): %s' % (_('Cod'), label, current_cod)
+        self.SetLabel(title)
+
     def setRefObj(self, ref_obj):
         """
         Set ref object.
@@ -71,14 +87,6 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         self._ref_obj = ref_obj
 
         if self._ref_obj:
-            # Title
-            label = self.getLabel()
-            if not label:
-                # If title not defined then get from ref object
-                label = self._ref_obj.getDescription()
-            title = u'%s (%s): %s' % (_('Cod'), label, u'')
-            self.SetLabel(title)
-
             # Level choice controls
             self._selected_code = [None] * self._ref_obj.getLevelCount()
 
@@ -125,17 +133,20 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
 
                 # Cod text control
                 txtctrl_id = wx.NewId()
-                txtctrl = wx.TextCtrl(self.scrolled_win, txtctrl_id)
-                # txtctrl.Enable(False)
+                txtctrl = wx.TextCtrl(self.scrolled_win, txtctrl_id, style=wx.TE_PROCESS_ENTER)
+                txtctrl.SetMaxLength(self._ref_obj.getLevelCodLen(i))
                 txtctrl.level_index = i
+                txtctrl.Bind(wx.EVT_TEXT_ENTER, self.onSubCodTextEnter, id=txtctrl_id)
                 self._cod_textctrls.append(txtctrl)
 
                 self.sizer.Add(label, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
                 self.sizer.Add(choice, 1, wx.ALL | wx.EXPAND, 5)
                 self.sizer.Add(clear_button, 2, wx.ALL | wx.EXPAND, 5)
                 self.sizer.Add(txtctrl, 3, wx.ALL | wx.EXPAND, 5)
-            # self.scrolled_win.Layout()
-            # self.sizer.Fit(self.scrolled_win)
+
+            self.initCodTextCtrl()
+            # Title
+            self.refreshTitle()
 
     def getLabel(self):
         """
@@ -179,7 +190,11 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         """
         if code is None:
             # If cod not defined then clear
-            return self.clearSelect()
+            result = self.clearSelect()
+            self.initCodTextCtrl()
+            # Title
+            self.refreshTitle()
+            return result
 
         if self._ref_obj is not None:
             # self._selected_code sets in selectLevelChoice method
@@ -188,7 +203,10 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
             for i, subcode in enumerate(selected_code):
                 item = self.findItemIdxByCode(i, subcode)
                 if item >= 0:
-                    self.selectLevelChoice(i, item, auto_select=False)
+                    self.selectLevelChoice(i, item, auto_select=True)
+            self.initCodTextCtrl()
+            # Title
+            self.refreshTitle()
             return True
         return False
 
@@ -207,7 +225,8 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         if item < 0:
             item = choice_ctrl.GetSelection()
         try:
-            return choice_ctrl.GetClientData(item)
+            # log_func.debug(u'Choice item [%d] client data' % item)
+            return choice_ctrl.GetClientData(item) if item > 0 else None
         except:
             log_func.fatal(u'Error item data <%d>' % item)
         return None
@@ -223,9 +242,9 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         :return: True/False.
         """
         if max_index < 0:
-            max_index = len(self._selected_code)-1
+            max_index = len(self._selected_code) - 1
 
-        for i in range(min_index, max_index+1):
+        for i in range(min_index, max_index + 1):
             # Clear level codes
             self._selected_code[i] = None
             if self._choice_ctrl_list[i]:
@@ -241,7 +260,7 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
             choice_ctrl.SetSelection(wx.NOT_FOUND)
         return True
 
-    def initLevelChoice(self, level_index, auto_select=True):
+    def initLevelChoice(self, level_index, auto_select=False):
         """
         Init level choice controls.
 
@@ -256,33 +275,40 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         if level_index < 0:
             level_index = 0
         elif level_index >= len(self._selected_code):
-            level_index = len(self._selected_code)-1
+            level_index = len(self._selected_code) - 1
 
         # Get level choice control
         choice_ctrl = self._choice_ctrl_list[level_index]
         if choice_ctrl:
             code_list = self._selected_code[:level_index]
             if not code_list:
-                log_func.error(u'Subcodes not found <%s : %d>' % (str(self._selected_code), level_index))
+                log_func.warning(u'Subcodes not found <%s : %d>' % (str(self._selected_code), level_index))
                 return False
 
-            str_code = ''.join(code_list)
+            if None not in code_list:
+                # log_func.debug(u'Code list %s' % str(code_list))
+                str_code = ''.join(code_list)
 
-            level_choices = list()
-            for rec in self._ref_obj.getLevelRecsByCod(str_code):
-                if self._ref_obj and self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
-                    level_choice = (rec[self._ref_obj.getCodColumnName()][len(str_code):],
-                                    rec[self._ref_obj.getNameColumnName()])
-                    level_choices.append(level_choice)
+                level_choices = list()
+                for rec in self._ref_obj.getLevelRecsByCod(str_code):
+                    if self._ref_obj and self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
+                        level_choice = (rec[self._ref_obj.getCodColumnName()][len(str_code):],
+                                        rec[self._ref_obj.getNameColumnName()])
+                        level_choices.append(level_choice)
 
-            for code, name in level_choices:
-                item = choice_ctrl.Append(name)
-                choice_ctrl.SetClientData(item, code)
-            if auto_select:
-                self.selectLevelChoice(level_index, auto_select=auto_select)
+                item = choice_ctrl.Append(u'')
+                choice_ctrl.SetClientData(item, None)
+                for code, name in level_choices:
+                    item = choice_ctrl.Append(name)
+                    choice_ctrl.SetClientData(item, code)
+                if auto_select:
+                    self.selectLevelChoice(level_index, auto_select=auto_select)
+            # else:
+            #     i = code_list.index(None)
+            #     self.clearLevelChoice(i)
         return True
 
-    def selectLevelChoice(self, level_index, item=0, auto_select=True):
+    def selectLevelChoice(self, level_index, item=0, auto_select=False):
         """
         Select level cod.
 
@@ -296,13 +322,15 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         choice_ctrl = self._choice_ctrl_list[level_index]
         choice_ctrl.SetSelection(item)
         # Set level item
-        item_code = self.getChoiceSelectedCode(choice_ctrl, item)
-        self._selected_code[level_index] = item_code
+        if item:
+            item_code = self.getChoiceSelectedCode(choice_ctrl, item)
+            # log_func.debug(u'Level [%d]. Item code <%s>' % (level_index, item_code))
+            self._selected_code[level_index] = item_code
 
         # Select code handler
         self.onSelectCode()
 
-        i = choice_ctrl.level_index
+        i = choice_ctrl.level_index + 1
         # Clear level choices
         self.clearLevelChoice(i)
         # After filling in the code, you need to define a list of the next level
@@ -327,13 +355,42 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
             self.selectLevelChoice(choice_ctrl.level_index,
                                    selection,
                                    auto_select=self.getAutoSelect())
-
-            self._cod_textctrls[choice_ctrl.level_index].Enable(not bool(selection))
-            for txtctrl in self._cod_textctrls[choice_ctrl.level_index+1:]:
-                txtctrl.Enable(False)
+            # Enable text controls
+            self.initCodTextCtrl()
+            # Title
+            self.refreshTitle()
         except:
             log_func.fatal(u'Error select level')
         event.Skip()
+
+    def initCodTextCtrl(self):
+        """
+        Init text controls.
+
+        :return: True/False.
+        """
+        try:
+            is_last = False
+            for i in range(self._ref_obj.getLevelCount()):
+                choice_ctrl = self._choice_ctrl_list[i]
+                txt_ctrl = self._cod_textctrls[i]
+                is_select = bool(choice_ctrl.GetSelection())
+                if is_select:
+                    selected_cod = self.getChoiceSelectedCode(choice_ctrl=choice_ctrl)
+                    txt_ctrl.SetValue(selected_cod if selected_cod else u'')
+                    self._selected_code[i] = selected_cod
+                else:
+                    level_cod_len = self._ref_obj.getLevelCodLen(i)
+                    cod = (DEFAULT_COD_SIGN * level_cod_len) if level_cod_len > 0 else ''
+                    txt_ctrl.SetValue(cod)
+                    self._selected_code[i] = cod
+                txt_ctrl.Enable(not is_last and not is_select)
+                if is_last:
+                    txt_ctrl.ChangeValue('')
+                    self._selected_code[i] = None
+                is_last = not is_select
+        except:
+            log_func.fatal(u'Error init cod text controls')
 
     def onSelectCode(self):
         """
@@ -349,4 +406,36 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         clear_button = event.GetEventObject()
         choice_ctrl = self._choice_ctrl_list[clear_button.level_index]
         choice_ctrl.SetSelection(0)
+
+        self.initCodTextCtrl()
+        self.refreshTitle()
+
+        event.Skip()
+
+    def onSubCodTextEnter(self, event):
+        """
+        Sub cod text change handler.
+        """
+        txt_ctrl = event.GetEventObject()
+        level_idx = txt_ctrl.level_index
+        try:
+            level_cod_len = self._ref_obj.getLevelCodLen(level=level_idx)
+            cur_text = txt_ctrl.GetValue().strip()
+            new_sub_cod = DEFAULT_COD_SIGN * (level_cod_len - len(cur_text)) + cur_text[:level_cod_len]
+            self._selected_code[level_idx] = new_sub_cod
+            log_func.debug(u'New sub cod <%s : %s>' % (cur_text, new_sub_cod))
+            if cur_text and len(cur_text) < level_cod_len:
+                txt_ctrl.ChangeValue(new_sub_cod)
+            self.refreshTitle()
+
+            if txt_ctrl.IsEnabled():
+                new_cod = self.getCode()
+                if self._ref_obj.hasCod(new_cod):
+                    txt_ctrl.SetBackgroundColour(wx.RED)
+                else:
+                    txt_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+            else:
+                txt_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        except:
+            log_func.fatal(u'Error sub cod text change handler')
         event.Skip()

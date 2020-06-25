@@ -149,6 +149,9 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         fields = [col for col in columns if col.name != 'id' and col.name not in NOT_EDITABLE_FIELDS]
 
         rec = self.getRecord()
+        cod = rec.get(self.ref_obj.getCodColumnName(), None)
+        self.cod_constructor.setCode(cod)
+
         for field in fields:
             field_name = field.name
             if field is not None:

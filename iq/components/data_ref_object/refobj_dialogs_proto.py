@@ -257,7 +257,7 @@ class iqEditDlgProto ( wx.Dialog ):
 class iqRecEditDlgProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Record edit"), pos = wx.DefaultPosition, size = wx.Size( 479,467 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Record edit"), pos = wx.DefaultPosition, size = wx.Size( 886,467 ), style = wx.DEFAULT_DIALOG_STYLE )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
