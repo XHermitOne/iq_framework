@@ -417,3 +417,12 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             new_record[self.getCodColumnName()] = cod
             return self.addRec(record=new_record)
         return False
+
+    def delRecByCod(self, cod):
+        """
+        Delete record by code.
+
+        :param cod: Code.
+        :return: True/False.
+        """
+        return self.deleteRec(id=cod, id_field=self.getCodColumnName())

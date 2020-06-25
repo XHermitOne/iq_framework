@@ -95,7 +95,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
             property = wx_editcodeproperty.iqEditCodeProperty(label=label, name=field.name, value=default_value)
             property.setRefObj(self.ref_obj)
             property.setPropertyGrid(self.record_propertyGrid)
-        elif field.type in column_types.SQLALCHEMY_TEXT_TYPES:
+        elif field.type.__class__ in column_types.SQLALCHEMY_TEXT_TYPES:
             if not isinstance(default_value, str):
                 try:
                     default_value = str(default_value)
@@ -103,25 +103,25 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
                     default_value = u''
             # Text field
             property = wx.propgrid.StringProperty(label=label, name=field.name, value=default_value)
-        elif field.type in column_types.SQLALCHEMY_FLOAT_TYPES:
+        elif field.type.__class__ in column_types.SQLALCHEMY_FLOAT_TYPES:
             if not isinstance(default_value, float):
                 try:
                     default_value = float(default_value)
                 except:
                     default_value = 0.0
             property = wx.propgrid.FloatProperty(label=label, name=field.name, value=default_value)
-        elif field.type in column_types.SQLALCHEMY_INT_TYPES:
+        elif field.type.__class__ in column_types.SQLALCHEMY_INT_TYPES:
             if not isinstance(default_value, int):
                 try:
                     default_value = int(default_value)
                 except:
                     default_value = 0
             property = wx.propgrid.IntProperty(label=label, name=field.name, value=default_value)
-        elif field.type in column_types.SQLALCHEMY_DATE_TYPES:
+        elif field.type.__class__ in column_types.SQLALCHEMY_DATE_TYPES:
             py_date = datetimefunc.strDateFmt2DateTime(default_value)
             wx_date = datetimefunc.pydate2wxdate(py_date)
             property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
-        elif field.type in column_types.SQLALCHEMY_DATETIME_TYPES:
+        elif field.type.__class__ in column_types.SQLALCHEMY_DATETIME_TYPES:
             wx_date = datetimefunc.pydate2wxdate(default_value)
             property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
         else:
@@ -133,7 +133,8 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
                     default_value = u''
             property = wx.propgrid.StringProperty(label=label, name=field.name, value=default_value)
             property.Enable(False)
-            
+            log_func.warning(u'Field <%s : %s : %s> edit disabled' % (field.name, field.type.__class__.__name__, label))
+
         return property
 
     def init(self):
@@ -176,7 +177,26 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         :param value: Value.
         :return: True/False.
         """
+        if name == self.ref_obj.getCodColumnName():
+            # Code must not be registered
+            return not self.ref_obj.hasCod(value)
+        elif name == self.ref_obj.getNameColumnName():
+            # The name must not be empty
+            return bool(value.split() if isinstance(value, str) else False)
         return True
+
+    def validRecord(self, record):
+        """
+        Validate record.
+
+        :param record: Record dictionary.
+        :return: True/False.
+        """
+        if not isinstance(record, dict):
+            log_func.error(u'Not valid record type <%s>' % record.__class__.__name__)
+            return False
+
+        return all([self.validate(name, value) for name, value in record.items()])
 
     def convertPropertyValue(self, name, str_value, property_type):
         """
@@ -225,17 +245,23 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         The handler for changing the field value of an edited record.
         """
         property = event.GetProperty()
-        if property:
-            name = property.GetName()
-            str_value = property.GetValueAsString()
-            log_func.debug(u'Property [%s]. New value <%s>' % (name, str_value))
+
+        try:
+            if property:
+                name = property.GetName()
+                str_value = property.GetValueAsString()
+                # log_func.debug(u'Property [%s]. New value <%s>' % (name, str_value))
             
-            field_spc = self.findRefObjTabFieldSpc(name)
-            value = self.convertPropertyValue(name, str_value, field_spc['field_type'])
-            if self.validate(name, value):
-                self.edit_record[name] = value
-            else:
-                log_func.warning(u'Property [%s]. Property value not validated <%s>' % (name, str_value))
+                field_spc = self.findRefObjTabFieldSpc(name)
+                value = self.convertPropertyValue(name, str_value, field_spc['field_type'])
+                if self.validate(name, value):
+                    self.edit_record[name] = value
+                else:
+                    msg = u'Property [%s]. Property value not validated <%s>' % (name, str_value)
+                    log_func.warning(msg)
+                    wxdlg_func.openWarningBox(_(u'WARNING'), msg)
+        except:
+            log_func.fatal(u'Error change property')
         
         event.Skip()
 
@@ -250,8 +276,14 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         The handler for the <OK> button.
         """
-        log_func.debug(u'Edit record <%s>' % self.getEditRecord())
-        self.EndModal(wx.ID_OK)
+        # log_func.debug(u'Edit record <%s>' % self.getEditRecord())
+        if self.validRecord(self.getEditRecord()):
+            self.EndModal(wx.ID_OK)
+        else:
+            msg = u'Not valid record in <%s>' % self.ref_obj.getDescription()
+            log_func.warning(msg)
+            wxdlg_func.openWarningBox(_(u'WARNING'), msg)
+
         event.Skip()
 
 
@@ -695,7 +727,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
             del_code = record['cod']
             if wxdlg_func.openAskBox(_(u'DELETE'),
                                      _(u'Delete record <%s>. Are you sure?' % record['name'])):
-                self.ref_obj.delRec(del_code)
+                self.ref_obj.delRecByCod(cod=del_code)
                 self.delRefObjTreeItem(self.refobj_treeCtrl.GetSelection(),
                                        del_code)
                 self.delRefObjListItem(del_code)
@@ -710,7 +742,9 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         # Filling a record with default values
         model = self.ref_obj.getModel()
         default_record = dict(
-            [(col_name, col.default) for col_name, col in model.__table__.columns.items() if col_name != 'id'])
+            [(col_name,
+              col.default.arg if col.default else None) for col_name,
+                                                            col in model.__table__.columns.items() if col_name != 'id'])
         # Set default code
         parent_rec = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=self.refobj_treeCtrl.GetSelection())
         struct_parent_code = self.ref_obj.getCodAsTuple(parent_rec['cod']) if parent_rec else list()
@@ -733,7 +767,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                 msg = u'Code <%s> already present in the ref object <%s>' % (add_rec['cod'],
                                                                              self.ref_obj.getDescription())
                 log_func.warning(msg)
-                wxdlg_func.openWarningBox(_(u'ERROR'), msg)
+                wxdlg_func.openWarningBox(_(u'WARNING'), msg)
 
     def onAddToolClicked(self, event):
         """

@@ -136,6 +136,7 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
                 txtctrl = wx.TextCtrl(self.scrolled_win, txtctrl_id, style=wx.TE_PROCESS_ENTER)
                 txtctrl.SetMaxLength(self._ref_obj.getLevelCodLen(i))
                 txtctrl.level_index = i
+                txtctrl.Bind(wx.EVT_TEXT, self.onSubCodText, id=txtctrl_id)
                 txtctrl.Bind(wx.EVT_TEXT_ENTER, self.onSubCodTextEnter, id=txtctrl_id)
                 self._cod_textctrls.append(txtctrl)
 
@@ -414,7 +415,7 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
 
     def onSubCodTextEnter(self, event):
         """
-        Sub cod text change handler.
+        Sub cod text change after press enter handler.
         """
         txt_ctrl = event.GetEventObject()
         level_idx = txt_ctrl.level_index
@@ -427,6 +428,33 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
             if cur_text and len(cur_text) < level_cod_len:
                 txt_ctrl.ChangeValue(new_sub_cod)
             self.refreshTitle()
+
+            if txt_ctrl.IsEnabled():
+                new_cod = self.getCode()
+                if self._ref_obj.hasCod(new_cod):
+                    txt_ctrl.SetBackgroundColour(wx.RED)
+                else:
+                    txt_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+            else:
+                txt_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        except:
+            log_func.fatal(u'Error sub cod text change after press enter handler')
+        event.Skip()
+
+    def onSubCodText(self, event):
+        """
+        Sub cod text change handler.
+        """
+        txt_ctrl = event.GetEventObject()
+        level_idx = txt_ctrl.level_index
+        try:
+            level_cod_len = self._ref_obj.getLevelCodLen(level=level_idx)
+            cur_text = txt_ctrl.GetValue().strip()
+            new_sub_cod = DEFAULT_COD_SIGN * (level_cod_len - len(cur_text)) + cur_text[:level_cod_len]
+            if cur_text == new_sub_cod:
+                self._selected_code[level_idx] = new_sub_cod
+                log_func.debug(u'New sub cod <%s : %s>' % (cur_text, new_sub_cod))
+                self.refreshTitle()
 
             if txt_ctrl.IsEnabled():
                 new_cod = self.getCode()
