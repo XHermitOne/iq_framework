@@ -6,8 +6,6 @@ Reference data object edit dialog_func.
 """
 
 import sys
-import os.path
-import gettext
 import operator
 import wx
 import wx.propgrid
@@ -15,6 +13,7 @@ import wx.propgrid
 from ...util import log_func
 from ...util import spc_func
 from ...util import lang_func
+from ...util import spc_func
 
 from ...engine.wx.dlg import wxdlg_func
 from ...engine.wx import wxbitmap_func
@@ -23,6 +22,7 @@ from ...engine.wx import treectrl_manager
 
 from . import refobj_dialogs_proto
 from . import wx_editcodeproperty
+from . import wx_editlinkproperty
 
 from ...components.data_column import column_types
 
@@ -149,13 +149,21 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         columns = [col for col_name, col in model.__table__.columns.items()]
         fields = [col for col in columns if col.name != 'id' and col.name not in NOT_EDITABLE_FIELDS]
 
+        model_obj = self.ref_obj.getModelObj()
+
         rec = self.getRecord()
         cod = rec.get(self.ref_obj.getCodColumnName(), None)
         self.cod_constructor.setCode(cod)
 
-        for field in fields:
+        for i, field in enumerate(fields):
             field_name = field.name
-            if field is not None:
+            column_obj = model_obj.findChild(field_name)
+
+            if column_obj and column_obj.isAttribute('link'):
+                property = wx_editlinkproperty.iqEditLinkProperty()
+                property.setPropertyEditManager(column_obj.getLinkDataObj())
+                property.SetValue(rec[field_name])
+            elif field is not None:
                 property = self._createProperty(field)
                 property.SetValue(rec[field_name])
             else:

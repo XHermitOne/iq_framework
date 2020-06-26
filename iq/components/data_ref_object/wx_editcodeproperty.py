@@ -5,7 +5,6 @@
 Ref object code property editor.
 """
 
-import gettext
 import wx
 import wx.propgrid
 
