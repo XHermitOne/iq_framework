@@ -33,7 +33,7 @@ sudo apt install --assume-yes build-essential libgtk-3-dev
 sudo apt install --assume-yes libwebkit2gtk-4.0-dev
 
 # For Ubuntu 16.04
-# pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7.post2
+# pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7
 
 # For Ubuntu 20.04
 pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython==4.0.7.post2
