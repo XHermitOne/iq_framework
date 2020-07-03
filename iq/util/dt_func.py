@@ -22,6 +22,9 @@ RU_MONTHS = (u'Январь', u'Февраль',
              u'Сентябрь', u'Октябрь', u'Ноябрь',
              u'Декабрь')
 
+DEFAULT_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
+DEFAULT_DATE_FMT = '%Y-%m-%d'
+
 
 def getMonths():
     """
@@ -124,6 +127,16 @@ def getTodayDT():
     return date2datetime(datetime.date.today())
 
 
+def getTodayFmt(fmt=DEFAULT_DATE_FMT):
+    """
+    Today as string.
+
+    :param fmt: Today string format.
+    :return: Today as string.
+    """
+    return getTodayDT().strftime(fmt)
+
+
 def getYesterday():
     """
     Yesterday as date.
@@ -136,6 +149,16 @@ def getYesterdayDT():
     Yesterday as datetime.
     """
     return date2datetime(getYesterday())
+
+
+def getYesterdayFmt(fmt=DEFAULT_DATE_FMT):
+    """
+    Yesterday as string.
+
+    :param fmt: Yesterday string format.
+    :return: Yesterday as string.
+    """
+    return getYesterdayDT().strftime(fmt)
 
 
 def getDayBeforeYesterday():
