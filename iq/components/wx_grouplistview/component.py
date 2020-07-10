@@ -89,13 +89,17 @@ class iqWxGroupListView(ObjectListView.GroupListView,
         """
         Get even rows background colour.
         """
-        return self.getAttribute('even_rows_background_colour')
+        colour = self.getAttribute('even_rows_background_colour')
+        log_func.debug(u'Even rows background colour %s' % str(colour))
+        return colour
 
     def getOddRowsBackgroundColour(self):
         """
         Get odd rows background colour.
         """
-        return self.getAttribute('odd_rows_background_colour')
+        colour = self.getAttribute('odd_rows_background_colour')
+        log_func.debug(u'Odd rows background colour %s' % str(colour))
+        return colour
 
     def getDataSource(self):
         """
