@@ -93,6 +93,7 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
         function_body = self.getAttribute('on_change')
         if function_body:
             context = self.getContext()
+            context['event'] = event
             exec_func.execTxtFunction(function_body, context=context)
         event.Skip()
 
