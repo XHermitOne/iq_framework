@@ -5,7 +5,6 @@
 Модуль конвертора файлов Excel в xml формате в словарь.
 """
 
-import sys
 import os
 import os.path
 import xmltodict

@@ -5,9 +5,10 @@
 Wx filter choice control component.
 """
 
-import wx
-
-# from ... import object
+try:
+    import wx
+except ImportError:
+    print(u'Import error wx')
 
 from . import spc
 

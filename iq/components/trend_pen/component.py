@@ -5,10 +5,12 @@
 Trend pen component.
 """
 
-import wx
+try:
+    import wx
+except ImportError:
+    print(u'Import error wx')
 
 from ... import object
-# from ... import passport
 
 from . import spc
 
