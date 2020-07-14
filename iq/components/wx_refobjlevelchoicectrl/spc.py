@@ -5,8 +5,6 @@
 Wx RefObjLevelChoiceCtrl specification module.
 """
 
-import wx
-
 from ..wx_widget import SPC as wx_widget_spc
 from ...editor import property_editor_id
 

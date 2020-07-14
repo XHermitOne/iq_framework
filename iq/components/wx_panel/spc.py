@@ -5,7 +5,6 @@
 Wx panel specification module.
 """
 
-import os.path
 import wx
 
 from ..wx_widget import SPC as wx_widget_spc
