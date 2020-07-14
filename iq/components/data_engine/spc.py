@@ -7,7 +7,6 @@ Data engine specification module.
 
 import os.path
 import sqlalchemy.dialects
-import wx.propgrid
 
 from iq.object import object_spc
 from ...editor import property_editor_id
@@ -62,6 +61,8 @@ def onDialectChange(resource_editor=None, resource=None, *args, **kwargs):
         dialect = resource.get('dialect', None)
         drivers = [''] + list(DB_DRIVERS.get(dialect, list()))
         if resource_editor:
+            import wx.propgrid
+
             choices = wx.propgrid.PGChoices(drivers)
             resource_editor.getProperty('driver').SetChoices(choices)
 

@@ -40,24 +40,27 @@ LOG_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 
 def printColourText(text, color=NORMAL_COLOR_TEXT):
     if sys.platform.startswith('win'):
-        # Color coded for Windows systems disabled
-        if color == RED_COLOR_TEXT:
-            txt = colorama.Fore.RED + text + colorama.Style.RESET_ALL
-        elif color == GREEN_COLOR_TEXT:
-            txt = colorama.Fore.GREEN + text + colorama.Style.RESET_ALL
-        elif color == YELLOW_COLOR_TEXT:
-            txt = colorama.Fore.YELLOW + text + colorama.Style.RESET_ALL
-        elif color == BLUE_COLOR_TEXT:
-            txt = colorama.Fore.BLUE + text + colorama.Style.RESET_ALL
-        elif color == PURPLE_COLOR_TEXT:
-            txt = colorama.Fore.MAGENTA + text + colorama.Style.RESET_ALL
-        elif color == CYAN_COLOR_TEXT:
-            txt = colorama.Fore.CYAN + text + colorama.Style.RESET_ALL
-        elif color == WHITE_COLOR_TEXT:
-            txt = colorama.Fore.WHITE + text + colorama.Style.RESET_ALL
-        elif color == NORMAL_COLOR_TEXT:
-            txt = colorama.Style.RESET_ALL + text
-        else:
+        try:
+            if color == RED_COLOR_TEXT:
+                txt = colorama.Fore.RED + text + colorama.Style.RESET_ALL
+            elif color == GREEN_COLOR_TEXT:
+                txt = colorama.Fore.GREEN + text + colorama.Style.RESET_ALL
+            elif color == YELLOW_COLOR_TEXT:
+                txt = colorama.Fore.YELLOW + text + colorama.Style.RESET_ALL
+            elif color == BLUE_COLOR_TEXT:
+                txt = colorama.Fore.BLUE + text + colorama.Style.RESET_ALL
+            elif color == PURPLE_COLOR_TEXT:
+                txt = colorama.Fore.MAGENTA + text + colorama.Style.RESET_ALL
+            elif color == CYAN_COLOR_TEXT:
+                txt = colorama.Fore.CYAN + text + colorama.Style.RESET_ALL
+            elif color == WHITE_COLOR_TEXT:
+                txt = colorama.Fore.WHITE + text + colorama.Style.RESET_ALL
+            elif color == NORMAL_COLOR_TEXT:
+                txt = colorama.Style.RESET_ALL + text
+            else:
+                txt = text
+        except NameError:
+            print(u'ERROR: Not install colorama library: pip3 install colorama')
             txt = text
     else:
         # Add color coloring
