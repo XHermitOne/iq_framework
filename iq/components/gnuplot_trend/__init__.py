@@ -5,10 +5,9 @@
 Gnuplot historical trend component package.
 """
 
-from .spc import SPC
-from .spc import COMPONENT_TYPE
-
 try:
+    from .spc import SPC
+    from .spc import COMPONENT_TYPE
     from .component import COMPONENT
 except ImportError:
     print(u'Import error <iqGnuplotTrend>')

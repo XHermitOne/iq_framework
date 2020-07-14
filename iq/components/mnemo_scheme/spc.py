@@ -6,6 +6,7 @@ Mnemoscheme specification module.
 """
 
 from ...editor import property_editor_id
+
 from .. import wx_panel
 
 __version__ = (0, 0, 0, 1)
@@ -30,7 +31,7 @@ MNEMOSCHEME_SPC = {
 
     '__package__': u'SCADA',
     '__icon__': 'fatcow/smartart_organization_chart_stand',
-    '__parent__': wx_panel.SPC,
+    '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
     '__doc__': None,
     '__content__': ('iqMnemoAnchor', 'iqWxPlateButton'),
     '__edit__': {
