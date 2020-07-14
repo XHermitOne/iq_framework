@@ -5,14 +5,10 @@
 Unique data object specification module.
 """
 
-import os.path
-import wx.propgrid
-
 from ...editor import property_editor_id
 
 from .. import data_navigator
 
-from ...util import spc_func
 from ... import passport
 
 from .. import data_uniobj_model

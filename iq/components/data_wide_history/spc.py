@@ -5,9 +5,6 @@
 Data wide history specification module.
 """
 
-import os.path
-import wx.propgrid
-
 from ...editor import property_editor_id
 
 from .. import data_navigator
@@ -47,6 +44,8 @@ def onModelChange(resource_editor=None, resource=None, *args, **kwargs):
     if resource:
         column_names = getColumnNames(resource)
         if resource_editor:
+            import wx.propgrid
+
             choices = wx.propgrid.PGChoices(column_names)
             resource_editor.getProperty('dt_column').SetChoices(choices)
 
