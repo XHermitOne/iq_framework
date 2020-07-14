@@ -8,6 +8,7 @@ System functions module.
 import sys
 import socket
 import platform
+import os
 
 try:
     # For Python 2
@@ -17,6 +18,14 @@ except ImportError:
     import subprocess as get_procesess_module
 
 __version__ = (0, 0, 0, 1)
+
+# System line separator
+UNIX_LINESEP = '\n'
+WIN_LINESEP = '\r\n'
+LINE_SEPARATORS = (WIN_LINESEP, UNIX_LINESEP)
+
+# Current system line separator
+LINESEP = os.linesep
 
 
 def getComputerName():
