@@ -5,8 +5,6 @@
 Gnuplot historical trend navigator panel specification module.
 """
 
-import os.path
-
 from ...editor import property_editor_id
 from .. import wx_panel
 
