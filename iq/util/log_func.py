@@ -15,7 +15,8 @@ import traceback
 
 try:
     import colorama
-    colorama.init()
+    if sys.platform.startswith('win'):
+        colorama.init()
 except ImportError:
     print(u'Import error colorama. Install: pip3 install colorama')
 
@@ -39,6 +40,12 @@ LOG_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 
 
 def printColourText(text, color=NORMAL_COLOR_TEXT):
+    """
+    Print colour text in console/shell.
+
+    :param text: Text.
+    :param color: Colour code.
+    """
     if sys.platform.startswith('win'):
         try:
             if color == RED_COLOR_TEXT:

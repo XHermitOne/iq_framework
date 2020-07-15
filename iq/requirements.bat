@@ -4,4 +4,5 @@ C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install sq
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install psycopg2
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install odfpy
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install xmltodict
+C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install Jinja2
 
