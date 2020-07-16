@@ -28,8 +28,10 @@ DEFAULT_ENCODING = 'utf-8'
 DEFAULT_SHELL_ENCODING = sys.stdout.encoding if sys.platform.startswith('win') else locale.getpreferredencoding()
 
 # Log file name
-LOG_FILENAME = os.path.join(os.environ.get('HOME',
-                                           os.path.join(os.path.dirname(__file__), 'log', 'log')),
+HOME_PATH = os.environ['HOME'] if 'HOME' in os.environ else (os.environ.get('HOMEDRIVE',
+                                                                            '') + os.environ.get('HOMEPATH', ''))
+LOG_FILENAME = os.path.join(os.environ.get(HOME_PATH if HOME_PATH else os.path.join(os.path.dirname(__file__),
+                                                                                    'log', 'log')),
                             PROFILE_DIRNAME,
                             'iq_%s.log' % datetime.date.today().isoformat())
 
