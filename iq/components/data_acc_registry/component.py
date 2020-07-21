@@ -48,7 +48,7 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
 
         self.createChildren()
 
-        dimension_requisite_names = self.getDimensionRequisiteNames()
+        dimension_requisite_names = self.getAttribute('dimension_requisites')
         dimension_requisites = [requisite for requisite in self.getChildrenRequisites() if
                                 requisite.getName() in dimension_requisite_names]
         for requisite in dimension_requisites:
@@ -56,7 +56,7 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
             requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
             self.addDimensionRequisite(requisite_name, requisite_type)
 
-        resource_requisite_names = self.getResourceRequisiteNames()
+        resource_requisite_names = self.getAttribute('resource_requisites')
         resource_requisites = [requisite for requisite in self.getChildrenRequisites() if
                                requisite.getName() in resource_requisite_names]
         for requisite in resource_requisites:
@@ -64,7 +64,8 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
             requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
             self.addResourceRequisite(requisite_name, requisite_type)
 
-        extended_requisite_names = self.getExtendedRequisiteNames()
+        used_requisite_names = self.getDimensionRequisiteNames() + self.getResourceRequisiteNames()
+        extended_requisite_names = [requisite.getName() for requisite in self.getChildrenRequisites() if requisite.getName() not in used_requisite_names]
         extended_requisites = [requisite for requisite in self.getChildrenRequisites() if
                                requisite.getName() in extended_requisite_names]
         for requisite in extended_requisites:
@@ -105,25 +106,6 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         Get result table name.
         """
         return self.getAttribute('result_table')
-
-    def getDimensionRequisiteNames(self):
-        """
-        Get dimension requisite names.
-        """
-        return self.getAttribute('dimension_requisites')
-
-    def getResourceRequisiteNames(self):
-        """
-        Get resource requisite names.
-        """
-        return self.getAttribute('resource_requisites')
-
-    def getExtendedRequisiteNames(self):
-        """
-        Get extended requisite names.
-        """
-        used_requisite_names = self.getDimensionRequisiteNames() + self.getResourceRequisiteNames()
-        return [requisite.getName() for requisite in self.getChildrenRequisites() if requisite.getName() not in used_requisite_names]
 
     def _updateLinkDataDataset(self, dataset, columns=None):
         """
