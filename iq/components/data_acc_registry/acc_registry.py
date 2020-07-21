@@ -508,7 +508,7 @@ class iqAccRegistry(data_object.iqDataObject):
 
         # Update values of resource details
         resource_requisite_names = self.getResourceRequisiteNames()
-        log_func.debug(u'Resource requisite names %s' % str(resource_requisite_names))
+        # log_func.debug(u'Resource requisite names %s' % str(resource_requisite_names))
         if self.isReceipt(**requisite_values):
             # If the operation of receipt, then add
             resource_requisites = dict([(name, getattr(result_table.c, name)+requisite_values.get(name, 0)) for name in resource_requisite_names])
