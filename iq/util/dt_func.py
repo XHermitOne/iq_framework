@@ -223,3 +223,49 @@ def getPrevDayDT(day=None):
     :return: Prev day before current.
     """
     return date2datetime(getPrevDay(day))
+
+
+def str2datetime(dt_str, fmt=DEFAULT_DATETIME_FMT):
+    """
+    Get datetime from string by format.
+
+    :param dt_str: Datetime as string.
+    :param fmt: Datetime string format.
+    :return: DateTime.
+    """
+    return datetime.datetime.strptime(dt_str, fmt)
+
+
+def str2date(dt_str, fmt=DEFAULT_DATE_FMT):
+    """
+    Get date from string by format.
+
+    :param dt_str: Date as string.
+    :param fmt: Date string format.
+    :return: Date.
+    """
+    dt = str2datetime(dt_str=dt_str, fmt=fmt)
+    return datetime2date(dt)
+
+
+def datetime2str(dt, fmt=DEFAULT_DATETIME_FMT):
+    """
+    Get datetime as string.
+
+    :param dt: Datetime.
+    :param fmt: Datetime string format.
+    :return: Datetime as string.
+    """
+    return dt.strftime(fmt)
+
+
+def date2str(dt, fmt=DEFAULT_DATE_FMT):
+    """
+    Get date as string.
+
+    :param dt: Date.
+    :param fmt: Date string format.
+    :return: Date as string.
+    """
+    dt = date2datetime(dt)
+    return dt.strftime(fmt)
