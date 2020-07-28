@@ -29,7 +29,7 @@ import sys
 import getopt
 import os.path
 import locale
-import gettext
+import time
 
 from iq import global_data
 from iq.util import log_func
@@ -100,6 +100,7 @@ def main(*argv):
         else:
             log_func.warning(u'Not supported parameter <%s>' % option)
 
+    start_time = time.time()
     log_func.info(u'iqFramework <Engine: %s / Mode: %s / Path: %s>... START' % (engine, mode,
                                                                                 file_func.getFrameworkPath()))
 
@@ -120,7 +121,8 @@ def main(*argv):
     else:
         log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
 
-    log_func.info(u'iqFramework <Engine: %s / Mode: %s>... STOP' % (engine, mode))
+    log_func.info(u'iqFramework <Engine: %s / Mode: %s / Total time: %s>... STOP' % (engine, mode,
+                                                                                     str(time.time() - start_time)))
 
 
 if __name__ == '__main__':
