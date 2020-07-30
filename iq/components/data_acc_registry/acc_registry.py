@@ -368,6 +368,10 @@ class iqAccRegistry(data_object.iqDataObject):
         :param requisites: Requisite data list.
         :return: Table sqlalchemy object or None if error.
         """
+        if not self.isConnected():
+            log_func.info(u'Object <%s> not connected' % self.getName())
+            self.connect()
+
         metadata = sqlalchemy.MetaData(self._connection)
         # log_func.debug(u'genTable <%s>' % requisites)
         columns = [self.genColumn(**requisite) for requisite in requisites]
