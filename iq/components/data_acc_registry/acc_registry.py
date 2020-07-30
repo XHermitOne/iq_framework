@@ -369,7 +369,7 @@ class iqAccRegistry(data_object.iqDataObject):
         :return: Table sqlalchemy object or None if error.
         """
         if not self.isConnected():
-            log_func.info(u'Object <%s> not connected' % self.getName())
+            log_func.warning(u'Object <%s> not connected' % self.getName())
             self.connect()
 
         metadata = sqlalchemy.MetaData(self._connection)
