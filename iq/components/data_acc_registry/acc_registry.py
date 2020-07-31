@@ -618,7 +618,7 @@ class iqAccRegistry(data_object.iqDataObject):
             where = [getattr(operation_table.c, name) == value for name, value in requisite_values.items()]
             # Need use ORDER_BY DESC by field dt_operation
             # to cancel operations in the exact reverse chronological order
-            find = operation_table.select().where(sqlalchemy.and_(*where)).order_by(operation_table.c.dt_oper.desc()).execute()
+            find = operation_table.select().where(sqlalchemy.and_(*where)).order_by(operation_table.c.dt_operation.desc()).execute()
             if find.rowcount:
                 # There is operation
                 for operation in find:
@@ -779,9 +779,9 @@ class iqAccRegistry(data_object.iqDataObject):
         if operation_tab is not None:
             try:
                 # Delete all records where the operation time is not defined
-                sql = operation_tab.delete().where(operation_tab.c.dt_oper==None)
+                sql = operation_tab.delete().where(operation_tab.c.dt_operation==None)
                 sql.execute()
-                sql = operation_tab.delete().where(operation_tab.c.dt_oper < dt_actual)
+                sql = operation_tab.delete().where(operation_tab.c.dt_operation < dt_actual)
                 sql.execute()
             except:
                 log_func.fatal(u'Error delete not actual operations')
