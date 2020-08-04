@@ -508,6 +508,7 @@ class iqAccRegistry(data_object.iqDataObject):
             requisites.update(extended_requisites)
 
             sql = result_table.insert().values(**requisites)
+            log_func.debug(u'Accumulate registry <%s>. Create position %s' % (self.getName(), str(requisites)))
             transaction.execute(sql)
 
         # Update values of resource details
