@@ -529,6 +529,7 @@ class iqAccRegistry(data_object.iqDataObject):
         requisites.update(resource_requisites)
         requisites.update(extended_requisites)
         sql = result_table.update().where(sqlalchemy.and_(*where)).values(**requisites)
+        log_func.debug(u'Accumulate registry <%s>. Update position %s' % (self.getName(), str(requisites)))
         transaction.execute(sql)
 
         operation_requisite_values = self._getOperationRequisiteValues(**requisite_values)
