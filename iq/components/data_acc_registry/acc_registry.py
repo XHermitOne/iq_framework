@@ -620,10 +620,10 @@ class iqAccRegistry(data_object.iqDataObject):
             where = [getattr(operation_table.c, name) == value for name, value in requisite_values.items()]
             # Need use ORDER_BY DESC by field dt_operation
             # to cancel operations in the exact reverse chronological order
-            find = operation_table.select().where(sqlalchemy.and_(*where)).order_by(operation_table.c.dt_operation.desc()).execute()
-            if find.rowcount:
+            find_operations = operation_table.select().where(sqlalchemy.and_(*where)).order_by(operation_table.c.dt_operation.desc()).execute()
+            if find_operations.rowcount:
                 # There is operation
-                for operation in find:
+                for operation in find_operations:
                     operation_code = operation[CODE_OPERATION_FIELD]
                     if operation_code == RECEIPT_OPERATION_CODE:
                         # It is receipt, then need to be subtracted from the summary table
@@ -660,6 +660,7 @@ class iqAccRegistry(data_object.iqDataObject):
                         # Need execute <execute()>. Get ResultProxy and call first()
                         if result_table.select().where(sqlalchemy.and_(*where)).execute().first() is not None:
                             sql = result_table.update().where(sqlalchemy.and_(*where)).values(**resource_requisites)
+                            log_func.debug(u'Undo operation. Update position in result table %s' % str(resource_requisites))
                             transaction.execute(sql)
                         else:
                             try:
@@ -687,7 +688,7 @@ class iqAccRegistry(data_object.iqDataObject):
                 sql = operation_table.delete().where(sqlalchemy.and_(*where))
                 transaction.execute(sql)
             else:
-                log_func.error(u'OPeration not found <%s> for undo' % requisite_values)
+                log_func.error(u'Operation not found <%s> for undo' % requisite_values)
                 transaction.rollback()
                 return False
 
