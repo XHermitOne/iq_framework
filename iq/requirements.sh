@@ -3,6 +3,10 @@
 # Packages necessary for working on projects in Python:
 # Tested on Ubuntu 18.04.LTS
 
+# [NOTE] For automatic password entry for sudo, you can use
+# command construction:
+# echo "password" | sudo --stdin command
+
 sudo apt install --assume-yes python3-pip
 
 # Code analyzers
