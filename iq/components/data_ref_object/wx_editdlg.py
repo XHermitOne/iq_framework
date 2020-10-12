@@ -159,7 +159,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
             field_name = field.name
             column_obj = model_obj.findChild(field_name)
 
-            if column_obj and column_obj.isAttribute('link'):
+            if column_obj and column_obj.isAttributeValue('link'):
                 property = wx_editlinkproperty.iqEditLinkProperty()
                 property.setPropertyEditManager(column_obj.getLinkDataObj())
                 property.SetValue(rec[field_name])
