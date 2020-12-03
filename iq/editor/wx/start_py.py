@@ -158,6 +158,8 @@ def startPythonEditor(py_filename, *args, **kwargs):
 
     :return:
     """
+    log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
+
     app = wx.App()
     result = openStartPythonEditorDlg(parent=None, py_filename=py_filename)
     if result:

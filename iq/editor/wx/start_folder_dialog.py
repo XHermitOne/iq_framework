@@ -155,6 +155,8 @@ def startFolderEditor(folder_path=None):
     :param folder_path: Folder path.
     :return: True/False.
     """
+    log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
+
     app = wx.App()
     result = openStartFolderDialog(folder_path=folder_path)
     app.MainLoop()

@@ -200,6 +200,8 @@ def createApplication():
     if app is None:
         if isWXEngine():
             import wx
+            from iq.util import log_func
+            log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
             app = wx.App()
         elif isQTEngine():
             app = None

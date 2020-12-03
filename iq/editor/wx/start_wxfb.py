@@ -134,6 +134,8 @@ def startWXFormBuilderEditor(fbp_filename, *args, **kwargs):
 
     :return:
     """
+    log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
+
     app = wx.App()
     result = openStartWXFormBuilderEditorDlg(parent=None, fbp_filename=fbp_filename)
     if result:

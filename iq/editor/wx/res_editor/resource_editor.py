@@ -920,6 +920,8 @@ def runResourceEditor(res_filename=None):
     :param res_filename: Resource file name.
     :return: True/False.
     """
+    log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
+
     app = wx.App()
     openResourceEditor(res_filename=res_filename)
     app.MainLoop()

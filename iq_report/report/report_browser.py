@@ -594,6 +594,7 @@ def openReportBrowser(parent_form=None, report_dir='', mode=REPORT_EDITOR_MODE):
     app = wx.GetApp()
     if app is None:
         app = wx.App()
+    log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
 
     dlg = None
     try:
