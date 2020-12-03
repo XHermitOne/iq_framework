@@ -109,17 +109,20 @@ def main(*argv):
     locale.setlocale(locale.LC_ALL, cur_locale)
     log_func.info(u'Set locale <%s.%s>' % tuple(cur_locale))
 
-    if runtime_mode:
-        kernel = iq.createKernel()
-        kernel.start(mode=mode, project_name=project, username=username, password=password)
-        kernel.stop()
-    elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
-        editor.openFrameworkEditor()
-    elif mode == iq.EDITOR_MODE_STATE:
-        # kernel = iq.createKernel()
-        editor.openResourceEditor(res_filename=res_filename)
-    else:
-        log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
+    try:
+        if runtime_mode:
+            kernel = iq.createKernel()
+            kernel.start(mode=mode, project_name=project, username=username, password=password)
+            kernel.stop()
+        elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
+            editor.openFrameworkEditor()
+        elif mode == iq.EDITOR_MODE_STATE:
+            # kernel = iq.createKernel()
+            editor.openResourceEditor(res_filename=res_filename)
+        else:
+            log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
+    except:
+        log_func.fatal(u'Run iqFramework error')
 
     log_func.info(u'iqFramework <Engine: %s / Mode: %s / Total time: %s>... STOP' % (engine, mode,
                                                                                      str(time.time() - start_time)))
