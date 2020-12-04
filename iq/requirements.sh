@@ -37,7 +37,10 @@ sudo apt install --assume-yes build-essential libgtk-3-dev
 sudo apt install --assume-yes libwebkit2gtk-4.0-dev
 
 # For Ubuntu 16.04
-pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7
+pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7.post2 Pillow==7.0.0 numpy==1.16.6
+
+# For Ubuntu 18.04
+# pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython==4.0.7.post2
 
 # For Ubuntu 20.04
 # pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython==4.0.7.post2
@@ -47,9 +50,6 @@ pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubunt
 # pip3 install wxPython --upgrade
 # Remove:
 # pip3 uninstall wxPython
-
-# For Ubuntu 18.04
-# pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython==4.0.7.post2
 
 # Altered installation
 # pip3 download wxPython
@@ -93,7 +93,7 @@ pip3 install mtranslate
 sudo apt install --assume-yes python3-jinja2
 
 # IDE
-sudo apt install poedit
+sudo apt install --assume-yes poedit
 
 # SCADA
 sudo apt install --assume-yes gnuplot
@@ -105,9 +105,14 @@ sudo apt --fix-broken install --assume-yes
 # iq
 export IQ_PATH="$(dirname "$PWD")"
 
+# Ubuntu 16.04
+rm ~/.local/lib/python3.5/site-packages/iq.pth
+echo $IQ_PATH >> ~/.local/lib/python3.5/site-packages/iq.pth
+
 # Ubuntu 18.04
 rm ~/.local/lib/python3.6/site-packages/iq.pth
 echo $IQ_PATH >> ~/.local/lib/python3.6/site-packages/iq.pth
+
 # Ubuntu 20.04
 rm ~/.local/lib/python3.8/site-packages/iq.pth
 echo $IQ_PATH >> ~/.local/lib/python3.8/site-packages/iq.pth
