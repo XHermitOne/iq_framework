@@ -11,9 +11,11 @@ http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnexcl2k2/html/
 import time
 import copy
 from xml.sax import saxutils
+import os.path
 
 from iq.util import log_func
 from iq.util import str_func
+from iq.util import file_func
 
 from . import report_generator
 
@@ -68,7 +70,16 @@ class iqXMLSpreadSheetReportFile(iqReportFile):
         :return: Created xml filename or None if error.
         """
         xml_file = None
+
+        if not rep_filename:
+            log_func.warning(u'Not define report file')
+            return None
+
         try:
+            rep_dirname = os.path.dirname(rep_filename)
+            if not os.path.exists(rep_dirname):
+                file_func.createDir(rep_dirname)
+
             xml_file = open(rep_filename, 'wt')
             xml_gen = iqXMLSSGenerator(xml_file)
             xml_gen.startDocument()
