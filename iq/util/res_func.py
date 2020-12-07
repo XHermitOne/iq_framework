@@ -30,9 +30,9 @@ def loadResource(res_filename):
     """
     res_filename = file_func.getAbsolutePath(res_filename)
     struct = None
-    if file_func.isFilenameExt(res_filename, PICKLE_RESOURCE_FILE_EXT):
+    if file_func.isFilenameExts(res_filename, PICKLE_RESOURCE_FILES_EXT):
         struct = loadResourcePickle(res_filename)
-    elif file_func.isFilenameExts(res_filename, PICKLE_RESOURCE_FILES_EXT):
+    elif file_func.isFilenameExt(res_filename, RESOURCE_FILE_EXT):
         struct = loadResourceText(res_filename)
     else:
         log_func.warning(u'Not resource file <%s>. Extension not <%s> or <%s>' % (res_filename,
