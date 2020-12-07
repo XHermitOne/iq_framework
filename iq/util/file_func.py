@@ -180,6 +180,17 @@ def isFilenameExt(filename, ext):
     return getFilenameExt(filename) == ext
 
 
+def isFilenameExts(filename, exts=()):
+    """
+    Verify filename extensions.
+
+    :param filename: File name.
+    :param exts: File name extensions list.
+    :return: True/False.
+    """
+    return any([getFilenameExt(filename) == ext for ext in exts])
+
+
 def setFilenameExt(filename, ext):
     """
     Set filename extension.

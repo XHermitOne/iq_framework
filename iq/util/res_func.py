@@ -16,7 +16,9 @@ __version__ = (0, 0, 0, 1)
 
 # Resource file extension
 RESOURCE_FILE_EXT = '.res'
+REPORT_FILE_EXT = '.rep'
 PICKLE_RESOURCE_FILE_EXT = '.pcl'
+PICKLE_RESOURCE_FILES_EXT = (PICKLE_RESOURCE_FILE_EXT, REPORT_FILE_EXT)
 
 
 def loadResource(res_filename):
@@ -30,7 +32,7 @@ def loadResource(res_filename):
     struct = None
     if file_func.isFilenameExt(res_filename, PICKLE_RESOURCE_FILE_EXT):
         struct = loadResourcePickle(res_filename)
-    elif file_func.isFilenameExt(res_filename, RESOURCE_FILE_EXT):
+    elif file_func.isFilenameExts(res_filename, PICKLE_RESOURCE_FILES_EXT):
         struct = loadResourceText(res_filename)
     else:
         log_func.warning(u'Not resource file <%s>. Extension not <%s> or <%s>' % (res_filename,
