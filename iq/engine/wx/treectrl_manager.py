@@ -395,3 +395,51 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
             log_func.fatal(u'Error get level path in <%s>' % str(treectrl))
         return None
 
+    def setTreeCtrlItemText(self, treectrl=None, item=None, label=u''):
+        """
+        Set item text.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Item. If None then get root item.
+        :param label: Item text.
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return None
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        try:
+            if item is None:
+                item = treectrl.GetRootItem()
+            if item.IsOk():
+                treectrl.SetItemText(item, label)
+                return True
+            else:
+                log_func.error(u'wx.TreeCtrl item failed')
+        except:
+            log_func.fatal(u'Set item text/label error')
+        return False
+
+    def getTreeCtrlItemText(self, treectrl=None, item=None):
+        """
+        Get item text.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Item. If None then get root item.
+        :return: Item text/label or None if error.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return None
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        try:
+            if item is None:
+                item = treectrl.GetRootItem()
+            return treectrl.GetItemText(item)
+        except:
+            log_func.fatal(u'Get item text/label error')
+        return None
