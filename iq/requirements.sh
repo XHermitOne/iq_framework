@@ -98,6 +98,15 @@ sudo apt install --assume-yes poedit
 # SCADA
 sudo apt install --assume-yes gnuplot
 
+# Data tables
+sudo apt install --assume-yes python3-pandas
+
+# Maps
+pip3 install folium
+#pip3 install yandex-maps
+
+# Java
+pip3 install py4j
 
 # 
 sudo apt --fix-broken install --assume-yes

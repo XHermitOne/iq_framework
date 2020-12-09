@@ -401,7 +401,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
 
         :param treectrl: wx.TreeCtrl control.
         :param item: Item. If None then get root item.
-        :param label: Item text.
+        :param label: Item text/label.
         :return: True/False.
         """
         if treectrl is None:
@@ -443,3 +443,22 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         except:
             log_func.fatal(u'Get item text/label error')
         return None
+
+    def setTreeCtrlRootTitle(self, treectrl=None, title=u''):
+        """
+        Set root item text/label.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param title: Root item text/label.
+        :return: True/False.
+        """
+        return self.setTreeCtrlItemText(treectrl=treectrl, label=title)
+
+    def getTreeCtrlRootTitle(self, treectrl=None):
+        """
+        Get root item text/label.
+
+        :param treectrl: wx.TreeCtrl control.
+        :return: Root item text/label or None if error.
+        """
+        return self.getTreeCtrlItemText(treectrl=treectrl)

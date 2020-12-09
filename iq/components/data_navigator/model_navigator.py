@@ -5,6 +5,7 @@
 Data model navigator manager.
 """
 
+import copy
 from ...util import log_func
 
 from ..data_model import data_object
@@ -26,6 +27,8 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
         self.__dataset__ = None
         self.__rec_no__ = -1
+
+        self.__filter_environment__ = None
 
     def getModel(self):
         """
@@ -491,3 +494,50 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         if self.clear():
             return self.addRecs(records)
         return False
+
+    def getFilterEnv(self):
+        """
+        Get filter environment.
+        """
+        if self.__filter_environment__ is None:
+            try:
+                self.__filter_environment__ = self._genFilterEnv()
+            except:
+                log_func.fatal(u'Generate filter environment error')
+        return self.__filter_environment__
+
+    def _genFilterEnv(self, unused_columns=('id', )):
+        """
+        Generate filter environment.
+        
+        :param unused_columns: Unused column names.
+        :return: Filter environment dictionary.
+        """
+        from ..wx_filterchoicectrl import filter_builder_env
+
+        env = {'requisites': [],  # Requisite list
+               'logic': filter_builder_env.DEFAULT_ENV_LOGIC_OPERATIONS,  # Standart logic operations
+               'funcs': filter_builder_env.DEFAULT_ENV_FUNCS,  # Standart functions
+               }
+
+        model_obj = self.getModelObj()
+        if model_obj:
+            columns = model_obj.getColumns()
+            for column in columns:
+                column_name = column.getName()
+                if column_name not in unused_columns:
+                    requisite_env = dict()
+                    requisite_env['name'] = column_name
+                    requisite_env['description'] = column.getDescription()
+                    requisite_env['field'] = column_name
+                    field_type = column.getFieldType()
+                    requisite_env['type'] = filter_builder_env.DB_FLD_TYPE2REQUISITE_TYPE.get(field_type)
+                    requisite_env['funcs'] = column.getFilterFuncs()
+                    link_psp = column.getLinkPsp()
+                    if link_psp:
+                        requisite_env['link_psp'] = link_psp
+
+                    env['requisites'].append(requisite_env)
+        else:
+            log_func.error(u'Not define model object for model navigator <%s>' % self.getName())
+        return env

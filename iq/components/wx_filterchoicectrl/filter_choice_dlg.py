@@ -8,10 +8,12 @@
 ###########################################################################
 
 import wx
-import wx.xrc
+import wx.adv
+import wx.lib.gizmos
+import wx.aui
 
-import gettext
-_ = gettext.gettext
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqFilterChoiceDlgProto
@@ -32,15 +34,15 @@ class iqFilterChoiceDlgProto ( wx.Dialog ):
 		bSizer2.Add( self.logicRadioBox, 0, wx.ALL|wx.EXPAND, 5 )
 
 		self.ctrl_toolBar = wx.ToolBar( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL )
-		self.sort_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"Сортировать по возрастанию"), wx.ArtProvider.GetBitmap( u"gtk-sort-ascending", wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Сортировать по возрастанию"), _(u"Сортировать по возрастанию"), None )
+		self.sort_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Сортировать по возрастанию"), wx.ArtProvider.GetBitmap( u"gtk-sort-ascending", wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Сортировать по возрастанию"), _(u"Сортировать по возрастанию"), None )
 
-		self.sort_reverse_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"Сортировать по убыванию"), wx.ArtProvider.GetBitmap( u"gtk-sort-descending", wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Сортировать по убыванию"), _(u"Сортировать по убыванию"), None )
+		self.sort_reverse_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Сортировать по убыванию"), wx.ArtProvider.GetBitmap( u"gtk-sort-descending", wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Сортировать по убыванию"), _(u"Сортировать по убыванию"), None )
 
 		self.ctrl_toolBar.AddSeparator()
 
-		self.move_up_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"Переместить вверх"), wx.ArtProvider.GetBitmap( wx.ART_GO_UP, wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Переместить вверх"), _(u"Переместить вверх"), None )
+		self.move_up_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Переместить вверх"), wx.ArtProvider.GetBitmap( wx.ART_GO_UP, wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Переместить вверх"), _(u"Переместить вверх"), None )
 
-		self.move_down_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"Переместить вниз"), wx.ArtProvider.GetBitmap( wx.ART_GO_DOWN, wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Переместить вниз"), _(u"Переместить вниз"), None )
+		self.move_down_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Переместить вниз"), wx.ArtProvider.GetBitmap( wx.ART_GO_DOWN, wx.ART_OTHER ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Переместить вниз"), _(u"Переместить вниз"), None )
 
 		self.ctrl_toolBar.Realize()
 

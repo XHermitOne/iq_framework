@@ -457,7 +457,7 @@ class iqArgEdit(wx.TextCtrl):
         if 'description' in arg:
             tool_tip = arg['description']
         if tool_tip:
-            self.SetToolTipString(str(tool_tip))
+            self.SetToolTip(str(tool_tip))
             
         default = None
         if 'default' in arg:
@@ -593,7 +593,7 @@ class iqLabelChoice(wx.StaticText):
                 menu_item = wx.MenuItem(menu, menuitem_id, text)
                 if img:
                     menu_item.SetBitmap(img)
-                menu.AppendItem(menu_item)
+                menu.Append(menu_item)
                 self.Bind(wx.EVT_MENU, self.onSelectMenuItem, id=menuitem_id)
             
                 self._menuitem_item_dict[menuitem_id] = item

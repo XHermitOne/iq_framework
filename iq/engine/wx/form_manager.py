@@ -15,6 +15,7 @@ from ...util import res_func
 from . import panel_manager
 from .. import stored_ctrl_manager
 
+from . import wxcolour_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -59,6 +60,14 @@ class iqFormManager(stored_ctrl_manager.iqStoredCtrlManager):
                                     name)
         data = res_func.loadResourcePickle(res_filename)
         return self._setCtrlData(data)
+
+    def isDarkSysTheme(self):
+        """
+        Checking if the OS system theme is dark.
+
+        :return: True/False.
+        """
+        return wxcolour_func.isDarkSysTheme()
 
 
 class iqDialogManager(panel_manager.iqPanelManager,

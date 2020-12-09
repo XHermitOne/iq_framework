@@ -31,5 +31,13 @@ class iqDataModel(model.iqModelManager, object.iqObject):
 
         self.createChildren()
 
+    def getColumns(self):
+        """
+        Get model column object list.
+
+        :return:
+        """
+        return self.getChildren()
+
 
 COMPONENT = iqDataModel

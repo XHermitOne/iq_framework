@@ -59,5 +59,26 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
                 log_func.error(u'Not define link object in column <%s>' % self.getName())
         return self.link_obj
 
+    def getFilterFuncs(self):
+        """
+        Список функций фильтрации.
+        """
+        from ..wx_filterchoicectrl import filter_builder_env
+
+        link_psp = self.getLinkPsp()
+
+        if not link_psp:
+            field_type = self.getFieldType()
+            req_type = filter_builder_env.DB_FLD_TYPE2REQUISITE_TYPE.get(field_type)
+            return filter_builder_env.DEFAULT_FUNCS.get(req_type)
+        else:
+            funcs = filter_builder_env.DEFAULT_FUNCS.get(filter_builder_env.REQUISITE_TYPE_REF)
+
+            # Change link with ref object in extension editor
+            for func_body in filter_builder_env.DEFAULT_ENV_REF_FUNCS.values():
+                func_body['args'][0]['ext_kwargs']['component'] = {'link_psp': link_psp}
+
+            return funcs
+
 
 COMPONENT = iqDataColumn

@@ -197,9 +197,13 @@ def setFilenameExt(filename, ext):
 
     :param filename: File name.
     :param ext: File name extension.
-    :return: New filename with new extension.
+    :return: New filename with new extension or None if error.
     """
+    # try:
     return os.path.splitext(filename)[0] + ext
+    # except:
+    #     log_func.fatal(u'Error set filename <%s> extension <%s>' % (str(filename), str(ext)))
+    # return None
 
 
 def getHomePath():

@@ -240,6 +240,7 @@ class iqPassport(object):
             If None then get project path.
         :return: Resource filename or None if error.
         """
+        # log_func.info(u'Find resource file by passport <%s>' % str(passport))
         passport = self.setAsAny(passport)
 
         if find_path is None:
@@ -252,6 +253,11 @@ class iqPassport(object):
             find_path = prj_path
 
         file_names = file_func.getFileNames(find_path)
+
+        if not passport.module:
+            log_func.error(u'Not define passport module <%s>' % str(passport))
+            return None
+
         res_filename = file_func.setFilenameExt(passport.module, res_func.RESOURCE_FILE_EXT)
         if res_filename in file_names:
             return os.path.join(find_path, res_filename)
@@ -271,6 +277,7 @@ class iqPassport(object):
         :param passport: Object passport.
         :return: Object resource or None if not found.
         """
+        # log_func.info(u'Find object resource by passport <%s>' % str(passport))
         passport = self.setAsAny(passport)
 
         res_filename = self.findResourceFilename(passport=passport)

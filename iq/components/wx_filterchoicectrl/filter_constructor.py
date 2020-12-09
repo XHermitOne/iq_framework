@@ -140,7 +140,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
             item = self.root
             new_item = self.root
         else:
-            new_item = self.AppendItem(item, DEFAULT_ITEM_LABEL, wnd=add_button)
+            new_item = self.Append(item, DEFAULT_ITEM_LABEL, wnd=add_button)
         self.SetPyData(new_item, 'group')
 
         # Set controls
@@ -264,7 +264,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                         requisite_combobox = self.GetItemWindow(item, 1)
                         requisite = requisite_combobox.getSelectedData() or {}
                         if requisite.get('type', None) == filter_builder_env.REQUISITE_TYPE_REF:
-                            psp = requisite.get('nsi_psp', None)
+                            psp = requisite.get('link_psp', None)
                             if psp:
                                 arg_edit.setSpravByPsp(psp)
                             else:
@@ -360,14 +360,14 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
         item = wx.MenuItem(menu, menuitem_id, _(u'Add compare'))
         bmp = wxbitmap_func.createIconBitmap('fugue/node-select-child')
         item.SetBitmap(bmp)
-        menu.AppendItem(item)
+        menu.Append(item)
         self.Bind(wx.EVT_MENU, self.onAddCompareMenuItem, id=menuitem_id)
         
         menuitem_id = wx.NewId()
         item = wx.MenuItem(menu, menuitem_id, _(u'Add group'))
         bmp = wxbitmap_func.createIconBitmap('fugue/node-select')
         item.SetBitmap(bmp)
-        menu.AppendItem(item)
+        menu.Append(item)
         self.Bind(wx.EVT_MENU, self.onAddGroupMenuItem, id=menuitem_id)
         
         if tree_item != self.root:
@@ -376,7 +376,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
             item = wx.MenuItem(menu, menuitem_id, _(u'Delete group'))
             bmp = wxbitmap_func.createIconBitmap('fugue/node-delete-previous')
             item.SetBitmap(bmp)
-            menu.AppendItem(item)
+            menu.Append(item)
             self.Bind(wx.EVT_MENU, self.onClearMenuItem, id=menuitem_id)
         
         self.PopupMenu(menu)
@@ -418,7 +418,8 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
         """
         Change requisite in combobox handler.
         """
-        requisite_combobox = event.GetICObject()
+        # log_func.debug(u'Event <%s>' % str(event))
+        requisite_combobox = event.getObject()
         self._setSelectedItem(self._findItemByCtrl(requisite_combobox))
         self.setFuncChoice(self._getSelectedItem(), requisite_combobox)
         event.Skip()
@@ -427,7 +428,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
         """
         Change compare function in combobox handler.
         """
-        func_combobox = event.GetICObject()
+        func_combobox = event.getObject()
         self._setSelectedItem(self._findItemByCtrl(func_combobox))
         self.setArgsEdit(self._getSelectedItem(), func_combobox)
         event.Skip()

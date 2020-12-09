@@ -107,7 +107,10 @@ class iqWxGroupListView(ObjectListView.GroupListView,
         """
         if self._data_src_obj is None:
             data_src_psp = self.getAttribute('data_src')
-            self._data_src_obj = self.getKernel().createByPsp(psp=data_src_psp)
+            if data_src_psp:
+                self._data_src_obj = self.getKernel().createByPsp(psp=data_src_psp)
+            else:
+                log_func.warning(u'Not define data source in <%s>' % self.getName())
         return self._data_src_obj
 
     def setDataSource(self, data_source):
@@ -244,8 +247,9 @@ class iqWxGroupListView(ObjectListView.GroupListView,
                 dataset = self.geDataSourcetDataset(data_src, data_src_filter)
 
         if dataset is None:
+            data_src_name = self._data_src_obj.getName() if self._data_src_obj else u'Not defined'
             log_func.error(u'Not define DATASET for object <%s>. DataSource: <%s>' % (self.getName,
-                                                                                      self._data_src_obj.getName()))
+                                                                                      data_src_name))
         else:
             if self.isAttributeValue('conv_dataset'):
                 context = self.getContext()
