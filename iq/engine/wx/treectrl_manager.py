@@ -5,15 +5,24 @@
 TreeCtrl manager.
 """
 
+import hashlib
 import wx
 import wx.lib.gizmos
 
 from ...util import log_func
 from ...util import spc_func
 
+from .dlg import wxdlg_func
 from . import base_manager
+from . import wxbitmap_func
 
 __version__ = (0, 0, 0, 1)
+
+DEFAULT_ITEM_IMAGE_WIDTH = wxbitmap_func.DEFAULT_ICON_WIDTH
+DEFAULT_ITEM_IMAGE_HEIGHT = wxbitmap_func.DEFAULT_ICON_HEIGHT
+DEFAULT_ITEM_IMAGE_SIZE = (DEFAULT_ITEM_IMAGE_WIDTH, DEFAULT_ITEM_IMAGE_HEIGHT)
+
+TREE_CTRL_IMAGE_LIST_CACHE_NAME = '__image_list_cache'
 
 
 class iqTreeCtrlManager(base_manager.iqBaseManager):
@@ -60,7 +69,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         try:
             return self._setTreeCtrlData(treectrl, tree_data, columns, ext_func, do_expand_all)
         except:
-            log_func.fatal(u'Set tree data of wx.TreeCtrl control.')
+            log_func.fatal(u'Set tree data of wx.TreeCtrl control')
         return False
 
     def _appendTreeCtrlBranch(self, treectrl=None, parent_item=None, node=None, columns=(), ext_func=None):
@@ -462,3 +471,456 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: Root item text/label or None if error.
         """
         return self.getTreeCtrlItemText(treectrl=treectrl)
+
+    def isTreeCtrlRootItem(self, treectrl=None, item=None):
+        """
+        Check if the tree element is root.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Item.
+        :return: True - root item / False - no.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        return treectrl.GetRootItem() == item
+
+    def getTreeCtrlItemPathData(self, treectrl=None, item=None, cur_path=None):
+        """
+        The path to the element. Path is a list of these items.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If None, then the root element is taken.
+        :param cur_path: The current filled path.
+        :return: A list of the data path to the element, or None on error.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return None
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if cur_path is None:
+            cur_path = list()
+
+        try:
+            # item_data = self.getItemData_tree(ctrl=tree_ctrl, item=item)
+            item_data = self.getTreeCtrlItemData(treectrl=treectrl, item=item)
+            cur_path.insert(-1, item_data)
+
+            if item is not None and item.IsOk():
+                parent = treectrl.GetItemParent(item)
+                if not parent.IsOk():
+                    # [NOTE] GetItemParent return not None.
+                    # Need to check for IsOk
+                    return cur_path
+                elif self.isTreeCtrlRootItem(treectrl=treectrl, item=parent):
+                    parent = None
+                # If there is a parent element, then call recursively
+                return self.getTreeCtrlItemPathData(treectrl=treectrl, item=parent, cur_path=cur_path)
+            return cur_path
+        except:
+            log_func.fatal(u'Error determining the path of an object element <%s>' % str(treectrl))
+        return None
+
+    def isTreeCtrlFirstItem(self, treectrl=None, item=None):
+        """
+        Checking if the item is the first at the current level?
+
+        :param treectrl: wx.TreeCtrl object.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :return: True - first item / False - no.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            # This is the root element. He is always the first
+            return True
+
+        parent_item = treectrl.GetItemParent(item)
+        if parent_item and parent_item.IsOk():
+            first_child, cookie = treectrl.GetFirstChild(parent_item)
+            return first_child == item
+        elif self.isTreeCtrlRootItem(treectrl=treectrl, item=item):
+            # This is the root element. He is always the first
+            return True
+        else:
+            log_func.warning(u'Incorrect tree item')
+        return False
+
+    def isTreeCtrlLastItem(self, treectrl=None, item=None):
+        """
+        Checking if the item is the last one at the current level?
+
+        :param treectrl: wx.TreeCtrl.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :return: True - last item / False - no.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            # This is the root element. He is always the last
+            return True
+
+        parent_item = treectrl.GetItemParent(item)
+        if parent_item and parent_item.IsOk():
+            last_child = treectrl.GetLastChild(parent_item)
+            return last_child == item
+        elif self.isTreeCtrlRootItem(treectrl=treectrl, item=item):
+            # This is the root element. He is always the last
+            return True
+        else:
+            log_func.warning(u'Incorrect tree item')
+        return False
+
+    def moveUpTreeCtrlItem(self, treectrl=None, item=None, auto_select=True):
+        """
+        Move the tree element higher in the current list.
+
+        :param treectrl: wx.TreeCtrl.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param auto_select: Automatically select the item to be moved?
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            # The root element cannot be moved
+            return False
+
+        # parent_item = self.getParentTreeItem(ctrl=ctrl, item=item)
+        parent_item = self.getTreeCtrlParentItem(treectrl=treectrl, item=item)
+        if parent_item:
+            prev_item = treectrl.GetPrevSibling(treectrl.GetPrevSibling(item))
+            if prev_item and not prev_item.IsOk():
+                prev_item = None
+            new_item = treectrl.InsertItem(parent_item, prev_item,
+                                           text=treectrl.GetItemText(item),
+                                           image=treectrl.GetItemImage(item),
+                                           data=self.getTreeCtrlItemData(treectrl=treectrl, item=item))
+            treectrl.Delete(item)
+            if auto_select:
+                # self.selectTreeItem(ctrl=ctrl, item=new_item)
+                self.selectTreeCtrlItem(treectrl=treectrl, item=new_item)
+            return True
+        return False
+
+    def moveDownTreeCtrlItem(self, treectrl=None, item=None, auto_select=True):
+        """
+        Move the tree element lower in the current list.
+
+        :param treectrl: wx.TreeCtrl.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param auto_select: Automatically select the item to be moved?
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            # The root element cannot be moved
+            return False
+
+        # parent_item = self.getParentTreeItem(ctrl=ctrl, item=item)
+        parent_item = self.getTreeCtrlParentItem(treectrl=treectrl, item=item)
+        if parent_item:
+            next_item = treectrl.GetNextSibling(item)
+            if next_item and not next_item.IsOk():
+                next_item = None
+            new_item = treectrl.InsertItem(parent_item, next_item,
+                                           text=treectrl.GetItemText(item),
+                                           image=treectrl.GetItemImage(item),
+                                           data=self.getTreeCtrlItemData(treectrl=treectrl, item=item))
+            treectrl.Delete(item)
+            if auto_select:
+                self.selectTreeCtrlItem(treectrl=treectrl, item=new_item)
+            return True
+        return False
+
+    def getTreeCtrlParentItem(self, treectrl=None, item=None):
+        """
+        Get the parent of the tree item.
+
+        :param treectrl: wx.TreeCtrl.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :return: The parent item, or None if not present.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        parent_item = treectrl.GetItemParent(item)
+        return parent_item if parent_item and parent_item.IsOk() else None
+
+    def selectTreeCtrlItem(self, treectrl=None, item=None, select=True):
+        """
+        Select tree item.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param select: True - select item. False - unselect item.
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        treectrl.SelectItem(item, select=select)
+        return True
+
+    def selectTreeCtrlRootItem(self, treectrl, select=True):
+        """
+        Selecting the root element of the tree.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param select: True - select item. False - unselect item.
+        :return: True/False.
+        """
+        return self.selectTreeCtrlItem(treectrl=treectrl, select=select)
+
+    def appendTreeCtrlChildItem(self, treectrl=None, parent_item=None,
+                                label=u'', image=None, data=None, select=True):
+        """
+        Add a child of the tree.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param parent_item: Parent tree item.
+            If not specified, it is considered to be the root element.
+        :param label: New item label.
+        :param image: New item image.
+        :param data: Data automatically attached to the new item.
+        :param select: Automatically select a new item?
+        :return: New tree item or None on error.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if parent_item is None:
+            parent_item = treectrl.GetRootItem()
+
+        # img_idx = self.getImageIndex_tree_ctrl(ctrl=ctrl, image=image, auto_add=True)
+        img_idx = self.getTreeCtrlImageIndex(treectrl=treectrl, image=image, auto_add=True)
+
+        try:
+            new_item = treectrl.AppendItem(parent_item, text=label, image=img_idx, data=data)
+            if select:
+                treectrl.SelectItem(new_item)
+            return new_item
+        except:
+            log_func.fatal(u'Error adding child element')
+        return None
+
+    def getTreeCtrlImageIndex(self, treectrl=None, image=None, auto_add=True):
+        """
+        Searching for an image in the image list wx.TreeCtrl.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param image: Image object.
+        :param auto_add: Automatically add to list if missing?
+        :return: Object image or -1 if image not found.
+        """
+        if image is None:
+            return -1
+
+        if isinstance(image, wx.Bitmap):
+            img = image.ConvertToImage()
+            img_id = hashlib.md5(img.GetData()).hexdigest()
+        elif isinstance(image, wx.Image):
+            img_id = hashlib.md5(image.GetData()).hexdigest()
+        else:
+            log_func.warning(u'Unsupported image type <%s>' % image.__class__.__name__)
+            return -1
+
+        # First check in the cache
+        img_cache = self.getTreeCtrlImageListCache(treectrl=treectrl)
+
+        img_idx = -1
+        if img_id in img_cache:
+            img_idx = img_cache[img_id]
+        else:
+            if auto_add:
+                image_list = self.getTreeCtrlImageList(treectrl=treectrl)
+                img_idx = image_list.Add(image)
+                # Save to cache
+                img_cache[img_id] = img_idx
+        return img_idx
+
+    def getTreeCtrlImageList(self, treectrl=None, image_width=DEFAULT_ITEM_IMAGE_WIDTH,
+                             image_height=DEFAULT_ITEM_IMAGE_HEIGHT):
+        """
+        Get a list of pictures of elements of the tree control wx.TreeCtrl.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param image_width: Image width.
+        :param image_height: Image height.
+        :return: wx.ImageList object.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return None
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        image_list = treectrl.GetImageList()
+        if not image_list:
+            image_list = wx.ImageList(image_width, image_height)
+            # [NOTE] Add empty Bitmap
+            empty_dx = image_list.Add(wxbitmap_func.createEmptyBitmap(image_width, image_height))
+            treectrl.SetImageList(image_list)
+        return image_list
+
+    def getTreeCtrlImageListCache(self, treectrl=None):
+        """
+        Image list cache.
+
+        :param treectrl: wx.TreeCtrl control.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return None
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if not hasattr(treectrl, TREE_CTRL_IMAGE_LIST_CACHE_NAME):
+            setattr(treectrl, TREE_CTRL_IMAGE_LIST_CACHE_NAME, dict())
+        return getattr(treectrl, TREE_CTRL_IMAGE_LIST_CACHE_NAME)
+
+    def setTreeCtrlItemImage(self, treectrl=None, item=None, image=None):
+        """
+        Set tree item image.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param image: wx.Bitmap object.
+            If not specified, the image is deleted.
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return None
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        if image is None:
+            treectrl.SetItemImage(item, None)
+        else:
+            img_idx = self.getTreeCtrlImageIndex(treectrl=treectrl, image=image, auto_add=True)
+            treectrl.SetItemImage(item, img_idx)
+        return True
+
+    def deleteTreeCtrlItem(self, treectrl=None,item=None, ask=False, select=True):
+        """
+        Delete tree item.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the currently selected item.
+        :param ask: Ask for confirmation of deletion?
+        :param select: Automatically select a new item?
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetSelection()
+
+        if not item:
+            log_func.warning(u'The current tree element is not defined for deletion')
+            return False
+
+        do_del = True
+        if ask:
+            label = treectrl.GetItemText(item)
+            do_del = wxdlg_func.openAskBox(u'DELETE', u'Delete <%s>?' % label)
+
+        if do_del:
+            treectrl.Delete(item)
+            return True
+        return False
+
+    def _getTreeCtrlData(self, treectrl=None, item=None):
+        """
+        Get tree item all data.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :return: Tree data or None if error.
+        """
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        item_data = self.getTreeCtrlItemData(treectrl=treectrl, item=item)
+        if item_data is None:
+            item_data = dict()
+
+        children = self.getTreeCtrlItemChildren(treectrl=treectrl, item=item)
+        if children:
+            item_data['__children__'] = list()
+        for child in children:
+            child_data = self._getTreeCtrlData(treectrl=treectrl, item=child)
+            item_data['__children__'].append(child_data)
+        return item_data
+
+    def getTreeCtrlData(self, treectrl=None, *args, **kwargs):
+        """
+        Get tree item all data.
+
+        :param treectrl: wx.TreeCtrl control.
+        :return: Tree data or None if error.
+            Children data in '__children__' key as list.
+        """
+        if treectrl is None:
+            log_func.error(u'Not define wx.TreeCtrl object')
+            return None
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        try:
+            return self._getTreeCtrlData(treectrl=treectrl)
+        except:
+            log_func.fatal(u'Error get tree data <%s>' % str(treectrl))
+        return None

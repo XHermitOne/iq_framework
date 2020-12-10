@@ -95,3 +95,33 @@ def createIconBitmap(icon_filename=None, mask_colour=None):
         return createBitmap(img_filename, mask_colour=mask_colour)
     return None
 
+
+def createEmptyBitmap(width, height, background_colour=None):
+    """
+    Create empyty wx.Bitmap object.
+
+    :param width: Bitmap width.
+    :param height: Bitmap height.
+    :param background_colour: Background colour.
+        Default use white.
+    :return: Empty wx.Bitmap given size.
+    """
+    try:
+        if background_colour is None:
+            background_colour = wx.WHITE
+
+        #
+        bmp = wx.Bitmap(width, height)
+        # Create device context object
+        dc = wx.MemoryDC()
+        # Select an object for context
+        dc.SelectObject(bmp)
+        # Change background
+        dc.SetBackground(wx.Brush(background_colour))
+        dc.Clear()
+        # Free object
+        dc.SelectObject(wx.NullBitmap)
+        return bmp
+    except:
+        log_func.fatal(u'Error create empty wx.Bitmap. Size <%s x %s>' % (width, height))
+    return None
