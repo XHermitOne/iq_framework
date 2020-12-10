@@ -53,7 +53,7 @@ UNKNOWN_STATE_NAME = u'State name not defined'
 
 
 # Indicator description management functions
-def create_indicator():
+def createIndicator():
     """
     Create indicator list.
 
@@ -62,10 +62,10 @@ def create_indicator():
     return list()
 
 
-def new_indicator_state(indicator=None,
-                        name=UNKNOWN_STATE_NAME, img_filename=None,
-                        text_color=None, background_color=None,
-                        expression=None):
+def newIndicatorState(indicator=None,
+                      name=UNKNOWN_STATE_NAME, img_filename=None,
+                      text_color=None, background_color=None,
+                      expression=None):
     """
     Add a new state to the indicator list.
 
@@ -83,7 +83,7 @@ def new_indicator_state(indicator=None,
         background_color = wxcolour_func.wxColour2RGB(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
 
     if indicator is None:
-        indicator = create_indicator()
+        indicator = createIndicator()
     new_state = dict(name=name, image=img_filename,
                      text_color=text_color, background_color=background_color,
                      expression=expression)
@@ -91,7 +91,7 @@ def new_indicator_state(indicator=None,
     return indicator
 
 
-def find_indicator_state(indicator, name):
+def findIndicatorState(indicator, name):
     """
     Search for an indicator state in the indicator list by name.
 
@@ -132,7 +132,7 @@ class iqTreeItemIndicator(object):
         if indicator is None:
             indicator = self._indicator
 
-        indicator = indicator_constructor_dlg.edit_indicator_constructor_dlg(parent=parent, indicator=indicator)
+        indicator = indicator_constructor_dlg.editIndicatorConstructorDlg(parent=parent, indicator=indicator)
 
         return indicator
 

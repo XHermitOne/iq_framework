@@ -32,7 +32,7 @@ EMPTY_NODE_RECORD = {'__filter__': None, '__indicator__': None, 'label': u''}
 
 
 # Functions for managing the structure of the filter tree
-def empty_item(label=DEFAULT_NODE_LABEL):
+def emptyItem(label=DEFAULT_NODE_LABEL):
     """
     Empty item.
 
@@ -44,7 +44,7 @@ def empty_item(label=DEFAULT_NODE_LABEL):
     return item_filter
 
 
-def add_child_item_filter(filter_tree_data, child_item_filter=None):
+def addChildItemFilter(filter_tree_data, child_item_filter=None):
     """
     Add node as child.
 
@@ -54,7 +54,7 @@ def add_child_item_filter(filter_tree_data, child_item_filter=None):
     :return: Modified node data.
     """
     if child_item_filter is None:
-        child_item_filter = empty_item()
+        child_item_filter = emptyItem()
 
     if '__children__' not in filter_tree_data:
         filter_tree_data['__children__'] = list()
@@ -62,7 +62,7 @@ def add_child_item_filter(filter_tree_data, child_item_filter=None):
     return filter_tree_data
 
 
-def new_item_filter(filter_tree_data, label=DEFAULT_NODE_LABEL):
+def newItemFilter(filter_tree_data, label=DEFAULT_NODE_LABEL):
     """
     Add a new filter to an existing node.
 
@@ -73,11 +73,11 @@ def new_item_filter(filter_tree_data, label=DEFAULT_NODE_LABEL):
     if '__children__' not in filter_tree_data or filter_tree_data['__children__'] is None:
         filter_tree_data['__children__'] = list()
 
-    item_filter = empty_item(label)
-    return add_child_item_filter(filter_tree_data, item_filter)
+    item_filter = emptyItem(label)
+    return addChildItemFilter(filter_tree_data, item_filter)
 
 
-def set_filter(filter_tree_data, item_filter=None):
+def setFilter(filter_tree_data, item_filter=None):
     """
     Install an existing node filter.
 
@@ -89,7 +89,7 @@ def set_filter(filter_tree_data, item_filter=None):
     return filter_tree_data
 
 
-def set_indicator(filter_tree_data, item_indicator=None):
+def setIndicator(filter_tree_data, item_indicator=None):
     """
     Set an existing node indicator.
 
@@ -101,7 +101,7 @@ def set_indicator(filter_tree_data, item_indicator=None):
     return filter_tree_data
 
 
-def get_filter(filter_tree_data):
+def getFilter(filter_tree_data):
     """
     Get node filter.
 
@@ -111,7 +111,7 @@ def get_filter(filter_tree_data):
     return filter_tree_data['__filter__']
 
 
-def get_indicator(filter_tree_data):
+def getIndicator(filter_tree_data):
     """
     Get node indicator.
 
@@ -121,7 +121,7 @@ def get_indicator(filter_tree_data):
     return filter_tree_data['__indicator__']
 
 
-def set_label(filter_tree_data, label=u''):
+def setLabel(filter_tree_data, label=u''):
     """
     Set node label.
 
@@ -133,7 +133,7 @@ def set_label(filter_tree_data, label=u''):
     return filter_tree_data
 
 
-def find_label(filter_tree_data, label=u''):
+def findLabel(filter_tree_data, label=u''):
     """
     Find node by label.
 
@@ -145,7 +145,7 @@ def find_label(filter_tree_data, label=u''):
         return filter_tree_data
     if '__children__' in filter_tree_data and filter_tree_data['__children__']:
         for child in filter_tree_data['__children__']:
-            find_result = find_label(child, label=label)
+            find_result = findLabel(child, label=label)
             if find_result:
                 return find_result
     return None
@@ -368,7 +368,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
 
         event.Skip()
 
-    def _build_filters(self, cur_filters):
+    def _buildFilters(self, cur_filters):
         """
         Internal function of building the structure of filters.
 
@@ -383,7 +383,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
         for i, cur_filter in enumerate(filters):
             filter_type = cur_filter['type']
             children = cur_filter.get('children', list())
-            children = self._build_filters(children)
+            children = self._buildFilters(children)
             if children and filter_type == 'group':
                 cur_filter['children'] = children
                 result_filters.append(cur_filter)
@@ -409,7 +409,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
         filters = list()
         if item_data_path:
             filters = [data.get('__filter__', None) for data in item_data_path if data.get('__filter__', None)]
-            filters = self._build_filters(filters)
+            filters = self._buildFilters(filters)
         else:
             log_func.warning(u'Structural data of the tree element is not defined')
         grp_filter = createFilterGroupAND(*filters)
@@ -774,15 +774,19 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
                                          widget_uuid + '.dat')
 
         filter_tree_data = self.loadCustomData(save_filename=save_filename)
-        # Build tree
-        result = self.setTreeCtrlData(treectrl=self, tree_data=filter_tree_data)
+        if filter_tree_data:
+            # Build tree
+            result = self.setTreeCtrlData(treectrl=self, tree_data=filter_tree_data)
 
-        # Set root element caption as filter caption
-        root_filter = filter_tree_data.get('__filter__', dict())
-        str_filter = filter_choicectrl.get_str_filter(root_filter)
-        root_label = str_filter if str_filter else DEFAULT_ROOT_LABEL
-        # self.setRootTitle(tree_ctrl=self, title=root_label)
-        self.setTreeCtrlRootTitle(treectrl=self, title=root_label)
+            # Set root element caption as filter caption
+            root_filter = filter_tree_data.get('__filter__', dict())
+            str_filter = filter_choicectrl.get_str_filter(root_filter)
+            root_label = str_filter if str_filter else DEFAULT_ROOT_LABEL
+            # self.setRootTitle(tree_ctrl=self, title=root_label)
+            self.setTreeCtrlRootTitle(treectrl=self, title=root_label)
+        else:
+            log_func.warning(u'Empty filter tree data')
+            result = False
 
         return result
 

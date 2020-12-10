@@ -84,29 +84,29 @@ class iqIndicatorConstructorDlg(indicator_constructor_dlg_proto.iqIndicatorConst
         """
         Init panel.
         """
-        self.init_img()
-        self.init_ctrl()
+        self.initImages()
+        self.initControls()
         
-    def init_img(self):
+    def initImages(self):
         """
         Init images.
         """
         pass
         
-    def init_ctrl(self):
+    def initControls(self):
         """
         Init controls.
         """
-        self.init_toolbar()
-        self.init_indicator_grid()
-        self.init_expression_edit()
+        self.initToolbar()
+        self.initIndicatorGrid()
+        self.initExpressionEdit()
 
         self.image_filePicker.SetInitialDirectory(icon_func.getIconPath())
         self.image_filePicker.Enable(False)
         self.textcolor_colourPicker.Enable(False)
         self.bgcolor_colourPicker.Enable(False)
 
-    def init_indicator_grid(self):
+    def initIndicatorGrid(self):
         """
         Init grid indicator.
         """
@@ -119,7 +119,7 @@ class iqIndicatorConstructorDlg(indicator_constructor_dlg_proto.iqIndicatorConst
                                       # dict(label=u'Image', width=50),
                                       dict(label=u'Expression', width=450)))
 
-    def init_toolbar(self):
+    def initToolbar(self):
         """
         Init toolbar.
         """
@@ -127,7 +127,7 @@ class iqIndicatorConstructorDlg(indicator_constructor_dlg_proto.iqIndicatorConst
         self.ctrl_toolBar.EnableTool(self.movedown_tool.GetId(), False)
         self.ctrl_toolBar.EnableTool(self.save_tool.GetId(), False)
 
-    def init_expression_edit(self):
+    def initExpressionEdit(self):
         """
         Init expression editor.
         """
@@ -438,7 +438,7 @@ class iqIndicatorConstructorDlg(indicator_constructor_dlg_proto.iqIndicatorConst
         event.Skip()
 
 
-def show_indicator_constructor_dlg(parent=None):
+def showIndicatorConstructorDlg(parent=None):
     """
     Show indicator constructor.
 
@@ -459,7 +459,7 @@ def show_indicator_constructor_dlg(parent=None):
     return False
 
 
-def edit_indicator_constructor_dlg(parent=None, indicator=None):
+def editIndicatorConstructorDlg(parent=None, indicator=None):
     """
     Start editing the filter indicator.
 
