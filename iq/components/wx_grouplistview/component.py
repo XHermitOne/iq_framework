@@ -168,9 +168,12 @@ class iqWxGroupListView(ObjectListView.GroupListView,
 
                 :param RECORD: Record dictionary.
                 """
+                result = False
                 function_body = column.getAttribute('get_group_key')
-                result = exec_func.execTxtFunction(function=function_body,
-                                                   context=locals())
+                if function_body:
+                    result = exec_func.execTxtFunction(function=function_body,
+                                                       context=locals())
+
                 log_func.info(u'Get column <%s> group key. Result <%s>' % (column['name'], result))
                 return result
 
@@ -190,9 +193,11 @@ class iqWxGroupListView(ObjectListView.GroupListView,
 
                 :param GROUP_KEY: Group key.
                 """
+                result = False
                 function_body = column.getAttribute('get_group_title')
-                result = exec_func.execTxtFunction(function=function_body,
-                                                   context=locals())
+                if function_body:
+                    result = exec_func.execTxtFunction(function=function_body,
+                                                       context=locals())
                 log_func.info(u'Get column <%s> group title. Result <%s>' % (column['name'], result))
                 return result
 
@@ -241,8 +246,9 @@ class iqWxGroupListView(ObjectListView.GroupListView,
             data_src = self.getDataSource()
             if not data_src:
                 function_body = self.getAttribute('get_dataset')
-                dataset = exec_func.execTxtFunction(function=function_body,
-                                                    context=self.getContext())
+                if function_body:
+                    dataset = exec_func.execTxtFunction(function=function_body,
+                                                        context=self.getContext())
             else:
                 dataset = self.geDataSourcetDataset(data_src, data_src_filter)
 
@@ -255,18 +261,20 @@ class iqWxGroupListView(ObjectListView.GroupListView,
                 context = self.getContext()
                 context['DATASET'] = dataset
                 function_body = self.getAttribute('conv_dataset')
-                dataset = exec_func.execTxtFunction(function=function_body,
-                                                    context=context)
+                if function_body:
+                    dataset = exec_func.execTxtFunction(function=function_body,
+                                                        context=context)
 
         if self.isAttributeValue('conv_record'):
             result_dataset = list()
             context = self.getContext()
             function_body = self.getAttribute('conv_record')
-            for record in dataset:
-                context['RECORD'] = record
-                new_record = exec_func.execTxtFunction(function=function_body,
-                                                       context=context)
-                result_dataset.append(new_record)
+            if function_body:
+                for record in dataset:
+                    context['RECORD'] = record
+                    new_record = exec_func.execTxtFunction(function=function_body,
+                                                           context=context)
+                    result_dataset.append(new_record)
         else:
             result_dataset = dataset
 
@@ -297,8 +305,9 @@ class iqWxGroupListView(ObjectListView.GroupListView,
 
         if self.getSelectedRecord():
             function_body = self.getAttribute('on_selected')
-            exec_func.execTxtFunction(function=function_body,
-                                      context=context)
+            if function_body:
+                exec_func.execTxtFunction(function=function_body,
+                                          context=context)
 
     def onItemActivated(self, event):
         """
@@ -314,8 +323,9 @@ class iqWxGroupListView(ObjectListView.GroupListView,
         context['VALUES'] = values
 
         function_body = self.getAttribute('on_activated')
-        exec_func.execTxtFunction(function=function_body,
-                                  context=context)
+        if function_body:
+            exec_func.execTxtFunction(function=function_body,
+                                      context=context)
         event.Skip()
 
     def getSelectedRecord(self):
@@ -357,13 +367,15 @@ class iqWxGroupListView(ObjectListView.GroupListView,
         text_colour = None
         if self.isAttributeValue('get_row_text_colour'):
             function_body = self.getAttribute('get_row_text_colour')
-            text_colour = exec_func.execTxtFunction(function=function_body,
-                                                    context=context)
+            if function_body:
+                text_colour = exec_func.execTxtFunction(function=function_body,
+                                                        context=context)
         bg_colour = None
         if self.isAttributeValue('get_row_background_colour'):
             function_body = self.getAttribute('get_row_background_colour')
-            bg_colour = exec_func.execTxtFunction(function=function_body,
-                                                  context=context)
+            if function_body:
+                bg_colour = exec_func.execTxtFunction(function=function_body,
+                                                      context=context)
 
         if text_colour and isinstance(text_colour, wx.Colour):
             list_item.SetTextColour(text_colour)

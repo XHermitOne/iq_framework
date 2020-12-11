@@ -98,5 +98,10 @@ class iqFilePropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
 
                 property.SetValueInEvent(value)
             return True
+        elif eventType == wx.wxEVT_COMMAND_TEXT_ENTER:
+            # Handling a manual value entry case
+            value = event.GetString()
+            property.SetValueInEvent(value)
+            return True
 
         return False

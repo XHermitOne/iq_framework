@@ -13,6 +13,7 @@ from wx.lib.agw import flatmenu
 
 from iq.dialog import dlg_func
 from iq.util import file_func
+from iq.util import spc_func
 
 from iq.engine.wx import treectrl_manager
 from iq.engine import stored_ctrl_manager
@@ -56,9 +57,9 @@ def addChildItemFilter(filter_tree_data, child_item_filter=None):
     if child_item_filter is None:
         child_item_filter = emptyItem()
 
-    if '__children__' not in filter_tree_data:
-        filter_tree_data['__children__'] = list()
-    filter_tree_data['__children__'].append(child_item_filter)
+    if spc_func.CHILDREN_ATTR_NAME not in filter_tree_data:
+        filter_tree_data[spc_func.CHILDREN_ATTR_NAME] = list()
+    filter_tree_data[spc_func.CHILDREN_ATTR_NAME].append(child_item_filter)
     return filter_tree_data
 
 
@@ -70,8 +71,8 @@ def newItemFilter(filter_tree_data, label=DEFAULT_NODE_LABEL):
     :param label: Node label.
     :return: Modified node data.
     """
-    if '__children__' not in filter_tree_data or filter_tree_data['__children__'] is None:
-        filter_tree_data['__children__'] = list()
+    if spc_func.CHILDREN_ATTR_NAME not in filter_tree_data or filter_tree_data[spc_func.CHILDREN_ATTR_NAME] is None:
+        filter_tree_data[spc_func.CHILDREN_ATTR_NAME] = list()
 
     item_filter = emptyItem(label)
     return addChildItemFilter(filter_tree_data, item_filter)
@@ -143,8 +144,8 @@ def findLabel(filter_tree_data, label=u''):
     """
     if filter_tree_data.get('label', None) == label:
         return filter_tree_data
-    if '__children__' in filter_tree_data and filter_tree_data['__children__']:
-        for child in filter_tree_data['__children__']:
+    if spc_func.CHILDREN_ATTR_NAME in filter_tree_data and filter_tree_data[spc_func.CHILDREN_ATTR_NAME]:
+        for child in filter_tree_data[spc_func.CHILDREN_ATTR_NAME]:
             find_result = findLabel(child, label=label)
             if find_result:
                 return find_result
@@ -432,7 +433,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
             menu = flatmenu.FlatMenu()
 
             rename_menuitem_id = wx.NewId()
-            bmp = wxbitmap_func.createIconBitmap('textfield_rename.png')
+            bmp = wxbitmap_func.createIconBitmap('fatcow/textfield_rename')
             menuitem = flatmenu.FlatMenuItem(menu, rename_menuitem_id, u'Rename',
                                              normalBmp=bmp)
             menu.AppendItem(menuitem)
@@ -481,7 +482,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
             menuitem.Enable(self._canEditFilter())
 
             filter_menuitem_id = wx.NewId()
-            bmp = wxbitmap_func.createIconBitmap('filter.png')
+            bmp = wxbitmap_func.createIconBitmap('fatcow/filter')
             cur_filter = item_data.get('__filter__', None) if item_data else None
             label = u'Filter: %s' % filter_choicectrl.get_str_filter(cur_filter) if cur_filter else u'Filter'
             menuitem = flatmenu.FlatMenuItem(menu, filter_menuitem_id, label,
@@ -491,7 +492,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
             menuitem.Enable(self._canEditFilter())
 
             indicator_menuitem_id = wx.NewId()
-            bmp = wxbitmap_func.createIconBitmap('traffic-light.png')
+            bmp = wxbitmap_func.createIconBitmap('fatcow/traffic_lights')
             cur_indicator = item_data.get('__indicator__', None) if item_data else None
             label = u'Indicator: %s' % self.getLabelIndicator(cur_indicator) if cur_indicator else u'Indicator'
             menuitem = flatmenu.FlatMenuItem(menu, indicator_menuitem_id, label,
@@ -776,7 +777,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
         filter_tree_data = self.loadCustomData(save_filename=save_filename)
         if filter_tree_data:
             # Build tree
-            result = self.setTreeCtrlData(treectrl=self, tree_data=filter_tree_data)
+            result = self.setTreeCtrlData(treectrl=self, tree_data=filter_tree_data, label='label')
 
             # Set root element caption as filter caption
             root_filter = filter_tree_data.get('__filter__', dict())

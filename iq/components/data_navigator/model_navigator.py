@@ -10,6 +10,8 @@ from ...util import log_func
 
 from ..data_model import data_object
 
+from ..wx_filterchoicectrl import filter_convert
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -29,6 +31,13 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         self.__rec_no__ = -1
 
         self.__filter_environment__ = None
+
+        # Limit dataset records
+        self.__limit__ = -1
+        # Current filter
+        self.__rec_filter__ = None
+        # Sorting
+        self.__order_by__ = None
 
     def getModel(self):
         """
@@ -81,6 +90,53 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         if session and model:
             return session.query(model)
         return None
+
+    def getLimit(self):
+        """
+        Get limit dataset records.
+        If the value is <0, then the number is not limited.
+        """
+        return self.__limit__
+
+    def setLimit(self, limit=-1):
+        """
+        Set limit dataset records.
+        :param limit: Limit dataset records.
+            If the value is <0, then the number is not limited.
+        """
+        if not isinstance(limit, int):
+            self.__limit__ = -1
+        else:
+            self.__limit__ = limit
+
+    def getOrderBy(self):
+        """
+        Get sorting dataset records.
+        """
+        return self.__order_by__
+
+    def setOrderBy(self, order_by=None):
+        """
+        Set sorting dataset records.
+        :param order_by: Sorting dataset records.
+        """
+        if not isinstance(order_by, (str, tuple, list)):
+            self.__order_by__ = None
+        else:
+            self.__order_by__ = order_by
+
+    def getRecFilter(self):
+        """
+        Get current filter.
+        """
+        return self.__rec_filter__
+
+    def setRecFilter(self, rec_filter=None):
+        """
+        Set current filter.
+        :param rec_filter: Current filter.
+        """
+        self.__rec_filter__ = rec_filter
 
     def getDataset(self):
         """
@@ -186,7 +242,29 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :return: Record dictionary list or None if records not found.
         """
         try:
-            records = self.getModelQuery().filter(*search_args, **search_kwargs)
+            rec_filter = self.getRecFilter()
+            limit = self.getLimit()
+            order_by = self.getOrderBy()
+
+            if not rec_filter:
+                model = self.getModel()
+                query = self.getModelQuery().filter(*search_args, **search_kwargs)
+                if limit >= 0:
+                    query = query.limit(limit)
+                if order_by:
+                    if isinstance(order_by, str):
+                        order_by = (order_by,)
+                    order_by_columns = [getattr(model, fld_name) for fld_name in order_by]
+                    query = query.order_by(*order_by_columns)
+                records = query
+            else:
+                table = self.getTable()
+                select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
+                                                                       table=table,
+                                                                       limit=limit if limit >= 0 else None,
+                                                                       order_by=order_by)
+                result = select.execute()
+                records = result.fetchall()
             return [vars(record) for record in records]
         except:
             log_func.fatal(u'Error search records by %s %s' % (str(search_args), str(search_kwargs)))

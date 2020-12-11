@@ -106,7 +106,7 @@ LOGIC_NAME2SQLALCHEMY_LOGIC = {'AND': sqlalchemy.and_,
                                }
 
 
-def convertFilter2SQLAlchemySelect(filter_data, table, fields=('*',), limit=None):
+def convertFilter2SQLAlchemySelect(filter_data, table, fields=('*',), limit=None, order_by=None):
     """
     Convert filter data to SQLAlchemy view.
 
@@ -114,6 +114,7 @@ def convertFilter2SQLAlchemySelect(filter_data, table, fields=('*',), limit=None
     :param table: Table.
     :param fields: Filed name list.
     :param limit: Record limit. If not defined, then there is no limit.
+    :param order_by: Sorting.
     :return: sqlalchemy.sql.selectable.Select object.
     """
     converter = iqFilter2SQLAlchemySelectConverter(filter_data, table)
@@ -124,8 +125,15 @@ def convertFilter2SQLAlchemySelect(filter_data, table, fields=('*',), limit=None
     else:
         columns = [table]
     query = sqlalchemy.select(columns, where)
+
     if limit:
         query = query.limit(int(limit))
+
+    if order_by:
+        if isinstance(order_by, str):
+            order_by = (order_by, )
+        order_by_columns = [getattr(table.c, fld_name) for fld_name in order_by]
+        query = query.order_by(*order_by_columns)
     return query
 
 
@@ -256,6 +264,7 @@ def convertFilter2SQLAlchemyQuery(filter_data, model, query, fields=('*',), limi
     :param query: Model sqlalchemy.orm.query.Query object.
     :param fields: Filed name list.
     :param limit: Record limit. If not defined, then there is no limit.
+    :param order_by: Sorting.
     :return: sqlalchemy.orm.query.Query object.
     """
     if '*' not in fields:

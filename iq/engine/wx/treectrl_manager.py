@@ -29,14 +29,14 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
     """
     TreeCtrl manager.
     """
-    def _setTreeCtrlData(self, treectrl=None, tree_data=None, columns=(),
+    def _setTreeCtrlData(self, treectrl=None, tree_data=None, label='name',
                          ext_func=None, do_expand_all=False):
         """
         Set tree data of control wx.TreeCtrl.
 
         :param treectrl: wx.TreeCtrl control.
         :param tree_data: Tree data:
-        :param columns: Columns as tuple.
+        :param label: Key as label.
         :param ext_func: Extended function.
         :param do_expand_all: Auto expand all items?
         :return: True/False.
@@ -48,31 +48,31 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
             return False
 
         treectrl.DeleteAllItems()
-        self.appendTreeCtrlBranch(treectrl=treectrl, node=tree_data, columns=columns, ext_func=ext_func)
+        self.appendTreeCtrlBranch(treectrl=treectrl, node=tree_data, label=label, ext_func=ext_func)
 
         if do_expand_all:
             treectrl.ExpandAll()
         return True
 
-    def setTreeCtrlData(self, treectrl=None, tree_data=None, columns=(),
+    def setTreeCtrlData(self, treectrl=None, tree_data=None, label='name',
                         ext_func=None, do_expand_all=False):
         """
         Set tree data of control wx.TreeCtrl.
 
         :param treectrl: wx.TreeCtrl control.
         :param tree_data: Tree data:
-        :param columns: Columns as tuple.
+        :param label: Key as label.
         :param ext_func: Extended function.
         :param do_expand_all: Auto expand all items?
         :return: True/False.
         """
         try:
-            return self._setTreeCtrlData(treectrl, tree_data, columns, ext_func, do_expand_all)
+            return self._setTreeCtrlData(treectrl, tree_data, label, ext_func, do_expand_all)
         except:
             log_func.fatal(u'Set tree data of wx.TreeCtrl control')
         return False
 
-    def _appendTreeCtrlBranch(self, treectrl=None, parent_item=None, node=None, columns=(), ext_func=None):
+    def _appendTreeCtrlBranch(self, treectrl=None, parent_item=None, node=None, label='name', ext_func=None):
         """
         Add branch data to node of wx.TreeCtrl control.
 
@@ -82,36 +82,33 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :param node: Item data.
             If item data is dictionary then add node.
             If item data is list then add nodes.
-        :param columns: Columns as tuple:
-            ('column key 1', ...)
+        :param label: Key as label. For example 'name'.
         :param ext_func: Extended function.
         :return: True/False.
         """
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
 
         if parent_item is None:
-            if (isinstance(node, list) or isinstance(node, tuple)) and len(node) > 1:
-                log_func.info(u'Create UNKNOWN root item of wx.TreeCtrl control')
+            if isinstance(node, (list, tuple)) and len(node) > 1:
+                log_func.debug(u'Create UNKNOWN root item of wx.TreeCtrl control')
                 parent_item = treectrl.AddRoot(base_manager.UNKNOWN)
                 result = self.appendTreeCtrlBranch(treectrl, parent_item=parent_item,
                                                    node={spc_func.CHILDREN_ATTR_NAME: node},
-                                                   columns=columns, ext_func=ext_func)
+                                                   label=label, ext_func=ext_func)
                 return result
-            elif (isinstance(node, list) or isinstance(node, tuple)) and len(node) == 1:
+            elif isinstance(node, (list, tuple)) and len(node) == 1:
                 node = node[0]
-                parent_item = self.addTreeCtrlRootItem(treectrl, node, columns, ext_func)
+                parent_item = self.addTreeCtrlRootItem(treectrl, node, label, ext_func)
             elif isinstance(node, dict):
-                parent_item = self.addTreeCtrlRootItem(treectrl, node, columns, ext_func)
+                parent_item = self.addTreeCtrlRootItem(treectrl, node, label, ext_func)
             else:
                 log_func.warning(u'Node type <%s> not support in wx.TreeCtrl manager' % str(type(node)))
                 return False
 
         for record in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
-            label = str(record.get(columns[0], u''))
-            item = treectrl.AppendItem(parent_item, label)
-            for i, column in enumerate(columns[1:]):
-                label = str(record.get(columns[i + 1], u''))
-                treectrl.SetItemText(item, label, i + 1)
+            item_label = str(record.get(label, u''))
+            # log_func.debug(u'Append tree item data <%s>' % item_label)
+            item = treectrl.AppendItem(parent_item, item_label)
 
             if ext_func:
                 try:
@@ -123,9 +120,9 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
 
             if spc_func.CHILDREN_ATTR_NAME in record and record[spc_func.CHILDREN_ATTR_NAME]:
                 for child in record[spc_func.CHILDREN_ATTR_NAME]:
-                    self.appendTreeCtrlBranch(treectrl, item, child, columns=columns, ext_func=ext_func)
+                    self.appendTreeCtrlBranch(treectrl, item, child, label=label, ext_func=ext_func)
 
-    def appendTreeCtrlBranch(self, treectrl=None, parent_item=None, node=None, columns=(), ext_func=None):
+    def appendTreeCtrlBranch(self, treectrl=None, parent_item=None, node=None, label='name', ext_func=None):
         """
         Add branch data to node of wx.TreeCtrl control.
 
@@ -135,18 +132,17 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :param node: Item data.
             If item data is dictionary then add node.
             If item data is list then add nodes.
-        :param columns: Columns as tuple:
-            ('column key 1', ...)
+        :param label: Key as label.
         :param ext_func: Extended function.
         :return: True/False.
         """
         try:
-            return self._appendTreeCtrlBranch(treectrl, parent_item, node, columns, ext_func)
+            return self._appendTreeCtrlBranch(treectrl, parent_item, node, label, ext_func)
         except:
             log_func.fatal(u'Add branch to node of wx.TreeCtrl control error')
         return False
 
-    def addTreeCtrlRootItem(self, treectrl=None, node=None, columns=(), ext_func=None):
+    def addTreeCtrlRootItem(self, treectrl=None, node=None, label='name', ext_func=None):
         """
         Add root item.
 
@@ -154,11 +150,9 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         """
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
 
-        label = str(node.get(columns[0], base_manager.UNKNOWN))
-        parent_item = treectrl.AddRoot(label)
-        for i, column in enumerate(columns[1:]):
-            label = str(node.get(columns[i + 1], base_manager.UNKNOWN))
-            treectrl.SetItemText(parent_item, label, i + 1)
+        root_label = str(node.get(label, base_manager.UNKNOWN))
+        parent_item = treectrl.AddRoot(root_label)
+
         treectrl.SetItemData(parent_item, node)
 
         if ext_func:

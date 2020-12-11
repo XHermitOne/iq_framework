@@ -618,7 +618,7 @@ class iqPropertyEditorManager(object):
             # По умолчанию все не определенные атрибуты - скриптовые
             property_type = property_editor_id.SCRIPT_EDITOR
         value = self.getConvertedValue(name, str_value, property_type, spc)
-        log_func.debug(u'Convert property value <%s : %s : %s>' % (name, str_value, property_type))
+        log_func.debug(u'Convert property value <%s : %s : %s : %s>' % (name, str_value, property_type, value))
         return value
 
     def findPropertyEditor(self, name, spc):

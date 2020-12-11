@@ -67,18 +67,17 @@ class iqWxFilterTreeCtrl(filter_tree_ctrl.iqFilterTreeCtrlProto,
         self._environment = self.getEnvironment()
         self._limit = self.getLimit()
 
-        # После того как определили окружение и
-        # имя файла хранения фильтров можно загрузить фильтры
+        # After you have defined the environment and the name of the filter storage file,
+        # you can load the filters
         self.acceptFilters()
 
-        # Обновить индикаторы
         # self.refreshIndicators(bVisibleItems=False)
 
-        # Для обновления списка объектов
+        # To update the list of objects
         self._cur_item_filter = self.buildItemFilter(self.GetRootItem())
         # self.OnChange(None)
 
-        # Флаг окончания полной инициализации контрола
+        # The flag of the end of the complete initialization of the control
         self._init_flag = True
 
     def getGUID(self):
@@ -173,7 +172,9 @@ class iqWxFilterTreeCtrl(filter_tree_ctrl.iqFilterTreeCtrlProto,
             result = False
             if filter_tree_data:
                 # Build tree
-                result = self.setTreeCtrlData(treectrl=self, tree_data=filter_tree_data)
+                # log_func.debug(u'Start build tree...')
+                # log_func.debug(str(filter_tree_data.keys()))
+                result = self.setTreeCtrlData(treectrl=self, tree_data=filter_tree_data, label='label')
 
                 # Set root element caption as filter caption
                 root_filter = filter_tree_data.get('__filter__', dict())
