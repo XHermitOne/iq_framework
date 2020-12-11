@@ -20,7 +20,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Workbook', '__children__': []}
+        self._attributes = {'name': 'Workbook', '_children_': []}
         # Dictionary of sheets by name
         self._worksheet_dict = {}
 
@@ -60,7 +60,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
         Initializing the dictionary of sheets.
         """
         self._worksheet_dict = dict([(worksheet['Name'], worksheet) for worksheet in \
-                                    [element for element in self._attributes['__children__'] if element['name'] == 'Worksheet']])
+                                    [element for element in self._attributes['_children_'] if element['name'] == 'Worksheet']])
         return self._worksheet_dict
         
     worksheet_dict = property(getWorksheetDict)
@@ -72,7 +72,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
         attrs = self._parent.getAttributes()
         # Since there is only one book in the XML file m. b.,
         # you can not add it here, but only replace the description of the book
-        attrs['__children__'] = [self._attributes]
+        attrs['_children_'] = [self._attributes]
         return self._attributes
 
     def createWorksheet(self):
@@ -113,7 +113,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
             work_sheet.setAttributes(self._worksheet_dict[name])
         else:
             # Try searching in the list
-            find_worksheet = self._findWorksheetAttrName([element for element in self._attributes['__children__'] \
+            find_worksheet = self._findWorksheetAttrName([element for element in self._attributes['_children_'] \
                                                           if element['name'] == 'Worksheet'], name)
             if find_worksheet:
                 work_sheet = v_worksheet.iqVWorksheet(self)
@@ -126,7 +126,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
         """
         Get sheet by index.
         """    
-        work_sheets = [element for element in self._attributes['__children__'] if element['name'] == 'Worksheet']
+        work_sheets = [element for element in self._attributes['_children_'] if element['name'] == 'Worksheet']
         try:
             worksheet_attr = work_sheets[idx]
             work_sheet = v_worksheet.iqVWorksheet(self)
@@ -148,7 +148,7 @@ class iqVWorkbook(v_prototype.iqVPrototype):
         """
         Get styles attributes.
         """
-        styles = [element for element in self._attributes['__children__'] if element['name'] == 'Styles']
+        styles = [element for element in self._attributes['_children_'] if element['name'] == 'Styles']
         if styles:
             return styles[0]
         return None
@@ -172,4 +172,4 @@ class iqVWorkbook(v_prototype.iqVPrototype):
         """
         List of sheet names in the book.
         """
-        return [work_sheet['Name'] for work_sheet in self._attributes['__children__'] if work_sheet['name'] == 'Worksheet']
+        return [work_sheet['Name'] for work_sheet in self._attributes['_children_'] if work_sheet['name'] == 'Worksheet']

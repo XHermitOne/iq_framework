@@ -893,10 +893,10 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
 
         children = self.getTreeCtrlItemChildren(treectrl=treectrl, item=item)
         if children:
-            item_data['__children__'] = list()
+            item_data['_children_'] = list()
         for child in children:
             child_data = self._getTreeCtrlData(treectrl=treectrl, item=child)
-            item_data['__children__'].append(child_data)
+            item_data['_children_'].append(child_data)
         return item_data
 
     def getTreeCtrlData(self, treectrl=None, *args, **kwargs):
@@ -905,7 +905,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
 
         :param treectrl: wx.TreeCtrl control.
         :return: Tree data or None if error.
-            Children data in '__children__' key as list.
+            Children data in '_children_' key as list.
         """
         if treectrl is None:
             log_func.error(u'Not define wx.TreeCtrl object')

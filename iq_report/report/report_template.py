@@ -189,9 +189,9 @@ class iqReportTemplate(object):
 
         :param style: Style data.
         """
-        style_border = [style_attr for style_attr in style['__children__'] if style_attr['name'] == 'Borders']
+        style_border = [style_attr for style_attr in style['_children_'] if style_attr['name'] == 'Borders']
         if style_border:
-            style_border = style_border[0]['__children__']
+            style_border = style_border[0]['_children_']
         else:
             style_border = list()
             
@@ -225,7 +225,7 @@ class iqReportTemplate(object):
 
         :param style: Style data.
         """
-        style_font = [style_attr for style_attr in style['__children__'] if style_attr['name'] == 'Font']
+        style_font = [style_attr for style_attr in style['_children_'] if style_attr['name'] == 'Font']
         log_func.debug('Font <%s> Style <%s>' % (style_font, style['ID']))
         if style_font:
             style_font = style_font[0]
@@ -275,7 +275,7 @@ class iqReportTemplate(object):
         """
         color = {}
 
-        style_font = [style_attr for style_attr in style['__children__'] if style_attr['name'] == 'Font']
+        style_font = [style_attr for style_attr in style['_children_'] if style_attr['name'] == 'Font']
         if style_font:
             style_font = style_font[0]
         else:
@@ -288,7 +288,7 @@ class iqReportTemplate(object):
             color['text'] = (0, 0, 0)
             
         # Interior in style
-        style_interior = [style_attr for style_attr in style['__children__'] if style_attr['name'] == 'Interior']
+        style_interior = [style_attr for style_attr in style['_children_'] if style_attr['name'] == 'Interior']
         if style_interior:
             style_interior = style_interior[0]
         else:
@@ -307,7 +307,7 @@ class iqReportTemplate(object):
 
         :param style: Style data.
         """
-        style_align = [style_attr for style_attr in style['__children__'] if style_attr['name'] == 'Alignment']
+        style_align = [style_attr for style_attr in style['_children_'] if style_attr['name'] == 'Alignment']
         if style_align:
             style_align = style_align[0]
         else:
@@ -343,7 +343,7 @@ class iqReportTemplate(object):
         """
         Get number format from style.
         """
-        style_fmt = [style_attr for style_attr in style['__children__'] if style_attr['name'] == 'NumberFormat']
+        style_fmt = [style_attr for style_attr in style['_children_'] if style_attr['name'] == 'NumberFormat']
         if style_fmt:
             style_fmt = style_fmt[0]
         else:
@@ -359,7 +359,7 @@ class iqReportTemplate(object):
         """
         new_page_setup = {}
         # Orientation
-        layouts = [obj for obj in page_setup['__children__'] if obj['name'] == 'Layout']
+        layouts = [obj for obj in page_setup['_children_'] if obj['name'] == 'Layout']
         log_func.debug('Layout %s' % layouts)
         if layouts:
             layout = layouts[0]
@@ -372,7 +372,7 @@ class iqReportTemplate(object):
             if 'StartPageNumber' in layout:
                 new_page_setup['start_num'] = int(layout['StartPageNumber'])
         # Margins
-        page_margins = [obj for obj in page_setup['__children__'] if obj['name'] == 'PageMargins']
+        page_margins = [obj for obj in page_setup['_children_'] if obj['name'] == 'PageMargins']
         log_func.debug('PageMargins %s' % page_margins)
         if page_margins:
             page_margin = page_margins[0]
@@ -391,30 +391,30 @@ class iqReportTemplate(object):
         """
         new_print_setup = {}
         # Paper size
-        paper_sizes = [obj for obj in print_setup['__children__'] if obj['name'] == 'PaperSizeIndex']
+        paper_sizes = [obj for obj in print_setup['_children_'] if obj['name'] == 'PaperSizeIndex']
         if paper_sizes:
             new_print_setup['paper_size'] = paper_sizes[0]['value']
         # Scale
-        scales = [obj for obj in print_setup['__children__'] if obj['name'] == 'Scale']
+        scales = [obj for obj in print_setup['_children_'] if obj['name'] == 'Scale']
         if scales:
             new_print_setup['scale'] = int(scales[0]['value'])
         else:
             try:
-                h_fit = [obj for obj in print_setup['__children__'] if obj['name'] == 'FitWidth'][0]['value']
+                h_fit = [obj for obj in print_setup['_children_'] if obj['name'] == 'FitWidth'][0]['value']
             except:
                 h_fit = DEFAULT_FIT_WIDTH
             try:
-                v_fit = [obj for obj in print_setup['__children__'] if obj['name'] == 'FitHeight'][0]['value']
+                v_fit = [obj for obj in print_setup['_children_'] if obj['name'] == 'FitHeight'][0]['value']
             except:
                 v_fit = DEFAULT_FIT_HEIGHT
             new_print_setup['fit'] = (int(h_fit), int(v_fit))
 
         try:
-            h_resolution = [obj for obj in print_setup['__children__'] if obj['name'] == 'HorizontalResolution'][0]['value']
+            h_resolution = [obj for obj in print_setup['_children_'] if obj['name'] == 'HorizontalResolution'][0]['value']
         except:
             h_resolution = DEFAULT_HORIZ_RESOLUTION
         try:    
-            v_resolution = [obj for obj in print_setup['__children__'] if obj['name'] == 'VerticalResolution'][0]['value']
+            v_resolution = [obj for obj in print_setup['_children_'] if obj['name'] == 'VerticalResolution'][0]['value']
         except:
             v_resolution = DEFAULT_VERT_RESOLUTION
         new_print_setup['resolution'] = (int(h_resolution), int(v_resolution))
@@ -503,26 +503,26 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         """
         Normal table.
         """
-        new_table = {}.fromkeys([key for key in table.keys() if key != '__children__'])
+        new_table = {}.fromkeys([key for key in table.keys() if key != '_children_'])
         for key in new_table.keys():
             new_table[key] = table[key]
-        new_table['__children__'] = []
+        new_table['_children_'] = []
 
         # Columns
-        cols = [element for element in table['__children__'] if element['name'] == 'Column']
+        cols = [element for element in table['_children_'] if element['name'] == 'Column']
         cols = self._normList(cols, 'Column')
         max_len = len(cols)
         # Rows
-        rows = [element for element in table['__children__'] if element['name'] == 'Row']
+        rows = [element for element in table['_children_'] if element['name'] == 'Row']
         rows = self._normList(rows, 'Row')
         # Cells
         for i_row in range(len(rows)):
             row = rows[i_row]
-            if '__children__' in row:
-                rows[i_row]['__children__'] = self._normList(row['__children__'], 'Cell', max_len)
+            if '_children_' in row:
+                rows[i_row]['_children_'] = self._normList(row['_children_'], 'Cell', max_len)
 
-        new_table['__children__'] += cols
-        new_table['__children__'] += rows
+        new_table['_children_'] += cols
+        new_table['_children_'] += rows
         return new_table
 
     def _defineSpan(self, obj_list):
@@ -556,11 +556,11 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             # Create template
             rep = copy.deepcopy(report_generator.REPORT_TEMPLATE)
 
-            workbook = template_data['__children__'][0]
+            workbook = template_data['_children_'][0]
             # Styles
-            styles = dict([(style['ID'], style) for style in [element for element in workbook['__children__']
-                                                              if element['name'] == 'Styles'][0]['__children__']])
-            worksheets = [element for element in workbook['__children__'] if element['name'] == 'Worksheet']
+            styles = dict([(style['ID'], style) for style in [element for element in workbook['_children_']
+                                                              if element['name'] == 'Styles'][0]['_children_']])
+            worksheets = [element for element in workbook['_children_'] if element['name'] == 'Worksheet']
 
             # I. Define all bands in the template
             # If the template name is not defined, then take the first sheet
@@ -574,16 +574,16 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             rep['name'] = template_name
             
             # Table
-            rep_template_tabs = [rep_obj for rep_obj in self._rep_worksheet['__children__'] if rep_obj['name'] == 'Table']
+            rep_template_tabs = [rep_obj for rep_obj in self._rep_worksheet['_children_'] if rep_obj['name'] == 'Table']
             self._setDefaultCellSize(rep_template_tabs[0])
             # Normal table
             rep_template_tab = self._normTable(rep_template_tabs[0])
 
             # Column data
-            rep_template_cols = [element for element in rep_template_tab['__children__'] if element['name'] == 'Column']
+            rep_template_cols = [element for element in rep_template_tab['_children_'] if element['name'] == 'Column']
             rep_template_cols = self._defineSpan(rep_template_cols)
             # Row data
-            rep_template_rows = [element for element in rep_template_tab['__children__'] if element['name'] == 'Row']
+            rep_template_rows = [element for element in rep_template_tab['_children_'] if element['name'] == 'Row']
             rep_template_rows = self._defineSpan(rep_template_rows)
 
             # The number of columns without a column tag bands
@@ -619,7 +619,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                     if tag in TITLE_TAGS:
                         parse_func = self._TITLE_TAG_PARSE_METHODS.setdefault(tag, None)
                         try:
-                            parse_func(self, rep, rep_template_rows[cur_row]['__children__'])
+                            parse_func(self, rep, rep_template_rows[cur_row]['_children_'])
                         except:
                             log_func.fatal(u'Error parse function <%s>' % str_func.toUnicode(parse_func))
                         title_row += 1
@@ -630,12 +630,12 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
 
             # Page setup
             rep['page_setup'] = copy.deepcopy(report_generator.REP_PAGESETUP)
-            sheet_options = [rep_obj for rep_obj in self._rep_worksheet['__children__']
+            sheet_options = [rep_obj for rep_obj in self._rep_worksheet['_children_']
                              if rep_obj['name'] == 'WorksheetOptions']
 
-            page_setup = [rep_obj for rep_obj in sheet_options[0]['__children__'] if rep_obj['name'] == 'PageSetup'][0]
+            page_setup = [rep_obj for rep_obj in sheet_options[0]['_children_'] if rep_obj['name'] == 'PageSetup'][0]
             rep['page_setup'].update(self._getPageSetup(page_setup))
-            print_setup = [rep_obj for rep_obj in sheet_options[0]['__children__'] if rep_obj['name'] == 'Print']
+            print_setup = [rep_obj for rep_obj in sheet_options[0]['_children_'] if rep_obj['name'] == 'Print']
             if print_setup:
                 rep['page_setup'].update(self._getPrintSetup(print_setup[0]))
 
@@ -672,8 +672,8 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             # The template does not have a column of tag tags
             max_col = 0
             for row in range(len(rows)):
-                if '__children__' in rows[row]:
-                    for col in range(len(rows[row]['__children__'])):
+                if '_children_' in rows[row]:
+                    for col in range(len(rows[row]['_children_'])):
                         max_col = max(max_col, col)
             col_count = max_col
         return col_count
@@ -689,10 +689,10 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             # Last column
             tag_col = 0
             for row in range(len(rows)):
-                if '__children__' in rows[row]:
-                    for col in range(len(rows[row]['__children__'])):
+                if '_children_' in rows[row]:
+                    for col in range(len(rows[row]['_children_'])):
                         try:
-                            cell_data = rows[row]['__children__'][col]['__children__']
+                            cell_data = rows[row]['_children_'][col]['_children_']
                         except:
                             cell_data = None
                         # If the cell data is defined, then get the value
@@ -816,11 +816,11 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         rep_upper = band
 
         if 'data' not in band:
-            worksheet_options = [element for element in worksheet_data['__children__'] if element['name'] == 'WorksheetOptions']
+            worksheet_options = [element for element in worksheet_data['_children_'] if element['name'] == 'WorksheetOptions']
             if worksheet_options:
-                page_setup = [element for element in worksheet_options[0]['__children__'] if element['name'] == 'PageSetup']
+                page_setup = [element for element in worksheet_options[0]['_children_'] if element['name'] == 'PageSetup']
                 if page_setup:
-                    header = [element for element in page_setup[0]['__children__'] if element['name'] == 'Header']
+                    header = [element for element in page_setup[0]['_children_'] if element['name'] == 'Header']
                     if header:
                         if 'Data' in header[0]:
                             rep_upper['data'] = header[0]['Data']
@@ -838,11 +838,11 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         rep_under = band
 
         if 'data' not in band:
-            worksheet_options = [element for element in worksheet_data['__children__'] if element['name'] == 'WorksheetOptions']
+            worksheet_options = [element for element in worksheet_data['_children_'] if element['name'] == 'WorksheetOptions']
             if worksheet_options:
-                page_setup = [element for element in worksheet_options[0]['__children__'] if element['name'] == 'PageSetup']
+                page_setup = [element for element in worksheet_options[0]['_children_'] if element['name'] == 'PageSetup']
                 if page_setup:
-                    footer = [element for element in page_setup[0]['__children__'] if element['name'] == 'Footer']
+                    footer = [element for element in page_setup[0]['_children_'] if element['name'] == 'Footer']
                     if footer:
                         if 'Data' in footer[0]:
                             rep_under['data'] = footer[0]['Data']
@@ -871,7 +871,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         """
         try:
             try:
-                template_cell = rows[row]['__children__'][column]
+                template_cell = rows[row]['_children_'][column]
             except:
                 template_cell = {}
                 cell_style = styles['Default']
@@ -903,10 +903,10 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
 
         :param cell: Cell data.
         """
-        if '__children__' not in cell or not cell['__children__']:
+        if '_children_' not in cell or not cell['_children_']:
             return report_generator.REP_FMT_NONE
             
-        cell_data = cell['__children__'][0]
+        cell_data = cell['_children_'][0]
         if 'Type' in cell_data:
             if cell_data['Type'] == 'General':
                 return report_generator.REP_FMT_NONE
@@ -924,10 +924,10 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
 
         :param cell: Cell data.
         """
-        if '__children__' not in cell or not cell['__children__'] or \
-           'value' not in cell['__children__'][0]:
+        if '_children_' not in cell or not cell['_children_'] or \
+           'value' not in cell['_children_'][0]:
             return None
-        return cell['__children__'][0]['value']
+        return cell['_children_'][0]['value']
         
     def _setDefaultCellSize(self, table):
         """
@@ -987,7 +987,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             cell['merge_col'] = 1
 
             try:            
-                template_cell = rows[row]['__children__'][column]
+                template_cell = rows[row]['_children_'][column]
 
                 if 'MergeDown' in template_cell:
                     cell['merge_row'] = int(template_cell['MergeDown']) + 1
@@ -1057,7 +1057,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         try:
             row_data = rows[row]
 
-            if '__children__' not in row_data or not row_data['__children__']:
+            if '_children_' not in row_data or not row_data['_children_']:
                 log_func.error(u'Error having row children <%s>' % row)
                 return self.__cur_band
             i_tag = self._getTagBandIdx(rows)
@@ -1089,11 +1089,11 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
              Tag).
         """
         try:
-            for i in range(len(row['__children__'])-1, -1, -1):
-                cell = row['__children__'][i]
-                if '__children__' in cell and cell['__children__'] and 'value' in cell['__children__'][0] and \
-                   self._isTag(str(cell['__children__'][0]['value']).lower().strip()):
-                    return i, cell['__children__'][0]['value'].lower().strip()
+            for i in range(len(row['_children_'])-1, -1, -1):
+                cell = row['_children_'][i]
+                if '_children_' in cell and cell['_children_'] and 'value' in cell['_children_'][0] and \
+                   self._isTag(str(cell['_children_'][0]['value']).lower().strip()):
+                    return i, cell['_children_'][0]['value'].lower().strip()
         except:
             log_func.fatal(u'Error find tag in current band')
         return -1, None
@@ -1156,8 +1156,8 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                 tmpl_filename = self.getTemplateFilename()
                 report['description'] = os.path.splitext(os.path.basename(tmpl_filename))[0] if tmpl_filename else u''
             else:
-                if 'value' in parse_row[0]['__children__'][0] and parse_row[0]['__children__'][0]['value']:
-                    report['description'] = parse_row[0]['__children__'][0]['value']
+                if 'value' in parse_row[0]['_children_'][0] and parse_row[0]['_children_'][0]['value']:
+                    report['description'] = parse_row[0]['_children_'][0]['value']
                 else:
                     report['description'] = None
         except:
@@ -1171,8 +1171,8 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         :param parse_row: The parsed line of the report template as a list.
         """
         try:
-            name = parse_row[0]['__children__'][0]['value']
-            value = parse_row[1]['__children__'][0]['value']
+            name = parse_row[0]['_children_'][0]['value']
+            value = parse_row[1]['_children_'][0]['value']
             if isinstance(value, str) and value.startswith(CODE_SIGNATURE):
                 value = exec_func.execTxtFunction(value.replace(CODE_SIGNATURE, u'').strip())
             elif isinstance(value, str) and value.startswith(PY_SIGNATURE):
@@ -1195,8 +1195,8 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                 tmpl_filename = self.getTemplateFilename()
                 report['generator'] = os.path.splitext(tmpl_filename)[1].upper() if tmpl_filename else '.ODS'
             else:
-                if 'value' in parse_row[0]['__children__'][0] and parse_row[0]['__children__'][0]['value']:
-                    report['generator'] = parse_row[0]['__children__'][0]['value']
+                if 'value' in parse_row[0]['_children_'][0] and parse_row[0]['_children_'][0]['value']:
+                    report['generator'] = parse_row[0]['_children_'][0]['value']
                 else:
                     report['generator'] = None
         except:
@@ -1210,7 +1210,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         :param parse_row: The parsed line of the report template as a list.
         """
         try:
-            report['data_source'] = parse_row[0]['__children__'][0]['value']
+            report['data_source'] = parse_row[0]['_children_'][0]['value']
         except:
             report['data_source'] = None
             log_func.error(u'Not defined data source / database')
@@ -1223,7 +1223,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         :param parse_row: The parsed line of the report template as a list.
         """
         try:
-            report['query'] = parse_row[0]['__children__'][0]['value']
+            report['query'] = parse_row[0]['_children_'][0]['value']
         except:
             report['query'] = None
             log_func.error(u'Not defined query')
@@ -1237,7 +1237,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         """
         try:
             from . import style_library
-            xml_style_lib_file_name = parse_row[0]['__children__'][0]['value']
+            xml_style_lib_file_name = parse_row[0]['_children_'][0]['value']
             report['style_lib'] = style_library.iqXMLReportStyleLibrary().convert(xml_style_lib_file_name)
         except:
             log_func.fatal(u'Error parse style library tag')

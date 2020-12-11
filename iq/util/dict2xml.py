@@ -156,12 +156,12 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
                                             'xmlns:ss': 'urn:schemas-microsoft-com:office:spreadsheet'})
 
         # Styles
-        styles = [element for element in data['__children__'] if element['name'] == 'Styles']
+        styles = [element for element in data['_children_'] if element['name'] == 'Styles']
         if styles:
             self.setStyles(styles[0])
 
         # WorkSheets
-        worksheets = [element for element in data['__children__'] if element['name'] == 'Worksheet']
+        worksheets = [element for element in data['_children_'] if element['name'] == 'Worksheet']
         for worksheet in worksheets:
             self.setSheet(worksheet)
 
@@ -174,7 +174,7 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Styles', {})
 
         # Styles
-        styles = [element for element in data['__children__'] if element['name'] == 'Style']
+        styles = [element for element in data['_children_'] if element['name'] == 'Style']
         for style in styles:
             self.setStyle(style)
 
@@ -191,27 +191,27 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Style', attr)
 
         # Alignment
-        align = [element for element in data['__children__'] if element['name'] == 'Alignment']
+        align = [element for element in data['_children_'] if element['name'] == 'Alignment']
         if align:
             self.setAlignment(align[0])
 
         # Borders
-        borders = [element for element in data['__children__'] if element['name'] == 'Borders']
+        borders = [element for element in data['_children_'] if element['name'] == 'Borders']
         if borders:
             self.setBorders(borders[0])
 
         # Font
-        font = [element for element in data['__children__'] if element['name'] == 'Font']
+        font = [element for element in data['_children_'] if element['name'] == 'Font']
         if font:
             self.setFont(font[0])
 
         # Interior
-        interior = [element for element in data['__children__'] if element['name'] == 'Interior']
+        interior = [element for element in data['_children_'] if element['name'] == 'Interior']
         if interior:
             self.setInterior(interior[0])
 
         # Format
-        fmt = [element for element in data['__children__'] if element['name'] == 'NumberFormat']
+        fmt = [element for element in data['_children_'] if element['name'] == 'NumberFormat']
         if fmt:
             self.setNumberFormat(fmt[0])
 
@@ -250,7 +250,7 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Borders', {})
 
         # Borders
-        for border in data['__children__']:
+        for border in data['_children_']:
             self.setBorder(border)
 
         self.endElementLevel('Borders')
@@ -353,20 +353,20 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Worksheet', {'ss:Name': data['Name']})
 
         # Named cell ranges
-        names = [element for element in data['__children__'] if element['name'] == 'Names']
+        names = [element for element in data['_children_'] if element['name'] == 'Names']
         if names:
             for cur_names in names:
                 self.setNames(cur_names)
 
         # Worksheet table
-        tables = [element for element in data['__children__'] if element['name'] == 'Table']
+        tables = [element for element in data['_children_'] if element['name'] == 'Table']
 
         if tables:
             for table in tables:
                 self.setTable(table)
 
         # Worksheet options
-        options = [element for element in data['__children__'] if element['name'] == 'WorksheetOptions']
+        options = [element for element in data['_children_'] if element['name'] == 'WorksheetOptions']
         if options:
             for option in options:
                 self.setWorksheetOptions(option)
@@ -380,7 +380,7 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Names', {})
 
         # Named cell ranges
-        named_range = [element for element in data['__children__'] if element['name'] == 'NamedRange']
+        named_range = [element for element in data['_children_'] if element['name'] == 'NamedRange']
         if named_range:
             for cur_named_range in named_range:
                 self.setNamedRange(cur_named_range)
@@ -426,7 +426,7 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Table', attrs)
 
         # Columns
-        columns = [element for element in data['__children__'] if element['name'] == 'Column']
+        columns = [element for element in data['_children_'] if element['name'] == 'Column']
         prev_idx = 0
         for col in columns:
             # Remove unnecessary indexes
@@ -438,7 +438,7 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
             self.setColumn(col)
 
         # Rows
-        rows = [element for element in data['__children__'] if element['name'] == 'Row']
+        rows = [element for element in data['_children_'] if element['name'] == 'Row']
         prev_idx = 0
         for row in rows:
             # Remove unnecessary indexes
@@ -498,7 +498,7 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Row', attrs)
 
         # Cells
-        cells = [element for element in data['__children__'] if element['name'] == 'Cell']
+        cells = [element for element in data['_children_'] if element['name'] == 'Cell']
         prev_idx = 0
         for cell in cells:
             # Remove unnecessary indexes
@@ -536,27 +536,27 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         if bool(set(data.keys()) & set(['StyleID', 'MergeAcross', 'MergeDown', 'Formula'])) or \
                 (not empty_data):
 
-            self.startElementLevel('Cell', attrs, not bool(data['__children__']))
+            self.startElementLevel('Cell', attrs, not bool(data['_children_']))
 
-            if data['__children__']:
+            if data['_children_']:
                 # Cell data
                 if not empty_data:
-                    cell_data = [element for element in data['__children__'] if element['name'] == 'Data']
+                    cell_data = [element for element in data['_children_'] if element['name'] == 'Data']
                     self.setData(cell_data[0])
                 # Named cell
-                named_cell = [element for element in data['__children__'] if element['name'] == 'NamedCell']
+                named_cell = [element for element in data['_children_'] if element['name'] == 'NamedCell']
                 if named_cell:
                     self.setNamedCell(named_cell[0])
 
-            self.endElementLevel('Cell', not bool(data['__children__']))
+            self.endElementLevel('Cell', not bool(data['_children_']))
 
     def isEmptyData(self,data):
         """
         Check for missing value in the cell data block.
         """
-        if not data['__children__']:
+        if not data['_children_']:
             return True
-        cell_data = [element for element in data['__children__'] if element['name'] == 'Data']
+        cell_data = [element for element in data['_children_'] if element['name'] == 'Data']
         if cell_data and 'value' in cell_data[0] and cell_data[0]['value']:
             return False
         else:
@@ -610,17 +610,17 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('WorksheetOptions', attrs)
 
         # PageSetup
-        page_setup = [element for element in data['__children__'] if element['name'] == 'PageSetup']
+        page_setup = [element for element in data['_children_'] if element['name'] == 'PageSetup']
         if page_setup:
             self.setPageSetup(page_setup[0])
 
         # FitToPage
-        fit_to_page = [element for element in data['__children__'] if element['name'] == 'FitToPage']
+        fit_to_page = [element for element in data['_children_'] if element['name'] == 'FitToPage']
         if fit_to_page:
             self.setFitToPage(fit_to_page[0])
 
         # Print
-        print_tag = [element for element in data['__children__'] if element['name'] == 'Print']
+        print_tag = [element for element in data['_children_'] if element['name'] == 'Print']
         if print_tag:
             self.setPrint(print_tag[0])
 
@@ -640,12 +640,12 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('PageSetup', {})
 
         # Layouts
-        layouts = [element for element in data['__children__'] if element['name'] == 'Layout']
+        layouts = [element for element in data['_children_'] if element['name'] == 'Layout']
         if layouts:
             self.setLayout(layouts[0])
 
         # Page margins
-        page_margins = [element for element in data['__children__'] if element['name'] == 'PageMargins']
+        page_margins = [element for element in data['_children_'] if element['name'] == 'PageMargins']
         if page_margins:
             self.setPageMargins(page_margins[0])
 
@@ -692,43 +692,43 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
         self.startElementLevel('Print', {})
 
         # The validity of the information in the template
-        valid_info = [element for element in data['__children__'] if element['name'] == 'ValidPrinterInfo']
+        valid_info = [element for element in data['_children_'] if element['name'] == 'ValidPrinterInfo']
         if valid_info:
             self.setValidPrinterInfo(valid_info[0])
 
         # Page fill
-        fit_width = [element for element in data['__children__'] if element['name'] == 'FitWidth']
+        fit_width = [element for element in data['_children_'] if element['name'] == 'FitWidth']
         if fit_width:
             self.setFitWidth(fit_width[0])
-        fit_height = [element for element in data['__children__'] if element['name'] == 'FitHeight']
+        fit_height = [element for element in data['_children_'] if element['name'] == 'FitHeight']
         if fit_height:
             self.setFitHeight(fit_height[0])
 
         # Direction of filling sheets
-        left_to_right = [element for element in data['__children__'] if element['name'] == 'LeftToRight']
+        left_to_right = [element for element in data['_children_'] if element['name'] == 'LeftToRight']
         if left_to_right:
             self.setLeftToRight(left_to_right[0])
 
         # Paper size
-        paper_size = [element for element in data['__children__'] if element['name'] == 'PaperSizeIndex']
+        paper_size = [element for element in data['_children_'] if element['name'] == 'PaperSizeIndex']
         if paper_size:
             self.setPaperSizeIndex(paper_size[0])
 
         # Scale
-        scale = [element for element in data['__children__'] if element['name'] == 'Scale']
+        scale = [element for element in data['_children_'] if element['name'] == 'Scale']
         if scale:
             self.setScale(scale[0])
 
         # Print density
-        h_resolution = [element for element in data['__children__'] if element['name'] == 'HorizontalResolution']
+        h_resolution = [element for element in data['_children_'] if element['name'] == 'HorizontalResolution']
         if h_resolution:
             self.setHorizResolution(h_resolution[0])
-        v_resolution = [element for element in data['__children__'] if element['name'] == 'VerticalResolution']
+        v_resolution = [element for element in data['_children_'] if element['name'] == 'VerticalResolution']
         if v_resolution:
             self.setVertResolution(v_resolution[0])
 
         # Number of copies
-        n_copies = [element for element in data['__children__'] if element['name'] == 'NumberofCopies']
+        n_copies = [element for element in data['_children_'] if element['name'] == 'NumberofCopies']
         if n_copies:
             self.setNumberOfCopies(n_copies[0])
 

@@ -20,7 +20,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
         """
         v_prototype.iqVIndexedPrototype.__init__(self, parent, *args, **kwargs)
 
-        self._attributes = {'name': 'Cell', '__children__': []}
+        self._attributes = {'name': 'Cell', '_children_': []}
 
         self._colsA1 = []   # Excel column names in A1 format
 
@@ -39,7 +39,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
         """
         Get attributes data.
         """
-        return [element for element in self._attributes['__children__'] if element['name'] == 'Data']
+        return [element for element in self._attributes['_children_'] if element['name'] == 'Data']
 
     def getDataCount(self):
         """
@@ -239,7 +239,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
         """
         indexes = []
         cur_idx = 0
-        for i, cell_attr in enumerate(self._parent.getAttributes()['__children__']):
+        for i, cell_attr in enumerate(self._parent.getAttributes()['_children_']):
             if 'Index' in cell_attr:
                 cur_idx = int(cell_attr['Index'])
             else:
@@ -253,7 +253,7 @@ class iqVCell(v_prototype.iqVIndexedPrototype):
 
         if idx in indexes:
             # The cell with the specified index is
-            return indexes, self._parent.getAttributes()['__children__'][indexes.index(idx)]
+            return indexes, self._parent.getAttributes()['_children_'][indexes.index(idx)]
         return indexes, None
 
     def getOffset(self, offset_row=0, offset_column=0):
@@ -339,7 +339,7 @@ class iqVData(v_prototype.iqVPrototype):
         Constructor.
         """
         v_prototype.iqVPrototype.__init__(self, parent, *args, **kwargs)
-        self._attributes = {'name': 'Data', 'value': None, 'Type': 'String', '__children__': []}
+        self._attributes = {'name': 'Data', 'value': None, 'Type': 'String', '_children_': []}
 
     def getValue(self):
         """

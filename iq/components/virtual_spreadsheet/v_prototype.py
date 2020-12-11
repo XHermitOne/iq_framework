@@ -6,7 +6,7 @@ Prototype object class module.
 """
 __version__ = (0, 0, 0, 1)
 
-PROTOTYPE_ATTR_NAMES = ('name', '__children__', 'crc', 'value')
+PROTOTYPE_ATTR_NAMES = ('name', '_children_', 'crc', 'value')
 
 
 class iqVPrototype(object):
@@ -62,7 +62,7 @@ class iqVPrototype(object):
         Create object.
         """
         attrs = self._parent.getAttributes()
-        attrs['__children__'].append(self._attributes)
+        attrs['_children_'].append(self._attributes)
         return self._attributes
 
     def createIndex(self, idx):
@@ -70,7 +70,7 @@ class iqVPrototype(object):
         Create object with index.
         """
         attrs = self._parent.getAttributes()
-        attrs['__children__'].insert(idx, self._attributes)
+        attrs['_children_'].insert(idx, self._attributes)
         self._parent.setAttributes(attrs)
         return self._attributes
 
@@ -89,8 +89,8 @@ class iqVPrototype(object):
         """
         Clear object.
         """
-        if '__children__' in self._attributes:
-            self._attributes['__children__'] = []
+        if '_children_' in self._attributes:
+            self._attributes['_children_'] = []
 
     def copy(self):
         """
@@ -112,7 +112,7 @@ class iqVPrototype(object):
         :param name: Child name.
         :return: Dictionary of attributes of the child or None if not found.
         """
-        children = [child for child in self._attributes['__children__'] if child['name'] == name]
+        children = [child for child in self._attributes['_children_'] if child['name'] == name]
         if children:
             return children[0]
         return None     
@@ -139,7 +139,7 @@ class iqVIndexedPrototype(iqVPrototype):
         """
         cur_idx = -1
         if elements is None:
-            elements = [element for element in self._parent.getAttributes()['__children__']
+            elements = [element for element in self._parent.getAttributes()['_children_']
                         if element['name'] == element_name]
 
         if elements:
@@ -164,7 +164,7 @@ class iqVIndexedPrototype(iqVPrototype):
         ret_i = -1
         ret_attr = None
         flag = True
-        for i, element_attr in enumerate(self._parent.getAttributes()['__children__']):
+        for i, element_attr in enumerate(self._parent.getAttributes()['_children_']):
             if element_attr['name'] == element_name:
                 if 'Index' in element_attr:
                     cur_idx = int(element_attr['Index'])
@@ -191,7 +191,7 @@ class iqVIndexedPrototype(iqVPrototype):
         """
         if idx > 0:
             # Previous Items
-            prev_elements = [element for element in self._parent.getAttributes()['__children__'][:idx - 1]
+            prev_elements = [element for element in self._parent.getAttributes()['_children_'][:idx - 1]
                              if element['name'] == element_name]
             if prev_elements:
                 max_idx = self._maxElementIdx(element_name, prev_elements)
@@ -207,7 +207,7 @@ class iqVIndexedPrototype(iqVPrototype):
         Reindexing all elements in the parent.
         """
         all_elements = []
-        for i, element_attr in enumerate(self._parent.getAttributes()['__children__']):
+        for i, element_attr in enumerate(self._parent.getAttributes()['_children_']):
             if element_attr['name'] in element_names:
                 if 'Index' in element_attr:
                     cur_idx = int(element_attr['Index'])
@@ -240,8 +240,8 @@ class iqVIndexedPrototype(iqVPrototype):
         # Checking for coincidence of indexes is still done in Excel terms i.e. starts at 1
         idx += 1
         cur_idx = 0
-        # children_count = len(self._parent.getAttributes()['__children__'])
-        for i, element_attr in enumerate(self._parent.getAttributes()['__children__']):
+        # children_count = len(self._parent.getAttributes()['_children_'])
+        for i, element_attr in enumerate(self._parent.getAttributes()['_children_']):
             if element_attr['name'] == element_name:
 
                 if 'Index' in element_attr:
@@ -250,8 +250,8 @@ class iqVIndexedPrototype(iqVPrototype):
                     cur_idx += 1
 
                 if idx == cur_idx:
-                    del self._parent.getAttributes()['__children__'][i]
-                    self._parent.getAttributes()['__children__'] = self._reIndexAfterDel(element_name, i)
+                    del self._parent.getAttributes()['_children_'][i]
+                    self._parent.getAttributes()['_children_'] = self._reIndexAfterDel(element_name, i)
                     return True
 
                 elif idx < cur_idx:
@@ -264,7 +264,7 @@ class iqVIndexedPrototype(iqVPrototype):
         """
         Re-index after removal.
         """
-        children = self._parent.getAttributes()['__children__']
+        children = self._parent.getAttributes()['_children_']
         for element_attr in children[index:]:
             if element_attr['name'] == element_name:
                 if 'Index' in element_attr:
@@ -282,8 +282,8 @@ class iqVIndexedPrototype(iqVPrototype):
         idx += 1
         cur_idx = 0
         delta = 1
-        # children_count = len(self.getAttributes()['__children__'])
-        for i, element_attr in enumerate(self.getAttributes()['__children__']):
+        # children_count = len(self.getAttributes()['_children_'])
+        for i, element_attr in enumerate(self.getAttributes()['_children_']):
             if element_attr['name'] == element_name:
 
                 if 'Index' in element_attr:
@@ -292,15 +292,15 @@ class iqVIndexedPrototype(iqVPrototype):
                     cur_idx += 1
 
                 if idx == cur_idx:
-                    element = self.getAttributes()['__children__'][i]
+                    element = self.getAttributes()['_children_'][i]
                     if 'MergeAcross' in element:
                         delta += int(element['MergeAcross'])
 
                     if not bIsReIndex:
-                        self.getAttributes()['__children__'] = self._reIndexBeforeClearChild(element_name, i, delta)
-                    del self.getAttributes()['__children__'][i]
+                        self.getAttributes()['_children_'] = self._reIndexBeforeClearChild(element_name, i, delta)
+                    del self.getAttributes()['_children_'][i]
                     if bIsReIndex:
-                        self.getAttributes()['__children__'] = self._reIndexAfterDelChild(element_name, i, delta)
+                        self.getAttributes()['_children_'] = self._reIndexAfterDelChild(element_name, i, delta)
                     return True
 
                 elif idx < cur_idx:
@@ -314,7 +314,7 @@ class iqVIndexedPrototype(iqVPrototype):
         """
         Re-index child elements after deletion.
         """
-        children = self.getAttributes()['__children__']
+        children = self.getAttributes()['_children_']
         for element_attr in children[index:]:
             if element_attr['name'] == element_name:
                 if 'Index' in element_attr:
@@ -325,7 +325,7 @@ class iqVIndexedPrototype(iqVPrototype):
         """
         Re-index child elements until the element is cleared for merging.
         """
-        children = self.getAttributes()['__children__']
+        children = self.getAttributes()['_children_']
         for element_attr in children[index + 1:]:
             if element_attr['name'] == element_name:
                 if 'Index' not in element_attr:
@@ -343,7 +343,7 @@ class iqVIndexedPrototype(iqVPrototype):
         # ret_i = -1
         ret_attr = None
         flag = True
-        for i, element_attr in enumerate(self.getAttributes()['__children__']):
+        for i, element_attr in enumerate(self.getAttributes()['_children_']):
             if element_attr['name'] == element_name:
                 if 'Index' in element_attr:
                     cur_idx = int(element_attr['Index'])

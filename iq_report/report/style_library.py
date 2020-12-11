@@ -85,20 +85,20 @@ class iqXMLReportStyleLibrary(iqReportStyleLibrary):
         """
         try:
             # Get workbook
-            workbook = data['__children__'][0]
+            workbook = data['_children_'][0]
             # Styles as dictionary
             styles = dict()
-            styles_lst = [element for element in workbook['__children__'] if element['name'] == 'Styles']
+            styles_lst = [element for element in workbook['_children_'] if element['name'] == 'Styles']
             if styles_lst:
-                styles = dict([(style['ID'], style) for style in styles_lst[0]['__children__']])
+                styles = dict([(style['ID'], style) for style in styles_lst[0]['_children_']])
 
-            worksheets = [element for element in workbook['__children__'] if element['name'] == 'Worksheet']
+            worksheets = [element for element in workbook['_children_'] if element['name'] == 'Worksheet']
 
             # Get worksheet
             rep_worksheet = worksheets[0]
-            rep_data_tab = rep_worksheet['__children__'][0]
+            rep_data_tab = rep_worksheet['_children_'][0]
             # Row data list
-            rep_data_rows = [element for element in rep_data_tab['__children__'] if element['name'] == 'Row']
+            rep_data_rows = [element for element in rep_data_tab['_children_'] if element['name'] == 'Row']
 
             style_lib = self._getStyles(rep_data_rows, styles)
             return style_lib
@@ -130,9 +130,9 @@ class iqXMLReportStyleLibrary(iqReportStyleLibrary):
         """
         new_styles = dict()
         for row in rows:
-            for cell in row['__children__']:
+            for cell in row['_children_']:
                 # Get value
-                value = cell['__children__'][0]['value']
+                value = cell['_children_'][0]['value']
 
                 if value and isinstance(value, str):
                     if self._isStyleTag(value):

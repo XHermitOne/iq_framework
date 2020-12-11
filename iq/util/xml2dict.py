@@ -20,7 +20,7 @@ __version__ = (0, 0, 0, 1)
 DEFAULT_XML_TAG = 'Excel'
 
 TAG_KEY = 'name'
-CHILDREN_KEY = '__children__'
+CHILDREN_KEY = '_children_'
 VALUE_KEY = 'value'
 
 
