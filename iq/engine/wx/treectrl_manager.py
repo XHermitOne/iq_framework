@@ -893,10 +893,10 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
 
         children = self.getTreeCtrlItemChildren(treectrl=treectrl, item=item)
         if children:
-            item_data['_children_'] = list()
+            item_data[spc_func.CHILDREN_ATTR_NAME] = list()
         for child in children:
             child_data = self._getTreeCtrlData(treectrl=treectrl, item=child)
-            item_data['_children_'].append(child_data)
+            item_data[spc_func.CHILDREN_ATTR_NAME].append(child_data)
         return item_data
 
     def getTreeCtrlData(self, treectrl=None, *args, **kwargs):
