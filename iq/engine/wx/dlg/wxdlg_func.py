@@ -353,12 +353,12 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
     return None
 
 
-class icProgressDlg(wx.ProgressDialog):
+class iqProgressDlg(wx.ProgressDialog):
     """
     The progress bar dialog box class.
     """
     def __init__(self, parent=None, title='', prompt_text='',
-                 min_value=0, max_value=100, style=wx.PD_CAN_ABORT):
+                 min_value=0, max_value=100, style=wx.PD_AUTO_HIDE):
         """
         Constructor.
 
@@ -383,9 +383,15 @@ class icProgressDlg(wx.ProgressDialog):
             self._ProgressMIN = tmp_value
         self._current_value = 0
         try:
-            wx.ProgressDialog.__init__(self, title, prompt_text,
-                                       self._ProgressMAX - self._ProgressMIN,
-                                       self._ProgressFrame, style | wx.PD_APP_MODAL)
+            if style is None:
+                style = wx.PD_AUTO_HIDE
+
+            wx.ProgressDialog.__init__(self,
+                                       title=title,
+                                       message=prompt_text,
+                                       maximum=self._ProgressMAX - self._ProgressMIN,
+                                       parent=self._ProgressFrame,
+                                       style=style | wx.PD_APP_MODAL)
 
             self.SetSize(wx.Size(500, 130))
             self.CenterOnScreen()
@@ -455,7 +461,7 @@ def openProgressDlg(parent=None, title='', prompt_text='',
     global PROGRESS_DLG
     PROGRESS_DLG = None
     try:
-        PROGRESS_DLG = icProgressDlg(parent, title, prompt_text, min_value, max_value, style)
+        PROGRESS_DLG = iqProgressDlg(parent, title, prompt_text, min_value, max_value, style)
     except:
         log_func.fatal(u'Error open progress bar dialog')
     return PROGRESS_DLG
