@@ -41,7 +41,7 @@ class iqDataObjectHistory(obj_registry.iqObjRegistry, object.iqObject):
         db = self.getDB()
         db_url = db.getDBUrl() if db else None
         if not db_url:
-            log_func.error(u'DB URL not defined for data object history <%s>' % self.getName())
+            log_func.warning(u'DB URL not defined for data object history <%s>' % self.getName())
         obj_registry.iqObjRegistry.__init__(self, db_url=db_url,
                                             operation_table_name=self.getOperationTabName(),
                                             obj_table_name=self.getObjectTabName())

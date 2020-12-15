@@ -70,7 +70,7 @@ class iqWxPanel(wx.Panel, component.iqWxWidget):
             dc.DrawBitmap(bmp, pos_x, pos_y)
             return True
         else:
-            log_func.error(u'Not define wx.Bitmap object for drawing on <%s> panel' % self.getName())
+            log_func.warning(u'Not define wx.Bitmap object for drawing on <%s> panel' % self.getName())
         return False
 
     def getControl(self, ctrl_name):

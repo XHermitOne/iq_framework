@@ -46,7 +46,7 @@ class iqMnemoAnchorManager(object):
         :return: Object of control, which can be placed on a mnemonic diagram
             or None if error.
         """
-        log_func.error(u'The method of obtaining the object attached to the anchor control is not defined')
+        log_func.warning(u'The method of obtaining the object attached to the anchor control is not defined')
         return None
 
     def layoutControl(self, ctrl=None):
@@ -95,7 +95,7 @@ class iqMnemoAnchorManager(object):
             except:
                 log_func.fatal(u'Error setting the size and position of the control in accordance with the anchor <%s>' % self.getName())
         else:
-            log_func.error(u'An anchor control is not defined <%s>' % self.getName())
+            log_func.warning(u'An anchor control is not defined <%s>' % self.getName())
         return False
 
     def calcPixPosition(self, svg_position=None):
@@ -109,7 +109,7 @@ class iqMnemoAnchorManager(object):
             svg_position = self._position
 
         if self._mnemoscheme is None:
-            log_func.error(u'Not defined mimic for anchor <%s>' % self.getName())
+            log_func.warning(u'Not defined mimic for anchor <%s>' % self.getName())
             return 0, 0
 
         # Determine the size of the mimic diagram required for calculation
@@ -133,9 +133,9 @@ class iqMnemoAnchorManager(object):
 
             return pix_x, pix_y
         else:
-            log_func.error(u'Estimated zero scale factor for mnemoscheme <%s>:' % self._mnemoscheme.getName())
-            log_func.error(u'\tCheck attributes svg_width and svg_height of mnemoscheme <%s>' % self._mnemoscheme.getName())
-            log_func.error(u'\tIt must not be zero!')
+            log_func.warning(u'Estimated zero scale factor for mnemoscheme <%s>:' % self._mnemoscheme.getName())
+            log_func.warning(u'\tCheck attributes svg_width and svg_height of mnemoscheme <%s>' % self._mnemoscheme.getName())
+            log_func.warning(u'\tIt must not be zero!')
         return 0, 0
 
     def calcRectangleArea(self, svg_position=None, svg_size=None,

@@ -47,7 +47,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         model_psp = self.getModelPsp()
 
         if not model_psp:
-            log_func.error(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
+            log_func.warning(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
             return None
 
         psp = self.newPassport().setAsStr(model_psp)
@@ -65,7 +65,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         model_psp = self.getModelPsp()
 
         if not model_psp:
-            log_func.error(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
+            log_func.warning(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
             return None
 
         model_name = self.newPassport().setAsStr(model_psp).name
@@ -74,7 +74,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         if scheme:
             return scheme.getModel(model_name)
         else:
-            log_func.error(u'Error create data scheme object')
+            log_func.warning(u'Error create data scheme object')
         return None
 
     def getModelObj(self):
@@ -84,7 +84,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         model_psp = self.getModelPsp()
 
         if not model_psp:
-            log_func.error(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
+            log_func.warning(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
             return None
         model_obj = self.getKernel().createByPsp(psp=model_psp)
         return model_obj

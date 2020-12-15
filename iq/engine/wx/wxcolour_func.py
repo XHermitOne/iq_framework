@@ -27,7 +27,7 @@ def wxColour2StrHex(colour):
     elif isinstance(colour, str) and colour not in ('default',):
         return colour
 
-    log_func.error(u'It is not possible to convert colour <%s> to format #RRGGBB. Black colour used' % str(colour))
+    log_func.warning(u'It is not possible to convert colour <%s> to format #RRGGBB. Black colour used' % str(colour))
     return '#000000'
 
 
@@ -60,7 +60,7 @@ def RGB2wxColour(rgb):
     :return: wx.Colour object or None if error.
     """
     if (not isinstance(rgb, tuple) or not isinstance(rgb, list)) and len(rgb) != 3:
-        log_func.error(u'It is not possible to convert <%s> to wx.Colour object' % str(rgb))
+        log_func.warning(u'It is not possible to convert <%s> to wx.Colour object' % str(rgb))
         return None
 
     return wx.Colour(int(rgb[0]), int(rgb[1]), int(rgb[2]))
@@ -132,7 +132,7 @@ def adaptSysThemeColour(dark_theme_colour=None, light_theme_colour=None):
             WX_ADAPT_COLOURS[rgb] = colour
         return colour
     else:
-        log_func.error(u'It is not possible to adapt the color to the hue of the system theme')
+        log_func.warning(u'It is not possible to adapt the color to the hue of the system theme')
 
     return wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWTEXT)
 

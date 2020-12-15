@@ -54,7 +54,7 @@ def main(*argv):
                                        'mode=', 'engine=', 'prj=', 'username=', 'password=',
                                        'res_filename='])
     except getopt.error as msg:
-        log_func.error(str(msg), is_force_print=True)
+        log_func.warning(str(msg), is_force_print=True)
         log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
         log_func.printColourText(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(2)
@@ -120,7 +120,7 @@ def main(*argv):
             # kernel = iq.createKernel()
             editor.openResourceEditor(res_filename=res_filename)
         else:
-            log_func.error(u'Engine type <%s : %s> not support' % (engine, mode))
+            log_func.warning(u'Engine type <%s : %s> not support' % (engine, mode))
     except:
         log_func.fatal(u'Run iqFramework error')
 

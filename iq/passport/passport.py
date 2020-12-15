@@ -227,7 +227,7 @@ class iqPassport(object):
             if compare_guid:
                 compare.append(self.guid == passport.guid)
         else:
-            log_func.error(u'Not supported passport type <%s>' % passport.__class__.__name__)
+            log_func.warning(u'Not supported passport type <%s>' % passport.__class__.__name__)
         # log_func.debug(u'Passport compare <%s> = <%s> : %s' % (passport, str(self), compare))
         return all(compare)
 
@@ -247,7 +247,7 @@ class iqPassport(object):
             prj_name = global_func.getProjectName() if not passport.prj or passport.prj == DEFAULT_THIS_PROJECT_NAME else passport.prj
             prj_path = os.path.join(file_func.getFrameworkPath(), prj_name) if prj_name else None
             if prj_name is None:
-                log_func.error(u'Project name not defined')
+                log_func.warning(u'Project name not defined')
                 return None
 
             find_path = prj_path
@@ -255,7 +255,7 @@ class iqPassport(object):
         file_names = file_func.getFileNames(find_path)
 
         if not passport.module:
-            log_func.error(u'Not define passport module <%s>' % str(passport))
+            log_func.warning(u'Not define passport module <%s>' % str(passport))
             return None
 
         res_filename = file_func.setFilenameExt(passport.module, res_func.RESOURCE_FILE_EXT)
@@ -267,7 +267,7 @@ class iqPassport(object):
                 find_res_filename = self.findResourceFilename(passport, find_path=dir_path)
                 if find_res_filename:
                     return find_res_filename
-        # log_func.error(u'Resource file <%s> not found in %s' % (res_filename, file_names))
+        # log_func.warning(u'Resource file <%s> not found in %s' % (res_filename, file_names))
         return None
 
     def findObjResource(self, passport=None):
@@ -288,11 +288,11 @@ class iqPassport(object):
                                                     object_name=passport.name,
                                                     object_guid=passport.guid)
             if not obj_resource:
-                log_func.error(u'Object <%s> not found in resource <%s>' % (str(passport),
+                log_func.warning(u'Object <%s> not found in resource <%s>' % (str(passport),
                                                                             res_filename))
             return obj_resource
         else:
-            log_func.error(u'Resource file <%s> not found' % str(passport))
+            log_func.warning(u'Resource file <%s> not found' % str(passport))
         return None
 
     def setAsAny(self, passport=None):

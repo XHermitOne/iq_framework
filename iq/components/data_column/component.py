@@ -56,7 +56,7 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
             if link_psp:
                 self.link_obj = self.getKernel().createByPsp(psp=link_psp)
             else:
-                log_func.error(u'Not define link object in column <%s>' % self.getName())
+                log_func.warning(u'Not define link object in column <%s>' % self.getName())
         return self.link_obj
 
     def getFilterFuncs(self):

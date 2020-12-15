@@ -81,7 +81,7 @@ class iqFilter2PostgreSQLConverter(object):
             elif element['type'] == 'compare':
                 sql_element = self.genRequisiteSQL(element)
             else:
-                log_func.error(u'Not defined filter item type <%s>' % element['type'])
+                log_func.warning(u'Not defined filter item type <%s>' % element['type'])
                 continue
             sql_elements.append(sql_element)
             
@@ -160,7 +160,7 @@ class iqFilter2SQLAlchemySelectConverter(object):
             query = self.genGroupSection(self.filter)
             return query
         else:
-            log_func.error(u'Filter not defined <%s>' % self.filter)
+            log_func.warning(u'Filter not defined <%s>' % self.filter)
         return None
     
     def genGroupSection(self, group_data):
@@ -176,7 +176,7 @@ class iqFilter2SQLAlchemySelectConverter(object):
             elif element['type'] == 'compare':
                 sql_alchemy_element = self.genRequisiteSection(element)
             else:
-                log_func.error(u'Not defined filter item type <%s>' % element['type'])
+                log_func.warning(u'Not defined filter item type <%s>' % element['type'])
                 continue
 
             if sql_alchemy_element is not None:
@@ -248,7 +248,7 @@ class iqFilter2SQLAlchemySelectConverter(object):
             elif requisite['function'] == 'not_into':
                 return sqlalchemy.not_(getattr(self.table.c, requisite['requisite']).in_(requisite['arg_1']))
         
-            log_func.error(u'Not define function type <%s> filter requisite in convert' % requisite['function'])
+            log_func.warning(u'Not define function type <%s> filter requisite in convert' % requisite['function'])
         except:
             log_func.fatal(u'Error convert filter requisite <%s>' % requisite)
             
@@ -314,11 +314,11 @@ class iqFilter2SQLAlchemyQueryConverter(object):
             elif isinstance(self.filter, (list, tuple)):
                 filter_list = self.filter
             else:
-                log_func.error(u'Not valid filter data type <%s>' % self.filter.__class__.__name__)
+                log_func.warning(u'Not valid filter data type <%s>' % self.filter.__class__.__name__)
             query = [self.genRequisiteSection(element) if element['type'] == 'compare' else self.genGroupSection(element) for element in filter_list]
             return query
         else:
-            log_func.error(u'Filter not defined <%s>' % self.filter)
+            log_func.warning(u'Filter not defined <%s>' % self.filter)
         return None
 
     def genGroupSection(self, group_data):
@@ -335,7 +335,7 @@ class iqFilter2SQLAlchemyQueryConverter(object):
             elif element['type'] == 'compare':
                 sql_alchemy_element = self.genRequisiteSection(element)
             else:
-                log_func.error(u'Not defined filter item type <%s>' % element['type'])
+                log_func.warning(u'Not defined filter item type <%s>' % element['type'])
                 continue
 
             if sql_alchemy_element is not None:
@@ -407,7 +407,7 @@ class iqFilter2SQLAlchemyQueryConverter(object):
             elif requisite['function'] == 'not_into':
                 return sqlalchemy.not_(getattr(self.model, requisite['requisite']).in_(requisite['arg_1']))
 
-            log_func.error(u'Not define function type <%s> filter requisite in convert' % requisite['function'])
+            log_func.warning(u'Not define function type <%s> filter requisite in convert' % requisite['function'])
         except:
             log_func.fatal(u'Error convert filter requisite <%s>' % requisite)
 

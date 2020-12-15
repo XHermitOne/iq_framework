@@ -90,7 +90,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             else:
                 return records
         else:
-            log_func.error(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
+            log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
         return list()
 
     def getValues(self, col_name, start_dt, stop_dt, rec_filter=None):
@@ -156,7 +156,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             else:
                 log_func.warning(u'No data in historical data table <%s>' % model.__name__)
         else:
-            log_func.error(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
+            log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
         return dict()
 
     def getLastValue(self, col_name, rec_filter=None, rec_limit=1):
@@ -234,7 +234,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             else:
                 log_func.warning(u'No data in historical data table <%s>' % model.getName())
         else:
-            log_func.error(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
+            log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
         return dict()
 
     def getFirstValue(self, col_name, rec_filter=None, rec_limit=1):

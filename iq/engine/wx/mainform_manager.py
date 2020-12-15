@@ -172,7 +172,7 @@ class iqMainFormManager(base_manager.iqBaseManager):
         splash_filename = file_func.getAbsolutePath(splash_filename)
 
         if not splash_filename or not os.path.exists(splash_filename):
-            log_func.error(u'Splash image filename <%s> not found' % splash_filename)
+            log_func.warning(u'Splash image filename <%s> not found' % splash_filename)
             return False
 
         bmp = wxbitmap_func.createBitmap(splash_filename)

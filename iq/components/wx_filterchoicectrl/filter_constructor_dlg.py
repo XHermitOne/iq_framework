@@ -27,7 +27,7 @@ def getFilterConstructorDlg(parent=None, default_filter_data=None, env=None):
     :param env: Filter constructor environment.
     """
     if env is None:
-        log_func.error(u'Not define filter constructor environment')
+        log_func.warning(u'Not define filter constructor environment')
         from . import filter_builder_env
         env = filter_builder_env.FILTER_ENVIRONMENT
 

@@ -133,7 +133,7 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
                 return str(value)
             return None
         else:
-            log_func.error(u'Not define property editor')
+            log_func.warning(u'Not define property editor')
         return u''
 
     def OnEvent(self, propgrid, primaryEditor, event):

@@ -54,7 +54,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :return: wx.Bitmap object or None if error.
         """
         if not isinstance(img_name, str):
-            log_func.error(u'Not supported image name type <%s>' % type(img_name))
+            log_func.warning(u'Not supported image name type <%s>' % type(img_name))
             return None
 
         bmp = wxbitmap_func.createIconBitmap(icon_filename=img_name)

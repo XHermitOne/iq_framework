@@ -90,7 +90,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :return: Record dictionary list or None if error.
         """
         if not column_values:
-            log_func.error(u'Not define column values for search in <%s>' % self.getName())
+            log_func.warning(u'Not define column values for search in <%s>' % self.getName())
             return None
 
         try:
@@ -155,7 +155,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                             getattr(model, col_name) if not reverse else getattr(model, col_name).desc() for
                             col_name in sort_columns])
                 else:
-                    log_func.error(u'Error ORDER BY columns type <%s>' % type(sort_columns))
+                    log_func.warning(u'Error ORDER BY columns type <%s>' % type(sort_columns))
 
             records = None if query is None else query.all()
 
@@ -257,7 +257,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         if cod_len and (0 <= level < len(cod_len)):
             return cod_len[level]
         else:
-            log_func.error(u'Not valid level index [%s]' % level)
+            log_func.warning(u'Not valid level index [%s]' % level)
         return -1
 
     def getCodAsTuple(self, cod):
@@ -310,7 +310,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                     records = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
                                                           cod_column.like(parent_cod + '%'))
             else:
-                log_func.error(u'Not supported getting level records in <%s>' % self.getName())
+                log_func.warning(u'Not supported getting level records in <%s>' % self.getName())
 
             return [vars(record) for record in records]
         except:
@@ -346,7 +346,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                     record_count = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
                                                                cod_column.like(parent_cod + '%')).count()
             else:
-                log_func.error(u'Not supported getting level record count in <%s>' % self.getName())
+                log_func.warning(u'Not supported getting level record count in <%s>' % self.getName())
 
             # log_func.debug(u'Record count <%s : %s>' % (parent_cod, record_count))
             return bool(record_count)
@@ -365,7 +365,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             from . import wx_editdlg
             return wx_editdlg.editRefObjDlg(parent=parent, ref_obj=self)
         else:
-            log_func.error(u'Not support edit ref object. Engine <%s>' % global_func.getEngineType())
+            log_func.warning(u'Not support edit ref object. Engine <%s>' % global_func.getEngineType())
         return False
 
     def isActive(self, cod):

@@ -355,7 +355,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
         """
         Filter change.
         """
-        log_func.error(u'Not define <OnChange> function in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'Not define <OnChange> function in <%s> component' % self.__class__.__name__)
 
     def onItemSelectChanged(self, event):
         """
@@ -734,7 +734,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
         :param item_filter: Data of the element filter.
             If None, no filtering is performed.
         """
-        log_func.error(u'Not define <getCurRecords> function in component <%s>' % self.__class__.__name__)
+        log_func.warning(u'Not define <getCurRecords> function in component <%s>' % self.__class__.__name__)
 
     def saveFilters(self, save_filename=None):
         """

@@ -47,7 +47,7 @@ class iqUserManager(object):
         if login_result:
             log_func.info(u'Login <%s> user ... OK' % self.getName())
         else:
-            log_func.error(u'Login <%s> user ... FAIL' % self.getName())
+            log_func.warning(u'Login <%s> user ... FAIL' % self.getName())
 
         return login_result
 
@@ -102,7 +102,7 @@ class iqUserManager(object):
         """
         Get role names.
         """
-        log_func.error(u'Not define get role names method')
+        log_func.warning(u'Not define get role names method')
         return tuple()
 
     def getRoles(self):
@@ -111,5 +111,5 @@ class iqUserManager(object):
 
         :return: Role list.
         """
-        log_func.error(u'Not define get roles method')
+        log_func.warning(u'Not define get roles method')
         return tuple()

@@ -115,7 +115,7 @@ class iqSelectComponentMenu(wx.Menu, iqSelectComponentMenuManager):
                 elif self._parent and menuitem_handler:
                     self._parent.Bind(wx.EVT_MENU, menuitem_handler, id=menuitem_id)
                 else:
-                    log_func.error(u'Be sure to specify the parent window when calling the component selection menu')
+                    log_func.warning(u'Be sure to specify the parent window when calling the component selection menu')
 
                 self.menuitem2component_spc[menuitem_id] = component_spc
 
@@ -203,7 +203,7 @@ class iqSelectComponentFlatMenu(flatmenu.FlatMenu,
                 elif self._parent and menuitem_handler:
                     self._parent.Bind(wx.EVT_MENU, menuitem_handler, id=menuitem_id)
                 else:
-                    log_func.error(u'Be sure to specify the parent window when calling the component selection menu')
+                    log_func.warning(u'Be sure to specify the parent window when calling the component selection menu')
 
                 self.menuitem2component_spc[menuitem_id] = component_spc
 

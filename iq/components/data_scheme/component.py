@@ -42,7 +42,7 @@ class iqDataScheme(scheme.iqSchemeManager, object.iqObject):
             kernel = self.getKernel()
             return kernel.getObject(psp, register=True)
         else:
-            log_func.error(u'Not define DB engine in data scheme <%s>' % self.getName())
+            log_func.warning(u'Not define DB engine in data scheme <%s>' % self.getName())
         return None
 
 

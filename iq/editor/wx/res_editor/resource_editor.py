@@ -114,11 +114,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                             log_func.warning(u'Component <%s> specification not define icon' % component_type)
                             log_func.warning(u'Verify __icon__ attribute in specification')
                     else:
-                        log_func.error(u'In specification %s not define type' % component_spc)
+                        log_func.warning(u'In specification %s not define type' % component_spc)
 
             self.resource_treeListCtrl.SetImageList(self.getImageLibImageList())
         else:
-            log_func.error(u'Empty component specification cache <%s>' % str(component_spc_cache))
+            log_func.warning(u'Empty component specification cache <%s>' % str(component_spc_cache))
 
     def init(self):
         """
@@ -186,7 +186,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :return: True/False.
         """
         if resource is None:
-            log_func.error(u'Resource editor. Not define resource for loading')
+            log_func.warning(u'Resource editor. Not define resource for loading')
             return False
 
         try:
@@ -357,7 +357,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                                                      activate=selected_resource.get('activate', True))
                     else:
                         msg = u'Value <%s> of property [%s] is not valid' % (str_value, name)
-                        log_func.error(msg)
+                        log_func.warning(msg)
                         wxdlg_func.openWarningBox(title=_(u'VALIDATE'),
                                                   prompt_text=msg, parent=self)
                         self.setPropertyValueAsString(wx_property, name, None, spc)
@@ -521,7 +521,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             wxdlg_func.openMsgBox(title=u'MODULE', prompt_text=msg)
         else:
             msg = u'Resource module <%s> is not generated' % module_filename
-            log_func.error(msg)
+            log_func.warning(msg)
             wxdlg_func.openErrBox(title=u'MODULE', prompt_text=msg)
 
         event.Skip()
@@ -687,7 +687,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
                 return True
             else:
-                log_func.error(u'Item <%s> not correct' % str(item))
+                log_func.warning(u'Item <%s> not correct' % str(item))
         except:
             log_func.fatal(u'Error append new child resource in item')
         return False
@@ -729,7 +729,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 resource_item['name'] = resource_item.get('name', 'default') + str(wx.NewId())
                 clipboard.toClipboard(resource_item, do_copy=False)
             else:
-                log_func.error(u'Item <%s> not correct' % str(item))
+                log_func.warning(u'Item <%s> not correct' % str(item))
         except:
             log_func.fatal(u'Error copy resource to clipboard')
         return resource_item
@@ -758,7 +758,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                     log_func.warning(msg)
                     wxdlg_func.openWarningBox(u'PASTE', msg)
             else:
-                log_func.error(u'Item <%s> not correct' % str(item))
+                log_func.warning(u'Item <%s> not correct' % str(item))
         except:
             log_func.fatal(u'Error past resource from clipboard')
         return False
@@ -781,7 +781,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 self.resource_treeListCtrl.GetMainWindow().Delete(item)
                 return resource_item
             else:
-                log_func.error(u'Item <%s> not correct' % str(item))
+                log_func.warning(u'Item <%s> not correct' % str(item))
         except:
             log_func.fatal(u'Error cut resource to clipboard')
         return None
@@ -815,7 +815,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                     self.resource_treeListCtrl.GetMainWindow().SelectItem(item)
                     return True
             else:
-                log_func.error(u'Item <%s> not correct' % str(item))
+                log_func.warning(u'Item <%s> not correct' % str(item))
         except:
             log_func.fatal(u'Error move up resource')
         return False
@@ -849,7 +849,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                     self.resource_treeListCtrl.GetMainWindow().SelectItem(new_item)
                     return True
             else:
-                log_func.error(u'Item <%s> not correct' % str(item))
+                log_func.warning(u'Item <%s> not correct' % str(item))
         except:
             log_func.fatal(u'Error move down resource')
         return False

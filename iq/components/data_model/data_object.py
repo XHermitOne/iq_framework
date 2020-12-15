@@ -60,7 +60,7 @@ class iqDataObject(object):
                                                     value) for name, value in link_rec.items()])
                                 dataset[i].update(update_rec)
                             else:
-                                log_func.error(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
+                                log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
                                                                                                           link_obj.getType(),
                                                                                                           link_obj.getName()))
         except:

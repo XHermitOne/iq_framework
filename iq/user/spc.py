@@ -33,7 +33,7 @@ def getProjectRoles(prj_name=None, *args, **kwargs):
         prj_name = global_func.getProjectName()
 
     if not prj_name:
-        log_func.error(u'Not define project name')
+        log_func.warning(u'Not define project name')
         return list()
 
     res_filename = os.path.join(file_func.getProjectPath(),

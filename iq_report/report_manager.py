@@ -282,7 +282,7 @@ class iqReportManager(object):
         else:
             filename = os.path.join(report_dir, report_filename)
             if not os.path.exists(filename):
-                log_func.error(u'Report template file <%s> not exists' % filename)
+                log_func.warning(u'Report template file <%s> not exists' % filename)
                 filename = None
         return filename
 

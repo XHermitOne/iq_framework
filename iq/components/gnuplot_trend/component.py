@@ -104,7 +104,7 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
         """
         pens = self.getChildren()
         if not pens:
-            log_func.error(u'Not define trend pens <%s>' % self.getName())
+            log_func.warning(u'Not define trend pens <%s>' % self.getName())
         return pens
 
     def isAdaptScene(self):
@@ -128,12 +128,12 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
                 scene_min = eval(scene_min)
             except:
                 log_func.fatal(u'Scene minimum value format error')
-                log_func.error(u'Minimum values must be specified by a tuple. For example (\'00:00:00\', 0.0)')
+                log_func.warning(u'Minimum values must be specified by a tuple. For example (\'00:00:00\', 0.0)')
                 scene_min = ('00:00:00', 0.0)
         elif scene_min and isinstance(scene_min, (list, tuple)):
             pass
         else:
-            log_func.error(u'Error scene minimum value type <%s>' % type(scene_min))
+            log_func.warning(u'Error scene minimum value type <%s>' % type(scene_min))
         dt_min = self._str2dt(scene_min[0], self._x_format) if isinstance(scene_min[0], str) else scene_min[0]
         y_min = float(scene_min[1])
         self.scene_min = (dt_min, y_min)
@@ -166,12 +166,12 @@ class iqGnuplotTrend(gnuplot_trend_proto.iqGnuplotTrendProto, wx_panel.COMPONENT
                 scene_max = eval(scene_max)
             except:
                 log_func.fatal(u'Scene maximum value format error')
-                log_func.error(u'Maximum values must be specified by a tuple. For example (\'00:00:00\', 0.0)')
+                log_func.warning(u'Maximum values must be specified by a tuple. For example (\'00:00:00\', 0.0)')
                 scene_max = ('23:59:59', 100.0)
         elif scene_max and isinstance(scene_max, (list, tuple)):
             pass
         else:
-            log_func.error(u'Error scene maximum value type <%s>' % type(scene_max))
+            log_func.warning(u'Error scene maximum value type <%s>' % type(scene_max))
         dt_max = self._str2dt(scene_max[0], self._x_format) if isinstance(scene_max[0], str) else scene_max[0]
         y_max = float(scene_max[1])
         self.scene_max = (dt_max, y_max)

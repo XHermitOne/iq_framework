@@ -134,7 +134,7 @@ class iqGnuplotTrendNavigatorProto(gnuplot_trend_navigator_panel_proto.iqGnuplot
                     self.setListCtrlRowForegroundColour(listctrl=self.legend_listCtrl,
                                                         item=row, colour=wx.Colour(pen_colour_rgb))
                 else:
-                    log_func.error(u'Color setting mode not supported')
+                    log_func.warning(u'Color setting mode not supported')
             return True
         except:
             log_func.fatal(u'Error filling trend legend')

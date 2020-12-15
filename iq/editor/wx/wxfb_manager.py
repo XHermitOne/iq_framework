@@ -266,7 +266,7 @@ def adaptWXWFormBuilderPy(py_filename):
     if result:
         log_func.info(u'Python adaptation of wxFormBuilder module <%s> ... OK' % py_filename)
     else:
-        log_func.error(u'Python adaptation of wxFormBuilder module <%s> ... FAIL' % py_filename)
+        log_func.warning(u'Python adaptation of wxFormBuilder module <%s> ... FAIL' % py_filename)
     return result
 
 

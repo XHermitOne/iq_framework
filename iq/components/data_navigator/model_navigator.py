@@ -617,5 +617,5 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
                     env['requisites'].append(requisite_env)
         else:
-            log_func.error(u'Not define model object for model navigator <%s>' % self.getName())
+            log_func.warning(u'Not define model object for model navigator <%s>' % self.getName())
         return env

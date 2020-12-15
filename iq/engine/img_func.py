@@ -23,7 +23,7 @@ def createImage(img_filename, *args, **kwargs):
         from .wx import wxbitmap_func
         return wxbitmap_func.createBitmap(img_filename, *args, **kwargs)
     else:
-        log_func.error(u'Unsupported image objects')
+        log_func.warning(u'Unsupported image objects')
     return None
 
 
@@ -39,6 +39,6 @@ def createIconImage(icon_filename=None, *args, **kwargs):
         from .wx import wxbitmap_func
         return wxbitmap_func.createIconBitmap(icon_filename, *args, **kwargs)
     else:
-        log_func.error(u'Unsupported image objects')
+        log_func.warning(u'Unsupported image objects')
     return None
 

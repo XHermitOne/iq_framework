@@ -55,11 +55,11 @@ class iqMnemoSchemeManager(object):
         :return: True/False.
         """
         if not svg_filename:
-            log_func.error(u'Not defined SVG mnemoscheme background file')
+            log_func.warning(u'Not defined SVG mnemoscheme background file')
             return False
 
         if not os.path.exists(svg_filename):
-            log_func.error(u'Not found SVG mnemoscheme background file <%s>' % svg_filename)
+            log_func.warning(u'Not found SVG mnemoscheme background file <%s>' % svg_filename)
             return False
 
         self._svg_background = svg_filename
@@ -72,14 +72,14 @@ class iqMnemoSchemeManager(object):
         """
         List of mnemonic anchors.
         """
-        log_func.error(u'Undefined method for obtaining a list of mnemonic anchors')
+        log_func.warning(u'Undefined method for obtaining a list of mnemonic anchors')
         return list()
 
     def getControls(self):
         """
         List of active mnemonic controls.
         """
-        log_func.error(u'The method for obtaining the list of controls of the mnemonic scheme is not defined')
+        log_func.warning(u'The method for obtaining the list of controls of the mnemonic scheme is not defined')
         return list()
 
     def layoutAll(self, auto_refresh=True):
@@ -89,7 +89,7 @@ class iqMnemoSchemeManager(object):
         :param auto_refresh: Automatically refresh the mnemoscheme object.
         :return: True/False.
         """
-        log_func.error(u'The method of arrangement and dimensioning of controls of the mnemonic diagram is not defined')
+        log_func.warning(u'The method of arrangement and dimensioning of controls of the mnemonic diagram is not defined')
         return False
 
     def drawBackground(self, auto_rewrite=False):
@@ -126,7 +126,7 @@ class iqMnemoSchemeManager(object):
                 log_func.info(u'Start SVG -> PNG covert command: <%s> ' % cmd)
                 os.system(cmd)
                 if not os.path.exists(png_filename):
-                    log_func.error(u'Conversion error SVG -> PNG (<%s> -> <%s>)' % (svg_filename, png_filename))
+                    log_func.warning(u'Conversion error SVG -> PNG (<%s> -> <%s>)' % (svg_filename, png_filename))
                     return False
 
             self._background_bitmap = wxbitmap_func.createBitmap(png_filename)

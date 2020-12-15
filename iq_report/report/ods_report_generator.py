@@ -68,7 +68,7 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             if self._parent_window:
                 self._report_dir = os.path.abspath(self._parent_window.getReportDir())
             else:
-                log_func.error(u'Not define report directory')
+                log_func.warning(u'Not define report directory')
                 self._report_dir = ''
                                 
         return self._report_dir
@@ -95,7 +95,7 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         if ods_rep_file_name and os.path.exists(ods_rep_file_name):
             return self.doSelectAction(ods_rep_file_name)
         else:
-            log_func.error(u'Report file <%s> not exists' % ods_rep_file_name)
+            log_func.warning(u'Report file <%s> not exists' % ods_rep_file_name)
 
     def doSelectAction(self, data):
         """
@@ -132,7 +132,7 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         :param ods_filename: Report ODS filename.
         """
         if not os.path.exists(ods_filename):
-            log_func.error(u'Preview. Report file <%s> not exists' % ods_filename)
+            log_func.warning(u'Preview. Report file <%s> not exists' % ods_filename)
             return False
 
         pdf_filename = os.path.splitext(ods_filename)[0] + PDF_FILENAME_EXT
@@ -175,7 +175,7 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             os.system(cmd)
             return True
         else:
-            log_func.error(u'Print. Report file <%s> not exists' % ods_filename)
+            log_func.warning(u'Print. Report file <%s> not exists' % ods_filename)
         return False
 
     def setPageSetup(self):
@@ -208,7 +208,7 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             os.system(cmd)
             return True
         else:
-            log_func.error(u'Open. Report file <%s> not exists' % ods_filename)
+            log_func.warning(u'Open. Report file <%s> not exists' % ods_filename)
         return False
 
     def edit(self, rep_filename=None):

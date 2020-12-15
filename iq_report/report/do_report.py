@@ -56,7 +56,7 @@ def getReportResourceFilename(report_filename='', report_dir=''):
         # folder is most likely set
         filename = full_rprt_filename
         if not os.path.exists(filename):
-            log_func.error(u'Report template file <%s> not found' % str(filename))
+            log_func.warning(u'Report template file <%s> not found' % str(filename))
             filename = createReportResourceFile(filename)
     log_func.debug(u'Report template filename <%s>' % str(filename))
     return filename
@@ -137,7 +137,7 @@ def createReportResourceFile(template_filename):
                                                                                    norm_tmpl_filename))
             return None
 
-    log_func.error(u'Report template sources not found in folder <%s> for <%s>' % (dir_name,
+    log_func.warning(u'Report template sources not found in folder <%s> for <%s>' % (dir_name,
                                                                                    str_func.toUnicode(os.path.basename(template_filename))))
     return None
 
@@ -358,7 +358,7 @@ def doReport(parent_form=None, report_filename='', report_dir='', db_url='', sql
                 elif command == DO_COMMAND_SELECT:
                     repgen_system.doSelectAction(data)
                 else:
-                    log_func.error(u'Not processed start command <%s>' % command)
+                    log_func.warning(u'Not processed start command <%s>' % command)
             else:
                 repgen_system.save(data)
         return True

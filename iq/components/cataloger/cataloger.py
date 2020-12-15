@@ -67,7 +67,7 @@ class iqCatalogerProto(object):
         """
         if not issubclass(catalog_level.__class__,
                           catalog_level_proto.iqCatalogLevelProto):
-            log_func.error(u'Object <%s> not catalog level')
+            log_func.warning(u'Object <%s> not catalog level')
             return False
         if self.physic_catalog is None:
             self.physic_catalog = list()
@@ -85,7 +85,7 @@ class iqCatalogerProto(object):
         # Checking input types
         check_arg = min([isinstance(idx, int) for idx in index_series])
         if not check_arg:
-            log_func.error(u'Not valid indexes type')
+            log_func.warning(u'Not valid indexes type')
             return False
 
         if self.logic_catalogs is None:
@@ -123,10 +123,10 @@ class iqCatalogerProto(object):
         """
         logic_series = self.logic_catalogs.get(logic_catalog_name, None)
         if logic_series is None:
-            log_func.error(u'Not define logic catalog series <%s>' % logic_catalog_name)
+            log_func.warning(u'Not define logic catalog series <%s>' % logic_catalog_name)
             return None
         if len(logic_path) != len(logic_series):
-            log_func.error(u'Path does not match logic catalog series')
+            log_func.warning(u'Path does not match logic catalog series')
             return None
 
         phys_path = [None] * len(self.physic_catalog)
@@ -173,14 +173,14 @@ class iqCatalogerProto(object):
             return self._put_physic_func(obj, physic_path)
 
         if self.physic_catalog_folder is None:
-            log_func.error(u'The catalog folder for the cataloger physical directory is not defined')
+            log_func.warning(u'The catalog folder for the cataloger physical directory is not defined')
             return False
         real_path = os.path.join(self.physic_catalog_folder, *physic_path)
 
         if isinstance(obj, str):
             # If the object is a string, then we assume that this is the file name
             if not os.path.exists(obj):
-                log_func.error(u'File <%s> not found for catalogization' % obj)
+                log_func.warning(u'File <%s> not found for catalogization' % obj)
                 return False
             filename = os.path.join(real_path, os.path.basename(obj))
             log_func.debug(u'Copy file <%s> to folder <%s>' % (obj, real_path))
@@ -202,7 +202,7 @@ class iqCatalogerProto(object):
                         except:
                             log_func.fatal(u'Error delete file <%s>' % obj)
                 else:
-                    log_func.error(u'Error copy file <%s> -> <%s>' % (obj, filename))
+                    log_func.warning(u'Error copy file <%s> -> <%s>' % (obj, filename))
 
                 self.last_catalog_objpath = filename
             except:
@@ -210,7 +210,7 @@ class iqCatalogerProto(object):
                 return False
             return True
         else:
-            log_func.error(u'Unsupported catalogable object type <%s>' % type(obj))
+            log_func.warning(u'Unsupported catalogable object type <%s>' % type(obj))
         return False
 
     def getObject(self, path, logic_catalog_name=None):

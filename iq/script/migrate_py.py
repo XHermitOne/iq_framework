@@ -146,14 +146,14 @@ def migratePy(py_filename, *args, **kwargs):
     :return: True/False.
     """
     if not os.path.exists(py_filename) or not os.path.isfile(py_filename):
-        log_func.error(u'Python file <%s> not found' % py_filename)
+        log_func.warning(u'Python file <%s> not found' % py_filename)
         return False
 
     result = migrateTxtFile(py_filename, migrate_replaces=MIGRATE_REPLACES, *args, **kwargs)
     if result:
         log_func.info(u'Migration Python module <%s> ... OK' % py_filename)
     else:
-        log_func.error(u'Migration Python module <%s> ... FAIL' % py_filename)
+        log_func.warning(u'Migration Python module <%s> ... FAIL' % py_filename)
     return result
 
 

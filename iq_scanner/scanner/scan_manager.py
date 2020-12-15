@@ -233,7 +233,7 @@ class iqScanManager(object):
                         # but for some reason they are not set :-(
                         self.options[option_name] = option_val
                     except:
-                        log_func.error(u'Error setting scan option <%s>. Value <%s>' % (option_name, option_val))
+                        log_func.warning(u'Error setting scan option <%s>. Value <%s>' % (option_name, option_val))
             return True
         except:
             log_func.fatal(u'Error setting scan options')
@@ -397,7 +397,7 @@ class iqScanManager(object):
 
         file_ext = os.path.splitext(scan_filename)[1]
         if file_ext.lower() != '.pdf':
-            log_func.error(u'Incorrect file type for saving multi-page scan result')
+            log_func.warning(u'Incorrect file type for saving multi-page scan result')
             return False
 
         try:
@@ -451,7 +451,7 @@ class iqScanManager(object):
 
         :param err_msg: The error message.
         """
-        log_func.error(u'SCAN ERROR. %s' % err_msg)
+        log_func.warning(u'SCAN ERROR. %s' % err_msg)
 
         try:
             app = wx.GetApp()
@@ -537,7 +537,7 @@ class iqScanManager(object):
             scan_result = self.scanMulti(scan_filename, n_pages)
             return scan_result
         else:
-            log_func.error(u'Invalid page count <%s> batch scan' % n_pages)
+            log_func.warning(u'Invalid page count <%s> batch scan' % n_pages)
         return False
 
     def scan_glue(self, scan_filename, n_pages, is_duplex):

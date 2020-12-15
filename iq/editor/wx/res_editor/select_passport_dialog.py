@@ -83,12 +83,12 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                             log_func.warning(u'Component <%s> specification not define icon' % component_type)
                             log_func.warning(u'Verify __icon__ attribute in specification')
                     else:
-                        log_func.error(u'In specification %s not define type' % component_spc)
+                        log_func.warning(u'In specification %s not define type' % component_spc)
 
             self.prj_treeListCtrl.SetImageList(self.getImageLibImageList())
             self.res_treeListCtrl.SetImageList(self.getImageLibImageList())
         else:
-            log_func.error(u'Empty component specification cache <%s>' % str(component_spc_cache))
+            log_func.warning(u'Empty component specification cache <%s>' % str(component_spc_cache))
 
     def buildProjects(self, root_path=None, prj_name=None):
         """
@@ -118,7 +118,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                                                                             image=root_img_idx)
                 self._buildFolder(dir_path, parent_item=prj_item, prj_name=prj_name)
             else:
-                log_func.error(u'Project directory path <%s> not found' % dir_path)
+                log_func.warning(u'Project directory path <%s> not found' % dir_path)
 
         # Add another projects
         dir_paths = file_func.getDirectoryPaths(root_path)
@@ -131,7 +131,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                                                                         image=root_img_idx)
                 self._buildFolder(dir_path, parent_item=item, prj_name=dir_name)
             else:
-                log_func.error(u'Project directory path <%s> not found' % dir_path)
+                log_func.warning(u'Project directory path <%s> not found' % dir_path)
 
         self.prj_treeListCtrl.GetMainWindow().Expand(root_item)
         if prj_item:
@@ -156,7 +156,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                                                                         image=folder_img_idx)
                 self._buildFolder(dir_path, parent_item=item, prj_name=prj_name)
             else:
-                log_func.error(u'Project directory path <%s> not found' % dir_path)
+                log_func.warning(u'Project directory path <%s> not found' % dir_path)
 
         res_filenames = file_func.getFilePaths(parent_path)
         res_filenames = [filename for filename in res_filenames if file_func.isFilenameExt(filename,
@@ -174,7 +174,7 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
                                                                         image=component_img_idx, data=resource)
                 self.prj_treeListCtrl.GetMainWindow().SetItemText(item=item, text=description, column=1)
             else:
-                log_func.error(u'Project resource file <%s> not found' % res_filename)
+                log_func.warning(u'Project resource file <%s> not found' % res_filename)
 
     def buildResource(self, resource=None):
         """
@@ -263,11 +263,11 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         :return: Tree list control item or None if not found.
         """
         if not treelist_ctrl:
-            log_func.error(u'Not define TreeListCtrl object for find item')
+            log_func.warning(u'Not define TreeListCtrl object for find item')
             return None
 
         if not isinstance(res_attrs, dict):
-            log_func.error(u'Resource attributes type error <%s>' % type(res_attrs))
+            log_func.warning(u'Resource attributes type error <%s>' % type(res_attrs))
             return None
 
         if item is None:

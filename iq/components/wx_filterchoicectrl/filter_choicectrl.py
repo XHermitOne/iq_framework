@@ -107,7 +107,7 @@ class iqFilterChoiceDlg(filter_choice_dlg.iqFilterChoiceDlgProto):
             try:
                 i = filters_id.index(filter_name)
             except IndexError:
-                log_func.error(u'Filter <%s> not found in <%s>' % (filter_name, filters_id))
+                log_func.warning(u'Filter <%s> not found in <%s>' % (filter_name, filters_id))
                 return False
             del self._filters[i]
             self.filterCheckList.Delete(i+1)
@@ -208,7 +208,7 @@ class iqFilterChoiceDlg(filter_choice_dlg.iqFilterChoiceDlgProto):
             filter_idx = self.filterCheckList.GetSelection()
         num_filters = len(self._filters)
         if (filter_idx < 0) or (filter_idx >= num_filters):
-            log_func.error(u'Not valid index <%s>' % filter_idx)
+            log_func.warning(u'Not valid index <%s>' % filter_idx)
             return False
         elif filter_idx == 0:
             log_func.warning(u'It is not possible to move the filter higher')
@@ -607,14 +607,14 @@ class iqFilterChoiceCtrlProto(wx.ComboCtrl):
                     res[self.getUUID()] = self._filter
                     res_func.saveResourcePickle(filter_filename, res)
                 else:
-                    log_func.error(u'Error resource file <%s>' % filter_filename)
+                    log_func.warning(u'Error resource file <%s>' % filter_filename)
                     return False
             else:
                 # Просто записать в файл
                 res = {self.getUUID(): self._filter}
                 res_func.saveResourcePickle(filter_filename, res)
         else:
-            log_func.error(u'Filter filename not defined')
+            log_func.warning(u'Filter filename not defined')
             return False
         return True
 
@@ -643,10 +643,10 @@ class iqFilterChoiceCtrlProto(wx.ComboCtrl):
                 if filter_data:
                     self.setFilter(filter_data)
                 else:
-                    log_func.error(u'Filter not defined for control <%s> in file <%s>' % (self.getUUID(),
+                    log_func.warning(u'Filter not defined for control <%s> in file <%s>' % (self.getUUID(),
                                                                                           filter_filename))
         else:
-            log_func.error(u'Filter file <%s> not found' % filter_filename)
+            log_func.warning(u'Filter file <%s> not found' % filter_filename)
             self.saveFilter(filter_filename)
 
     def setFilter(self, filter_data):

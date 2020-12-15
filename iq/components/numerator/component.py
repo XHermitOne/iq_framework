@@ -47,7 +47,7 @@ class iqNumerator(numerator.iqNumeratorProto, object.iqObject):
         if db_psp:
             db = self.getKernel().getObject(db_psp)
         else:
-            log_func.error(u'Not define DB engine in <%s>' % self.getName())
+            log_func.warning(u'Not define DB engine in <%s>' % self.getName())
         return db
 
     def getDBUrl(self):

@@ -374,7 +374,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: Path list to item or None if error.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         try:
@@ -408,7 +408,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True/False.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -420,7 +420,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
                 treectrl.SetItemText(item, label)
                 return True
             else:
-                log_func.error(u'wx.TreeCtrl item failed')
+                log_func.warning(u'wx.TreeCtrl item failed')
         except:
             log_func.fatal(u'Set item text/label error')
         return False
@@ -434,7 +434,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: Item text/label or None if error.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -475,7 +475,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True - root item / False - no.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -493,7 +493,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: A list of the data path to the element, or None on error.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -531,7 +531,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True - first item / False - no.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -561,7 +561,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True - last item / False - no.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -592,7 +592,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True/False.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -629,7 +629,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True/False.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -664,7 +664,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: The parent item, or None if not present.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -683,7 +683,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True/False.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -719,7 +719,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: New tree item or None on error.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -785,7 +785,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: wx.ImageList object.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -805,7 +805,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :param treectrl: wx.TreeCtrl control.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -826,7 +826,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True/False.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -853,7 +853,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         :return: True/False.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return False
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
@@ -908,7 +908,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
             Children data in '_children_' key as list.
         """
         if treectrl is None:
-            log_func.error(u'Not define wx.TreeCtrl object')
+            log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'

@@ -189,7 +189,7 @@ class iqTreeItemIndicator(object):
                 try:
                     exp_result = eval(expression, globals(), locals())
                 except:
-                    log_func.error(u'Expression execution error:')
+                    log_func.warning(u'Expression execution error:')
                     log_func.fatal(expression)
             else:
                 log_func.warning(u'Indicator state expression is undefined <%s>' % state_name)

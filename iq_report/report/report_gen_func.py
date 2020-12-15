@@ -81,9 +81,9 @@ def createReportGeneratorSystem(repgen_sys_type, report=None, parent=None):
         if rep_gen_sys_class is not None:
             rep_gen_sys = rep_gen_sys_class(report, parent)
         else:
-            log_func.error(u'Unknown generator type <%s>' % rep_gen_sys_type)
+            log_func.warning(u'Unknown generator type <%s>' % rep_gen_sys_type)
     else:
-        log_func.error(u'Invalid generator type <%s>' % repgen_sys_type)
+        log_func.warning(u'Invalid generator type <%s>' % repgen_sys_type)
     return rep_gen_sys
 
 

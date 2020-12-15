@@ -154,7 +154,7 @@ class iqReportManagerGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             os.system(cmd)
         else:
             msg = u'Not define Report Manager Designer <%s>' % reportman_designer_key
-            log_func.error(msg)
+            log_func.warning(msg)
             dlg_func.openWarningBox(u'WARNING', msg)
 
         xml_file = os.path.normpath(os.path.abspath(os.path.splitext(rep_filename)[0]+'.xml'))

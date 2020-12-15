@@ -228,7 +228,7 @@ def genDefaultMenubarFormBuilderPrj(prj_filename=None, rewrite=False):
     :return: True/False.
     """
     if not prj_filename:
-        log_func.error(u'Not define wxFormBuilder project filename')
+        log_func.warning(u'Not define wxFormBuilder project filename')
         return False
 
     package_dirname = os.path.dirname(prj_filename)

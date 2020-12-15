@@ -147,7 +147,7 @@ def getResourceRootComponentType(resource):
     if isinstance(resource, dict):
         return resource.get('type', None)
     else:
-        log_func.error(u'Error resource type')
+        log_func.warning(u'Error resource type')
     return None
 
 

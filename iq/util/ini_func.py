@@ -16,7 +16,7 @@ from . import log_func
 try:
     import configparser
 except ImportError:
-    log_func.error('Import error configparser', is_force_print=True)
+    log_func.warning('Import error configparser', is_force_print=True)
 
 __version__ = (0, 0, 0, 1)
 

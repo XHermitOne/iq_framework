@@ -94,7 +94,7 @@ class iqMnemoScheme(mnemoscheme.iqMnemoSchemeManager, wx_panel.COMPONENT):
         """
         svg_filename = self.getAttribute('svg_background')
         if not svg_filename:
-            log_func.error(u'Not define SVG file as background in <%s>' % self.getName())
+            log_func.warning(u'Not define SVG file as background in <%s>' % self.getName())
             return None
 
         if svg_filename.startswith(os.path.sep):

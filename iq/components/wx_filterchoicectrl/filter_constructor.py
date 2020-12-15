@@ -268,7 +268,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                             if psp:
                                 arg_edit.setSpravByPsp(psp)
                             else:
-                                log_func.error(u'Not define ref object passport in requisite <%s>' % requisite['requisite'])
+                                log_func.warning(u'Not define ref object passport in requisite <%s>' % requisite['requisite'])
                 else:
                     # Create string editor by default
                     arg_edit = filter_builder_ctrl.iqStrArgEdit(self.GetMainWindow(), arg)
@@ -280,7 +280,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                                      filter_builder_env.REQUISITE_TYPE_NUM):
                     arg_edit = filter_builder_ctrl.iqNumArgEdit(self.GetMainWindow(), arg)
                 else:
-                    log_func.error(u'Not define type <%s> of argument <%s>' % (arg['type'], arg))
+                    log_func.warning(u'Not define type <%s> of argument <%s>' % (arg['type'], arg))
                     return None
         
             # Set controls
@@ -304,7 +304,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                 else:
                     func_lst.append(func)
         else:
-            log_func.error(u'Filter constructor. Not define compare function list')
+            log_func.warning(u'Filter constructor. Not define compare function list')
         return func_lst
         
     def _findItemByCtrl(self, ctrl, item=None):
@@ -509,7 +509,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                     if compare_function:   
                         item_data['__sql__'] = compare_function(**kwargs)
         else:
-            log_func.error(u'Error define filter constructor item type <%s>' % type_item)
+            log_func.warning(u'Error define filter constructor item type <%s>' % type_item)
             return None
         
         # Add children items
@@ -574,7 +574,7 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                 if arg_edit:
                     arg_edit.setValue(data['arg_' + str(i_col - 2)])
         else:
-            log_func.error(u'Error define filter constructor item type <%s>' % data['type'])
+            log_func.warning(u'Error define filter constructor item type <%s>' % data['type'])
             return False
         return result
      

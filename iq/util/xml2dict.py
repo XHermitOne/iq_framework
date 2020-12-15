@@ -193,7 +193,7 @@ def convertXmlFile2Dict(xml_filename, codepage='utf-8'):
     :return: Vocabulary matching XML text.
     """
     if not os.path.exists(xml_filename):
-        log_func.error(u'XML file <%s> not found' % xml_filename)
+        log_func.warning(u'XML file <%s> not found' % xml_filename)
         return dict()
 
     body_xml = txtfile_func.loadTextFile(xml_filename)
@@ -204,6 +204,6 @@ def convertXmlFile2Dict(xml_filename, codepage='utf-8'):
         log_func.info(u'Recode XML file <%s> from <%s> to <%s> code page' % (xml_filename, src_codepage, codepage))
         body_xml = str_func.recodeText(body_xml, src_codepage, codepage)
     elif not src_codepage:
-        log_func.error(u'It is not possible to define the code page of an XML file <%s>' % xml_filename)
+        log_func.warning(u'It is not possible to define the code page of an XML file <%s>' % xml_filename)
 
     return convertXmlText2Dict(body_xml, codepage)

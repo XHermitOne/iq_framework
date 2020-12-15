@@ -155,7 +155,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
             filename = os.path.abspath(self.SpreadsheetFileName)
             
         if (not filename) or (not os.path.exists(filename)):
-            log_func.error(u'Unable to load file <%s>' % filename)
+            log_func.warning(u'Unable to load file <%s>' % filename)
             return None
         
         ext = os.path.splitext(filename)[1]
@@ -164,7 +164,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         elif ext in ('.XML', '.xml', '.Xml'):
             return self.loadXML(filename)
         else:
-            log_func.error(u'Unsupported file type <%s>' % ext)
+            log_func.warning(u'Unsupported file type <%s>' % ext)
         return None
             
     def save(self):
@@ -188,7 +188,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
         elif ext in ('.XML', '.xml', '.Xml'):
             return self.saveAsXML(filename)
         else:
-            log_func.error(u'Unsupported file type <%s>' % ext)
+            log_func.warning(u'Unsupported file type <%s>' % ext)
         return None
         
     def saveAsODS(self, ods_filename=None):
@@ -361,10 +361,10 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
                 self.SpreadsheetFileName = xml_file_name
                 self._data = self._workbooks[xml_file_name]
             else:
-                log_func.error(u'SpreadSheet. File <%s> not found' % xml_file_name)
+                log_func.warning(u'SpreadSheet. File <%s> not found' % xml_file_name)
 
         except KeyError:
-            log_func.error(u'Workbook <%s> not registred in <%s>' % (xml_file_name, self._workbooks.keys()))
+            log_func.warning(u'Workbook <%s> not registred in <%s>' % (xml_file_name, self._workbooks.keys()))
             raise
 
     def _findWorkbookData(self, xml_filename=None):
@@ -381,13 +381,13 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
             try:
                 workbook_data = self._workbooks[xml_file_name]
             except KeyError:
-                log_func.error(u'Workbook <%s> not registered in <%s>' % (xml_file_name, self._workbooks.keys()))
+                log_func.warning(u'Workbook <%s> not registered in <%s>' % (xml_file_name, self._workbooks.keys()))
                 raise
         workbook_data = [data for data in workbook_data['_children_'] if 'name' in data and data['name'] == 'Workbook']
         if workbook_data:
             workbook_data = workbook_data[0]
         else:
-            log_func.error(u'Workbook not defined in <%s>' % xml_filename)
+            log_func.warning(u'Workbook not defined in <%s>' % xml_filename)
             return None
         return workbook_data
 
@@ -413,10 +413,10 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
                 if worksheet_data:
                     worksheet_data = worksheet_data[0]
                 else:
-                    log_func.error(u'Workbook <%s> not found' % sheet_name)
+                    log_func.warning(u'Workbook <%s> not found' % sheet_name)
                     return None
         else:
-            log_func.error(u'Workbook not defined in <%s>' % xml_filename)
+            log_func.warning(u'Workbook not defined in <%s>' % xml_filename)
             return None
         return worksheet_data
 
@@ -517,7 +517,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
 
         workbook_data = self._findWorkbookData(xml_filename)
         if workbook_data is None:
-            log_func.error(u'Workbook <%s> not found' % xml_filename)
+            log_func.warning(u'Workbook <%s> not found' % xml_filename)
             return False
         # Find and delete sheet
         result = False
@@ -633,7 +633,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
                 # Exactly such a style already exists and therefore you do not need to add it
                 return style['ID']
         except:
-            log_func.error(u'Error paste style')
+            log_func.warning(u'Error paste style')
             raise
         return None
 
@@ -891,7 +891,7 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
                     # Direct function call
                     getattr(self, cmd[0])(*args, **kwargs)
                 except:
-                    log_func.error(u'Error execute command <%s>' % cmd)
+                    log_func.warning(u'Error execute command <%s>' % cmd)
                     raise
         if auto_save:
             self.save()

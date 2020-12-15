@@ -308,7 +308,7 @@ python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s
                                           user_descriptions=[user.getDescription() for user in self.getUsers()])
             if not result:
                 # If login failed then exit
-                log_func.error(u'Failed login')
+                log_func.warning(u'Failed login')
                 return result
             else:
                 username, password, password_hash = result
@@ -323,7 +323,7 @@ python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s
         result = user_obj.login(password)
         if not result:
             # If login failed then exit
-            log_func.error(u'Failed login user <%s>' % user_obj.getName())
+            log_func.warning(u'Failed login user <%s>' % user_obj.getName())
             return result
 
         global_data.setGlobal('USER', user_obj if result else None)

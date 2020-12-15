@@ -43,23 +43,6 @@ class iqBoxTree(wx.lib.agw.customtreectrl.CustomTreeCtrl):
         self.PaintLevel(self._anchor, dc, 0, y, align)
 
 
-# # Constants
-# SPC_IC_SPRAVTREECOMBOCTRL = {'ref_obj': None,      # Паспорт справочника-источника данных
-#                              'root_code': None,  # Код корневого элемента ветки справочника
-#                              'view_all': False,  # Показывать все элементы справочника
-#                              'level_enable': -1,  # Номер уровня с которого включаются элементы для выбора
-#                              'expand': True,      # Распахнуть
-#
-#                              'get_label': None,  # Функция определения надписи элемента дерева
-#                              'find_item': None,  # Функция поиска элемента дерева
-#                              'is_choice_list': False,
-#                              'get_selected_code': None,  # Функция получения выбранного кода
-#                              'set_selected_code': None,  # Функция установки выбранного кода
-#
-#                              '__parent__': icwidget.SPC_IC_WIDGET,
-#                              }
-
-
 TREE_HIDDEN_ROOT_LABEL = '<hidden root>'
 TREE_HIDDEN_ITEM_LABEL = '<hidden item>'
 
@@ -448,7 +431,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         :param refobj_psp: Ref object passport.
         """
         if not passport.isPassport(refobj_psp):
-            log_func.error(u'Not valid passport <%s>' % refobj_psp)
+            log_func.warning(u'Not valid passport <%s>' % refobj_psp)
             return
 
         self.Clear()
@@ -458,7 +441,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         """
         Get ref object passport.
         """
-        log_func.error(u'Not define getRefObjPsp method in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'Not define getRefObjPsp method in <%s> component' % self.__class__.__name__)
         return None
 
     def setViewAll(self, view_all=True):
@@ -472,7 +455,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
                 self.Clear()
                 self.init(psp, self.view_code, self.view_all)
             else:
-                log_func.error(u'Not define ref object passport')
+                log_func.warning(u'Not define ref object passport')
 
     def viewAll(self):
         """
@@ -498,7 +481,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
             self._data_source = refobjtreedatasource.iqRefObjTreeDataSource(refobj_psp, self.root_code)
             self._combo_popup.root_name = self._data_source.getRefObjDescription()
         else:
-            log_func.error(u'Not define ref object passport in init <%s> component' % self.__class__.__name__)
+            log_func.warning(u'Not define ref object passport in init <%s> component' % self.__class__.__name__)
 
         if self._data_source:
             self._combo_popup.tree.DeleteAllItems()
@@ -515,7 +498,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
             if self.view_all:
                 self._combo_popup.tree.ExpandAll()
         else:
-            log_func.error(u'Not define data source in init <%s> component' % self.__class__.__name__)
+            log_func.warning(u'Not define data source in init <%s> component' % self.__class__.__name__)
 
     def clear(self):
         """
@@ -797,7 +780,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
             code = None
             self._combo_popup.curitem = None
         else:
-            log_func.error(u'Not valid value type <%s> in <%s> control' % (type(value), self.__class__.__name__))
+            log_func.warning(u'Not valid value type <%s> in <%s> control' % (type(value), self.__class__.__name__))
         return self.setSelectedCode(code)
     
     def getSelectedRecord(self):

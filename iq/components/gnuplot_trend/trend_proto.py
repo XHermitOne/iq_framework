@@ -177,7 +177,7 @@ class iqTrendProto(object):
         """
         Drawing an empty trend.
         """
-        log_func.error(u'Undefined method for drawing an empty trend')
+        log_func.warning(u'Undefined method for drawing an empty trend')
 
     def getPenData(self, pen_index=0):
         """
@@ -199,13 +199,13 @@ class iqTrendProto(object):
 
         :param redraw: Forced drawing.
         """
-        log_func.error(u'Undefined trend drawing method')
+        log_func.warning(u'Undefined trend drawing method')
 
     def getPens(self):
         """
         List of trend feathers.
         """
-        log_func.error(u'Not defined feather production method')
+        log_func.warning(u'Not defined feather production method')
         return list()
 
     def setHistory(self, history):
@@ -232,7 +232,7 @@ class iqTrendProto(object):
         :param redraw: Redraw the trend frame?
         :return: True/False.
         """
-        log_func.error(u'Trend scaling method not defined')
+        log_func.warning(u'Trend scaling method not defined')
         return False
 
     def zoomY(self, step=1, redraw=True):
@@ -245,7 +245,7 @@ class iqTrendProto(object):
         :param redraw: Redraw the trend frame?
         :return: True/False.
         """
-        log_func.error(u'Trend scaling method not defined')
+        log_func.warning(u'Trend scaling method not defined')
         return False
 
     def moveSceneX(self, step=1, redraw=True):
@@ -258,7 +258,7 @@ class iqTrendProto(object):
         :param redraw: Redraw the trend frame?
         :return: True/False.
         """
-        log_func.error(u'Undefined trend movement method')
+        log_func.warning(u'Undefined trend movement method')
         return False
 
     def moveSceneY(self, step=1, redraw=True):
@@ -271,5 +271,5 @@ class iqTrendProto(object):
         :param redraw: Redraw the trend frame?
         :return: True/False.
         """
-        log_func.error(u'Undefined trend movement method')
+        log_func.warning(u'Undefined trend movement method')
         return False

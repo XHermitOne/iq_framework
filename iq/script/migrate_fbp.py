@@ -26,7 +26,7 @@ def migrateFBP(fbp_filename, *args, **kwargs):
     :return: True/False.
     """
     if not os.path.exists(fbp_filename) or not os.path.isfile(fbp_filename):
-        log_func.error(u'wxFormBuilder project file <%s> not found' % fbp_filename)
+        log_func.warning(u'wxFormBuilder project file <%s> not found' % fbp_filename)
         return False
 
     result = migrate_py.migrateTxtFile(fbp_filename, migrate_replaces=MIGRATE_REPLACES,
@@ -34,7 +34,7 @@ def migrateFBP(fbp_filename, *args, **kwargs):
     if result:
         log_func.info(u'Migration wxFormBuilder project file <%s> ... OK' % fbp_filename)
     else:
-        log_func.error(u'Migration wxFormBuilder project file <%s> ... FAIL' % fbp_filename)
+        log_func.warning(u'Migration wxFormBuilder project file <%s> ... FAIL' % fbp_filename)
     return result
 
 

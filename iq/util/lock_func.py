@@ -293,7 +293,7 @@ def readLockRecord(lock_filename):
         try:
             return eval(lock_rec)
         except:
-            log_func.error(u'Error lock record format <%s>' % lock_rec)
+            log_func.warning(u'Error lock record format <%s>' % lock_rec)
             return lock_rec
     except:
         if lock_file:

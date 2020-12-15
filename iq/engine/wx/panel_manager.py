@@ -141,7 +141,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             indicated in correspondence (accord).
         """
         if data_dict is None:
-            log_func.error(u'Not defined fill dictionary for panel controls')
+            log_func.warning(u'Not defined fill dictionary for panel controls')
             return
 
         for name, value in data_dict.items():
@@ -358,16 +358,16 @@ class iqPanelManager(validate_manager.iqValidateManager):
         :return: True/False.
         """
         if notebook_ctrl is None:
-            log_func.error(u'Not define wx.Notebook object for set page image')
+            log_func.warning(u'Not define wx.Notebook object for set page image')
             return False
         elif not issubclass(notebook_ctrl.__class__, wx.Notebook):
-            log_func.error(u'wx.Notebook object type error')
+            log_func.warning(u'wx.Notebook object type error')
             return False
 
         if n_page < 0:
             n_page = notebook_ctrl.GetSelection()
         if n_page == wx.NOT_FOUND:
-            log_func.error(u'Not define notebook page')
+            log_func.warning(u'Not define notebook page')
             return False
 
         try:
@@ -457,7 +457,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             ctrl.DeleteAllItems()
             result = True
         else:
-            log_func.error(u'Panel manager. Unsupported control type <%s> for clear value' % ctrl.__class__.__name__)
+            log_func.warning(u'Panel manager. Unsupported control type <%s> for clear value' % ctrl.__class__.__name__)
         return result
 
     def collapsePanelSplitter(self, splitter, toolbar=None, collapse_tool=None, expand_tool=None,
@@ -476,7 +476,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         :return: True/False.
         """
         if not isinstance(splitter, wx.SplitterWindow):
-            log_func.error(u'Error splitter object type <%s>' % str(splitter))
+            log_func.warning(u'Error splitter object type <%s>' % str(splitter))
             return False
 
         setattr(self, '_last_sash_position_%s' % splitter.GetId(),
@@ -491,7 +491,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             sash_pos = splitter.GetSize().GetHeight() if split_mode == wx.SPLIT_HORIZONTAL else splitter.GetSize().GetWidth()
             splitter.SetSashPosition(sash_pos - 1, redraw=redraw)
         else:
-            log_func.error(u'Not valid resized splitter panel index')
+            log_func.warning(u'Not valid resized splitter panel index')
             return False
 
         # splitter.UpdateSize()
@@ -519,7 +519,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         :return: True/False.
         """
         if not isinstance(splitter, wx.SplitterWindow):
-            log_func.error(u'Error splitter object type <%s>' % str(splitter))
+            log_func.warning(u'Error splitter object type <%s>' % str(splitter))
             return False
 
         last_sash_position_name = '_last_sash_position_%s' % splitter.GetId()
@@ -536,7 +536,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             if last_sash_position != splitter.GetSashPosition():
                 splitter.SetSashPosition(last_sash_position, redraw=redraw)
         else:
-            log_func.error(u'Not valid resized splitter panel index')
+            log_func.warning(u'Not valid resized splitter panel index')
             return False
 
         # splitter.UpdateSize()

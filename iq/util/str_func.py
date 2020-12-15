@@ -212,7 +212,7 @@ def recodeText(txt, src_codepage='cp1251', dst_codepage='utf-8'):
     if isinstance(unicode_txt, str):
         return unicode_txt.encode(dst_codepage)
 
-    log_func.error(u'Error recode text <%s>' % str(txt))
+    log_func.warning(u'Error recode text <%s>' % str(txt))
     return None
 
 

@@ -546,7 +546,7 @@ class iqObjRegistry(object):
             record = find.first()
             return dict(record)
         elif find.rowcount < 1:
-            log_func.error(u'Operations not found <%s> data object [%s : %s]' % (state, guid_obj, n_obj))
+            log_func.warning(u'Operations not found <%s> data object [%s : %s]' % (state, guid_obj, n_obj))
 
         return None
 
@@ -562,7 +562,7 @@ class iqObjRegistry(object):
             dt_actual = datetime.date.today()
 
         if (not isinstance(dt_actual, datetime.date)) and (not isinstance(dt_actual, datetime.datetime)):
-            log_func.error(u'Not valid actual date type <%s : %s>' % (dt_actual,
+            log_func.warning(u'Not valid actual date type <%s : %s>' % (dt_actual,
                                                                       dt_actual.__class__.__name__))
             return False
 

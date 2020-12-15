@@ -66,7 +66,7 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             if self._parent_window:
                 self._report_dir = os.path.abspath(self._parent_window.getReportDir())
             else:
-                log_func.error(u'Not define report directory')
+                log_func.warning(u'Not define report directory')
                 self._report_dir = ''
                                 
         return self._report_dir
@@ -93,7 +93,7 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         if xls_rep_file_name and os.path.exists(xls_rep_file_name):
             return self.doSelectAction(xls_rep_file_name)
         else:
-            log_func.error(u'Report file <%s> not exists' % xls_rep_file_name)
+            log_func.warning(u'Report file <%s> not exists' % xls_rep_file_name)
         return False
 
     def doSelectAction(self, data):
@@ -131,7 +131,7 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         :param xls_filename: Report XLS filename.
         """
         if not os.path.exists(xls_filename):
-            log_func.error(u'Preview. Report file <%s> not exists' % xls_filename)
+            log_func.warning(u'Preview. Report file <%s> not exists' % xls_filename)
             return False
 
         pdf_filename = os.path.splitext(xls_filename)[0] + PDF_FILENAME_EXT
@@ -173,7 +173,7 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             os.system(cmd)
             return True
         else:
-            log_func.error(u'Print. Report file <%s> not exists' % xls_filename)
+            log_func.warning(u'Print. Report file <%s> not exists' % xls_filename)
         return False
 
     def setPageSetup(self):
@@ -206,7 +206,7 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             os.system(cmd)
             return True
         else:
-            log_func.error(u'Open. Report file <%s> not exists' % xls_filename)
+            log_func.warning(u'Open. Report file <%s> not exists' % xls_filename)
         return False
 
     def edit(self, rep_filename=None):

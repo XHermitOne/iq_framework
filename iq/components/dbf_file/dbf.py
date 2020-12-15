@@ -514,7 +514,7 @@ class iqDBFPYFile(iqDBFFileProto):
             try:
                 import dbfpy3.dbf
             except ImportError:
-                log_func.error(u'Error import dbfpy3.dbf')
+                log_func.warning(u'Error import dbfpy3.dbf')
                 return False
 
             self._dbf = dbfpy3.dbf.Dbf(dbf_filename, new=recreate)
@@ -540,7 +540,7 @@ class iqDBFPYFile(iqDBFFileProto):
             try:
                 import dbfpy3.dbf
             except ImportError:
-                log_func.error(u'Error import dbfpy3.dbf')
+                log_func.warning(u'Error import dbfpy3.dbf')
                 return False
 
             self._dbf = dbfpy3.dbf.Dbf(self._dbf_file_name)
@@ -867,7 +867,7 @@ class iqDBFPYFile(iqDBFFileProto):
             records = list()
             open_ok = self.openDBF()
             if not open_ok:
-                log_func.error(u'Error open DBF file <%s>' % self.getDBFFileName())
+                log_func.warning(u'Error open DBF file <%s>' % self.getDBFFileName())
                 return list()
 
             record = self.getRecDict()
@@ -877,7 +877,7 @@ class iqDBFPYFile(iqDBFFileProto):
                     if field_value == value:
                         records.append(record)
                 else:
-                    log_func.error(u'Field <%s> not found in record %s' % (field_name, record.keys()))
+                    log_func.warning(u'Field <%s> not found in record %s' % (field_name, record.keys()))
                 self.nextDBF()
                 record = self.getRecDict()
             self.closeDBF()

@@ -201,7 +201,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         :return: True/False.
         """
         if not isinstance(record, dict):
-            log_func.error(u'Not valid record type <%s>' % record.__class__.__name__)
+            log_func.warning(u'Not valid record type <%s>' % record.__class__.__name__)
             return False
 
         return all([self.validate(name, value) for name, value in record.items()])

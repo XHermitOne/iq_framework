@@ -69,7 +69,7 @@ def execTxtFunction(function, context=None):
         context = globals()
 
     if not isinstance(function, str):
-        log_func.error(u'Not valid function body type <%s>' % type(function))
+        log_func.warning(u'Not valid function body type <%s>' % type(function))
         return None
 
     # Find source line separator
@@ -87,8 +87,8 @@ def execTxtFunction(function, context=None):
         exec(function_txt, context)
         return context['__result__']
     except:
-        log_func.error(u'Execute function:')
-        log_func.error(function_txt)
+        log_func.warning(u'Execute function:')
+        log_func.warning(function_txt)
         log_func.fatal(u'Error execute function')
     return None
 

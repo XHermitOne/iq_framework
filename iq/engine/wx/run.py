@@ -20,7 +20,7 @@ def runApplication(main_form_class=None):
     :return: True/False.
     """
     if main_form_class is None:
-        log_func.error(u'Not define main form class in wx application')
+        log_func.warning(u'Not define main form class in wx application')
         return False
 
     app = wx.App()

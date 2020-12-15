@@ -62,7 +62,7 @@ class iqCatalogLevel(catalog_level.iqCatalogLevelProto, object.iqObject):
             log_func.debug(u'Allocation folder <%s>' % result)
             return result
         else:
-            log_func.error(u'Cataloger. Error define folder name by catalog level <%s>' % self.getName())
+            log_func.warning(u'Cataloger. Error define folder name by catalog level <%s>' % self.getName())
         return self.getName()
 
 

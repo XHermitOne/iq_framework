@@ -57,7 +57,7 @@ class iqSchemeManager(object):
             return imp_func.loadPyModule(name=self.getName(),
                                          path=module_filename)
         else:
-            log_func.error(u'Scheme <%s> module <%s> not exists' % (self.getName(), module_filename))
+            log_func.warning(u'Scheme <%s> module <%s> not exists' % (self.getName(), module_filename))
         return None
 
     def getModel(self, model_name):
@@ -69,7 +69,7 @@ class iqSchemeManager(object):
         """
         module = self.getModule()
         if module is None:
-            log_func.error(u'Data scheme <%s> module not defined' % self.getName())
+            log_func.warning(u'Data scheme <%s> module not defined' % self.getName())
             return None
 
         if module and hasattr(module, model_name):
@@ -77,7 +77,7 @@ class iqSchemeManager(object):
             log_func.debug(u'Get model <%s : %s : %s>' % (module, model_name, model))
             return model
         else:
-            log_func.error(u'Model <%s> not find in module <%s>' % (model_name, module.__file__))
+            log_func.warning(u'Model <%s> not find in module <%s>' % (model_name, module.__file__))
         return None
 
     def openSession(self, db_url=None, base=None):
@@ -91,7 +91,7 @@ class iqSchemeManager(object):
         """
         db_engine = self.getDBEngine()
         if db_engine is None:
-            log_func.error(u'Not define DB engine in data scheme <%s>' % self.getName())
+            log_func.warning(u'Not define DB engine in data scheme <%s>' % self.getName())
             return None
 
         if base is None:
@@ -99,7 +99,7 @@ class iqSchemeManager(object):
             base = module.Base if module else None
 
         if base is None:
-            log_func.error(u'Not define base model class in data scheme <%s>' % self.getName())
+            log_func.warning(u'Not define base model class in data scheme <%s>' % self.getName())
             return None
 
         engine = db_engine.create(db_url)

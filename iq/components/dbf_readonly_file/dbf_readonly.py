@@ -50,7 +50,7 @@ class iqDBFReadOnlyFile(dbf.iqDBFFileProto):
             try:
                 import dbfread
             except ImportError:
-                log_func.error(u'Error import <dbfread> [https://github.com/olemb/dbfread/]')
+                log_func.warning(u'Error import <dbfread> [https://github.com/olemb/dbfread/]')
                 return False
             self._dbf = dbfread.DBF(self._dbf_file_name, load=True, encoding=self.encoding)
             self._cur_rec_no = 0
@@ -263,7 +263,7 @@ class iqDBFReadOnlyFile(dbf.iqDBFFileProto):
             records = list()
             open_ok = self.openDBF()
             if not open_ok:
-                log_func.error(u'Error open DBF file <%s>' % self.getDBFFileName())
+                log_func.warning(u'Error open DBF file <%s>' % self.getDBFFileName())
                 return list()
 
             value = value.strip()
@@ -274,7 +274,7 @@ class iqDBFReadOnlyFile(dbf.iqDBFFileProto):
                     if field_value == value:
                         records.append(record)
                 else:
-                    log_func.error(u'Field <%s> not found in record %s' % (field_name, record.keys()))
+                    log_func.warning(u'Field <%s> not found in record %s' % (field_name, record.keys()))
                 self.nextDBF()
                 record = self.getRecDict()
             self.closeDBF()
@@ -302,7 +302,7 @@ class iqDBFReadOnlyFile(dbf.iqDBFFileProto):
             index_records = dict()
             open_ok = self.openDBF()
             if not open_ok:
-                log_func.error(u'Error open DBF file <%s>' % self.getDBFFileName())
+                log_func.warning(u'Error open DBF file <%s>' % self.getDBFFileName())
                 return dict()
 
             record = self.getRecDict()
@@ -314,7 +314,7 @@ class iqDBFReadOnlyFile(dbf.iqDBFFileProto):
                     else:
                         index_records[field_value] = [record]
                 else:
-                    log_func.error(u'Field <%s> not found in record %s' % (field_name, record.keys()))
+                    log_func.warning(u'Field <%s> not found in record %s' % (field_name, record.keys()))
                 self.nextDBF()
                 record = self.getRecDict()
             self.closeDBF()

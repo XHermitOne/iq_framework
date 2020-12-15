@@ -227,7 +227,7 @@ class iqWxGroupListView(ObjectListView.GroupListView,
             dataset = self._data_src_obj.getDataset()
             return dataset
         else:
-            log_func.error(u'Not define data source in control <%s>' % self.getName())
+            log_func.warning(u'Not define data source in control <%s>' % self.getName())
         return None
 
     def setDataset(self, dataset=None, data_src_filter=None):
@@ -254,7 +254,7 @@ class iqWxGroupListView(ObjectListView.GroupListView,
 
         if dataset is None:
             data_src_name = self._data_src_obj.getName() if self._data_src_obj else u'Not defined'
-            log_func.error(u'Not define DATASET for object <%s>. DataSource: <%s>' % (self.getName,
+            log_func.warning(u'Not define DATASET for object <%s>. DataSource: <%s>' % (self.getName,
                                                                                       data_src_name))
         else:
             if self.isAttributeValue('conv_dataset'):

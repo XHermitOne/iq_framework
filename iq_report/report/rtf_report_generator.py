@@ -264,7 +264,7 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
                     else:
                         values.append('')
                 else:
-                    log_func.error(u'Unsupported tag <%s>' % cur_var)
+                    log_func.warning(u'Unsupported tag <%s>' % cur_var)
 
             val_str = self._valueFormat(parsed['fmt'], values)
             return val_str

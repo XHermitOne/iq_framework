@@ -233,7 +233,7 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
         if choice_ctrl:
             code_list = self._selected_code[:level_index]
             if not code_list:
-                log_func.error(u'Subcodes not found <%s : %d>' % (str(self._selected_code), level_index))
+                log_func.warning(u'Subcodes not found <%s : %d>' % (str(self._selected_code), level_index))
                 return False
 
             str_code = ''.join(code_list)

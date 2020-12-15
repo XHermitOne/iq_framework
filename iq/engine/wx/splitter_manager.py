@@ -44,7 +44,7 @@ class iqSplitterWindowManager(object):
             sash_pos = splitter.GetSize().GetHeight() if split_mode == wx.SPLIT_HORIZONTAL else splitter.GetSize().GetWidth()
             splitter.SetSashPosition(sash_pos - 1, redraw=redraw)
         else:
-            log_func.error(u'Invalid rollup panel index')
+            log_func.warning(u'Invalid rollup panel index')
             return False
 
         if toolbar and issubclass(toolbar.__class__, wx.ToolBar):
@@ -71,7 +71,7 @@ class iqSplitterWindowManager(object):
 
         last_sash_position_name = '_last_sash_position_%s' % splitter.GetId()
         if not hasattr(self, last_sash_position_name):
-            log_func.error(u'The previous position of the splitter panel is not determined')
+            log_func.warning(u'The previous position of the splitter panel is not determined')
             return False
 
         last_sash_position = getattr(self, last_sash_position_name)

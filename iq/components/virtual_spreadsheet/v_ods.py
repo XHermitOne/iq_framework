@@ -73,7 +73,7 @@ class iqODS(object):
         :return: True/False.
         """
         if not data_dict:
-            log_func.error(u'ODS. Not save data defined')
+            log_func.warning(u'ODS. Not save data defined')
 
         self.ods_document = None
         self._styles_ = {}
@@ -475,7 +475,7 @@ class iqODS(object):
                 ods_properties['pagewidth'] = '%scm' % str(width)
                 ods_properties['pageheight'] = '%scm' % str(height)
         else:
-            log_func.error(u'Worksheet options not defined')
+            log_func.warning(u'Worksheet options not defined')
 
         if fit_to_page:
             ods_properties['scaletopages'] = '1'
@@ -489,7 +489,7 @@ class iqODS(object):
             masterpage = odf.style.MasterPage(name=DEFAULT_STYLE_ID, pagelayoutname=ods_pagelayout)
             self.ods_document.masterstyles.addElement(masterpage)
         else:
-            log_func.error(u'ODS document not defined')
+            log_func.warning(u'ODS document not defined')
         return ods_pagelayout
 
     def _getPageSizeByExcelIndex(self, paper_size_idx):
@@ -956,7 +956,7 @@ class iqODS(object):
         """
         if not os.path.exists(filename):
             # If the file does not exist then return None
-            log_func.error(u'ODS. File <%s> not found' % filename)
+            log_func.warning(u'ODS. File <%s> not found' % filename)
             return None
         else:
             try:
@@ -1007,7 +1007,7 @@ class iqODS(object):
         :param ods_styles: Style list.
         """
         if not ods_styles:
-            log_func.error(u'ODS styles not defined')
+            log_func.warning(u'ODS styles not defined')
             return {}
             
         result = {}
@@ -1106,12 +1106,12 @@ class iqODS(object):
         :param ods_element: ODS element corresponding to the style of numerical representation.
         """
         if ods_element is None:
-            log_func.error('Not define ods_element <%s>' % ods_element)
+            log_func.warning('Not define ods_element <%s>' % ods_element)
             return None
         
         numbers = ods_element.getElementsByType(odf.number.Number)
         if not numbers:
-            log_func.error('Not define numbers in ods_element <%s>' % ods_element)
+            log_func.warning('Not define numbers in ods_element <%s>' % ods_element)
             return None
         else:
             number = numbers[0]
@@ -1412,7 +1412,7 @@ class iqODS(object):
         :param ods_page_layouts: List of found page parameters.
         """
         if not ods_page_layouts:
-            log_func.error(u'Not define page layout')
+            log_func.warning(u'Not define page layout')
             return None
 
         # log_func.debug(u'Set default worksheet options')

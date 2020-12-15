@@ -35,7 +35,7 @@ def getIconFilename(icon_filename):
     library = None
 
     if not isinstance(icon_filename, str):
-        log_func.error(u'Error type icon filename <%s>' % icon_filename)
+        log_func.warning(u'Error type icon filename <%s>' % icon_filename)
         return None
 
     icon_filename = icon_filename.replace(ICON_NAME_SEPARATOR, os.path.sep)
@@ -44,7 +44,7 @@ def getIconFilename(icon_filename):
         if icon_filename.count(os.path.sep) == 1:
             library, icon_filename = icon_filename.split(os.path.sep)
         else:
-            log_func.error(u'Error format icon filename <%s>' % icon_filename)
+            log_func.warning(u'Error format icon filename <%s>' % icon_filename)
             return None
     icon_filename = getLibraryIconFilename(icon_filename=icon_filename, library=library)
     return icon_filename

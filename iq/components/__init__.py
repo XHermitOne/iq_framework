@@ -84,7 +84,7 @@ def buildComponentSpcCache():
                         log_func.info(u'Component <%s> is registered in package <%s>' % (component_spc.get('type'),
                                                                                          pkg_name))
                 else:
-                    log_func.error(u'Error find component <%s> SPC' % py_pkg)
+                    log_func.warning(u'Error find component <%s> SPC' % py_pkg)
 
         return result
     except:
@@ -191,9 +191,9 @@ def buildComponents():
                 component_class = component_pkg.COMPONENT
 
             if component_type is None:
-                log_func.error(u'Not find component type in <%s>' % py_pkg)
+                log_func.warning(u'Not find component type in <%s>' % py_pkg)
             if component_class is None:
-                log_func.error(u'Not find component class in <%s>' % py_pkg)
+                log_func.warning(u'Not find component class in <%s>' % py_pkg)
             if component_type and component_class:
                 result[component_type] = component_class
                 log_func.info(u'Component <%s> is registered' % component_type)

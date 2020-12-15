@@ -76,7 +76,7 @@ def getAbsolutePath(path, cur_dir=None):
     """
     try:
         if not path:
-            log_func.error(u'Not define path')
+            log_func.warning(u'Not define path')
             return None
 
         if not isinstance(path, str):
@@ -106,7 +106,7 @@ def getProjectPath():
         framework_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         return os.path.join(framework_path, prj_name)
     else:
-        log_func.error(u'Error get project path')
+        log_func.warning(u'Error get project path')
     return None
 
 
@@ -216,7 +216,7 @@ def getHomePath():
     elif os_platform == 'linux':
         home_path = os.environ['HOME']
     else:
-        log_func.error(u'OS <%s> not support' % os_platform)
+        log_func.warning(u'OS <%s> not support' % os_platform)
         return None
     return os.path.normpath(home_path)
 
@@ -277,11 +277,11 @@ def copyFile(src_filename, dst_filename, rewrite=True):
     try:
         if not os.path.exists(src_filename):
             msg = u'Copy file <%s> -> <%s>. Source file <%s> not found' % (src_filename, dst_filename, src_filename)
-            log_func.error(msg)
+            log_func.warning(msg)
             return False
 
         if os.path.exists(src_filename) and src_filename == dst_filename:
-            log_func.error(u'Unable to copy file to itself <%s> ' % src_filename)
+            log_func.warning(u'Unable to copy file to itself <%s> ' % src_filename)
             return False
 
         dst_dirname = os.path.dirname(dst_filename)
@@ -337,7 +337,7 @@ def getFilesByMask(filename_mask):
                 filenames = glob.glob(pathname=filename_mask, recursive=False)
                 return [os.path.abspath(file_name) for file_name in filenames]
             else:
-                log_func.error(u'Folder <%s> not found. to determine the list of files by mask <%s>' % (dir_path, filename_mask))
+                log_func.warning(u'Folder <%s> not found. to determine the list of files by mask <%s>' % (dir_path, filename_mask))
         elif isinstance(filename_mask, tuple) or isinstance(filename_mask, list):
             filenames = list()
             for file_mask in filename_mask:
@@ -345,7 +345,7 @@ def getFilesByMask(filename_mask):
                 filenames += [os.path.abspath(file_name) for file_name in filenames]
             return filenames
         else:
-            log_func.error(u'Error type mask <%s>' % filename_mask)
+            log_func.warning(u'Error type mask <%s>' % filename_mask)
     except:
         log_func.fatal(u'Error define file list by mask <%s>' % str(filename_mask))
     return list()
@@ -385,7 +385,7 @@ def getSubDirs(dir_path):
     """
     try:
         if not os.path.exists(dir_path):
-            log_func.error(u'Directory <%s> not found' % dir_path)
+            log_func.warning(u'Directory <%s> not found' % dir_path)
             return list()
         dir_list = [os.path.join(dir_path, cur_name) for cur_name in os.listdir(dir_path)]
         dir_list = [cur_path for cur_path in dir_list if os.path.isdir(cur_path)]
@@ -408,7 +408,7 @@ def removeFile(filename):
             log_func.info(u'Remove file <%s>' % filename)
             return True
         else:
-            log_func.error(u'File <%s> not found for removing' % filename)
+            log_func.warning(u'File <%s> not found for removing' % filename)
     except:
         log_func.fatal(u'Error remove file <%s>' % filename)
     return False
@@ -422,7 +422,7 @@ def getFileModifyDatetime(filename):
     :return: Date-time of file change or None in case of error.
     """
     if not os.path.exists(filename):
-        log_func.error(u'Get file modify datetime. File <%s> not found' % filename)
+        log_func.warning(u'Get file modify datetime. File <%s> not found' % filename)
         return None
 
     try:
@@ -448,7 +448,7 @@ def getProjectSettingsFilename():
     if prj_path and prj_name:
         return os.path.join(prj_path, '%s.ini' % prj_name)
     else:
-        log_func.error(u'Not define project')
+        log_func.warning(u'Not define project')
     return None
 
 

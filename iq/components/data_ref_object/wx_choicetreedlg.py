@@ -170,7 +170,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         self.refobj_col_names = field_names
             
         if self.ref_obj is None:
-            log_func.error(u'Not define ref object for selecting code')
+            log_func.warning(u'Not define ref object for selecting code')
             return
         
         tab = self.ref_obj.getTable()
@@ -200,7 +200,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         self.refobj_search_col_names = field_names
 
         if self.ref_obj is None:
-            log_func.error(u'Not define ref object')
+            log_func.warning(u'Not define ref object')
             return
 
         tab = self.ref_obj.getTable()
@@ -344,7 +344,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                 log_func.warning(u'Sort. Field <%s> not found in %s.' % (sort_field, self.refobj_col_names))
                 sort_field = None
         else:
-            log_func.error(u'Error sort field/column type <%s>' % type(sort_column))
+            log_func.warning(u'Error sort field/column type <%s>' % type(sort_column))
         return sort_field
 
     def getSortFieldIdx(self, sort_column='name'):
@@ -456,7 +456,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                                        key=operator.itemgetter(*new_field_sequence_idx),
                                        reverse=is_reverse)
             else:
-                log_func.error(u'Sort. Not supported record types <%s>' % type(first_record))
+                log_func.warning(u'Sort. Not supported record types <%s>' % type(first_record))
                 new_recordset = recordset
 
             return new_recordset
@@ -913,7 +913,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                 self.refobj_treeListCtrl.SetColumnImage(find_col, self.sort_ascending_img)
                 self.sort_column = find_col_name
             else:
-                log_func.error(u'Error define sort column <%s>. Prev value <%s>' % (find_col, self.sort_column))
+                log_func.warning(u'Error define sort column <%s>. Prev value <%s>' % (find_col, self.sort_column))
                 self.sort_column = None
 
             if self.sort_column is not None:
@@ -943,7 +943,7 @@ def choiceRefObjDlg(parent=None, ref_obj=None, fields=None,
          If not specified, then the displayed fields are taken.
     """
     if ref_obj is None:
-        log_func.error(u'Not define ref object for choice')
+        log_func.warning(u'Not define ref object for choice')
         return None
 
     if parent is None:
@@ -994,7 +994,7 @@ def delCachedChoiceRefObjDlg(ref_obj=None):
     :return: True - form removed from cache/False - form not removed from cache for some reason.
     """
     if ref_obj is None:
-        log_func.error(u'Not define ref object for remove choice dialog from cache')
+        log_func.warning(u'Not define ref object for remove choice dialog from cache')
         return False
 
     global CHOICE_DLG_CACHE

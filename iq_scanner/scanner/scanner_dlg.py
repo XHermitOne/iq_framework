@@ -70,7 +70,7 @@ class iqScanOptions:
         if ini_dict:
             self.setExtOptions(**ini_dict['SCAN_OPTIONS'])
         else:
-            log_func.error(u'Scan settings not loaded from configuration file')
+            log_func.warning(u'Scan settings not loaded from configuration file')
 
     def saveOptions(self, filename=None):
         """
@@ -131,7 +131,7 @@ class iqScanOptions:
             if 'ext_scan_cmd' in options:
                 self.ext_scan_cmd = options.get('ext_scan_cmd', None)
         else:
-            log_func.error(u'Undefined scan options for set')
+            log_func.warning(u'Undefined scan options for set')
 
 
 class iqScanAdministrator(iqScanOptions):
@@ -176,10 +176,10 @@ class iqScanAdministrator(iqScanOptions):
         :return: True/False
         """
         if self.scan_manager is None:
-            log_func.error(u'Scan manager not defined')
+            log_func.warning(u'Scan manager not defined')
             return False
         if self.scanner is None:
-            log_func.error(u'Undefined scan device')
+            log_func.warning(u'Undefined scan device')
             return False
 
         self.scan_manager.init()
@@ -280,10 +280,10 @@ class iqScanAdministrator(iqScanOptions):
         :return: True/False
         """
         if self.scan_manager is None:
-            log_func.error(u'Scan Manager not defined')
+            log_func.warning(u'Scan Manager not defined')
             return False
         if self.scanner is None:
-            log_func.error(u'Undefined scan device')
+            log_func.warning(u'Undefined scan device')
             return False
 
         self.scan_manager.init()
@@ -339,9 +339,9 @@ class iqScanAdministrator(iqScanOptions):
                         log_func.debug(u'File transfer <%s> to the resulting folder <%s>' % (scan_filename, self.scan_dir))
                         self.copyToScanDir(scan_filename, self.scan_dir)
                     else:
-                        log_func.error(u'Result scan file not defined')
+                        log_func.warning(u'Result scan file not defined')
             else:
-                log_func.error(u'Result scan folder not defined')
+                log_func.warning(u'Result scan folder not defined')
                         
             return True
         except:
@@ -628,7 +628,7 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
                     setattr(self, option_name, option_value)
                     log_func.info(u'Set option <%s>. Value <%s>' % (option_name, option_value))
                 except:
-                    log_func.error(u'Error set option <%s>. Value <%s>' % (option_name, option_value))
+                    log_func.warning(u'Error set option <%s>. Value <%s>' % (option_name, option_value))
         # After setting the attributes, display them in the dialog box
         self.showOptions()
 

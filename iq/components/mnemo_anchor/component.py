@@ -90,7 +90,7 @@ class iqMnemoAnchor(mnemoanchor.iqMnemoAnchorManager, object.iqObject):
             if parent.hasChild(name):
                 return parent.getChild(name)
             else:
-                log_func.error(u'Object <%s> is not a child of the mnemoscheme anchor <%s>' % (name, self.getName()))
+                log_func.warning(u'Object <%s> is not a child of the mnemoscheme anchor <%s>' % (name, self.getName()))
         return None
 
 

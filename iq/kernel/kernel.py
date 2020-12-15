@@ -125,11 +125,11 @@ class iqKernel(object):
         try:
             component_type = resource.get('type', None)
             if not component_type:
-                log_func.error(u'Not define component type in resource %s' % resource)
+                log_func.warning(u'Not define component type in resource %s' % resource)
             else:
                 component_class = self._components.get(component_type, None)
                 if not component_class:
-                    log_func.error(u'Component <%s> not registered' % component_type)
+                    log_func.warning(u'Component <%s> not registered' % component_type)
                 else:
                     try:
                         obj = component_class(parent, resource, context, *args, **kwargs)
@@ -176,7 +176,7 @@ class iqKernel(object):
                 obj.setPassport(psp)
             return obj
         else:
-            log_func.error(u'Resource <%s> not found' % str(psp))
+            log_func.warning(u'Resource <%s> not found' % str(psp))
         return None
 
     def create(self, parent=None, object_data=None, context=None, *args, **kwargs):
@@ -222,7 +222,7 @@ class iqKernel(object):
         :return: Registered object or None if error.
         """
         if not psp:
-            log_func.error(u'KERNEL. Not define object passport for getting')
+            log_func.warning(u'KERNEL. Not define object passport for getting')
             return None
 
         find_obj = self.findObject(psp, compare_guid=compare_guid)
@@ -240,7 +240,7 @@ class iqKernel(object):
         :return: Registered object or None if error.
         """
         if not psp:
-            log_func.error(u'KERNEL. Not define object passport for create')
+            log_func.warning(u'KERNEL. Not define object passport for create')
             return None
 
         obj = self.createByPsp(psp=psp, *args, **kwargs)

@@ -95,7 +95,7 @@ class iqCataloger(cataloger.iqCatalogerProto, object.iqObject):
         if result:
             return result
         else:
-            log_func.error(u'Cataloger <%s>. Error put object to physic catalog. Path <%s>' % (self.getName(),
+            log_func.warning(u'Cataloger <%s>. Error put object to physic catalog. Path <%s>' % (self.getName(),
                                                                                                physic_path))
         return False
 
@@ -115,7 +115,7 @@ class iqCataloger(cataloger.iqCatalogerProto, object.iqObject):
         if result:
             return result
         else:
-            log_func.error(u'Cataloger <%s>. Error get object from physic catalog. Path <%s>' % (self.getName(),
+            log_func.warning(u'Cataloger <%s>. Error get object from physic catalog. Path <%s>' % (self.getName(),
                                                                                                  physic_path))
         return None
 

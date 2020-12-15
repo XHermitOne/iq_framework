@@ -12,10 +12,10 @@ if global_func.isWXEngine():
     from ..engine.wx.dlg import std_dlg as _std_dlg
 elif global_func.isQTEngine():
     _std_dlg = None
-    log_func.error(u'Standart dialog functions. Not support QT engine')
+    log_func.warning(u'Standart dialog functions. Not support QT engine')
 elif global_func.isCUIEngine():
     _std_dlg = None
-    log_func.error(u'Standart dialog functions. Not support CUI engine')
+    log_func.warning(u'Standart dialog functions. Not support CUI engine')
 
 __version__ = (0, 0, 0, 1)
 

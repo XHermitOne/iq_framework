@@ -288,7 +288,7 @@ class iqReportGenerator(object):
             if isinstance(rep_template, dict):
                 self._Template = rep_template
             else:
-                log_func.error(u'Error report template type <%s>.' % type(rep_template))
+                log_func.warning(u'Error report template type <%s>.' % type(rep_template))
                 return None
 
             # Init report name
@@ -824,7 +824,7 @@ class iqReportGenerator(object):
                         sys_num_rec = record['sys_num_rec_idx']
                         value = str(sys_num_rec + 1)
                     else:
-                        log_func.error(u'Unknown system function <%s> in <%s>' % (str_func.toUnicode(cur_func),
+                        log_func.warning(u'Unknown system function <%s> in <%s>' % (str_func.toUnicode(cur_func),
                                                                                   self._RepName))
                         value = ''
                         
@@ -841,7 +841,7 @@ class iqReportGenerator(object):
                     value = self._genSubReportBlock(cur_func, locals(), globals())
 
                 else:
-                    log_func.error(u'Unsupported function <%s>' % str(cur_func))
+                    log_func.warning(u'Unsupported function <%s>' % str(cur_func))
 
                 # The cell value may also contain control codes
                 value = self._genTxt({'value': value}, record)
@@ -961,7 +961,7 @@ class iqReportGenerator(object):
         if var_name in self._NameSpace:
             log_func.debug(u'Get variable <%s>' % var_name)
         else:
-            log_func.error(u'Variable <%s> not found in report name space' % var_name)
+            log_func.warning(u'Variable <%s> not found in report name space' % var_name)
         value = str(self._NameSpace.setdefault(var_name, u''))
         return value
 
@@ -994,7 +994,7 @@ class iqReportGenerator(object):
         try:
             value = record[field_name]
         except KeyError:
-            log_func.error(u'In record (%s) field <%s> not found' % (str_func.toUnicode(record),
+            log_func.warning(u'In record (%s) field <%s> not found' % (str_func.toUnicode(record),
                                                                      str_func.toUnicode(field_name)))
         return value
 
@@ -1131,7 +1131,7 @@ class iqReportGenerator(object):
                                 try:
                                     value = eval(cur_sum['formul'], globals(), locals())
                                 except:
-                                    log_func.error(u'Error sum by formula <%s>.' % cur_sum)
+                                    log_func.warning(u'Error sum by formula <%s>.' % cur_sum)
                                     value = 0.0
                                 try:
                                     if value is None:

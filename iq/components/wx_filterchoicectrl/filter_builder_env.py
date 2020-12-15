@@ -59,7 +59,7 @@ from . import filter_builder_ctrl
 try:
     from ..wx_refobjtreecomboctrl.component import iqWxRefObjTreeComboCtrl
 except ImportError:
-    log_func.error(u'Reference object choice component not found in filter constructor')
+    log_func.warning(u'Reference object choice component not found in filter constructor')
     iqWxRefObjTreeComboCtrl = None
 
 __version__ = (0, 0, 0, 1)
@@ -93,7 +93,7 @@ def _getRequisiteField(requisite):
     """
     if ('field' not in requisite) or (not requisite['field']):
         if ('name' not in requisite) or (not requisite['name']):
-            log_func.error(u'The attribute storage field is not defined <%s>' % requisite)
+            log_func.warning(u'The attribute storage field is not defined <%s>' % requisite)
             return None
         field = requisite['name'].lower()
     else:

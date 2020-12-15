@@ -27,7 +27,7 @@ from iq.engine.wx import wxcolour_func
 try:
     import yandex_maps
 except ImportError:
-    log_func.error(u'Error importing yandex_maps to determine geolocation by address')
+    log_func.warning(u'Error importing yandex_maps to determine geolocation by address')
     yandex_maps = None
 
 import urllib.request
@@ -275,7 +275,7 @@ class iqMapIndicator(object):
             A tooltip appears when you hover the mouse over the marker.
         :return: True/False.
         """
-        log_func.error(u'setCircleMarker not defined in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'setCircleMarker not defined in <%s> component' % self.__class__.__name__)
         return False
 
     def setPinMarker(self, geo_latitude, geo_longitude,
@@ -294,7 +294,7 @@ class iqMapIndicator(object):
             A tooltip appears when you hover the mouse over the marker.
         :return: True/False.
         """
-        log_func.error(u'setPinMarker not defined in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'setPinMarker not defined in <%s> component' % self.__class__.__name__)
         return False
 
     def setCircleMarkerByAddress(self, address,
@@ -354,7 +354,7 @@ class iqMapIndicator(object):
         :param rewrite: Overwrite existing file?
         :return: Full name of the HTML file or None in case of error.
         """
-        log_func.error(u'saveMapBrowserFile not define in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'saveMapBrowserFile not define in <%s> component' % self.__class__.__name__)
         return None
 
     def saveMapBrowserFileByAddress(self, address, zoom=DEFAULT_ZOOM,
@@ -369,7 +369,7 @@ class iqMapIndicator(object):
         :param rewrite: Overwrite existing file?
         :return: Full name of the HTML file or None in case of error.
         """
-        log_func.error(u'saveMapBrowserFileByAddress not define in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'saveMapBrowserFileByAddress not define in <%s> component' % self.__class__.__name__)
         return None
 
     def createMap(self, geo_latitude, geo_longitude,
@@ -386,7 +386,7 @@ class iqMapIndicator(object):
         :param rewrite: Overwrite existing file?
         :return: Map object or None if error.
         """
-        log_func.error(u'createMap not define in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'createMap not define in <%s> component' % self.__class__.__name__)
         return None
 
     def createMapByAddress(self, address,
@@ -402,7 +402,7 @@ class iqMapIndicator(object):
         :param rewrite: Overwrite existing file?
         :return: Map object or None if error.
         """
-        log_func.error(u'createMapByAddress not define in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'createMapByAddress not define in <%s> component' % self.__class__.__name__)
         return None
 
 
@@ -671,7 +671,7 @@ class iqMapIndicatorManagerProto(iqMapIndicator):
             except:
                 log_func.fatal(u'Error adding a circle marker to the map')
         else:
-            log_func.error(u'Map object not defined to add a circle marker')
+            log_func.warning(u'Map object not defined to add a circle marker')
         return False
 
     def setPinMarker(self, geo_latitude, geo_longitude,
@@ -710,5 +710,5 @@ class iqMapIndicatorManagerProto(iqMapIndicator):
             except:
                 log_func.fatal(u'Error adding a pointer marker to the map')
         else:
-            log_func.error(u'Map object not defined to add a pointer marker')
+            log_func.warning(u'Map object not defined to add a pointer marker')
         return False

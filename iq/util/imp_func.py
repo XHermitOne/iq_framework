@@ -29,7 +29,7 @@ def loadPyModule(name, path):
         path = os.path.join(path, py_func.INIT_PY_FILENAME)
 
     if not os.path.exists(path):
-        log_func.error(u'Module file <%s> not exists' % path)
+        log_func.warning(u'Module file <%s> not exists' % path)
         return None
 
     module = None
@@ -96,5 +96,5 @@ def canImportName(import_name):
         exec(import_cmd)
         return True
     except ImportError:
-        log_func.error(u'It is not possible to import <%s>' % import_name)
+        log_func.warning(u'It is not possible to import <%s>' % import_name)
     return False

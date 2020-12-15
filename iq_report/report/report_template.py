@@ -626,7 +626,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                     else:
                         rep = self._defBand(self.__cur_band, cur_row, col_count, title_row, rep)
                 else:
-                    log_func.error(u'Not valid tag <%s> of row [%d]' % (tag, cur_row))
+                    log_func.warning(u'Not valid tag <%s> of row [%d]' % (tag, cur_row))
 
             # Page setup
             rep['page_setup'] = copy.deepcopy(report_generator.REP_PAGESETUP)
@@ -797,7 +797,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                 # Under
                 rep['under'] = self._band(rep['under'], row - title_row, col_count)
             else:
-                log_func.error(u'Unsupported band type <%s>' % band_tag)
+                log_func.warning(u'Unsupported band type <%s>' % band_tag)
             rep['upper'] = self._bandUpper(rep['upper'], self._rep_worksheet)
             rep['under'] = self._bandUnder(rep['under'], self._rep_worksheet)
             
@@ -1058,7 +1058,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             row_data = rows[row]
 
             if '_children_' not in row_data or not row_data['_children_']:
-                log_func.error(u'Error having row children <%s>' % row)
+                log_func.warning(u'Error having row children <%s>' % row)
                 return self.__cur_band
             i_tag = self._getTagBandIdx(rows)
 
@@ -1213,7 +1213,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             report['data_source'] = parse_row[0]['_children_'][0]['value']
         except:
             report['data_source'] = None
-            log_func.error(u'Not defined data source / database')
+            log_func.warning(u'Not defined data source / database')
 
     def _parseQueryTag(self, report, parse_row):
         """
@@ -1226,7 +1226,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             report['query'] = parse_row[0]['_children_'][0]['value']
         except:
             report['query'] = None
-            log_func.error(u'Not defined query')
+            log_func.warning(u'Not defined query')
             
     def _parseStyleLibTag(self, report, parse_row):
         """

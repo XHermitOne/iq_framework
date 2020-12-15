@@ -521,7 +521,7 @@ class iqAccRegistry(data_object.iqDataObject):
             # If the operation of expense, then subtract
             resource_requisites = dict([(name, getattr(result_table.c, name)-requisite_values.get(name, 0)) for name in resource_requisite_names])
         else:
-            log_func.error(u'Unsupported operation <%s>' % requisite_values.get(CODE_OPERATION_FIELD, None))
+            log_func.warning(u'Unsupported operation <%s>' % requisite_values.get(CODE_OPERATION_FIELD, None))
             transaction.rollback()
             return False
 
@@ -638,7 +638,7 @@ class iqAccRegistry(data_object.iqDataObject):
                         # Dictionary of details for adding a position
                         init_resource_requisites = dict([(name, operation[name]) for name in resource_requisite_names])
                     else:
-                        log_func.error(u'Unsupported operation <%s>' % operation_code)
+                        log_func.warning(u'Unsupported operation <%s>' % operation_code)
                         transaction.rollback()
                         return False
 
@@ -679,7 +679,7 @@ class iqAccRegistry(data_object.iqDataObject):
                                 log_func.fatal(u'Error add undo position')
                                 sql = None
                     else:
-                        log_func.error(u'Error records identification in result table for update [%s]' % dimension_requisites)
+                        log_func.warning(u'Error records identification in result table for update [%s]' % dimension_requisites)
 
                 operation_requisite_values = self._getOperationRequisiteValues(**requisite_values)
 
@@ -688,7 +688,7 @@ class iqAccRegistry(data_object.iqDataObject):
                 sql = operation_table.delete().where(sqlalchemy.and_(*where))
                 transaction.execute(sql)
             else:
-                log_func.error(u'Operation not found <%s> for undo' % requisite_values)
+                log_func.warning(u'Operation not found <%s> for undo' % requisite_values)
                 transaction.rollback()
                 return False
 
@@ -775,7 +775,7 @@ class iqAccRegistry(data_object.iqDataObject):
             dt_actual = datetime.datetime.combine(dt_actual,
                                                   datetime.datetime.min.time())
         if not isinstance(dt_actual, datetime.datetime):
-            log_func.error(u'Not valid operation actual datetime type <%s>' % dt_actual.__class__.__name__)
+            log_func.warning(u'Not valid operation actual datetime type <%s>' % dt_actual.__class__.__name__)
             return False
 
         operation_tab = self.getOperationTable()

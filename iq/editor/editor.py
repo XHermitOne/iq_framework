@@ -32,7 +32,7 @@ def openFrameworkEditor():
         start_editor.startEditor()
         return True
     else:
-        log_func.error(u'Not supported engine as editor')
+        log_func.warning(u'Not supported engine as editor')
     return False
 
 
@@ -85,9 +85,9 @@ def _openResourceEditor(res_filename):
                 return _openResourceEditor(res_filename)
 
         else:
-            log_func.error(u'Not support editing file <%s>' % res_filename)
+            log_func.warning(u'Not support editing file <%s>' % res_filename)
     else:
-        log_func.error(u'Not supported engine as editor')
+        log_func.warning(u'Not supported engine as editor')
     return False
 
 

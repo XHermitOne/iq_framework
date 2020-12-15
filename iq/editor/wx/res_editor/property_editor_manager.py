@@ -66,7 +66,7 @@ class iqPropertyEditorManager(object):
                     editor_class.setPropertyEditManager(property_editor)
                     property_editor.RegisterEditor(editor_class, editor_class.__name__)
                 else:
-                    log_func.error(u'Custom property editor not defined')
+                    log_func.warning(u'Custom property editor not defined')
             # ensure we only do it once
             sys._PropGridEditorsRegistered = True
 
@@ -86,7 +86,7 @@ class iqPropertyEditorManager(object):
             property_editor.AddPage(_(u'Events'), bmp)
             return True
         else:
-            log_func.error(u'Not define property editor')
+            log_func.warning(u'Not define property editor')
         return False
 
     def setSpecification(self, spc=None):
@@ -146,7 +146,7 @@ class iqPropertyEditorManager(object):
             elif callable(choices):
                 choices = choices(resource=spc)
             else:
-                log_func.error(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
                 choices = list()
 
             idx = choices.index(value) if value in choices else 0
@@ -167,7 +167,7 @@ class iqPropertyEditorManager(object):
             elif callable(choices):
                 choices = choices()
             else:
-                log_func.error(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
                 choices = list()
             values = [name for name in choices if name in value]
             wx_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=values)
@@ -285,7 +285,7 @@ class iqPropertyEditorManager(object):
             wx_property = wx.propgrid.StringProperty(name, value=value)
 
         else:
-            log_func.error(u'Property type <%s> not supported' % property_type)
+            log_func.warning(u'Property type <%s> not supported' % property_type)
 
         if wx_property:
             help_string = spc.get(spc_func.HELP_ATTR_NAME, dict()).get(name, name)
@@ -321,7 +321,7 @@ class iqPropertyEditorManager(object):
         :return: True/False.
         """
         if property_editor is None:
-            log_func.error(u'Not define property editor')
+            log_func.warning(u'Not define property editor')
             return False
 
         if resource is None:
@@ -596,7 +596,7 @@ class iqPropertyEditorManager(object):
                 value = str_value
 
         else:
-            log_func.error(u'Not support property editor. Code [%d]' % property_type)
+            log_func.warning(u'Not support property editor. Code [%d]' % property_type)
 
         return value
 
@@ -610,7 +610,7 @@ class iqPropertyEditorManager(object):
         """
         value = None
         if spc is None:
-            log_func.error(u'Not define component specification')
+            log_func.warning(u'Not define component specification')
             return None
 
         property_type = self.findPropertyType(name, spc)
@@ -663,7 +663,7 @@ class iqPropertyEditorManager(object):
         if spc is None:
             spc = self.getSpecification()
         if spc is None:
-            log_func.error(u'Property editor. Current component specification not defined')
+            log_func.warning(u'Property editor. Current component specification not defined')
             return True
 
         # Valid attribute type
@@ -671,7 +671,7 @@ class iqPropertyEditorManager(object):
 
         if editor is None:
             msg = _(u'Not define attribute editor') + ' <%s>' % name
-            log_func.error(msg)
+            log_func.warning(msg)
             wxdlg_func.openErrBox(_(u'VALIDATION'), msg)
             valid = False
         elif isinstance(editor, int):
@@ -687,7 +687,7 @@ class iqPropertyEditorManager(object):
                     wxdlg_func.openFatalBox(_(u'VALIDATION'), msg)
                     valid = False
         else:
-            log_func.error(u'Not support property/attribute editor type <%s>' % type(editor))
+            log_func.warning(u'Not support property/attribute editor type <%s>' % type(editor))
             valid = False
 
         return valid
@@ -711,7 +711,7 @@ class iqPropertyEditorManager(object):
             elif isinstance(attr_editor, dict):
                 property_type = attr_editor.get('editor', None)
             else:
-                log_func.error(u'Not supported property editor type <%s : %s> in <%s> specification' % (name,
+                log_func.warning(u'Not supported property editor type <%s : %s> in <%s> specification' % (name,
                                                                                                         type(attr_editor),
                                                                                                         spc.get('type', None)))
 

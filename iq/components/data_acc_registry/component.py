@@ -41,7 +41,7 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         db = self.getDB()
         db_url = db.getDBUrl() if db else None
         if not db_url:
-            log_func.error(u'DB URL not defined for accumulate registry <%s>' % self.getName())
+            log_func.warning(u'DB URL not defined for accumulate registry <%s>' % self.getName())
         acc_registry.iqAccRegistry.__init__(self, db_url=db_url,
                                             operation_table_name=self.getOperationTabName(),
                                             result_table_name=self.getResultTabName())

@@ -33,7 +33,7 @@ class iqStoredCtrlManager(object):
         if save_filename:
             return res_func.saveResourcePickle(save_filename, save_data)
         else:
-            log_func.error(u'File for store custom data not defined')
+            log_func.warning(u'File for store custom data not defined')
         return False
 
     def loadCustomData(self, save_filename=None):
@@ -49,7 +49,7 @@ class iqStoredCtrlManager(object):
             # Просто записать в файл
             return res_func.loadResourcePickle(save_filename)
         else:
-            log_func.error(u'File for store custom data not defined')
+            log_func.warning(u'File for store custom data not defined')
         return None
 
     def genCustomDataFilename(self):

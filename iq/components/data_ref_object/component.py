@@ -62,7 +62,7 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
                 elif isinstance(cod_len_value, tuple):
                     self._cod_len = cod_len_value
                 else:
-                    log_func.error(u'Error type cod len <%s> in ref object <%s>' % (type(cod_len_value),
+                    log_func.warning(u'Error type cod len <%s> in ref object <%s>' % (type(cod_len_value),
                                                                                     self.getName()))
             except:
                 log_func.fatal(u'Error level code lengths format <%s>' % cod_len)

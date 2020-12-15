@@ -210,7 +210,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         if guid is None:
-            log_func.error(u'Not define unic object GUID for save')
+            log_func.warning(u'Not define unic object GUID for save')
             return False
         log_func.debug(u'Save unic object <%s>' % guid)
         return self.saveRec(id=guid, record=save_record,
@@ -225,7 +225,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         if guid is None:
-            log_func.error(u'Not define unic object GUID for delete')
+            log_func.warning(u'Not define unic object GUID for delete')
             return False
 
         can_delete = dlg_func.openAskBox(title=_('DELETE'),

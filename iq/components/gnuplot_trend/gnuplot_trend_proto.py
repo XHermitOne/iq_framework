@@ -254,7 +254,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
                 os.makedirs(DEFAULT_GNUPLOT_FRAME_PATH)
                 log_func.info(u'Make directory <%s>' % DEFAULT_GNUPLOT_FRAME_PATH)
             except:
-                log_func.error(u'Error make directory <%s>' % DEFAULT_GNUPLOT_FRAME_PATH)
+                log_func.warning(u'Error make directory <%s>' % DEFAULT_GNUPLOT_FRAME_PATH)
 
     def delFrameFile(self, frame_filename=None):
         """
@@ -340,7 +340,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         elif isinstance(points, str) and os.path.exists(points):
             graph_filename = points
         else:
-            log_func.error(u'Invalid type of list of points for drawing a trend frame <%s>' % self.getName())
+            log_func.warning(u'Invalid type of list of points for drawing a trend frame <%s>' % self.getName())
             return None
 
         # log_func.debug(u'Frame filename: %s' % frame_filename)
@@ -396,7 +396,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         if os.path.exists(frame_filename):
             return frame_filename
         else:
-            log_func.error(u'Frame file <%s> Gnuplot trend not found' % frame_filename)
+            log_func.warning(u'Frame file <%s> Gnuplot trend not found' % frame_filename)
         return None
 
     def drawEmpty(self, size=None):
@@ -477,7 +477,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
                                             new_graph_point['pen%d' % i_prev_pen] = 0.0
                                         graph_data.append(new_graph_point)
                     else:
-                        log_func.error(u'Undefined trend pen <%s>' % self.name)
+                        log_func.warning(u'Undefined trend pen <%s>' % self.name)
                 except:
                     log_func.fatal(u'Trend rendering error')
                     break
@@ -490,7 +490,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
                                                      ['pen%d' % i_pen for i_pen in range(len(pens))])
                 return True
         else:
-            log_func.error(u'Not defined feathers in the trend <%s>' % self.getName())
+            log_func.warning(u'Not defined feathers in the trend <%s>' % self.getName())
 
         return False
 
@@ -528,7 +528,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             graph_data = self.getPenData(pen_index=0)
 
         if not graph_data:
-            log_func.error(u'No chart data for scene adaptation for trend display')
+            log_func.warning(u'No chart data for scene adaptation for trend display')
         else:
             time_data = [point[0] for point in graph_data]
             y_data = [point[1] for point in graph_data]

@@ -137,7 +137,7 @@ class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
             dataset = self._ref_object.getStorage().getLevelTable(code)
             self.setDataset(dataset)
         else:
-            log_func.error(u'Not define ref object for choice')
+            log_func.warning(u'Not define ref object for choice')
 
     def setDataset(self, dataset):
         """
@@ -159,7 +159,7 @@ class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
             self.dlg_toolbar.EnableTool(self.return_tool.GetId(),
                                         not self.isEmptyCode())
         else:
-            log_func.error(u'Not define ref object dataset (cod <%s>) for choice' % self._getStrCode())
+            log_func.warning(u'Not define ref object dataset (cod <%s>) for choice' % self._getStrCode())
 
     def selectCode(self, code):
         """
@@ -186,7 +186,7 @@ class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
             self.refobj_list_ctrl.Select(idx)
             self.refobj_list_ctrl.Focus(idx)
         except ValueError:
-            log_func.error(u'Error define ref object code <%s> when choosing from <%s>' % (code, parent_code))
+            log_func.warning(u'Error define ref object code <%s> when choosing from <%s>' % (code, parent_code))
 
     def getRefObj(self):
         """
@@ -303,6 +303,6 @@ def getRefObjChoiceListDlg(parent=None, ref_obj=None):
                 dlg.Destroy()
             log_func.fatal(u'Error choice ref object code')
     else:
-        log_func.error(u'Not define ref object for choice code')
+        log_func.warning(u'Not define ref object for choice code')
     return result
 

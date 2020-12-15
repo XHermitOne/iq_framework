@@ -124,7 +124,7 @@ def getReportList(report_dir, is_sort=True):
                 if rep_struct['generator'][-3:].lower() == 'xml':
                     img_idx = 1
             except:
-                log_func.error(u'Report type definition error')
+                log_func.warning(u'Report type definition error')
 
             try:
                 data = [rep_file_name, rep_struct['name'],
@@ -388,7 +388,7 @@ class iqReportBrowserDialog(wx.Dialog):
             if rep_generator is not None:
                 rep_generator.edit(item_data[0])
             else:
-                log_func.error(u'Report generator not defined. Type <%s>' % item_data[REP_FILE_IDX])
+                log_func.warning(u'Report generator not defined. Type <%s>' % item_data[REP_FILE_IDX])
 
         event.Skip()
 
@@ -534,7 +534,7 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         rep_data = getReportList(report_dir)
         if rep_data is None:
-            log_func.error(u'Error data. Report directory <%s>' % report_dir)
+            log_func.warning(u'Error data. Report directory <%s>' % report_dir)
             return
 
         self.rep_tree.DeleteAllItems()
@@ -551,7 +551,7 @@ class iqReportBrowserDialog(wx.Dialog):
         :param items: Report data branch.
         """
         if not items:
-            log_func.error(u'An empty list of report descriptions when building a report tree')
+            log_func.warning(u'An empty list of report descriptions when building a report tree')
 
         for item_data in items:
             item = self.rep_tree.AppendItem(parent_id, item_data[REP_DESCRIPTION_IDX], -1, -1, data=None)

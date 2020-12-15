@@ -94,7 +94,7 @@ class iqTrendPen(object.iqObject):
         :return: True/False.
         """
         if history is None:
-            log_func.error(u'Undefined historical data object')
+            log_func.warning(u'Undefined historical data object')
             return False
 
         try:

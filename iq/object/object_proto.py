@@ -139,7 +139,7 @@ class iqObject(object):
         #     else:
         #         log_func.warning(u'Resource python module <%s> not found' % module_filename)
         # else:
-        #     log_func.error(u'Not define resource file of object <%s : %s>' % (self.getName(), self.getType()))
+        #     log_func.warning(u'Not define resource file of object <%s : %s>' % (self.getName(), self.getType()))
         return None
 
     def getModule(self, module_filename=None):
@@ -165,7 +165,7 @@ class iqObject(object):
     #     :return: True/False.
     #     """
     #     if not module_filename:
-    #         log_func.error(u'Not define module filename for generate')
+    #         log_func.warning(u'Not define module filename for generate')
     #         return False
     #
     #     package_path = os.path.dirname(module_filename)
@@ -334,5 +334,5 @@ class iqObject(object):
 
         :return: True/False.
         """
-        log_func.error(u'Not defined test function for component <%s : %s>' % (self.getName(), self.getType()))
+        log_func.warning(u'Not defined test function for component <%s : %s>' % (self.getName(), self.getType()))
         return False

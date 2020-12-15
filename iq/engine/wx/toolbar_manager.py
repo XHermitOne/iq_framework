@@ -41,7 +41,7 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
                 toolbar.EnableTool(tool.GetId(), enable)
                 result = result and True
             else:
-                log_func.error(u'Tool <%s> not found' % tool_name)
+                log_func.warning(u'Tool <%s> not found' % tool_name)
                 result = result and False
 
         return result
@@ -79,10 +79,10 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
                     # To do this, call the toolbar method < toolbar.SetToolNormalBitmap(tool_id, bmp) >
                     toolbar.SetToolNormalBitmap(tool_id, bmp)
                 else:
-                    log_func.error(u'Library icon <%s> not found' % lib_img_name)
+                    log_func.warning(u'Library icon <%s> not found' % lib_img_name)
                     result = False
             else:
-                log_func.error(u'Tool <%s> not found' % tool_name)
+                log_func.warning(u'Tool <%s> not found' % tool_name)
                 result = False
 
         toolbar.Realize()

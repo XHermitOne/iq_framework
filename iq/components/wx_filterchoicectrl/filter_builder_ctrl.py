@@ -598,7 +598,7 @@ class iqLabelChoice(wx.StaticText):
             
                 self._menuitem_item_dict[menuitem_id] = item
         else:
-            log_func.error(u'Filter constructor. Items not defined')
+            log_func.warning(u'Filter constructor. Items not defined')
 
         return menu
         
@@ -655,7 +655,7 @@ class iqLabelChoice(wx.StaticText):
         try:
             i = item_names.index(name)
         except:
-            log_func.error(u'Item <%s> not found in <%s>' % (name, item_names))
+            log_func.warning(u'Item <%s> not found in <%s>' % (name, item_names))
             i = -1
         self.Select(i)
         return i

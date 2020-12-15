@@ -202,7 +202,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             listctrl.SetColumn(column_idx, column)
             return True
         else:
-            log_func.error(u'Not valid column index [%s] ListCtrl object <%s>' % (column_idx, str(listctrl)))
+            log_func.warning(u'Not valid column index [%s] ListCtrl object <%s>' % (column_idx, str(listctrl)))
         return False
 
     def appendListCtrlRow(self, listctrl, row=(),
@@ -222,7 +222,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if not isinstance(row, (list, tuple)):
-            log_func.error(u'Row typeerror <%s> in wx.ListCtrl object' % type(row))
+            log_func.warning(u'Row typeerror <%s> in wx.ListCtrl object' % type(row))
             return False
 
         try:
@@ -299,15 +299,15 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         if item == -1:
-            log_func.error(u'The row index to be set is not specified')
+            log_func.warning(u'The row index to be set is not specified')
             return False
         if not isinstance(row, list) and not isinstance(row, tuple):
-            log_func.error(u'Invalid row data type <%s>' % row.__class__.__name__)
+            log_func.warning(u'Invalid row data type <%s>' % row.__class__.__name__)
             return False
 
         row_count = listctrl.GetItemCount()
         if 0 > item > row_count:
-            log_func.error(u'Not valid row index [%d] in <%s>' % (item, listctrl.__class__.__name__))
+            log_func.warning(u'Not valid row index [%d] in <%s>' % (item, listctrl.__class__.__name__))
             return False
 
         cursor_pos = None
@@ -793,7 +793,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
                 except:
                     log_func.fatal(u'Icon set error [%d] for item <%s>' % (img_idx, item))
             else:
-                log_func.error(u'Invalid row index [%s]' % str(item_idx))
+                log_func.warning(u'Invalid row index [%s]' % str(item_idx))
         return True
 
     def clearListCtrl(self, listctrl=None):

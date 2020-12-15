@@ -11,8 +11,8 @@ from ....util import lang_func
 try:
     import dialog
 except ImportError:
-    log_func.error(u'Import error pythondialog')
-    log_func.error(u'For install: sudo apt install python3-dialog')
+    log_func.warning(u'Import error pythondialog')
+    log_func.warning(u'For install: sudo apt install python3-dialog')
     dialog = None
 
 __version__ = (0, 0, 0, 1)

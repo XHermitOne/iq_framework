@@ -35,7 +35,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         if not tree_data:
-            log_func.error(u'Not define tree data of wx.TreeListCtrl control')
+            log_func.warning(u'Not define tree data of wx.TreeListCtrl control')
             return False
 
         treelistctrl.GetMainWindow().DeleteAllItems()

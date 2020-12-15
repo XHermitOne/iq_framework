@@ -76,7 +76,7 @@ def main(argv):
                                        'stylelib=', 'var=', 'path=',
                                        'no_gui'])
     except getopt.error as err:
-        log_func.error(err.msg, is_force_print=True)
+        log_func.warning(err.msg, is_force_print=True)
         log_func.info(__doc__, is_force_print=True)
         sys.exit(2)
 

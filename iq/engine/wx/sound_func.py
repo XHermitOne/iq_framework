@@ -33,7 +33,7 @@ def playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
     :return: True/False.
     """
     if not os.path.exists(wav_filename):
-        log_func.error(u'WAV file <%s> not found' % wav_filename)
+        log_func.warning(u'WAV file <%s> not found' % wav_filename)
         return False
 
     global SOUND
@@ -44,7 +44,7 @@ def playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
         return SOUND.Play(play_mode)
     else:
         SOUND = None
-        log_func.error(u'WX application not created. Sound files cannot be played')
+        log_func.warning(u'WX application not created. Sound files cannot be played')
     return False
 
 
@@ -58,7 +58,7 @@ def stopSound():
 
     app = wx.GetApp()
     if app is None:
-        log_func.error(u'WX application not created. It is not possible to stop playing audio files')
+        log_func.warning(u'WX application not created. It is not possible to stop playing audio files')
         return False
 
     if SOUND:
@@ -66,5 +66,5 @@ def stopSound():
         SOUND = None
         return result
     else:
-        log_func.error(u'Sound object not detected when stopped')
+        log_func.warning(u'Sound object not detected when stopped')
     return False

@@ -48,7 +48,7 @@ class iqMetaDotUseProto(object):
             obj = kernel.createObject(psp=psp, parent=parent, context=context, *arg, **kwarg)
             return obj
         else:
-            log_func.error(u'Kernel object not defined')
+            log_func.warning(u'Kernel object not defined')
         return None
 
     def get(self, parent=None, *arg, **kwarg):
@@ -73,7 +73,7 @@ class iqMetaDotUseProto(object):
             obj = kernel.getObject(psp=psp, parent=parent, context=context, *arg, **kwarg)
             return obj
         else:
-            log_func.error(u'Kernel object not defined')
+            log_func.warning(u'Kernel object not defined')
         return None
 
     def passport(self):

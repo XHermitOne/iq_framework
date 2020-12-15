@@ -14,7 +14,7 @@ from iq.util import log_func
 try:
     import dbfpy3.dbf
 except ImportError:
-    log_func.error(u'Error import dbfpy3.dbf')
+    log_func.warning(u'Error import dbfpy3.dbf')
 
 __version__ = (0, 0, 0, 1)
 
@@ -88,7 +88,7 @@ def appendDBFNewField(dbf_filename,
     """
     dbf_filename = os.path.abspath(dbf_filename)
     if not os.path.exists(dbf_filename):
-        log_func.error(u'DBF file <%s> not found' % dbf_filename)
+        log_func.warning(u'DBF file <%s> not found' % dbf_filename)
         return None
 
     dbf_connection = None
@@ -119,7 +119,7 @@ def appendDBFNewField(dbf_filename,
                 sql += ' DEFAULT \'%s\'' % str(default)
             db_cursor.execute(sql)
         else:
-            log_func.error(u'Unsupported field type <%s>' % field_type)
+            log_func.warning(u'Unsupported field type <%s>' % field_type)
         dbf_connection.close()
     except:
         if dbf_connection:
@@ -139,7 +139,7 @@ def appendDBFNewFields(dbf_filename, *field_defs):
     """
     dbf_filename = os.path.abspath(dbf_filename)
     if not os.path.exists(dbf_filename):
-        log_func.error(u'DBF file <%s> not found' % dbf_filename)
+        log_func.warning(u'DBF file <%s> not found' % dbf_filename)
         return None
 
     dbf_connection = None
@@ -171,7 +171,7 @@ def appendDBFNewFields(dbf_filename, *field_defs):
                     sql += ' DEFAULT \'%s\'' % str(default)
                 db_cursor.execute(sql)
             else:
-                log_func.error(u'Unsupported field type <%s>' % field_type)
+                log_func.warning(u'Unsupported field type <%s>' % field_type)
                 continue
         dbf_connection.close()
     except:
@@ -192,7 +192,7 @@ def setDBFFieldValue(dbf_filename, field_name, value, field_type='C'):
     """
     dbf_filename = os.path.abspath(dbf_filename)
     if not os.path.exists(dbf_filename):
-        log_func.error(u'DBF file <%s> not found' % dbf_filename)
+        log_func.warning(u'DBF file <%s> not found' % dbf_filename)
         return False
 
     dbf_connection = None

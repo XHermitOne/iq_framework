@@ -95,7 +95,7 @@ class iqReportGeneratorSystem(object):
         """
         my_generator_type = self._report_template.get('generator', None) if self._report_template else None
         if my_generator_type is None:
-            log_func.error(u'Failed define the type of reporting system in <%s>' % self.__class__.__name__)
+            log_func.warning(u'Failed define the type of reporting system in <%s>' % self.__class__.__name__)
         elif isinstance(my_generator_type, str):
             my_generator_type = my_generator_type.lower()
         return my_generator_type
@@ -297,7 +297,7 @@ class iqReportGeneratorSystem(object):
                 tmpl_filename = os.path.splitext(filename)[0] + XML_TEMPLATE_EXT
                 template = report_template.iqlXMLSpreadSheetReportTemplate()
             else:
-                log_func.error(u'Report template not found <%s>' % filename)
+                log_func.warning(u'Report template not found <%s>' % filename)
 
             new_filename = None
             if template:
@@ -307,7 +307,7 @@ class iqReportGeneratorSystem(object):
             log_func.info(u'End convert')
             return new_filename
         else:
-            log_func.error(u'Report template file not found <%s>' % filename)
+            log_func.warning(u'Report template file not found <%s>' % filename)
         return None
    
     def openModule(self, tmpl_filename=None):
@@ -315,7 +315,7 @@ class iqReportGeneratorSystem(object):
         Open report module in editor.
         """
         if tmpl_filename is None:
-            log_func.error(u'Report template file not defined')
+            log_func.warning(u'Report template file not defined')
 
         module_file = os.path.abspath(os.path.splitext(tmpl_filename)[0]+'.py')
         if os.path.exists(module_file):
@@ -395,12 +395,12 @@ class iqReportGeneratorSystem(object):
                 data_source = report['data_source']
 
                 if not data_source:
-                    log_func.error(u'Report data source not defined')
+                    log_func.warning(u'Report data source not defined')
                     return {'__fields__': list(), '__data__': list()}
 
                 signature = data_source[:4].upper()
                 if signature != DB_URL_SIGNATURE:
-                    log_func.error('Not support DB type <%s>' % signature)
+                    log_func.warning('Not support DB type <%s>' % signature)
                     return result
                 # DB is set using standard DB URL
                 db_url = data_source[4:].lower().strip()
@@ -514,12 +514,12 @@ class iqReportGeneratorSystem(object):
                                 query.update(dataset_dict)
                         return query
                     else:
-                        log_func.error(u'Error query result type <%s>' % query.__class__.__name__)
+                        log_func.warning(u'Error query result type <%s>' % query.__class__.__name__)
                 else:
                     query = report['query']
                 # Query not defined
                 if query is None:
-                    log_func.error(u'Query not defined')
+                    log_func.warning(u'Query not defined')
                     return None
 
                 if query.startswith(SQL_SIGNATURE):
@@ -532,7 +532,7 @@ class iqReportGeneratorSystem(object):
                     # Python
                     query = exec_func.execTxtFunction(query.replace(PY_SIGNATURE, u'').strip())
                 else:
-                    log_func.error(u'Not defined query signature <%s>' % query)
+                    log_func.warning(u'Not defined query signature <%s>' % query)
                     return None
                 # The request can be parameterized by variables passed explicitly.
                 # Therefore, it is necessary to generate
@@ -553,12 +553,12 @@ class iqReportGeneratorSystem(object):
                     if self._query_table[:4].upper() == SQL_SIGNATURE:
                         query_tbl = self._getSQLQueryTable(report, sql=self._query_table[4:].strip())
                     else:
-                        log_func.error(u'Unsupported query type <%s>' % self._query_table)
+                        log_func.warning(u'Unsupported query type <%s>' % self._query_table)
 
                 elif isinstance(self._query_table, dict):
                     query_tbl = self._query_table
                 else:
-                    log_func.error(u'Unsupported query type <%s>' % type(self._query_table))
+                    log_func.warning(u'Unsupported query type <%s>' % type(self._query_table))
             return query_tbl
         except:
             log_func.fatal(u'Error query table <%s>.' % query)
