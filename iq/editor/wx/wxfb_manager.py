@@ -79,6 +79,8 @@ ADAPTATION_REPLACES = (
     # DateViewListCtrl
     dict(compare=CONTAIN_SIGNATURE, src='wx.DATAVIEW_CELL_', dst='wx.dataview.DATAVIEW_CELL_'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.DATAVIEW_COL_', dst='wx.COL_'),
+    # Art provider
+    dict(compare=CONTAIN_SIGNATURE, src='wx.ART_EDIT', dst='u"gtk-edit"'),
     )
 
 
