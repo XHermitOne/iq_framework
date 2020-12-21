@@ -444,6 +444,20 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         log_func.warning(u'Not define getRefObjPsp method in <%s> component' % self.__class__.__name__)
         return None
 
+    def refresh(self):
+        """
+        Refresh control.
+
+        :return: True/False.
+        """
+        try:
+            psp = self.getRefObjPsp()
+            self.setRefObjByPsp(refobj_psp=psp)
+            return True
+        except:
+            log_func.fatal(u'Error refresh control')
+        return False
+
     def setViewAll(self, view_all=True):
         """
         Set view all items.

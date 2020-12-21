@@ -125,8 +125,8 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
             log_func.debug(u'Code editor control regular expression <%s>' % reg_exp)
             
             value = edit_masked_txt_dlg.editMaskedTextDlg(parent=property_editor,
-                                                          title=u'Редактирование кода записи справочника',
-                                                          label=u'Введите код:',
+                                                          title=u'Editing the code',
+                                                          label=u'Enter code:',
                                                           default_txt=value,
                                                           mask=mask, reg_exp=reg_exp)
             if value:

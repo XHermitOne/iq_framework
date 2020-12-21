@@ -133,7 +133,8 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
 
                 # Cod text control
                 txtctrl_id = wx.NewId()
-                txtctrl = wx.TextCtrl(self.scrolled_win, txtctrl_id, style=wx.TE_PROCESS_ENTER)
+                txtctrl = wx.TextCtrl(self.scrolled_win, txtctrl_id,
+                                      size=wx.Size(150, -1), style=wx.TE_PROCESS_ENTER)
                 txtctrl.SetMaxLength(self._ref_obj.getLevelCodLen(i))
                 txtctrl.level_index = i
                 txtctrl.Bind(wx.EVT_TEXT, self.onSubCodText, id=txtctrl_id)
@@ -381,8 +382,10 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
                     txt_ctrl.SetValue(selected_cod if selected_cod else u'')
                     self._selected_code[i] = selected_cod
                 else:
-                    level_cod_len = self._ref_obj.getLevelCodLen(i)
-                    cod = (DEFAULT_COD_SIGN * level_cod_len) if level_cod_len > 0 else ''
+                    # level_cod_len = self._ref_obj.getLevelCodLen(i)
+                    # cod = (DEFAULT_COD_SIGN * level_cod_len) if level_cod_len > 0 else ''
+                    cod = self.genAutoLevelCode(level=i, selected_code=self._selected_code)
+                    log_func.debug(u'New level code <%s>' % cod)
                     txt_ctrl.SetValue(cod)
                     self._selected_code[i] = cod
                 txt_ctrl.Enable(not is_last and not is_select)
@@ -392,6 +395,30 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
                 is_last = not is_select
         except:
             log_func.fatal(u'Error init cod text controls')
+
+    def genAutoLevelCode(self, level=0, selected_code=(), start_i=1):
+        """
+        Generate automatic level code.
+
+        :param level: Level index.
+        :param selected_code: Selected code list.
+        :param start_i: Start number for code generate.
+        :return: Level code as text.
+        """
+        try:
+            level_cod_len = self._ref_obj.getLevelCodLen(level)
+            # cod = (DEFAULT_COD_SIGN * level_cod_len) if level_cod_len > 0 else ''
+            str_start_i = str(start_i)
+            cod = DEFAULT_COD_SIGN * (level_cod_len - len(str_start_i)) + str_start_i
+            cod = cod[-level_cod_len:]
+            new_cod = ''.join([subcode for subcode in selected_code[:level] if subcode])
+            new_cod = new_cod + cod
+            if self._ref_obj.hasCod(new_cod):
+                return self.genAutoLevelCode(level=level, selected_code=selected_code, start_i=start_i+1)
+            return cod
+        except:
+            log_func.fatal(u'Error generate automatic level code')
+        return u''
 
     def onSelectCode(self):
         """
