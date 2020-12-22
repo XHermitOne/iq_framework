@@ -175,6 +175,11 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         Get edited vocabulary entry.
         """
+        # Set actual code
+        edit_cod = self.cod_constructor.getCode()
+        if self.edit_record and edit_cod:
+            self.edit_record[self.ref_obj.getCodColumnName()] = edit_cod
+
         return self.edit_record
 
     def validate(self, name, value):
@@ -284,8 +289,9 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         The handler for the <OK> button.
         """
-        # log_func.debug(u'Edit record <%s>' % self.getEditRecord())
-        if self.validRecord(self.getEditRecord()):
+        edit_record = self.getEditRecord()
+        # log_func.debug(u'Edit record <%s>' % edit_record)
+        if self.validRecord(edit_record):
             self.EndModal(wx.ID_OK)
         else:
             msg = u'Not valid record in <%s>' % self.ref_obj.getDescription()
@@ -764,6 +770,8 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
 
         add_rec = editRefObjRecordDlg(parent=self, ref_obj=self.ref_obj,
                                       record=default_record)
+
+        log_func.debug(u'New ref obj record %s' % str(add_rec))
         if add_rec:
             # Existing code control
             if not self.ref_obj.hasCod(add_rec['cod']):
