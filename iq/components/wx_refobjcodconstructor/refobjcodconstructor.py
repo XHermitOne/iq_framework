@@ -116,6 +116,7 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
                 for code, name in level_choices:
                     item = choice.Append(name)
                     choice.SetClientData(item, code)
+                choice.SetSelection(0)
 
                 # Save level index
                 choice.level_index = i
@@ -259,7 +260,8 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         Clear selection.
         """
         for choice_ctrl in self._choice_ctrl_list:
-            choice_ctrl.SetSelection(wx.NOT_FOUND)
+            # choice_ctrl.SetSelection(wx.NOT_FOUND)
+            choice_ctrl.SetSelection(0)
         return True
 
     def initLevelChoice(self, level_index, auto_select=False):
