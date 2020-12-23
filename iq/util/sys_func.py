@@ -17,6 +17,8 @@ except ImportError:
     # For Python 3
     import subprocess as get_procesess_module
 
+from . import log_func
+
 __version__ = (0, 0, 0, 1)
 
 # System line separator
@@ -66,6 +68,7 @@ def getActiveProcessCount(find_process):
     processes_txt = get_procesess_module.getoutput('ps -eo pid,cmd')
     processes = processes_txt.strip().split('\n')
     find_processes = [process for process in processes if find_process in process]
+    # log_func.debug(u'Find processes %s' % str(find_processes))
     return len(find_processes)
 
 
