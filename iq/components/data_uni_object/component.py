@@ -21,7 +21,16 @@ __version__ = (0, 0, 0, 1)
 _ = lang_func.getTranslation().gettext
 
 EDIT_PERMISSION = dict(name='edit_uni_objects', description=_('Can edit uni objects'), type='DATA')
+NEW_PERMISSION = dict(name='new_uni_objects', description=_('Can add new uni objects'), type='DATA')
+DEL_PERMISSION = dict(name='del_uni_objects', description=_('Can delete uni objects'), type='DATA')
+ACTIVE_PERMISSION = dict(name='active_uni_objects', description=_('Can activate/deactivate uni objects'), type='DATA')
+CHANGE_PERMISSION = dict(name='change_uni_objects', description=_('Can edit records/change uni objects'), type='DATA')
+
 role.addPermision(**EDIT_PERMISSION)
+role.addPermision(**NEW_PERMISSION)
+role.addPermision(**DEL_PERMISSION)
+role.addPermision(**ACTIVE_PERMISSION)
+role.addPermision(**CHANGE_PERMISSION)
 
 
 class iqDataUniObject(uni_object.iqUniObjectManager, data_navigator.COMPONENT):
