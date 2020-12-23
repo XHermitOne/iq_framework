@@ -54,7 +54,7 @@ USER_SPC = {
     'uuid': None,
 
     'password': None,
-    'roles': [],
+    'roles': '',
     'engine': global_func.getEngineType(),
     'do_main': None,
 

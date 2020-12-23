@@ -5,130 +5,381 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-04-16 14:47++07\n"
+"POT-Creation-Date: 2020-12-23 09:36+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: ./iq/components/data_ref_object/component.py:22
+#: ./dealer_sales/menubars/main_menubar_proto.py:28
+msgid "Импорт классификатора адресов ФИАС"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:35
+msgid "Справочник состояний записи в журнале. Данные по умолчанию"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:38
+msgid "Справочник типов записи в журнале. Данные по умолчанию"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:41
+msgid "Справочник групп записей в журнале. Данные по умолчанию"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:44
+msgid "Справочник видов объектов. Данные по умолчанию"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:47
+msgid "Данные по умолчанию"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:49
+msgid "Редактирование справочника регионов"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:52
+msgid "Редактирование справочника дилеров"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:55
+msgid "Редактирование справочника дилеров и настройка связи с контрагентами АЯН"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:58
+msgid "Настройка выгрузки"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:63
+msgid "Логические связи дилеров со складами"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:66
+#: ./online_warehouse/menubars/main_menubar_proto.py:69
+#: ./secretary/menubars/main_menubar_proto.py:96
+msgid "Справочники"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:69
+msgid " Загрузить данные из одного файла"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:72
+msgid " Загрузить данные из директории"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:75
+msgid " Загрузить данные за период"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:78
+msgid "Загрузка"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:81
+msgid "Журнал загрузки вторичных продаж"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:84
+msgid "Журнал"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:87
+msgid "Аналитика. Загрузить данные вторичных продаж"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:92
+msgid "Аналитические отчеты"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:95
+msgid "Аналитика"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:98
+msgid "Карта продаж"
+msgstr ""
+
+#: ./dealer_sales/menubars/main_menubar_proto.py:101
+msgid "Карты"
+msgstr ""
+
+#: ./iq/components/data_engine/component.py:45
+#: ./iq/components/data_query/component.py:45
+msgid "MESSAGE"
+msgstr ""
+
+#: ./iq/components/data_engine/component.py:46
+#: ./iq/components/data_query/component.py:46
+msgid "Database connection established"
+msgstr ""
+
+#: ./iq/components/data_engine/component.py:49
+#: ./iq/components/data_query/component.py:49
+#: ./iq/engine/wx/dlg/edit_masked_txt_dlg.py:43
+msgid "ERROR"
+msgstr ""
+
+#: ./iq/components/data_engine/component.py:50
+#: ./iq/components/data_query/component.py:50
+msgid "Database connection not established"
+msgstr ""
+
+#: ./iq/components/data_ref_object/component.py:24
 msgid "Can edit ref objects"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:37
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:48
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:32
+#: ./iq/components/data_ref_object/component.py:25
+msgid "Can add new ref objects"
+msgstr ""
+
+#: ./iq/components/data_ref_object/component.py:26
+msgid "Can delete ref objects"
+msgstr ""
+
+#: ./iq/components/data_ref_object/component.py:27
+msgid "Can activate/deactivate ref objects"
+msgstr ""
+
+#: ./iq/components/data_ref_object/component.py:28
+msgid "Can edit records/change ref objects"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:40
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:52
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:34
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:36
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:38
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:42
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:46
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:50
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:54
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:58
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:40
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:44
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:48
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:52
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:56
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:60
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:62
+#: ./online_warehouse/product/product_browser_proto.py:31
+#: ./online_warehouse/product/product_browser_proto.py:33
+#: ./online_warehouse/product/product_browser_proto.py:37
+#: ./online_warehouse/product/product_browser_proto.py:41
+#: ./online_warehouse/product/product_browser_proto.py:45
+#: ./online_warehouse/product/production_crud_forms.py:114
+#: ./online_warehouse/product/production_crud_forms.py:116
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:32
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:34
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:38
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:40
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:42
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:46
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:301
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:303
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:307
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:309
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:311
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:315
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:32
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:34
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:38
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:40
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:42
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:46
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:293
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:295
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:299
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:301
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:303
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:307
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:30
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:32
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:36
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:38
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:40
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:44
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:54
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:58
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:257
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:259
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:263
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:265
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:267
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:271
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:285
 msgid "tool"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:41
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:126
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:158
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:320
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:44
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:130
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:163
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:338
 msgid "Find:"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:59
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:269
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:341
-#: ./iq/editor/wx/res_editor/new_resource_dlg.py:75
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:63
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:283
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:360
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:71
+#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:93
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:80
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:80
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:44
+#: ./iq/engine/wx/dlg/login_dialog_proto.py:60
 #: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:32
+#: ./iq/engine/wx/dlg/wxdlg_func.py:596
 #: ./iq_report/report/dlg/report_dlg_proto.py:60
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:288
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:398
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:471
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:206
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:377
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:206
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:377
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:185
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:335
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:185
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:335
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:133
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:237
+#: ./secretary/phone_book/new_phone_dlg_proto.py:133
+#: ./secretary/phone_book/new_phone_dlg_proto.py:237
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:134
 msgid "Cancel"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:62
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:181
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:272
-#: ./iq/editor/wx/res_editor/new_resource_dlg.py:78
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:66
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:187
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:286
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:74
+#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:90
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:83
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:83
+#: ./iq/engine/wx/dlg/login_dialog_proto.py:63
 #: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:35
+#: ./iq/engine/wx/dlg/wxdlg_func.py:592 ./iq/engine/wx/dlg/wxdlg_func.py:690
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:209
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:380
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:209
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:380
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:188
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:338
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:188
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:338
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:136
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:240
+#: ./secretary/phone_book/new_phone_dlg_proto.py:136
+#: ./secretary/phone_book/new_phone_dlg_proto.py:240
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:140
 msgid "OK"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:113
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:150
-#: ./iq/components/data_ref_object/wx_editdlg.py:290
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:117
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:155
+#: ./iq/components/data_ref_object/wx_editdlg.py:365
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:25
 #: ./iq_report/report/report_browser.py:257
+#: ./online_warehouse/product/product_browser_proto.py:37
 msgid "Edit"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:131
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:163
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:327
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:136
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:169
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:346
 msgid "Find"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:131
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:163
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:327
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:136
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:169
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:346
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:315
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:307
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:285
 msgid "Найти"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:148
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:153
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:65
+#: ./online_warehouse/product/product_browser_proto.py:31
 msgid "Add"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:148
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:153
+#: ./online_warehouse/product/production_crud_forms.py:97
+#: ./online_warehouse/product/production_crud_forms.py:114
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:38
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:307
 msgid "Добавить"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:150
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:155
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:42
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:311
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:42
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:303
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:40
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:267
 msgid "Редактировать"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:154
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:159
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:68
+#: ./online_warehouse/product/product_browser_proto.py:33
 msgid "Delete"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:154
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:159
+#: ./online_warehouse/product/production_crud_forms.py:102
+#: ./online_warehouse/product/production_crud_forms.py:116
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:40
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:309
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:40
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:301
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:38
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:265
 msgid "Удалить"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:253
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:260
 msgid "Record edit"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:338
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:268
+msgid "On/Off"
+msgstr ""
+
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:357
 msgid "Edit..."
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:344
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:363
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:47
+#: ./online_warehouse/product/production_crud_forms.py:136
+#: ./online_warehouse/product/production_crud_forms.py:269
 msgid "ОК"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicelistdlg.py:46
+#: ./iq/components/data_ref_object/wx_choicelistdlg.py:47
+#: ./iq/components/wx_refobjcodconstructor/refobjcodconstructor.py:78
 msgid "Cod"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicelistdlg.py:47
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:73
+#: ./iq/components/data_ref_object/wx_choicelistdlg.py:48
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:75
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:53
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:66
 msgid "Name"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:717
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:732
-#: ./iq/components/data_ref_object/wx_editdlg.py:765
-#: ./iq/components/data_ref_object/wx_editdlg.py:780
-#: ./iq/components/data_ref_object/wx_editdlg.py:854
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:718
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:733
+#: ./iq/components/data_ref_object/wx_editdlg.py:281
+#: ./iq/components/data_ref_object/wx_editdlg.py:314
+#: ./iq/components/data_ref_object/wx_editdlg.py:836
+#: ./iq/components/data_ref_object/wx_editdlg.py:870
+#: ./iq/components/data_ref_object/wx_editdlg.py:885
+#: ./iq/components/data_ref_object/wx_editdlg.py:968
 #: ./iq_report/report/report_browser.py:312
 #: ./iq_report/report/report_browser.py:328
 #: ./iq_report/report/report_browser.py:341
@@ -138,31 +389,36 @@ msgstr ""
 msgid "WARNING"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:718
-#: ./iq/components/data_ref_object/wx_editdlg.py:766
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:719
+#: ./iq/components/data_ref_object/wx_editdlg.py:871
 msgid "No records found matching search string"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:732
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:733
 msgid "No search bar selected"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_editdlg.py:710
+#: ./iq/components/data_ref_object/wx_editdlg.py:792
+#: ./iq/components/data_uni_object/uni_object.py:231
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:99
 msgid "DELETE"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_editdlg.py:747
-#: ./iq/engine/wx/dlg/edit_masked_txt_dlg.py:43
-msgid "ERROR"
-msgstr ""
-
-#: ./iq/components/data_ref_object/wx_editdlg.py:781
-#: ./iq/components/data_ref_object/wx_editdlg.py:855
+#: ./iq/components/data_ref_object/wx_editdlg.py:886
+#: ./iq/components/data_ref_object/wx_editdlg.py:969
 msgid "No search string selected"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_editdlg.py:843
+#: ./iq/components/data_ref_object/wx_editdlg.py:957
 msgid "SEARCH"
+msgstr ""
+
+#: ./iq/components/data_uni_object/component.py:23
+msgid "Can edit uni objects"
+msgstr ""
+
+#: ./iq/components/data_uni_object/uni_object.py:232
+msgid "Confirm deletion"
 msgstr ""
 
 #:
@@ -175,6 +431,326 @@ msgstr ""
 msgid "This feature has not yet been implemented"
 msgstr ""
 
+#: ./iq/components/wx_filterchoicectrl/component.py:29
+msgid "Can edit filters"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_ctrl.py:135
+msgid "CHOICE"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_ctrl.py:136
+msgid "Select one of the following items"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:744
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:771
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:31
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:132
+msgid "AND"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:772
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:31
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:132
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:392
+msgid "OR"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:773
+msgid "NOT"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:774
+msgid "NOT OR"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:782
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1101
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1297
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1519
+msgid "Equal"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:785
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:795
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:805
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:815
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:825
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:835
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:871
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:881
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:891
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:901
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1104
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1117
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1130
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1143
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1156
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1169
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1300
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1313
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1326
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1339
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1352
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1365
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1522
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1535
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1548
+msgid "Value"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:792
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1114
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1310
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1532
+msgid "Not equal"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:802
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1127
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1323
+msgid "Great"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:812
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1140
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1336
+msgid "Great or equal"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:822
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1153
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1349
+msgid "Lesser"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:832
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1166
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1362
+msgid "Lesser or equal"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:842
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1179
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1375
+msgid "Between"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:845
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:858
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1182
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1201
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1378
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1397
+msgid "Minimum value"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:847
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:860
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1187
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1206
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1383
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1402
+msgid "Maximum value"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:855
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1198
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1394
+msgid "Not between"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:868
+msgid "Contain"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:878
+msgid "Not contain"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:888
+msgid "Starts with"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:898
+msgid "Ends with"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:908
+msgid "Matches the mask"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:911
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:921
+msgid "Mask"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:918
+msgid "Does not match the mask"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:928
+msgid "Is NULL"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:936
+msgid "Is not NULL"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:944
+msgid "Any of"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:947
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:957
+msgid "Value list"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:954
+msgid "Not one of"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1219
+msgid "System data"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1228
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1442
+msgid "System month"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1237
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1451
+msgid "System year"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1246
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1469
+msgid "Date"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1255
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1478
+msgid "Month"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1264
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1487
+msgid "Year"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1273
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1496
+msgid "Date range"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1282
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1505
+msgid "Month range"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1415
+msgid "System date"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1424
+msgid "Yesterday"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1433
+msgid "Two days ago"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1460
+msgid "Operational year"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:1545
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:103
+msgid "Group"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:25
+msgid "Data filters"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:32
+msgid "Сondition"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:37
+msgid "Сортировать по возрастанию"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:39
+msgid "Сортировать по убыванию"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:43
+msgid "Переместить вверх"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:45
+msgid "Переместить вниз"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:28
+msgid "Limit the number of objects"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:29
+msgid "Limit exceeded"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:77
+msgid "Enter filter name"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:77
+msgid "Filter"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:99
+msgid "Delete filter?"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:104
+msgid "Attribute"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:105
+msgid "Compare"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:106
+msgid "Argument 1"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:107
+msgid "Argument 2"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:360
+msgid "Add compare"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:367
+msgid "Add group"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:376
+msgid "Delete group"
+msgstr ""
+
+#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:72
+msgid "Filter constructor"
+msgstr ""
+
+#: ./iq/components/wx_filtertreectrl/component.py:30
+msgid "Can edit tree filters"
+msgstr ""
+
 #: ./iq/editor/wx/res_editor/new_resource_dlg.py:25
 msgid "Create new resource"
 msgstr ""
@@ -183,105 +759,119 @@ msgstr ""
 msgid "Component:"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/new_resource_dlg.py:43
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:44
 msgid "..."
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/new_resource_dlg.py:51
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:54
 msgid "Name:"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/new_resource_dlg.py:63
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:67
 msgid "Path:"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/new_resource_dlg.py:67
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:72
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:205
 msgid "Select a folder"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/property_editor_manager.py:82
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:317
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:337
 msgid "Properties"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/property_editor_manager.py:84
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:358
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:89
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:378
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:91
 msgid "Methods"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/property_editor_manager.py:86
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:371
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:91
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:391
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:93
 msgid "Events"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:646
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:674
 msgid "Not define attribute editor"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:648
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:660
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:676
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:688
 msgid "VALIDATION"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:658
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:686
 msgid "Error valid property/attribute"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor.py:221
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:25
+#: ./iq/editor/wx/res_editor/resource_editor.py:219
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:27
 msgid "Resource editor"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:32
-#: ./iq/editor/wx/start_folder_dlg.py:35
-msgid "New resource"
+#: ./iq/editor/wx/res_editor/resource_editor.py:361
+msgid "VALIDATE"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:34
-msgid "Open resource"
+#: ./iq/editor/wx/start_folder_dlg.py:36
+msgid "New resource"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:36
-msgid "Save resource"
+msgid "Open resource"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:38
+msgid "Save resource"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:40
 msgid "Save as ..."
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:42
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:44
 msgid "Test"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:46
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:48
 msgid "Design"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:50
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:52
 msgid "Generate resource module"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:54
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:56
 msgid "Help ..."
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:58
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:60
 msgid "Hide object inspector"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:60
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:62
 msgid "Show object inspector"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:74
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:76
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:54
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:67
 msgid "Description"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor_frm.py:87
+#: ./iq/editor/wx/res_editor/resource_editor_frm.py:89
 msgid "Attributes"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:25
+msgid "Select passport"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:33
+msgid "Passport:"
 msgstr ""
 
 #: ./iq/editor/wx/start_editor_dlg.py:25
@@ -292,7 +882,7 @@ msgstr ""
 msgid "New project"
 msgstr ""
 
-#: ./iq/editor/wx/start_editor_dlg.py:47
+#: ./iq/editor/wx/start_editor_dlg.py:47 ./iq/editor/wx/start_folder_dlg.py:58
 msgid "Run project"
 msgstr ""
 
@@ -305,20 +895,22 @@ msgid "External tools"
 msgstr ""
 
 #: ./iq/editor/wx/start_editor_dlg.py:80
+#: ./online_warehouse/menubars/main_menubar_proto.py:75
+#: ./secretary/menubars/main_menubar_proto.py:102
 msgid "Help"
 msgstr ""
 
-#: ./iq/editor/wx/start_editor_dlg.py:91 ./iq/editor/wx/start_folder_dlg.py:57
+#: ./iq/editor/wx/start_editor_dlg.py:91 ./iq/editor/wx/start_folder_dlg.py:71
 #: ./iq/editor/wx/start_py_dlg.py:68 ./iq/editor/wx/start_wxfb_dlg.py:68
 #: ./iq_report/report/report_browser.py:280
 msgid "Exit"
 msgstr ""
 
-#: ./iq/editor/wx/start_folder_dlg.py:24
+#: ./iq/editor/wx/start_folder_dlg.py:25
 msgid "Project folder/package"
 msgstr ""
 
-#: ./iq/editor/wx/start_folder_dlg.py:46 ./iq/editor/wx/start_wxfb_dlg.py:35
+#: ./iq/editor/wx/start_folder_dlg.py:47 ./iq/editor/wx/start_wxfb_dlg.py:35
 msgid "New wxFormBuilder project"
 msgstr ""
 
@@ -350,6 +942,26 @@ msgstr ""
 msgid "Migrate wxFormBuilder project"
 msgstr ""
 
+#: ./iq/engine/cui/dlg/cui_dlg.py:144
+msgid "Check list is empty"
+msgstr ""
+
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:34
+#: ./iq/engine/wx/dlg/login_dialog_proto.py:33
+msgid "User name:"
+msgstr ""
+
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:35
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:43
+#: ./iq/engine/wx/dlg/login_dialog_proto.py:25 ./iq/project/prj.py:306
+msgid "LOGIN"
+msgstr ""
+
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:42
+#: ./iq/engine/wx/dlg/login_dialog_proto.py:47
+msgid "Password:"
+msgstr ""
+
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:31
 msgid "Редактирование:"
 msgstr ""
@@ -358,39 +970,51 @@ msgstr ""
 msgid "Python script"
 msgstr ""
 
-#: ./iq/project/prj.py:65
+#: ./iq/project/prj.py:66
 msgid "PROJECT NAME"
 msgstr ""
 
-#: ./iq/project/prj.py:66
+#: ./iq/project/prj.py:67
 msgid "Enter the name of the project:"
 msgstr ""
 
-#: ./iq/role/component.py:92
-msgid "Can create"
+#: ./iq/project/prj.py:100
+msgid "ENGINE TYPE"
+msgstr ""
+
+#: ./iq/project/prj.py:101
+msgid "Select engine type of the project:"
+msgstr ""
+
+#: ./iq/project/prj.py:182
+msgid "Reports folder"
 msgstr ""
 
 #: ./iq/role/component.py:93
-msgid "Can read"
+msgid "Can create"
 msgstr ""
 
 #: ./iq/role/component.py:94
-msgid "Can write"
+msgid "Can read"
 msgstr ""
 
 #: ./iq/role/component.py:95
-msgid "Can add"
+msgid "Can write"
 msgstr ""
 
 #: ./iq/role/component.py:96
-msgid "Can delete"
+msgid "Can add"
 msgstr ""
 
 #: ./iq/role/component.py:97
-msgid "Can view"
+msgid "Can delete"
 msgstr ""
 
 #: ./iq/role/component.py:98
+msgid "Can view"
+msgstr ""
+
+#: ./iq/role/component.py:99
 msgid "Can edit"
 msgstr ""
 
@@ -595,5 +1219,654 @@ msgstr ""
 
 #: ./iq_scanner/scanner/scanner_dlg_proto.py:466
 msgid "Rescan"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:28
+msgid "Продукция на складе"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:31
+msgid "Склад"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:34
+msgid "Журнал операций"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:39
+msgid "Очистка журнала операций"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:42
+msgid "Операции"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:46
+#: ./online_warehouse/menubars/main_menubar_proto.py:58
+msgid "Справочник состояний готовой продукции"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:49
+#: ./online_warehouse/menubars/main_menubar_proto.py:61
+msgid "Справочник видов готовой продукции"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:52
+#: ./online_warehouse/menubars/main_menubar_proto.py:64
+msgid "Справочник рядности паллет"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:55
+msgid "Установить по умолчанию"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:67
+#: ./secretary/menubars/main_menubar_proto.py:94
+msgid "Редактирование"
+msgstr ""
+
+#: ./online_warehouse/menubars/main_menubar_proto.py:72
+#: ./secretary/menubars/main_menubar_proto.py:99
+msgid "About..."
+msgstr ""
+
+#: ./online_warehouse/product/product_browser_proto.py:41
+msgid "Очистить"
+msgstr ""
+
+#: ./online_warehouse/product/product_browser_proto.py:45
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:46
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:46
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:58
+msgid "Обновить"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:28
+msgid "Продукция. Добавление."
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:44
+#: ./online_warehouse/product/production_crud_forms.py:201
+msgid "Состояние:"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:52
+#: ./online_warehouse/product/production_crud_forms.py:209
+msgid "Количество паллет:"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:65
+#: ./online_warehouse/product/production_crud_forms.py:222
+msgid "Рядность:"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:73
+#: ./online_warehouse/product/production_crud_forms.py:232
+msgid "Количество упаковок:"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:81
+#: ./online_warehouse/product/production_crud_forms.py:240
+msgid "Количество бутылок:"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:89
+#: ./online_warehouse/product/production_crud_forms.py:250
+msgid "Дата розлива:"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:123
+msgid "Наименование"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:124
+msgid "Кол. паллет"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:125
+msgid "Рядность"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:126
+msgid "Кол.УПК"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:127
+msgid "Кол.БУТ"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:128
+msgid "Дата розлива"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:133
+#: ./online_warehouse/product/production_crud_forms.py:266
+msgid "Отмена"
+msgstr ""
+
+#: ./online_warehouse/product/production_crud_forms.py:183
+msgid "Продукция. Редактирование."
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:27
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:244
+msgid "Редактирование входящего документа"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:35
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:252
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:60
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:329
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:35
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:252
+msgid "Номер входящего документа:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:43
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:260
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:68
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:337
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:43
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:260
+msgid "Дата входящего документа:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:56
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:56
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:56
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:56
+msgid "Носитель:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:64
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:273
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:131
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:389
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:64
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:273
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:64
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:252
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:64
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:252
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:102
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:342
+msgid "Тип документа:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:77
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:144
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:77
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:98
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:314
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:98
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:314
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:136
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:391
+msgid "Отправитель:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:85
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:322
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:85
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:322
+msgid "Номер исх. документа:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:93
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:330
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:93
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:330
+msgid "Дата исх. документа:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:106
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:343
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:152
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:432
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:106
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:343
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:77
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:77
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:144
+msgid "Получатель:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:114
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:114
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:106
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:106
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:123
+msgid "Исполнитель:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:127
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:123
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:127
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:85
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:85
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:115
+msgid "Отдел:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:140
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:102
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:407
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:140
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:119
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:119
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:81
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:33
+#: ./secretary/phone_book/new_phone_dlg_proto.py:33
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:72
+msgid "Наименование:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:153
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:361
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:110
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:153
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:132
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:132
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:89
+msgid "Краткое содержание:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:164
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:163
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:164
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:143
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:143
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:155
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:91
+#: ./secretary/phone_book/new_phone_dlg_proto.py:91
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:130
+msgid "Теги"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:291
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:371
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:291
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:270
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:270
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:360
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:80
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:200
+#: ./secretary/phone_book/new_phone_dlg_proto.py:80
+#: ./secretary/phone_book/new_phone_dlg_proto.py:200
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:93
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:320
+msgid "Организация:"
+msgstr ""
+
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:309
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:309
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:288
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:288
+msgid "Адрес организации:"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:32
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:301
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:32
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:293
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:30
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:257
+msgid "Свернуть"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:34
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:303
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:34
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:295
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:32
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:259
+msgid "Развернуть"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:81
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:350
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:35
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:231
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:35
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:231
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:60
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:321
+msgid "Номер исходящего документа:"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:89
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:358
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:43
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:239
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:43
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:239
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:68
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:329
+msgid "Дата исходящего документа:"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+msgid "дате вх. документа"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+msgid "№ вх. документа"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+msgid "дате исх. документа"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+msgid "отделу"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+msgid "отправителю"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+msgid "по № исх. документа"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+msgid "получателю"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+msgid "типу документа"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:203
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:172
+msgid "наименованию"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:204
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:196
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:173
+msgid "Сортировать по"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:419
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:361
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:301
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:301
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:378
+msgid "Тема/Содержание:"
+msgstr ""
+
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:27
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:244
+msgid "Создание входящего документа"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:28
+msgid "Входящие"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:31
+msgid "Исходящие"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:34
+msgid "Документы"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:37
+msgid "Телефоны"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:42
+msgid "Заполнить по умолчанию справочник телефонов"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:45
+msgid "Информация"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:49
+#: ./secretary/menubars/main_menubar_proto.py:73
+msgid "Справочник типов документов"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:52
+#: ./secretary/menubars/main_menubar_proto.py:76
+msgid "Справочник сотрудников"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:55
+#: ./secretary/menubars/main_menubar_proto.py:79
+msgid "Справочник организаций"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:58
+#: ./secretary/menubars/main_menubar_proto.py:82
+msgid "Справочник исполнителей"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:62
+#: ./secretary/menubars/main_menubar_proto.py:86
+msgid "Справочник отделов"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:66
+#: ./secretary/menubars/main_menubar_proto.py:90
+msgid "Справочник типов носителей"
+msgstr ""
+
+#: ./secretary/menubars/main_menubar_proto.py:70
+msgid "По умолчанию"
+msgstr ""
+
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:27
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:223
+msgid "Редактирование исходящего документа"
+msgstr ""
+
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:27
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:223
+msgid "Создание исходящего документа"
+msgstr ""
+
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:195
+msgid "исполнителю"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:25
+msgid "Редактирование телефона/адреса"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:41
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:187
+#: ./secretary/phone_book/new_phone_dlg_proto.py:41
+#: ./secretary/phone_book/new_phone_dlg_proto.py:187
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:80
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:307
+msgid "Телефон:"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:54
+#: ./secretary/phone_book/new_phone_dlg_proto.py:54
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:106
+msgid "Адрес:"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:67
+#: ./secretary/phone_book/new_phone_dlg_proto.py:67
+msgid "Дополнительная информация:"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:171
+msgid "Редактирование телефона"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:179
+#: ./secretary/phone_book/new_phone_dlg_proto.py:179
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:299
+msgid "Наименование/ФИО:"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:213
+#: ./secretary/phone_book/new_phone_dlg_proto.py:213
+msgid "День рождения:"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Август"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Апрель"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Декабрь"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Июль"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Июнь"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Май"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Март"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Ноябрь"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Октябрь"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Сентябрь"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Февраль"
+msgstr ""
+
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:222
+#: ./secretary/phone_book/new_phone_dlg_proto.py:222
+msgid "Январь"
+msgstr ""
+
+#: ./secretary/phone_book/new_phone_dlg_proto.py:25
+msgid "Создание телефона/адреса"
+msgstr ""
+
+#: ./secretary/phone_book/new_phone_dlg_proto.py:171
+msgid "Создание телефона"
+msgstr ""
+
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:44
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:271
+msgid "Просмотр"
+msgstr ""
+
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:48
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:275
+msgid "Поиск: "
+msgstr ""
+
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:54
+msgid "Поиск"
+msgstr ""
+
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:119
+msgid "Доп. информация:"
+msgstr ""
+
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:172
+msgid "адресу"
+msgstr ""
+
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:172
+msgid "организации"
+msgstr ""
+
+#: ./secretary/phone_book/phone_book_browse_panel_proto.py:172
+msgid "телефону"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:25
+msgid "Коррекция показаний прибора учета"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:31
+msgid "Прибор учета"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:38
+msgid "Тип счетчика:"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:43
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:55
+msgid "------"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:50
+msgid "Цена импульса (м3):"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:70
+msgid "Текущее значение прибора учета (м3):"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:86
+msgid "Последние зарегистрированные данные (имп.):"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:91
+msgid "-------"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:98
+msgid "Время регистрации:"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:103
+msgid "--------"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:116
+msgid "Вычесленная поправка (имп.):"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:121
+msgid "MyLabel"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:137
+msgid "Save"
 msgstr ""
 

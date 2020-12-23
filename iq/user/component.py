@@ -76,7 +76,10 @@ class iqUser(object.iqObject, user.iqUserManager):
         Get role names.
         """
         roles_attr = self.getAttribute('roles')
-        return tuple(roles_attr) if roles_attr else tuple()
+        if not isinstance(roles_attr, str):
+            log_func.warning(u'Type error roles for user <%s : %s>' % (self.getName(), str(roles_attr)))
+            roles_attr = u''
+        return tuple([name.strip('"') for name in roles_attr.replace('" "', '"; "').split('; ')]) if roles_attr else tuple()
 
     def getRoles(self):
         """
@@ -86,6 +89,7 @@ class iqUser(object.iqObject, user.iqUserManager):
         """
         prj = self.getParent()
         role_names = self.getRoleNames()
+        # log_func.debug(u'Roles %s' % str(role_names))
         roles = [role for role in prj.getRoles() if role.getName() in role_names]
         return tuple(roles)
 

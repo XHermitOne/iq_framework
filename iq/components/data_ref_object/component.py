@@ -22,7 +22,16 @@ __version__ = (0, 0, 0, 1)
 _ = lang_func.getTranslation().gettext
 
 EDIT_PERMISSION = dict(name='edit_ref_objects', description=_('Can edit ref objects'), type='DATA')
+NEW_PERMISSION = dict(name='new_ref_objects', description=_('Can add new ref objects'), type='DATA')
+DEL_PERMISSION = dict(name='del_ref_objects', description=_('Can delete ref objects'), type='DATA')
+ACTIVE_PERMISSION = dict(name='active_ref_objects', description=_('Can activate/deactivate ref objects'), type='DATA')
+CHANGE_PERMISSION = dict(name='change_ref_objects', description=_('Can edit records/change ref objects'), type='DATA')
+
 role.addPermision(**EDIT_PERMISSION)
+role.addPermision(**NEW_PERMISSION)
+role.addPermision(**DEL_PERMISSION)
+role.addPermision(**ACTIVE_PERMISSION)
+role.addPermision(**CHANGE_PERMISSION)
 
 
 class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):

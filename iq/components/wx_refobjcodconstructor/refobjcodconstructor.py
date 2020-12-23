@@ -203,6 +203,7 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
             # self._selected_code sets in selectLevelChoice method
             # Do not need to initialize it
             selected_code = self._ref_obj.getCodAsTuple(code)
+            log_func.debug(u'Selected code %s' % str(selected_code))
             for i, subcode in enumerate(selected_code):
                 item = self.findItemIdxByCode(i, subcode)
                 if item >= 0:
@@ -295,7 +296,8 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
 
                 level_choices = list()
                 for rec in self._ref_obj.getLevelRecsByCod(str_code):
-                    if self._ref_obj and self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
+                    # if self._ref_obj and self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
+                    if self._ref_obj:
                         level_choice = (rec[self._ref_obj.getCodColumnName()][len(str_code):],
                                         rec[self._ref_obj.getNameColumnName()])
                         level_choices.append(level_choice)

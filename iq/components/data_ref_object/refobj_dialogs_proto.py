@@ -265,6 +265,10 @@ class iqRecEditDlgProto ( wx.Dialog ):
 
 		bSizer7 = wx.BoxSizer( wx.VERTICAL )
 
+		self.activate_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"On/Off"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.activate_checkBox.SetValue(True)
+		bSizer7.Add( self.activate_checkBox, 0, wx.ALL|wx.EXPAND, 5 )
+
 		self.cod_constructor = iq.KERNEL.obj.iq.cod_constructor.create(parent=self)
 		bSizer7.Add( self.cod_constructor, 1, wx.ALL|wx.EXPAND, 5 )
 
@@ -292,6 +296,7 @@ class iqRecEditDlgProto ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.activate_checkBox.Bind( wx.EVT_CHECKBOX, self.onActivateCheckBox )
 		self.cancel_button.Bind( wx.EVT_BUTTON, self.onCancelButtonClick )
 		self.ok_button.Bind( wx.EVT_BUTTON, self.onOkButtonClick )
 
@@ -300,6 +305,9 @@ class iqRecEditDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, overide them in your derived class
+	def onActivateCheckBox( self, event ):
+		event.Skip()
+
 	def onCancelButtonClick( self, event ):
 		event.Skip()
 

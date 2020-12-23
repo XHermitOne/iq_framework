@@ -77,6 +77,7 @@ def isPermision(name='default'):
     """
     permissions = globals()['PERMISSIONS']
     permission_names = [permission.get('name', None) for permission in permissions]
+    # log_func.debug(str(permission_names))
     return name in permission_names
 
 

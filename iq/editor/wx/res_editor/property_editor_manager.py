@@ -486,7 +486,8 @@ class iqPropertyEditorManager(object):
 
         elif property_type == property_editor_id.MULTICHOICE_EDITOR:
             try:
-                value = eval(str_value)
+                # log_func.debug(u'Multichoice property. Value <%s>' % str_value)
+                value = str_value
             except:
                 log_func.fatal(u'Error casting to a multichoice string list <%s>' % str_value)
 

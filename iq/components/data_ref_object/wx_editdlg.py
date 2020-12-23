@@ -14,11 +14,14 @@ from ...util import log_func
 from ...util import spc_func
 from ...util import lang_func
 from ...util import spc_func
+from ...util import global_func
 
 from ...engine.wx.dlg import wxdlg_func
 from ...engine.wx import wxbitmap_func
 from ...engine.wx import form_manager
 from ...engine.wx import treectrl_manager
+from ...engine.wx import listctrl_manager
+from ...engine.wx import toolbar_manager
 
 from . import refobj_dialogs_proto
 from . import wx_editcodeproperty
@@ -141,6 +144,11 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         Dialog initialization function.
         """
+        user = global_func.getUser()
+        if user:
+            can_active = user.isPermission('active_ref_objects')
+            self.activate_checkBox.Enable(can_active)
+
         # Init cod constructor
         self.cod_constructor.setRefObj(self.ref_obj)
 
@@ -152,7 +160,12 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         model_obj = self.ref_obj.getModelObj()
 
         rec = self.getRecord()
+
+        is_activate = rec.get(self.ref_obj.getActiveColumnName(), True)
+        self.activate_checkBox.SetValue(is_activate)
+
         cod = rec.get(self.ref_obj.getCodColumnName(), None)
+        # log_func.debug(u'Init cod <%s>' % cod)
         self.cod_constructor.setCode(cod)
 
         for i, field in enumerate(fields):
@@ -175,6 +188,9 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         """
         Get edited vocabulary entry.
         """
+        # Set active
+        self.edit_record[self.ref_obj.getActiveColumnName()] = self.activate_checkBox.GetValue()
+
         # Set actual code
         edit_cod = self.cod_constructor.getCode()
         if self.edit_record and edit_cod:
@@ -190,10 +206,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         :param value: Value.
         :return: True/False.
         """
-        if name == self.ref_obj.getCodColumnName():
-            # Code must not be registered
-            return not self.ref_obj.hasCod(value)
-        elif name == self.ref_obj.getNameColumnName():
+        if name == self.ref_obj.getNameColumnName():
             # The name must not be empty
             return bool(value.split() if isinstance(value, str) else False)
         return True
@@ -278,6 +291,15 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         
         event.Skip()
 
+    def onActivateCheckBox(self, event):
+        """
+        The handler for the activate checkbox.
+        """
+        check = event.IsChecked()
+        self.cod_constructor.Enable(check)
+        self.record_propertyGrid.Enable(check)
+        event.Skip()
+
     def onCancelButtonClick(self, event):
         """
         The handler for the <Cancel> button.
@@ -301,9 +323,38 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         event.Skip()
 
 
+class iqRefObjRecCreateDlg(iqRefObjRecEditDlg):
+    """
+    Record create dialog box.
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        Costructor.
+        """
+        iqRefObjRecEditDlg.__init__(self, *args, **kwargs)
+
+    def validate(self, name, value):
+        """
+        Validate property values.
+
+        :param name: Attribute name.
+        :param value: Value.
+        :return: True/False.
+        """
+        if name == self.ref_obj.getCodColumnName():
+            # Code must not be registered
+            return not self.ref_obj.hasCod(value)
+        elif name == self.ref_obj.getNameColumnName():
+            # The name must not be empty
+            return bool(value.split() if isinstance(value, str) else False)
+        return True
+
+
 class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                       form_manager.iqFormManager,
-                      treectrl_manager.iqTreeCtrlManager):
+                      treectrl_manager.iqTreeCtrlManager,
+                      listctrl_manager.iqListCtrlManager,
+                      toolbar_manager.iqToolBarManager):
     """
     Ref object edit dialog box.
     """
@@ -383,6 +434,13 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         Initialization of controls.
         """
+        user = global_func.getUser()
+        if user:
+            self.enableToolbarTools(toolbar=self.ctrl_toolBar,
+                                    add_tool=user.isPermission('new_ref_objects'),
+                                    edit_tool=user.isPermission('change_ref_objects'),
+                                    del_tool=user.isPermission('del_ref_objects'))
+
         # Add columns
         self.recs_listCtrl.ClearAll()
         # Define table fields
@@ -408,7 +466,13 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         name = [line.strip() for line in name.split(u'\n')][0]
         item = self.refobj_treeCtrl.AppendItem(parent_item, name)
         self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=item, data=record)
-        
+
+        active = record.get(self.ref_obj.getActiveColumnName(), None)
+        sys_colour_value = wx.SYS_COLOUR_WINDOWTEXT if active else wx.SYS_COLOUR_GRAYTEXT
+        item_colour = wx.SystemSettings.GetColour(sys_colour_value)
+        self.setTreeCtrlItemForegroundColour(treectrl=self.refobj_treeCtrl,
+                                             item=item, colour=item_colour)
+
         code = record['cod']
         if self.ref_obj.hasChildrenCodes(code):
             # There are subcodes. To display a tree in the control, you need to add a dummy element
@@ -473,7 +537,13 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                 self._list_ctrl_dataset.append(record)
             else:
                 self.recs_listCtrl.SetItem(list_item, i, value)
-        
+
+            active = record.get(self.ref_obj.getActiveColumnName(), None)
+            sys_colour_value = wx.SYS_COLOUR_WINDOWTEXT if active else wx.SYS_COLOUR_GRAYTEXT
+            item_colour = wx.SystemSettings.GetColour(sys_colour_value)
+            self.setListCtrlRowForegroundColour(listctrl=self.recs_listCtrl,
+                                                item=list_item,colour=item_colour)
+
         if is_col_autosize:
             # Re-size columns
             for i, field in enumerate(fields):
@@ -563,6 +633,12 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
             self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=find_item, data=record)
             self.refobj_treeCtrl.SetItemText(find_item, record['name'])
 
+            active = record.get(self.ref_obj.getActiveColumnName(), None)
+            sys_colour_value = wx.SYS_COLOUR_WINDOWTEXT if active else wx.SYS_COLOUR_GRAYTEXT
+            item_colour = wx.SystemSettings.GetColour(sys_colour_value)
+            self.setTreeCtrlItemForegroundColour(treectrl=self.refobj_treeCtrl,
+                                                 item=find_item, colour=item_colour)
+
     def refreshRefObjListItem(self, code=None, record=None):
         """
         Refresh list item.
@@ -571,13 +647,20 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param record: The record associated with the tree item.
         """
         find_idx = self.findRefObjListItem(code)
-        if find_idx:
+        if find_idx >= 0:
             self._list_ctrl_dataset[find_idx] = record
 
             fields = self.getEditableFields()
             for i, field in enumerate(fields):
-                value = str(record[field['name']])
-                self.recs_listCtrl.SetStringItem(find_idx, i, value)                    
+                log_func.debug(u'Record <%s : %s>' % (str(record), record.__class__.__name__))
+                value = str(record[field.name])
+                self.recs_listCtrl.SetItem(find_idx, i, value)
+
+            active = record.get(self.ref_obj.getActiveColumnName(), None)
+            sys_colour_value = wx.SYS_COLOUR_WINDOWTEXT if active else wx.SYS_COLOUR_GRAYTEXT
+            item_colour = wx.SystemSettings.GetColour(sys_colour_value)
+            self.setListCtrlRowForegroundColour(listctrl=self.recs_listCtrl,
+                                                item=find_idx, colour=item_colour)
 
     def delRefObjTreeItem(self, parent_item, code=None):
         """
@@ -597,9 +680,11 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param code: The code associated with the item.
         """
         find_idx = self.findRefObjListItem(code)
-        if find_idx:
+        if find_idx > 0:
             del self._list_ctrl_dataset[find_idx]
-            self.recs_listCtrl.DeleteItem(find_idx)                    
+            self.recs_listCtrl.DeleteItem(find_idx)
+        else:
+            log_func.warning(u'Not found list item by cod <%s>' % code)
 
     def addRefObjTreeItem(self, parent_item, new_record):
         """
@@ -610,6 +695,12 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         item = self.refobj_treeCtrl.AppendItem(parent_item, new_record['name'])
         self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=item, data=new_record)
+
+        active = new_record.get(self.ref_obj.getActiveColumnName(), None)
+        sys_colour_value = wx.SYS_COLOUR_WINDOWTEXT if active else wx.SYS_COLOUR_GRAYTEXT
+        item_colour = wx.SystemSettings.GetColour(sys_colour_value)
+        self.setTreeCtrlItemForegroundColour(treectrl=self.refobj_treeCtrl,
+                                             item=item, colour=item_colour)
 
     def addRefObjListItem(self, new_record=None):
         """
@@ -724,7 +815,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                                            record=record)
             if edit_rec:
                 # Update record in ref object
-                self.ref_obj.updateRec(edit_rec['cod'], edit_rec)
+                self.ref_obj.save(**edit_rec)
                 self.refreshRefObjTreeItem(self.refobj_treeCtrl.GetSelection(),
                                            edit_rec['cod'], edit_rec)
                 self.refreshRefObjListItem(edit_rec['cod'], edit_rec)
@@ -768,8 +859,8 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         struct_code += ['0' * self.ref_obj.getCodLen()[level_idx]]
         default_record['cod'] = ''.join(struct_code)
 
-        add_rec = editRefObjRecordDlg(parent=self, ref_obj=self.ref_obj,
-                                      record=default_record)
+        add_rec = createRefObjRecordDlg(parent=self, ref_obj=self.ref_obj,
+                                        record=default_record)
 
         log_func.debug(u'New ref obj record %s' % str(add_rec))
         if add_rec:
@@ -983,6 +1074,31 @@ def editRefObjRecordDlg(parent=None, ref_obj=None, record=None):
     # dlg.init()
     result = dlg.ShowModal()
     
+    edit_record = None
+    if result == wx.ID_OK:
+        edit_record = dlg.getEditRecord()
+    dlg.Destroy()
+    return edit_record
+
+
+def createRefObjRecordDlg(parent=None, ref_obj=None, record=None):
+    """
+    Record new form call.
+
+    :param parent: Parent window.
+    :param ref_obj: Reference data object.
+    :param record: Editing record dictionary.
+    :return: Edited record dictionary or None in case of error.
+    """
+    if parent is None:
+        app = wx.GetApp()
+        main_win = app.GetTopWindow()
+        parent = main_win
+
+    dlg = iqRefObjRecCreateDlg(ref_obj=ref_obj, record=record, parent=parent)
+    # dlg.init()
+    result = dlg.ShowModal()
+
     edit_record = None
     if result == wx.ID_OK:
         edit_record = dlg.getEditRecord()

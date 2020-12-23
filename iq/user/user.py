@@ -85,7 +85,7 @@ class iqUserManager(object):
         """
         return False
 
-    def canUse(self, permission_name):
+    def isPermission(self, permission_name):
         """
         Use rights check.
 
@@ -93,9 +93,13 @@ class iqUserManager(object):
         :return: True - can use / False - no.
         """
         roles = self.getRoles()
+        if not roles:
+            log_func.warning(u'Not define roles for user <%s>' % self.getName())
+
         for role in roles:
             if role.isPermission(permission_name=permission_name):
                 return True
+        # log_func.warning(u'Not permission <%s> for user <%s>' % (permission_name, self.getName()))
         return False
 
     def getRoleNames(self):
