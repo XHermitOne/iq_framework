@@ -492,7 +492,8 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         self.root_code = None if self.view_all else self.view_code
 
         if refobj_psp:
-            self._data_source = refobjtreedatasource.iqRefObjTreeDataSource(refobj_psp, self.root_code)
+            self._data_source = refobjtreedatasource.iqRefObjTreeDataSource(refobj_psp, self.root_code,
+                                                                            sort_col=self.getSortColumn())
             self._combo_popup.root_name = self._data_source.getRefObjDescription()
         else:
             log_func.warning(u'Not define ref object passport in init <%s> component' % self.__class__.__name__)
@@ -548,6 +549,12 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         The level from which you can select items.
         """
         return self._level_enable
+
+    def getSortColumn(self):
+        """
+        Sort column name.
+        """
+        return None
 
     def setLabelFunc(self, func):
         """

@@ -5,6 +5,8 @@
 Ref object data source as tree data.
 """
 
+import operator
+
 import iq
 
 from ...util import log_func
@@ -220,13 +222,16 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
     """
     Reference object data source as tree.
     """
-    def __init__(self, refobj_psp, root_code=None):
+    def __init__(self, refobj_psp, root_code=None, sort_col=None):
         """
         Constructor.
 
         :param refobj_psp: Ref object passport.
         :param root_code: Root item code.
+        :param sort_col: Sort column name.
         """
+        self._sort_column = sort_col
+
         self._ref_object = self._createRefObj(refobj_psp)
         self._children = self._loadChildren(root_code)
 
@@ -267,6 +272,15 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
         children = list()
         if self._ref_object:
             tab_data = self._ref_object.getLevelRecsByCod(parent_cod=cod)
+
+            # Sort dataset by column
+            if self._sort_column:
+                try:
+                    tab_data = sorted(tab_data,
+                                      key=operator.itemgetter(self._sort_column))
+                except:
+                    log_func.fatal(u'Error sort dataset by column <%s>' % self._sort_column)
+
             for rec in tab_data or list():
                 child_code = rec[self._ref_object.getCodColumnName()]
 

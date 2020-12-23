@@ -41,6 +41,7 @@ WXREFOBJTREECOMBOCTRL_SPC = {
     'popup_type': 0,
     'expand': True,
     'complex_load': True,
+    'sort_col': None,
 
     'get_label': None,
     'find_item': None,
@@ -65,6 +66,7 @@ WXREFOBJTREECOMBOCTRL_SPC = {
         'popup_type': property_editor_id.INTEGER_EDITOR,
         'expand': property_editor_id.CHECKBOX_EDITOR,
         'complex_load': property_editor_id.CHECKBOX_EDITOR,
+        'sort_col': property_editor_id.STRING_EDITOR,
 
         'get_label': property_editor_id.METHOD_EDITOR,
         'find_item': property_editor_id.METHOD_EDITOR,
@@ -82,6 +84,7 @@ WXREFOBJTREECOMBOCTRL_SPC = {
         'popup_type': u'',
         'expand': u'Expand tree',
         'complex_load': u'Load all items data',
+        'sort_col': u'Sort column name',
 
         'get_label': u'Get tree item label function',
         'find_item': u'Find tree item function',

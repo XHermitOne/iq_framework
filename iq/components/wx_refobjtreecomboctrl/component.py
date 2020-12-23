@@ -80,6 +80,12 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
         """
         return self.getAttribute('complex_load')
 
+    def getSortColumn(self):
+        """
+        Sort column name.
+        """
+        return self.getAttribute('sort_col')
+
     def getLevelEnable(self):
         """
         The index of the level from which you can choose.
