@@ -9,12 +9,8 @@ import os
 import os.path
 import stat
 
-# from . import toolfunc
-# from . import strfunc
-# from ic.engine import glob_functions
 from . import log_func
 from . import file_func
-from . import global_func
 from . import sys_func
 from . import global_func
 
@@ -431,7 +427,10 @@ def lockObj(lock_name):
     :param lock_name: Lock name.
     :return:
     """
-    return lockFile(getLockFilename(lock_name=lock_name))
+    username = global_func.getUsername()
+    computer = sys_func.getComputerName()
+    return lockFile(getLockFilename(lock_name=lock_name),
+                    lock_record=dict(user=username, computer=computer))
 
 
 def unLockObj(lock_name, *args, **kwargs):

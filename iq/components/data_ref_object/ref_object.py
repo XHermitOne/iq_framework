@@ -12,10 +12,16 @@ from ..data_navigator import model_navigator
 
 from ...util import log_func
 from ...util import global_func
+from ...util import lock_func
+from ...util import lang_func
+
+from iq.dialog import dlg_func
 
 from ...components.data_column import column_types
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 DEFAULT_COD_COL_NAME = 'cod'
 DEFAULT_NAME_COL_NAME = 'name'
@@ -361,9 +367,22 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :param parent: Parent window.
         :return: True/False.
         """
+        lock_name = self.getName()
+        if lock_func.isLockObj(lock_name):
+            lock_computer = lock_func.getLockComputerObj(lock_name)
+            lock_username = lock_func.getLockUsernameObj(lock_name)
+            lock_msg = _('Editing locked by user ') + lock_username + _(' Computer ') + lock_computer
+            dlg_func.openWarningBox(_('ATTENTION'), lock_msg)
+            return False
+
         if global_func.isWXEngine():
+            lock_func.lockObj(lock_name)
+
             from . import wx_editdlg
-            return wx_editdlg.editRefObjDlg(parent=parent, ref_obj=self)
+            result = wx_editdlg.editRefObjDlg(parent=parent, ref_obj=self)
+
+            lock_func.unLockObj(lock_name)
+            return result
         else:
             log_func.warning(u'Not support edit ref object. Engine <%s>' % global_func.getEngineType())
         return False
