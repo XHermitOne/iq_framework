@@ -56,6 +56,11 @@ WXREFOBJTREECOMBOCTRL_SPC = {
     '__doc__': None,
     '__content__': (),
     '__edit__': {
+        'style': {
+            'editor': property_editor_id.FLAG_EDITOR,
+            'choices': WXREFOBJTREECOMBOCTRL_STYLE,
+        },
+
         'ref_obj': {
             'editor': property_editor_id.PASSPORT_EDITOR,
             'valid': data_ref_object_spc.validRefObjPsp,

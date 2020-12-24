@@ -6,6 +6,7 @@ Reference data object manager.
 """
 
 import copy
+import operator
 import sqlalchemy.sql
 
 from ..data_navigator import model_navigator
@@ -114,6 +115,79 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error get reference data records by column values %s in <%s>' % (column_values,
                                                                                               self.getName()))
         return None
+
+    def searchRecsByColContent(self, column_name=None, search_text=None,
+                               case_sensitive=False, do_sort=True,
+                               only_first=False):
+        """
+        Get records by column contained.
+
+        :param column_name: Column name.
+            If None then get cod column name.
+        :param search_text: Search content text.
+        :param case_sensitive: Case sensitive?
+        :param do_sort: Sort result list by column.
+        :param only_first: Get only first record.
+        :return: Record dictionary list or None if error.
+        """
+        if not search_text:
+            log_func.warning(u'Not define column search text in <%s>' % self.getName())
+            return None
+
+        if column_name is None:
+            column_name = self.getCodColumnName()
+
+        try:
+            model = self.getModel()
+
+            if case_sensitive:
+                filter_data = [getattr(model, column_name).ilike(search_text)]
+            else:
+                filter_data = [getattr(model, column_name).like(search_text)]
+
+            query = self.getModelQuery().filter(*filter_data)
+            if do_sort:
+                query = query.order_by(getattr(model, column_name))
+
+            if query.count():
+                if not only_first:
+                    # Presentation of query result in the form of a dictionary
+                    records = query.all()
+                    result = [vars(record) for record in records]
+                else:
+                    record = query.one()
+                    result = [vars(record)]
+                return result
+            else:
+                log_func.warning(u'Reference data column <%s> not found in <%s>' % (column_name,
+                                                                                    self.getName()))
+        except:
+            log_func.fatal(u'Error get reference data records by column content <%s : \'%s\'> in <%s>' % (column_name,
+                                                                                                          search_text,
+                                                                                                          self.getName()))
+        return None
+
+    def findRecByColContent(self, column_name=None, search_text=None,
+                            case_sensitive=False, do_sort=True):
+        """
+        :param column_name: Column name.
+            If None then get cod column name.
+        :param search_text: Search content text.
+        :param case_sensitive: Case sensitive?
+        :param do_sort: Sort result list by column.
+        :return: Record dictionary or None if not found.
+        """
+        if not search_text:
+            log_func.warning(u'Not define column find text in <%s>' % self.getName())
+            return None
+
+        if column_name is None:
+            column_name = self.getCodColumnName()
+
+        records = self.searchRecsByColContent(column_name=column_name, search_text=search_text,
+                                              case_sensitive=case_sensitive, do_sort=do_sort,
+                                              only_first=True)
+        return records[0] if records else None
 
     def searchCodes(self, search_value, search_colname=None,
                     sort_columns=None, reverse=False):

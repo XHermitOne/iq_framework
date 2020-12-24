@@ -96,6 +96,7 @@ class iqWxRefObjTreeComboCtrl(refobjtreecomboctrl.iqRefObjTreeComboCtrlProto,
         """
         Control text change handler.
         """
+        # log_func.debug(u'onTextChange <%s>' % event.GetString())
         function_body = self.getAttribute('on_change')
         if function_body:
             context = self.getContext()

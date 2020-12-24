@@ -398,7 +398,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
 
         wx.ComboCtrl.__init__(self, *args, **kwargs)
         # Text entry as find item
-        self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter)
+        self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter, id=self.GetId())
 
         if self._popup_type == TREE_CHOICE_LIST_POPUP:
             self._combo_popup = iqRefObjTreeChoiceListComboPopup()
@@ -711,23 +711,36 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         Text entry handler.
         """
         find_str = event.GetString()
+        log_func.debug(u'onTextEnter <%s>' % find_str)
+        self.findItemByText(find_text=find_str, auto_select=True)
+        event.Skip()
+
+    def findItemByText(self, find_text, auto_select=True):
+        """
+        Find item by text.
+
+        :param find_text: Find text.
+        :param auto_select: Select item automatically.
+        :return: Find item code or None if not found.
+        """
+        if not find_text:
+            return None
 
         find_item_func = self.getFindItemFunc()
         if find_item_func:
-            # Altered find function 
+            # Altered find function
             label = find_item_func
         else:
-            label = self.findItem(find_str)
+            label = self.findItem(find_text)
 
-        code = self.getSelectedCode(value=label)
-        data_item = self._data_source.findItemByCode(code)
+        data_item = self._data_source.findItemByLabel(label)
 
-        if label and not self._isDisabledItem(self.view_code, self.getLevelEnable(), data_item):
-            self.SetValue(label)
-        else:
-            self.SetValue(u'')
-
-        event.Skip()
+        if auto_select:
+            if label and not self._isDisabledItem(self.view_code, self.getLevelEnable(), data_item):
+                self.SetValue(label)
+            else:
+                self.SetValue(u'')
+        return data_item
 
     def getSelectedCode(self, selected_code_func=None, value=None):
         """

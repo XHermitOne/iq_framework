@@ -207,12 +207,26 @@ class iqRefObjItemDataSource(iqRefObjItemDataSourceBase):
 
         :return: Tree item or None if not found.
         """
-        find_child = None
         for child in self.getChildren():
             if child.getCode() == cod:
                 return child
             if child.hasChildren():
                 find_child = child.findItemByCode(cod)
+                if find_child is not None:
+                    return find_child
+        return None
+
+    def findItemByLabel(self, label):
+        """
+        Find item by label.
+
+        :return: Tree item or None if not found.
+        """
+        for child in self.getChildren():
+            if child.getLabel() == label:
+                return child
+            if child.hasChildren():
+                find_child = child.findItemByLabel(label)
                 if find_child is not None:
                     return find_child
         return None
@@ -296,17 +310,21 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
         """
         return self._children
     
-    def find(self, find_text):
+    def find(self, find_text, find_column='name'):
         """
         Find item label by text.
 
+        :param find_text: Find text.
+        :param find_column: Find ref object column.
         :return: Found item label or None if item not found.
         """
         if self._ref_object:
-            cod = find_text
-            find_dict = self._ref_object.Find(cod,
-                                              [self._ref_object.getCodColumnName(),
-                                               self._ref_object.getNameColumnName()])
+            # cod = find_text
+            # find_dict = self._ref_object.Find(cod,
+            #                                   [self._ref_object.getCodColumnName(),
+            #                                    self._ref_object.getNameColumnName()])
+            find_dict = self._ref_object.findRecByColContent(column_name=find_column,
+                                                             search_text=find_text)
             if not find_dict:
                 label = None
             else:
@@ -342,6 +360,22 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
                 return child
             if child.hasChildren():
                 find_child = child.findItemByCode(cod)
+                if find_child is not None:
+                    return find_child
+        return None
+
+    def findItemByLabel(self, label):
+        """
+        Find recursive item by label.
+
+        :param label: Find item label.
+        :return: Tree item or None if not found.
+        """
+        for child in self.getChildren():
+            if child.getLabel() == label:
+                return child
+            if child.hasChildren():
+                find_child = child.findItemByLabel(label)
                 if find_child is not None:
                     return find_child
         return None
