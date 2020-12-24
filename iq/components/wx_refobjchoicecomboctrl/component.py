@@ -92,3 +92,6 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
         selected_code = self.choice()
         if prev_selected_code != selected_code:
             self.onSelect(event=None)
+
+
+COMPONENT = iqWxRefObjChoiceComboCtrl

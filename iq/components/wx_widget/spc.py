@@ -25,7 +25,7 @@ WXWIDGET_SPC = {
     '_children_': [],
 
     'position': (-1, -1),
-    'size': (100, 100),
+    'size': (-1, -1),
     'foreground_colour': None,
     'background_colour': None,
     'style': 0,
