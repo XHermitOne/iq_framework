@@ -924,8 +924,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         event.Skip()
 
 
-def choiceRefObjDlg(parent=None, ref_obj=None, fields=None,
-                    default_selected_code=None, search_fields=None):
+def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
+                       default_selected_code=None, search_fields=None):
     """
     Function for calling the ref object code selection dialog box.
     Dialogs are cached in the cache dictionary CHOICE_DLG_CACHE.
@@ -941,6 +941,7 @@ def choiceRefObjDlg(parent=None, ref_obj=None, fields=None,
          If None, then nothing is selected.
     :param search_fields: Fields to search for.
          If not specified, then the displayed fields are taken.
+    :return: Selected ref object item cod or None if error.
     """
     if ref_obj is None:
         log_func.warning(u'Not define ref object for choice')
@@ -982,6 +983,69 @@ def choiceRefObjDlg(parent=None, ref_obj=None, fields=None,
     if result == wx.ID_OK:
         code = dlg.getSelectedCode()
         
+    # dlg.Destroy()
+    return code
+
+
+def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
+                       default_selected_code=None, search_fields=None):
+    """
+    Function for calling the ref object record selection dialog box.
+    Dialogs are cached in the cache dictionary CHOICE_DLG_CACHE.
+    Dialogs are created only for the first time, then only their call occurs.
+
+    :param parent: Parent window.
+    :param ref_obj: Reference data object.
+    :param fields: List of field names that
+         must be displayed in the tree control.
+         If no fields are specified, only
+         <Code> and <Name>.
+    :param default_selected_code: The selected code is the default.
+         If None, then nothing is selected.
+    :param search_fields: Fields to search for.
+         If not specified, then the displayed fields are taken.
+    :return: Selected ref object item record dictionary or None if error.
+    """
+    if ref_obj is None:
+        log_func.warning(u'Not define ref object for choice')
+        return None
+
+    if parent is None:
+        app = wx.GetApp()
+        main_win = app.GetTopWindow()
+        parent = main_win
+
+    global CHOICE_DLG_CACHE
+
+    refobj_name = ref_obj.getName()
+
+    dlg = None
+    if refobj_name not in CHOICE_DLG_CACHE or wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
+        dlg = iqRefObjChoiceTreeDlg(ref_obj=ref_obj,
+                                    default_selected_code=default_selected_code,
+                                    parent=parent)
+        # Download additional data
+        ext_data = dlg.load_ext_data(ref_obj.getName() + '_choice_dlg')
+        dlg.sort_column = ext_data.get('sort_column', None)
+
+        fields = list() if fields is None else fields
+        search_fields = fields if search_fields is None else search_fields
+        dlg.init(fields, search_fields)
+
+        CHOICE_DLG_CACHE[refobj_name] = dlg
+    elif refobj_name in CHOICE_DLG_CACHE and not wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
+        dlg = CHOICE_DLG_CACHE[refobj_name]
+        dlg.clearSearch()
+
+    result = None
+    if dlg:
+        result = dlg.ShowModal()
+        dlg.save_ext_data(ref_obj.getName() + '_choice_dlg', sort_column=dlg.sort_column)
+
+    code = None
+    if result == wx.ID_OK:
+        code = dlg.getSelectedCode()
+
     # dlg.Destroy()
     return code
 

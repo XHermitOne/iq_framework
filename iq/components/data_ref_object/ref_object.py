@@ -16,7 +16,7 @@ from ...util import global_func
 from ...util import lock_func
 from ...util import lang_func
 
-from iq.dialog import dlg_func
+from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
@@ -460,6 +460,45 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         else:
             log_func.warning(u'Not support edit ref object. Engine <%s>' % global_func.getEngineType())
         return False
+
+    def choiceCod(self, parent=None, view_fields=None, search_fields=None):
+        """
+        Choice ref object item.
+
+        :param parent: Parent window.
+        :param view_fields: List of displayed fields.
+        :param search_fields: List of fields to search.
+        :return: Selected cod.
+        """
+        selected_record = self.choiceRecord(parent=parent,
+                                            view_fields=view_fields,
+                                            search_fields=search_fields)
+        return selected_record.get(self.getCodColumnName(), None) if isinstance(selected_record, dict) else None
+
+    def choiceRecord(self, parent=None, view_fields=None, search_fields=None):
+        """
+        Choice ref object item record.
+
+        :param parent: Parent window.
+        :param view_fields: List of displayed fields.
+        :param search_fields: List of fields to search.
+        :return: Selected record or None if error.
+        """
+        try:
+            if global_func.isWXEngine():
+                from . import wx_choicetreedlg
+                selected_record = wx_choicetreedlg.choiceRefObjRecDlg(parent=parent,
+                                                                      ref_obj=self,
+                                                                      fields=view_fields,
+                                                                      search_fields=search_fields)
+                return selected_record
+            else:
+                log_func.warning(u'Not support choice ref object. Engine <%s>' % global_func.getEngineType())
+        except:
+            log_func.fatal(u'Error choice ref object item <%s>' % self.getName())
+        return None
+
+    choice = choiceRecord
 
     def isActive(self, cod):
         """
