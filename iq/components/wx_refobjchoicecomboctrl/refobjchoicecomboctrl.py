@@ -160,7 +160,9 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
                 self.SetValue(name)
                 return self._selected_cod
             else:
-                log_func.error(u'Error choice ref object item <%s>' % self._ref_object.getName())
+                log_func.warning(u'Error choice ref object item <%s>' % self._ref_object.getName())
+        else:
+            log_func.warning(u'Not define ref object in control <%s>' % self.getName())
         return None
 
     def onMouseLeftDown(self, event):

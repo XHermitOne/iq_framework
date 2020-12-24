@@ -43,7 +43,7 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
 
         # Set ref object
         ref_obj_psp = self.getRefObjPsp()
-        ref_obj = self.getKernel().createByPsp(ref_obj_psp) if ref_obj_psp else None
+        ref_obj = self.getKernel().createByPsp(psp=ref_obj_psp) if ref_obj_psp else None
         self.setRefObj(ref_obj)
 
         self.setViewFieldnames(self.getViewFieldnames())
