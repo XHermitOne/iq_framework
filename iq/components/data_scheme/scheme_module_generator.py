@@ -25,9 +25,8 @@ SCHEME_TEXT_FMT = '''#!/usr/bin/env python3
 
 # Scheme module python code generated with iqFramework
 
-import datetime
-
 import sqlalchemy.ext.declarative
+import sqlalchemy.sql.func
 # import sqlalchemy.orm.exc
 # import sqlalchemy.orm
 import sqlalchemy
