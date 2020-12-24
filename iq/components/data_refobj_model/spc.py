@@ -50,7 +50,8 @@ DT_EDIT_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 DT_EDIT_COLUMN_SPC['name'] = 'dt_edit'
 DT_EDIT_COLUMN_SPC['description'] = 'Datetime last editing'
 DT_EDIT_COLUMN_SPC['field_type'] = 'DateTime'
-DT_EDIT_COLUMN_SPC['onupdate'] = 'sqlalchemy.sql.func.now()'
+DT_EDIT_COLUMN_SPC['default'] = 'datetime.datetime.now'
+DT_EDIT_COLUMN_SPC['onupdate'] = 'datetime.datetime.now'
 
 REF_OBJ_DATAMODEL_SPC = {
     'name': 'default',

@@ -56,13 +56,15 @@ DT_EDIT_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 DT_EDIT_COLUMN_SPC['name'] = 'dt_edit'
 DT_EDIT_COLUMN_SPC['description'] = 'Datetime last editing'
 DT_EDIT_COLUMN_SPC['field_type'] = 'DateTime'
-DT_EDIT_COLUMN_SPC['onupdate'] = 'sqlalchemy.sql.func.now()'
+DT_EDIT_COLUMN_SPC['default'] = 'datetime.datetime.now'
+DT_EDIT_COLUMN_SPC['onupdate'] = 'datetime.datetime.now'
 
 DT_CREATE_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 DT_CREATE_COLUMN_SPC['name'] = 'dt_create'
 DT_CREATE_COLUMN_SPC['description'] = 'Create datetime'
 DT_CREATE_COLUMN_SPC['field_type'] = 'DateTime'
-DT_CREATE_COLUMN_SPC['server_default'] = 'sqlalchemy.sql.func.now()'
+DT_CREATE_COLUMN_SPC['default'] = 'datetime.datetime.now'
+# DT_CREATE_COLUMN_SPC['server_default'] = 'datetime.datetime.now'
 
 STATE_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 STATE_COLUMN_SPC['name'] = 'state'
@@ -73,7 +75,8 @@ DT_STATE_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 DT_STATE_COLUMN_SPC['name'] = 'dt_state'
 DT_STATE_COLUMN_SPC['description'] = 'Change state datetime'
 DT_STATE_COLUMN_SPC['field_type'] = 'DateTime'
-DT_STATE_COLUMN_SPC['onupdate'] = 'sqlalchemy.sql.func.now()'
+DT_STATE_COLUMN_SPC['default'] = 'datetime.datetime.now'
+DT_STATE_COLUMN_SPC['onupdate'] = 'datetime.datetime.now'
 
 
 UNI_OBJ_DATAMODEL_SPC = {
