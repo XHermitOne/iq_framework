@@ -952,48 +952,50 @@ def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
         log_func.warning(u'Not define ref object for choice')
         return None
 
-    if parent is None:
-        app = wx.GetApp()
-        main_win = app.GetTopWindow()
-        parent = main_win
-
-    global CHOICE_DLG_CACHE
-
-    refobj_name = ref_obj.getName()
-
-    dlg = None
-    # Additional data filename
-    ext_data_filename = os.path.join(file_func.getProjectProfilePath(),
-                                     ref_obj.getName() + '_choice_dlg.dat')
-
-    if refobj_name not in CHOICE_DLG_CACHE or wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
-        dlg = iqRefObjChoiceTreeDlg(ref_obj=ref_obj,
-                                    default_selected_code=default_selected_code,
-                                    parent=parent)
-        # Download additional data
-        ext_data = dlg.loadCustomData(save_filename=ext_data_filename)
-        dlg.sort_column = ext_data.get('sort_column', None) if ext_data else None
-
-        fields = list() if fields is None else fields
-        search_fields = fields if search_fields is None else search_fields
-        dlg.init(fields, search_fields)
-
-        CHOICE_DLG_CACHE[refobj_name] = dlg
-    elif refobj_name in CHOICE_DLG_CACHE and not wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
-        dlg = CHOICE_DLG_CACHE[refobj_name]
-        dlg.clearSearch()
-
-    result = None
-    if dlg:
-        result = dlg.ShowModal()
-        dlg.saveCustomData(save_filename=ext_data_filename,
-                           save_data=dict(sort_column=dlg.sort_column))
-
     code = None
-    if result == wx.ID_OK:
-        code = dlg.getSelectedCode()
+    refobj_name = ref_obj.getName()
+    try:
+        if parent is None:
+            app = wx.GetApp()
+            main_win = app.GetTopWindow()
+            parent = main_win
+
+        global CHOICE_DLG_CACHE
+
+        dlg = None
+        # Additional data filename
+        ext_data_filename = os.path.join(file_func.getProjectProfilePath(),
+                                         refobj_name + '_choice_dlg.dat')
+
+        if refobj_name not in CHOICE_DLG_CACHE or wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
+            dlg = iqRefObjChoiceTreeDlg(ref_obj=ref_obj,
+                                        default_selected_code=default_selected_code,
+                                        parent=parent)
+            # Download additional data
+            ext_data = dlg.loadCustomData(save_filename=ext_data_filename)
+            dlg.sort_column = ext_data.get('sort_column', None) if ext_data else None
+
+            fields = list() if fields is None else fields
+            search_fields = fields if search_fields is None else search_fields
+            dlg.init(fields, search_fields)
+
+            CHOICE_DLG_CACHE[refobj_name] = dlg
+        elif refobj_name in CHOICE_DLG_CACHE and not wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
+            dlg = CHOICE_DLG_CACHE[refobj_name]
+            dlg.clearSearch()
+
+        result = None
+        if dlg:
+            result = dlg.ShowModal()
+            dlg.saveCustomData(save_filename=ext_data_filename,
+                               save_data=dict(sort_column=dlg.sort_column))
+
+        if result == wx.ID_OK:
+            code = dlg.getSelectedCode()
         
-    # dlg.Destroy()
+        # dlg.Destroy()
+    except:
+        log_func.fatal(u'Error choice ref object <%s> code' % refobj_name)
     return code
 
 
@@ -1020,49 +1022,51 @@ def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
         log_func.warning(u'Not define ref object for choice')
         return None
 
-    if parent is None:
-        app = wx.GetApp()
-        main_win = app.GetTopWindow()
-        parent = main_win
-
-    global CHOICE_DLG_CACHE
-
-    refobj_name = ref_obj.getName()
-
-    dlg = None
-    # Additional data filename
-    ext_data_filename = os.path.join(file_func.getProjectProfilePath(),
-                                     ref_obj.getName() + '_choice_dlg.dat')
-
-    if refobj_name not in CHOICE_DLG_CACHE or wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
-        dlg = iqRefObjChoiceTreeDlg(ref_obj=ref_obj,
-                                    default_selected_code=default_selected_code,
-                                    parent=parent)
-        # Download additional data
-        ext_data = dlg.loadCustomData(save_filename=ext_data_filename)
-        dlg.sort_column = ext_data.get('sort_column', None) if ext_data else None
-
-        fields = list() if fields is None else fields
-        search_fields = fields if search_fields is None else search_fields
-        dlg.init(fields, search_fields)
-
-        CHOICE_DLG_CACHE[refobj_name] = dlg
-    elif refobj_name in CHOICE_DLG_CACHE and not wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
-        dlg = CHOICE_DLG_CACHE[refobj_name]
-        dlg.clearSearch()
-
-    result = None
-    if dlg:
-        result = dlg.ShowModal()
-        dlg.saveCustomData(save_filename=ext_data_filename,
-                           save_data=dict(sort_column=dlg.sort_column))
-
     selected_rec = None
-    if result == wx.ID_OK:
-        code = dlg.getSelectedCode()
-        selected_rec = ref_obj.getRecByCod(code)
+    refobj_name = ref_obj.getName()
+    try:
+        if parent is None:
+            app = wx.GetApp()
+            main_win = app.GetTopWindow()
+            parent = main_win
 
-    # dlg.Destroy()
+        global CHOICE_DLG_CACHE
+
+        dlg = None
+        # Additional data filename
+        ext_data_filename = os.path.join(file_func.getProjectProfilePath(),
+                                         refobj_name + '_choice_dlg.dat')
+
+        if refobj_name not in CHOICE_DLG_CACHE or wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
+            dlg = iqRefObjChoiceTreeDlg(ref_obj=ref_obj,
+                                        default_selected_code=default_selected_code,
+                                        parent=parent)
+            # Download additional data
+            ext_data = dlg.loadCustomData(save_filename=ext_data_filename)
+            dlg.sort_column = ext_data.get('sort_column', None) if ext_data else None
+
+            fields = list() if fields is None else fields
+            search_fields = fields if search_fields is None else search_fields
+            dlg.init(fields, search_fields)
+
+            CHOICE_DLG_CACHE[refobj_name] = dlg
+        elif refobj_name in CHOICE_DLG_CACHE and not wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
+            dlg = CHOICE_DLG_CACHE[refobj_name]
+            dlg.clearSearch()
+
+        result = None
+        if dlg:
+            result = dlg.ShowModal()
+            dlg.saveCustomData(save_filename=ext_data_filename,
+                               save_data=dict(sort_column=dlg.sort_column))
+
+        if result == wx.ID_OK:
+            code = dlg.getSelectedCode()
+            selected_rec = ref_obj.getRecByCod(code)
+
+        # dlg.Destroy()
+    except:
+        log_func.fatal(u'Error choice ref object <%s> record' % refobj_name)
     return selected_rec
 
 

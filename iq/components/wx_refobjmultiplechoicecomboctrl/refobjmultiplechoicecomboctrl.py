@@ -113,7 +113,7 @@ class iqRefObjMultipleChoiceComboCtrlProto(wx.ComboCtrl):
         """
         return self._ref_object
 
-    def getCodes(self):
+    def getSelectedCodes(self):
         """
         Get selected codes.
         """
@@ -151,6 +151,7 @@ class iqRefObjMultipleChoiceComboCtrlProto(wx.ComboCtrl):
             log_func.warning(u'Not define ref object in <%s>' % self.getName())
         return False
 
+    getCodes = getSelectedCodes
     getValue = getCodes
     setValue = setCodes
 
