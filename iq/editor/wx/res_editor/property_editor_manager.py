@@ -400,6 +400,10 @@ class iqPropertyEditorManager(object):
                 events_page.Append(wx_property)
                 property_editor.SetPropertyEditor(event_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
+        # Moves splitter as left as possible,
+        # while still allowing all labels to be shown in full
+        property_editor.SetSplitterLeft()
+
     def getResourceAttributes(self, resource):
         """
         Get attribute names from resource.
