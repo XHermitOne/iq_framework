@@ -146,6 +146,8 @@ class iqRefObjMultipleChoiceComboCtrlProto(wx.ComboCtrl):
 
             label = DEFAULT_LABEL_DELIMETER.join(names)
             self.SetValue(label)
+
+            self.onSelect(event=None)
             return True
         else:
             log_func.warning(u'Not define ref object in <%s>' % self.getName())
@@ -206,5 +208,11 @@ class iqRefObjMultipleChoiceComboCtrlProto(wx.ComboCtrl):
     def DoSetPopupControl(self, popup):
         """
         Overridden from ComboCtrl to avoid assert since there is no ComboPopup.
+        """
+        pass
+
+    def onSelect(self, event):
+        """
+        Combobox change handler.
         """
         pass

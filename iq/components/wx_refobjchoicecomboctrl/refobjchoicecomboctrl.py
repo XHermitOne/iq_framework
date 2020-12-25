@@ -134,6 +134,8 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
             if name:
                 self._selected_cod = code
                 self.SetValue(name)
+
+                self.onSelect(event=None)
                 return True
         else:
             log_func.warning(u'Not define ref object in <%s>' % self.getName())
@@ -182,5 +184,11 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
     def DoSetPopupControl(self, popup):
         """
         Overridden from ComboCtrl to avoid assert since there is no ComboPopup.
+        """
+        pass
+
+    def onSelect(self, event):
+        """
+        Combobox change handler.
         """
         pass
