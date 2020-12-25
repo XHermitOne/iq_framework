@@ -480,13 +480,15 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.warning(u'Not support edit ref object. Engine <%s>' % global_func.getEngineType())
         return False
 
-    def choiceCod(self, parent=None, view_fields=None, search_fields=None):
+    def choiceCod(self, parent=None, view_fields=None, search_fields=None,
+                  clear_cache=False):
         """
         Choice ref object item.
 
         :param parent: Parent window.
         :param view_fields: List of displayed fields.
         :param search_fields: List of fields to search.
+        :param clear_cache: Clear cache?
         :return: Selected cod.
         """
         selected_record = self.choiceRecord(parent=parent,
@@ -494,13 +496,15 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                                             search_fields=search_fields)
         return selected_record.get(self.getCodColumnName(), None) if isinstance(selected_record, dict) else None
 
-    def choiceRecord(self, parent=None, view_fields=None, search_fields=None):
+    def choiceRecord(self, parent=None, view_fields=None, search_fields=None,
+                     clear_cache=False):
         """
         Choice ref object item record.
 
         :param parent: Parent window.
         :param view_fields: List of displayed fields.
         :param search_fields: List of fields to search.
+        :param clear_cache: Clear cache?
         :return: Selected record or None if error.
         """
         try:
@@ -509,7 +513,8 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 selected_record = wx_choicetreedlg.choiceRefObjRecDlg(parent=parent,
                                                                       ref_obj=self,
                                                                       fields=view_fields,
-                                                                      search_fields=search_fields)
+                                                                      search_fields=search_fields,
+                                                                      clear_cache=clear_cache)
                 return selected_record
             else:
                 log_func.warning(u'Not support choice ref object. Engine <%s>' % global_func.getEngineType())

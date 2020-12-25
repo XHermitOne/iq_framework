@@ -44,6 +44,8 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
         # Search field name list
         self._search_fieldnames = None
 
+        self._do_refresh = False
+
         self.Bind(wx.EVT_LEFT_DOWN, self.onMouseLeftDown)
 
     def Enable(self, *args, **kwargs):
@@ -145,6 +147,14 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
     getValue = getCode
     setValue = setCode
 
+    def refresh(self):
+        """
+        Refresh control.
+
+        :return: True/False.
+        """
+        self._do_refresh = True
+
     def choice(self):
         """
         Call selection.
@@ -154,7 +164,8 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
         if self._ref_object is not None:
             selected_record = self._ref_object.choice(parent=self,
                                                       view_fields=self._view_fieldnames,
-                                                      search_fields=self._search_fieldnames)
+                                                      search_fields=self._search_fieldnames,
+                                                      clear_cache=self._do_refresh)
             if selected_record:
                 code = selected_record.get(self._ref_object.getCodColumnName())
                 name = selected_record.get(self._ref_object.getNameColumnName())

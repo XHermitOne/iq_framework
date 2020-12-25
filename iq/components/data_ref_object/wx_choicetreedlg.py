@@ -930,7 +930,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
 
 
 def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
-                       default_selected_code=None, search_fields=None):
+                       default_selected_code=None, search_fields=None,
+                       clear_cache=False):
     """
     Function for calling the ref object code selection dialog box.
     Dialogs are cached in the cache dictionary CHOICE_DLG_CACHE.
@@ -946,6 +947,7 @@ def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
          If None, then nothing is selected.
     :param search_fields: Fields to search for.
          If not specified, then the displayed fields are taken.
+    :param clear_cache: Clear cache?
     :return: Selected ref object item cod or None if error.
     """
     if ref_obj is None:
@@ -961,6 +963,8 @@ def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
             parent = main_win
 
         global CHOICE_DLG_CACHE
+        if clear_cache:
+            CHOICE_DLG_CACHE = dict()
 
         dlg = None
         # Additional data filename
@@ -1000,7 +1004,8 @@ def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
 
 
 def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
-                       default_selected_code=None, search_fields=None):
+                       default_selected_code=None, search_fields=None,
+                       clear_cache=False):
     """
     Function for calling the ref object record selection dialog box.
     Dialogs are cached in the cache dictionary CHOICE_DLG_CACHE.
@@ -1016,6 +1021,7 @@ def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
          If None, then nothing is selected.
     :param search_fields: Fields to search for.
          If not specified, then the displayed fields are taken.
+    :param clear_cache: Clear cache?
     :return: Selected ref object item record dictionary or None if error.
     """
     if ref_obj is None:
@@ -1031,6 +1037,8 @@ def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
             parent = main_win
 
         global CHOICE_DLG_CACHE
+        if clear_cache:
+            CHOICE_DLG_CACHE = dict()
 
         dlg = None
         # Additional data filename
