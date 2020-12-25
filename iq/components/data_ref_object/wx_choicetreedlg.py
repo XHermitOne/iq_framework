@@ -9,18 +9,21 @@ All data is presented in tree view.
 import os.path
 import operator
 import wx
-import gettext
 
 from . import refobj_dialogs_proto
 
 from ...util import log_func
 from ...util import str_func
 from ...util import lang_func
+from ...util import file_func
 
 from ...engine.wx import wxbitmap_func
 from ...engine.wx.dlg import wxdlg_func
 from ...engine.wx import wxobj_func
+
 from ...engine.wx import form_manager
+from ...engine.wx import stored_wx_form_manager
+from ...engine.wx import treelistctrl_manager
 
 from . import wx_editdlg
 
@@ -38,7 +41,9 @@ SORT_REVERSE_SIGN = '-'
 
 
 class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
-                            form_manager.iqFormManager):
+                            form_manager.iqFormManager,
+                            stored_wx_form_manager.iqStoredWxFormsManager,
+                            treelistctrl_manager.iqTreeListCtrlManager):
     """
     Dialog form for ref object element / code selection.
     """
@@ -138,7 +143,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                                     wxbitmap_func.DEFAULT_ICON_WIDTH)
 
             self.sort_ascending_img = img_list.Add(wxbitmap_func.createIconBitmap('fatcow/bullet_arrow_up'))
-            self.sort_descending_img = img_list.Add(wxbitmap_func.createIconBitmap('fatcow%bullet_arrow_down'))
+            self.sort_descending_img = img_list.Add(wxbitmap_func.createIconBitmap('fatcow/bullet_arrow_down'))
 
             self.refobj_treeListCtrl.SetImageList(img_list)
 
@@ -148,13 +153,12 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         """
         Determine the inscription corresponding to the field by its description.
 
-        :param field: Field dictionary.
+        :param field: DataColumn object.
         :return: Label text.
         """
         if field is None:
             return TREE_ITEM_LABEL
-        label = field['label'] if field.get('label', None) else \
-            (field['description'] if field.get('description', None) else field['name'])
+        label = field.getDescription() if field.getDescription() else field.getName()
         return str(label)
 
     def initColumns(self, *fields):
@@ -173,9 +177,13 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
             log_func.warning(u'Not define ref object for selecting code')
             return
         
-        tab = self.ref_obj.getTable()
+        model_obj = self.ref_obj.getModelObj()
         # Dictionary table field specifications dictionary
-        field_dict = dict([(field['name'], field) for field in tab.getResource()['child']])
+        if model_obj:
+            field_dict = dict([(field.getName(), field) for field in model_obj.getChildren()])
+        else:
+            log_func.warning(u'Not define model in ref object <%s>' % self.ref_obj.getName())
+            field_dict = dict()
         
         for field_name in field_names:
             field = field_dict.get(field_name, None)
@@ -183,7 +191,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                 column_label = self.getFieldLabel(field)
                 self.refobj_treeListCtrl.AddColumn(column_label)
             else:
-                log_func.warning(u'Not define field <%s> in table <%s>' % (field_name, tab.name))
+                log_func.warning(u'Not define field <%s> in model <%s>' % (field_name, model_obj.getName()))
 
         # Refresh sorted columns
         self.refreshSortColumn(self.sort_column)
@@ -203,8 +211,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
             log_func.warning(u'Not define ref object')
             return
 
-        tab = self.ref_obj.getTable()
-        field_dict = dict([(field['name'], field) for field in tab.getResource()['child']])
+        model_obj = self.ref_obj.getModelObj()
+        field_dict = dict([(field.getName(), field) for field in model_obj.getChildren()])
 
         choices = list()
         for field_name in field_names:
@@ -213,7 +221,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                 choice_label = self.getFieldLabel(field)
                 choices.append(choice_label)
             else:
-                log_func.warning(u'Not found field <%s> in table <%s>' % (field_name, tab.name))
+                log_func.warning(u'Not found field <%s> in model <%s>' % (field_name, model_obj.getName()))
         self.search_field_choice.Clear()
         self.search_field_choice.AppendItems(choices)
         self.search_field_choice.Select(0)
@@ -287,8 +295,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         :param is_progress: Sign of display of loading progress.
         """
         # Add first level tree
-        sprav_storage = self.ref_obj.getStorage()
-        level_data = sprav_storage.getLevelTable(code)
+        level_data = self.ref_obj.getLevelRecsByCod(parent_cod=code)
         # Sort
         if sort_column is not None:
             log_func.debug(u'Set sort column <%s>' % sort_column)
@@ -300,10 +307,10 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
 
         # log_func.debug(u'Ref object level data %s' % str(level_data))
         title = self.ref_obj.getDescription() if self.ref_obj.getDescription() else self.ref_obj.getName()
-        label = u'Open ref object <%s>' % title
-        len_level_data = len(level_data) if isinstance(level_data, list) else level_data.rowcount
+        label = _(u'Open ref object') + ' <%s>' % title
+        len_level_data = len(level_data) if isinstance(level_data, list) else 0
         if is_progress:
-            wxdlg_func.openProgressDlg(self, u'Ref object', label, 0, len_level_data)
+            wxdlg_func.openProgressDlg(self, _(u'Ref object'), label, 0, len_level_data)
 
         try:
             for i, record in enumerate(level_data):
@@ -470,26 +477,24 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         :param parent_item: Tree item parent.
         :param record: Record associated with an item.
         """
-        item_level = self.getItemLevel(tree_ctrl=self.refobj_treeListCtrl, item=parent_item)
-        # log_func.debug(u'Item level %d' % item_level)
-        rec_dict = self.ref_obj.getStorage().getSpravFieldDict(record, level_idx=item_level)
-        code = rec_dict['cod']
+        # item_level = self.getTreeListCtrlItemLevelIdx(treelistctrl=self.refobj_treeListCtrl, item=parent_item)
+        code = record.get(self.ref_obj.getCodColumnName(), None)
         # Code Activity Check
         if self.ref_obj and self.ref_obj.isActive(code):
             item = self.refobj_treeListCtrl.AppendItem(parent_item, code)
-            self.setItemData_TreeCtrl(ctrl=self.refobj_treeListCtrl, item=item, data=rec_dict)
+            self.setTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=item, data=record)
             # Column filling
             for i, field_name in enumerate(self.refobj_col_names[1:]):
-                value = rec_dict.get(field_name, u'')
+                value = record.get(field_name, u'')
                 # Type checking
                 if value is None:
                     value = u''
                 elif not isinstance(value, str):
                     value = str(value)
-                log_func.debug(u'Value <%s>. Index %s' % (value, i))
+                # log_func.debug(u'Value <%s>. Index %s' % (value, i))
                 self.refobj_treeListCtrl.SetItemText(item, value, i + 1)
         
-            if self.ref_obj.isSubCodes(code):
+            if self.ref_obj.isChildrenCodes(code):
                 # There are subcodes. To display + in the tree control, you need to add a dummy element
                 self.refobj_treeListCtrl.AppendItem(item, TREE_ITEM_LABEL)
 
@@ -523,7 +528,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
 
         # Заполнение пустого уровня
         if not self.refobj_treeListCtrl.ItemHasChildren(item):
-            record = self.getItemData_tree(ctrl=self.refobj_treeListCtrl, item=item)
+            record = self.getTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=item)
             code = record['cod']
             self.setRefObjLevelTree(item, code)
   
@@ -536,7 +541,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         :return: The tree item found, or None if the item is not found
         """
         # Search code in current item
-        record = self.getItemData_tree(ctrl=self.refobj_treeListCtrl, item=parent_item)
+        record = self.getTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=parent_item)
         if record:
             if code == record['cod']:
                 return parent_item
@@ -545,7 +550,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         find_result = None
         child_item, cookie = self.refobj_treeListCtrl.GetFirstChild(parent_item)
         while child_item and child_item.IsOk():
-            record = self.getItemData_tree(ctrl=self.refobj_treeListCtrl, item=child_item)
+            record = self.getTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=child_item)
             if record:
                 if code == record['cod']:
                     find_result = child_item
@@ -599,7 +604,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         """
         item = self.refobj_treeListCtrl.GetSelection()
         if item and item.IsOk():
-            record = self.getItemData_tree(ctrl=self.refobj_treeListCtrl, item=item)
+            record = self.getTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=item)
             return record.get('cod', None) if record is not None else None
         return None
     
@@ -646,7 +651,6 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         """
         item = event.GetItem()
         self.initLevelTree(item)
-            
         event.Skip()
 
     def getSearchFieldname(self):
@@ -684,16 +688,16 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
 
         # --- Processing sort options ---
         order_by = None
-        is_desc = False
+        is_reverse = False
         if self.sort_column:
             sort_field = self.getSortField(self.sort_column)
-            is_desc = self.isReverseSort(self.sort_column)
+            is_reverse = self.isReverseSort(self.sort_column)
             order_by = [sort_field] + [fld for fld in self.refobj_col_names if fld not in ('cod', sort_field)]
         # ----------------------------------------
 
         try:
-            search_codes = self.ref_obj.getStorage().search(search_txt, search_fieldname,
-                                                            order_by=order_by, is_desc=is_desc)
+            search_codes = self.ref_obj.searchCodes(search_txt, search_fieldname,
+                                                    sort_columns=order_by, reverse=is_reverse)
         except:
             log_func.fatal(u'Error searching codes by text')
             search_codes = list()
@@ -714,6 +718,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
             do_find = True
             if self.not_actual_search:
                 search_codes = self.getSearchCodes(search_txt)
+                log_func.debug(u'Search codes %s' % str(search_codes))
                 if not search_codes:
                     wxdlg_func.openWarningBox(_(u'WARNING'),
                                               _(u'No records found matching search string'))
@@ -738,7 +743,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         """
         Search text modify handler.
         """
-        search_txt = event.GetString()
+        # search_txt = event.GetString()
         # log_func.debug(u'Change search text <%s>' % search_txt)
         self.not_actual_search = True
         event.Skip()
@@ -749,8 +754,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         """
         item = event.GetItem()
         if item:
-            record = self.getItemData_tree(ctrl=self.refobj_treeListCtrl, item=item)
-            if record and str_func.isMultiLineTxt(record['name']):
+            record = self.getTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=item)
+            if record and str_func.isMultiLineText(record['name']):
                 # If the text is multi-line, then display an additional pop-up window
                 self.hidePopupInfo()
                 self.showPopupInfo(item, record['name'])
@@ -957,13 +962,17 @@ def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
     refobj_name = ref_obj.getName()
 
     dlg = None
+    # Additional data filename
+    ext_data_filename = os.path.join(file_func.getProjectProfilePath(),
+                                     ref_obj.getName() + '_choice_dlg.dat')
+
     if refobj_name not in CHOICE_DLG_CACHE or wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
         dlg = iqRefObjChoiceTreeDlg(ref_obj=ref_obj,
                                     default_selected_code=default_selected_code,
                                     parent=parent)
         # Download additional data
-        ext_data = dlg.load_ext_data(ref_obj.getName() + '_choice_dlg')
-        dlg.sort_column = ext_data.get('sort_column', None)
+        ext_data = dlg.loadCustomData(save_filename=ext_data_filename)
+        dlg.sort_column = ext_data.get('sort_column', None) if ext_data else None
 
         fields = list() if fields is None else fields
         search_fields = fields if search_fields is None else search_fields
@@ -977,7 +986,8 @@ def choiceRefObjCodDlg(parent=None, ref_obj=None, fields=None,
     result = None
     if dlg:
         result = dlg.ShowModal()
-        dlg.save_ext_data(ref_obj.getName() + '_choice_dlg', sort_column=dlg.sort_column)
+        dlg.saveCustomData(save_filename=ext_data_filename,
+                           save_data=dict(sort_column=dlg.sort_column))
 
     code = None
     if result == wx.ID_OK:
@@ -1020,13 +1030,17 @@ def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
     refobj_name = ref_obj.getName()
 
     dlg = None
+    # Additional data filename
+    ext_data_filename = os.path.join(file_func.getProjectProfilePath(),
+                                     ref_obj.getName() + '_choice_dlg.dat')
+
     if refobj_name not in CHOICE_DLG_CACHE or wxobj_func.isWxDeadObject(CHOICE_DLG_CACHE[refobj_name]):
         dlg = iqRefObjChoiceTreeDlg(ref_obj=ref_obj,
                                     default_selected_code=default_selected_code,
                                     parent=parent)
         # Download additional data
-        ext_data = dlg.load_ext_data(ref_obj.getName() + '_choice_dlg')
-        dlg.sort_column = ext_data.get('sort_column', None)
+        ext_data = dlg.loadCustomData(save_filename=ext_data_filename)
+        dlg.sort_column = ext_data.get('sort_column', None) if ext_data else None
 
         fields = list() if fields is None else fields
         search_fields = fields if search_fields is None else search_fields
@@ -1040,7 +1054,8 @@ def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
     result = None
     if dlg:
         result = dlg.ShowModal()
-        dlg.save_ext_data(ref_obj.getName() + '_choice_dlg', sort_column=dlg.sort_column)
+        dlg.saveCustomData(save_filename=ext_data_filename,
+                           save_data=dict(sort_column=dlg.sort_column))
 
     code = None
     if result == wx.ID_OK:

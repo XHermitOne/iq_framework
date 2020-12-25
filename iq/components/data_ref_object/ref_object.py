@@ -118,6 +118,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
 
     def searchRecsByColContent(self, column_name=None, search_text=None,
                                case_sensitive=False, do_sort=True,
+                               order_by=None,
                                only_first=False):
         """
         Get records by column contained.
@@ -127,6 +128,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :param search_text: Search content text.
         :param case_sensitive: Case sensitive?
         :param do_sort: Sort result list by column.
+        :param order_by: Sort column name list.
         :param only_first: Get only first record.
         :return: Record dictionary list or None if error.
         """
@@ -140,14 +142,19 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         try:
             model = self.getModel()
 
+            search_expression = '%' + search_text + '%'
             if case_sensitive:
-                filter_data = [getattr(model, column_name).ilike(search_text)]
+                filter_data = [getattr(model, column_name).like(search_expression)]
             else:
-                filter_data = [getattr(model, column_name).like(search_text)]
+                filter_data = [getattr(model, column_name).ilike(search_expression)]
 
             query = self.getModelQuery().filter(*filter_data)
             if do_sort:
-                query = query.order_by(getattr(model, column_name))
+                if not isinstance(order_by, (list, tuple)):
+                    query = query.order_by(getattr(model, column_name))
+                else:
+                    order_by_data = [getattr(model, col_name) for col_name in order_by]
+                    query = query.order_by(*order_by_data)
 
             if query.count():
                 if not only_first:
@@ -159,8 +166,9 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                     result = [vars(record)]
                 return result
             else:
-                log_func.warning(u'Reference data column <%s> not found in <%s>' % (column_name,
-                                                                                    self.getName()))
+                log_func.warning(u'Reference data column <%s : %s> not found in <%s>' % (column_name,
+                                                                                         search_text,
+                                                                                         self.getName()))
         except:
             log_func.fatal(u'Error get reference data records by column content <%s : \'%s\'> in <%s>' % (column_name,
                                                                                                           search_text,
@@ -214,20 +222,21 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             column = getattr(model, search_colname)
 
             query = None
-            if column_type in column_types.SQLALCHEMY_TEXT_TYPES:
+            if column_type.__class__ in column_types.SQLALCHEMY_TEXT_TYPES:
                 search_like = '%%%s%%' % search_value
                 query = self.getModelQuery().filter(column.ilike(search_like))
-            elif column_type in column_types.SQLALCHEMY_INT_TYPES:
+            elif column_type.__class__ in column_types.SQLALCHEMY_INT_TYPES:
                 num_value = int(search_value)
                 query = self.getModelQuery().filter(column == num_value)
-            elif column_type in column_types.SQLALCHEMY_FLOAT_TYPES:
+            elif column_type.__class__ in column_types.SQLALCHEMY_FLOAT_TYPES:
                 num_value = float(search_value)
                 query = self.getModelQuery().filter(column == num_value)
-            elif column_type in column_types.SQLALCHEMY_DATETIME_TYPES or column_type in column_types.SQLALCHEMY_DATE_TYPES:
+            elif column_type.__class__ in column_types.SQLALCHEMY_DATETIME_TYPES or column_type in column_types.SQLALCHEMY_DATE_TYPES:
                 # dt_value = datetimefunc.strDateFmt2DateTime(search_value)
                 query = self.getModelQuery().filter(column == search_value)
             else:
-                log_func.warning(u'Find by column type <%s : %s> not supported' % (search_colname, column_type))
+                log_func.warning(u'Find by column type <%s : %s> not supported' % (search_colname,
+                                                                                   column_type.__class__.__name__))
 
             if query is not None and sort_columns:
                 if isinstance(sort_columns, (list, tuple)):
@@ -434,6 +443,16 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
         return None
 
+    def canEdit(self):
+        """
+        Checking the possibility of editing the reference object.
+
+        :return: True - The user registered in the program can edit the directory,
+            False - Can not.
+        """
+        user = global_func.getUser()
+        return user.isPermission('edit_ref_objects')
+
     def edit(self, parent=None):
         """
         Edit ref object.
@@ -560,3 +579,12 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         return self.deleteRec(id=cod, id_field=self.getCodColumnName())
+
+    def isChildrenCodes(self, cod):
+        """
+        Does the above code have sublevel subcodes?
+
+        :param cod: Ref object code.
+        """
+        recs = self.getLevelRecsByCod(cod)
+        return bool(recs)

@@ -345,3 +345,51 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         except:
             log_func.fatal(u'Set background colour item error')
         return False
+
+    def getTreeListCtrlItemLevelIdx(self, treelistctrl=None, item=None):
+        """
+        Determine the level of the tree item.
+        For example, the root item has level 0.
+
+        :param treelistctrl: wx.TreeListCtrl control.
+        :param item: Item.
+            If None, then the root element is taken.
+        :return: Level index or None if error.
+        """
+        label_path = self.getTreeListCtrlItemPathLabel(treelistctrl=treelistctrl, item=item)
+        return len(label_path) if label_path is not None else None
+
+    def getTreeListCtrlItemPathLabel(self, treelistctrl=None, item=None, cur_path=None):
+        """
+        The path to the item. Path is a list of element names.
+
+        :param treelistctrl: wx.TreeListCtrl control.
+        :param item: Item.
+            If None, then the root element is taken.
+        :param cur_path: Current filled path.
+        :return: Path list to item or None if error.
+        """
+        if treelistctrl is None:
+            log_func.warning(u'Not define wx.TreeListCtrl object')
+            return None
+
+        try:
+            if item is None:
+                # The root element has an empty path
+                return []
+
+            parent = treelistctrl.GetItemParent(item)
+            # If there is a parent item, then call recursively
+            if parent and parent.IsOk():
+                if cur_path is None:
+                    cur_path = []
+                cur_path.insert(-1, treelistctrl.GetItemText(item))
+                return self.getTreeListCtrlItemPathLabel(treelistctrl=treelistctrl, item=parent, cur_path=cur_path)
+
+            if cur_path is None:
+                # This is the root item.
+                cur_path = []
+            return cur_path
+        except:
+            log_func.fatal(u'Error get level path in <%s>' % str(treelistctrl))
+        return None

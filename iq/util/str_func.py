@@ -288,3 +288,17 @@ def isWordsInText(text, *words):
         text = toUnicode(text)
     find = any([word in text for word in words])
     return find
+
+
+def isMultiLineText(text=u''):
+    """
+    Checking that the text is many lines.
+
+    :param text: Text.
+    :return: True - multi line text, False - one line, None - error.
+    """
+    if not isinstance(text, str):
+        # If the type does not match the text, then the error is
+        return None
+
+    return u'\n' in text.strip()

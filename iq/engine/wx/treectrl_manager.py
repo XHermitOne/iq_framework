@@ -366,7 +366,6 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         """
         The path to the item. Path is a list of element names.
 
-        :param treectrl: Контрол wx.TreeCtrl.
         :param treectrl: wx.TreeCtrl control.
         :param item: Item.
             If None, then the root element is taken.
