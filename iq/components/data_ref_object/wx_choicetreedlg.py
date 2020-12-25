@@ -1057,12 +1057,13 @@ def choiceRefObjRecDlg(parent=None, ref_obj=None, fields=None,
         dlg.saveCustomData(save_filename=ext_data_filename,
                            save_data=dict(sort_column=dlg.sort_column))
 
-    code = None
+    selected_rec = None
     if result == wx.ID_OK:
         code = dlg.getSelectedCode()
+        selected_rec = ref_obj.getRecByCod(code)
 
     # dlg.Destroy()
-    return code
+    return selected_rec
 
 
 def delCachedChoiceRefObjDlg(ref_obj=None):
