@@ -183,7 +183,8 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
                 # Add as line editing
                 property = wx.propgrid.StringProperty(field_name, value=rec[field_name])
             self.record_propertyGrid.Append(property)
-        # Moves splitter as left as possible, while still allowing all labels to be shown in full.
+        # Moves splitter as left as possible,
+        # while still allowing all labels to be shown in full
         self.record_propertyGrid.SetSplitterLeft()
 
     def getEditRecord(self):
