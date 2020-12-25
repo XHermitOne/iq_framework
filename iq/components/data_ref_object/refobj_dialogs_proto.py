@@ -272,7 +272,7 @@ class iqRecEditDlgProto ( wx.Dialog ):
 		self.cod_constructor = iq.KERNEL.obj.iq.cod_constructor.create(parent=self)
 		bSizer7.Add( self.cod_constructor, 1, wx.ALL|wx.EXPAND, 5 )
 
-		self.record_propertyGrid = pg.PropertyGrid(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PG_DEFAULT_STYLE)
+		self.record_propertyGrid = pg.PropertyGrid(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PG_DEFAULT_STYLE|wx.propgrid.PG_STATIC_SPLITTER)
 		bSizer7.Add( self.record_propertyGrid, 1, wx.ALL|wx.EXPAND, 5 )
 
 

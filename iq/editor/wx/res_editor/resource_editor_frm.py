@@ -72,7 +72,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 
 		self.resource_treeListCtrl = wx.lib.gizmos.TreeListCtrl( self.resource_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.dataview.TL_DEFAULT_STYLE|wx.dataview.TL_SINGLE )
-		self.resource_treeListCtrl.AddColumn( _(u"Name"), 200, wx.ALIGN_LEFT)
+		self.resource_treeListCtrl.AddColumn( _(u"Name"), 300, wx.ALIGN_LEFT)
 		self.resource_treeListCtrl.AddColumn( _(u"Description"), 300, wx.ALIGN_LEFT)
 
 		bSizer2.Add( self.resource_treeListCtrl, 1, wx.EXPAND |wx.ALL, 5 )
@@ -84,7 +84,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.property_panel = wx.Panel( self.editor_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer3 = wx.BoxSizer( wx.VERTICAL )
 
-		self.object_propertyGridManager = pg.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE|wx.propgrid.PG_SPLITTER_AUTO_CENTER|wx.propgrid.PG_TOOLBAR)
+		self.object_propertyGridManager = pg.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE|wx.propgrid.PG_TOOLBAR)
 
 		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Attributes"), wx.ArtProvider.GetBitmap( u"gtk-index", wx.ART_MENU ) );
 
