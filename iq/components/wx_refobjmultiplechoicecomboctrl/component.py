@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Wx RefObjChoiceComboCtrl component.
+Wx RefObjMultipleChoiceComboCtrl component.
 """
 
 import wx
@@ -14,15 +14,15 @@ from . import spc
 from ...util import log_func
 from ...util import exec_func
 
-from . import refobjchoicecomboctrl
+from . import refobjmultiplechoicecomboctrl
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlProto,
-                                component.iqWxWidget):
+class iqWxRefObjMultipleChoiceComboCtrl(refobjmultiplechoicecomboctrl.iqRefObjMultipleChoiceComboCtrlProto,
+                                        component.iqWxWidget):
     """
-    Wx RefObjChoiceComboCtrl component.
+    Wx RefObjMultipleChoiceComboCtrl component.
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -35,11 +35,11 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
-        refobjchoicecomboctrl.iqRefObjChoiceComboCtrlProto.__init__(self, parent=parent,
-                                                                    id=wx.NewId(),
-                                                                    pos=self.getPosition(),
-                                                                    size=self.getSize(),
-                                                                    style=self.getStyle())
+        refobjmultiplechoicecomboctrl.iqRefObjMultipleChoiceComboCtrlProto.__init__(self, parent=parent,
+                                                                                    id=wx.NewId(),
+                                                                                    pos=self.getPosition(),
+                                                                                    size=self.getSize(),
+                                                                                    style=self.getStyle())
 
         # Set ref object
         ref_obj_psp = self.getRefObjPsp()
@@ -75,7 +75,7 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
         context['self'] = self
         context['event'] = event
         context['REF_OBJ'] = self.getRefObj()
-        context['SELECTED_COD'] = self.getCode()
+        context['SELECTED_CODES'] = self.getCodes()
 
         function_body = self.getAttribute('on_select')
         if function_body:
@@ -88,10 +88,10 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
         """
         Overridden from ComboCtrl, called when the combo button is clicked.
         """
-        prev_selected_code = self.getCode()
+        prev_selected_codes = self.getCodes()
         selected_code = self.choice()
-        if prev_selected_code != selected_code:
+        if selected_code not in prev_selected_codes:
             self.onSelect(event=None)
 
 
-COMPONENT = iqWxRefObjChoiceComboCtrl
+COMPONENT = iqWxRefObjMultipleChoiceComboCtrl

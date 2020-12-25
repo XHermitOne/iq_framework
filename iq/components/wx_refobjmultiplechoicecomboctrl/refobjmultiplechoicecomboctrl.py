@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Control of the selection of a ref object item in a standard
-form through the selection window.
+Control of the selection of several ref object item
+in a standard form through the selection window.
 """
 
 import wx
@@ -14,11 +14,14 @@ __version__ = (0, 0, 0, 1)
 
 DEFAULT_ENCODING = 'utf-8'
 
+# Default separator for names in control
+DEFAULT_LABEL_DELIMETER = u'; '
 
-class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
+
+class iqRefObjMultipleChoiceComboCtrlProto(wx.ComboCtrl):
     """
-    Control of the selection of a ref object item in a standard
-    form through the selection window.
+    Control of the selection of several ref object item
+    in a standard form through the selection window.
     """
     def __init__(self, *args, **kwargs):
         """
@@ -37,7 +40,7 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
         # Reference object
         self._ref_object = None
 
-        self._selected_cod = None
+        self._selected_codes = None
 
         # View field name list
         self._view_fieldnames = None
@@ -110,37 +113,46 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
         """
         return self._ref_object
 
-    def getCode(self):
+    def getCodes(self):
         """
-        Get selected cod.
+        Get selected codes.
         """
-        return self._selected_cod
+        return self._selected_codes
 
-    def setCode(self, code):
+    def setCodes(self, codes):
         """
-        Set selected cod.
+        Set selected codes.
 
-        :param code: Cod.
+        :param codes: Cod list.
         :return: True/False.
         """
-        if code is None:
+        if codes is None:
             # An empty value can also be set in the control
-            self._selected_cod = None
+            self._selected_codes = None
             self.SetValue(u'')
             return True
 
-        if self._ref_object is not None:
-            name = self._ref_object.getColumnNameValue(code)
-            if name:
-                self._selected_cod = code
-                self.SetValue(name)
-                return True
+        if isinstance(codes, str):
+            codes = [codes]
+
+        self._selected_codes = list()
+        if self._ref_object is not None and codes:
+            names = list()
+            for code in codes:
+                name = self._ref_object.getColumnNameValue(code)
+                if name:
+                    self._selected_codes.append(code)
+                    names.append(name)
+
+            label = DEFAULT_LABEL_DELIMETER.join(names)
+            self.SetValue(label)
+            return True
         else:
             log_func.warning(u'Not define ref object in <%s>' % self.getName())
         return False
 
-    getValue = getCode
-    setValue = setCode
+    getValue = getCodes
+    setValue = setCodes
 
     def choice(self):
         """
@@ -148,20 +160,32 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
 
         :return: Selected cod.
         """
-        if self._ref_object is not None:
-            selected_record = self._ref_object.choice(parent=self,
-                                                      view_fields=self._view_fieldnames,
-                                                      search_fields=self._search_fieldnames)
-            if selected_record:
-                code = selected_record.get(self._ref_object.getCodColumnName())
-                name = selected_record.get(self._ref_object.getNameColumnName())
-                self._selected_cod = code
-                self.SetValue(name)
-                return self._selected_cod
+        if self._selected_codes is None:
+            self._selected_codes = list()
+
+        try:
+            if self._ref_object is not None:
+                selected_record = self._ref_object.choice(parent=self,
+                                                          view_fields=self._view_fieldnames,
+                                                          search_fields=self._search_fieldnames)
+                if selected_record:
+                    code = selected_record.get(self._ref_object.getCodColumnName())
+                    name = selected_record.get(self._ref_object.getNameColumnName())
+
+                    if code not in self._selected_codes:
+                        self._selected_codes.append(code)
+
+                        label = self.GetValue() + DEFAULT_LABEL_DELIMETER + name if self.GetValue() else name
+                        self.SetValue(label)
+                        return code
+                    else:
+                        log_func.warning(u'Cod [%s] already present in selected' % code)
+                else:
+                    log_func.warning(u'Error choice ref object item <%s>' % self._ref_object.getName())
             else:
-                log_func.warning(u'Error choice ref object item <%s>' % self._ref_object.getName())
-        else:
-            log_func.warning(u'Not define ref object in control <%s>' % self.getName())
+                log_func.warning(u'Not define ref object in control <%s>' % self.getName())
+        except:
+            log_func.fatal(u'Error selecting multiple codes from ref object <%s>' % self._ref_object.getName())
         return None
 
     def onMouseLeftDown(self, event):
