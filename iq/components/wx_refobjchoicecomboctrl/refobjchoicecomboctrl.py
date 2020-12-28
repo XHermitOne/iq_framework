@@ -166,6 +166,7 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
                                                       view_fields=self._view_fieldnames,
                                                       search_fields=self._search_fieldnames,
                                                       clear_cache=self._do_refresh)
+            self._do_refresh = False
             if selected_record:
                 code = selected_record.get(self._ref_object.getCodColumnName())
                 name = selected_record.get(self._ref_object.getNameColumnName())
