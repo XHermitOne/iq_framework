@@ -97,7 +97,7 @@ class iqRefObjTreeComboPopup(wx.ComboPopup):
         root = self.tree.GetRootItem()
         if not root:
             return
-        found = self.FindItem(root, value)
+        found = self.findItem(root, value)
         if found:
             self.value = found
             self.tree.SelectItem(found)
@@ -105,7 +105,7 @@ class iqRefObjTreeComboPopup(wx.ComboPopup):
     def GetAdjustedSize(self, minWidth, prefHeight, maxHeight):
         return wx.Size(minWidth, min(200, maxHeight))
 
-    def FindItem(self, parent_item, text):
+    def findItem(self, parent_item, text):
         """
         Find child item by text.
         """
@@ -114,7 +114,7 @@ class iqRefObjTreeComboPopup(wx.ComboPopup):
             if self.tree.GetItemText(item) == text:
                 return item
             if self.tree.ItemHasChildren(item):
-                item = self.FindItem(item, text)
+                item = self.findItem(item, text)
             item, cookie = self.tree.GetNextChild(parent_item, cookie)
         return wx.TreeItemId()
 
@@ -147,7 +147,7 @@ class iqRefObjTreeComboPopup(wx.ComboPopup):
 
         :return: True/False.
         """
-        return self.FindItem(parent_item, TREE_HIDDEN_ITEM_LABEL).IsOk()
+        return self.findItem(parent_item, TREE_HIDDEN_ITEM_LABEL).IsOk()
 
     def OnMotion(self, event):
         """
