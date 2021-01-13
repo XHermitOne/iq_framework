@@ -6,7 +6,7 @@
 """
 
 import os.path
-from ic.log import log
+from ...util import log_func
 
 __version__ = (0, 1, 1, 1)
 
@@ -24,7 +24,7 @@ def get_marker_icon_filename(icon_name):
     :return: Полное имя файла или None в случае ошибки.
     """
     if not isinstance(icon_name, str):
-        log.warning(u'Не корректный тип <%s> имени иконки' % icon_name.__class__.__name__)
+        log_func.warning(u'Не корректный тип <%s> имени иконки' % icon_name.__class__.__name__)
         return None
 
     if not icon_name.endswith(ICON_FILENAME_EXT):

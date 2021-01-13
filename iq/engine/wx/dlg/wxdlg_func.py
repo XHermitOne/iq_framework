@@ -786,7 +786,8 @@ class iqLoginDialog(login_dialog_proto.iqLoginDialogProto):
             self._user = default_username
             self._password = ''
 
-            self.username_comboBox.SetFocus()
+            # self.username_comboBox.SetFocus()
+            self.ok_button.SetFocus()
         except:
             log_func.fatal(u'Error init login dialog')
 
