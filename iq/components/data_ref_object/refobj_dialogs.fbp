@@ -564,7 +564,7 @@
             <property name="minimum_size"></property>
             <property name="name">iqEditDlgProto</property>
             <property name="pos"></property>
-            <property name="size">1097,408</property>
+            <property name="size">1646,723</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass"></property>
             <property name="title">Edit</property>
@@ -626,7 +626,7 @@
                         <property name="pos"></property>
                         <property name="resize">Resizable</property>
                         <property name="sashgravity">0.0</property>
-                        <property name="sashpos">400</property>
+                        <property name="sashpos">500</property>
                         <property name="sashsize">-1</property>
                         <property name="show">1</property>
                         <property name="size"></property>

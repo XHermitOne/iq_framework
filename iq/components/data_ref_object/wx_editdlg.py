@@ -11,7 +11,6 @@ import wx
 import wx.propgrid
 
 from ...util import log_func
-from ...util import spc_func
 from ...util import lang_func
 from ...util import spc_func
 from ...util import global_func
@@ -369,6 +368,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         refobj_dialogs_proto.iqEditDlgProto.__init__(self, *args, **kwargs)
 
+        self.root = None
         self.ref_obj = ref_obj
 
         if self.ref_obj:
@@ -461,9 +461,10 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param parent_item: Parent tree item.
         :param record: Record associated with an item.
         """
-        # item_level = self.getTreeCtrlItemLevelIdx(treectrl=self.refobj_treeCtrl, item=parent_item)
-        # Record as dictionary
-        # rec_dict = self.ref_obj.getStorage().getSpravFieldDict(record, level_idx=item_level)
+        code = record['cod']
+        if not self.ref_obj.isParentLevelCod(code):
+            return
+
         name = str(record['name'])
         # For multi-line items, select only the first line
         name = [line.strip() for line in name.split(u'\n')][0]
@@ -476,8 +477,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         self.setTreeCtrlItemForegroundColour(treectrl=self.refobj_treeCtrl,
                                              item=item, colour=item_colour)
 
-        code = record['cod']
-        if self.ref_obj.hasChildrenCodes(code):
+        if self.ref_obj.isGrandParentLevelCod(code):
             # There are subcodes. To display a tree in the control, you need to add a dummy element
             self.refobj_treeCtrl.AppendItem(item, TREE_ITEM_LABEL)
         
@@ -491,7 +491,11 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         title = [line.strip() for line in title.split(u'\n')][0]
 
         self.root = self.refobj_treeCtrl.AddRoot(title)
-        
+        level_data = self.ref_obj.getLevelRecsByCod(None)
+        self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl,
+                                 item=self.root,
+                                 data={spc_func.CHILDREN_ATTR_NAME: level_data})
+
         if self.ref_obj.isEmpty():
             # No need to fill
             log_func.warning(u'Ref object is empty')
@@ -531,7 +535,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         fields = self.getEditableFields()
         list_item = -1
         for i, field in enumerate(fields):
-            value = str(record[field.name])
+            value = str(record[field.name]) if record[field.name] is not None else u''
             # For multi-line items, select only the first line
             value = [line.strip() for line in value.split(u'\n')][0]
 
@@ -565,14 +569,23 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         self.recs_listCtrl.DeleteAllItems()
         # List of records of the selected level
         self._list_ctrl_dataset = list()
-        
-        child_item, cookie = self.refobj_treeCtrl.GetFirstChild(tree_item)
-        while child_item.IsOk():
-            record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=child_item)
 
-            self.addRefObjListRow(record, False)
+        if self.refobj_treeCtrl.ItemHasChildren(tree_item):
+            child_item, cookie = self.refobj_treeCtrl.GetFirstChild(tree_item)
+            while child_item.IsOk():
+                record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=child_item)
+
+                self.addRefObjListRow(record, False)
             
-            child_item, cookie = self.refobj_treeCtrl.GetNextChild(tree_item, cookie)
+                child_item, cookie = self.refobj_treeCtrl.GetNextChild(tree_item, cookie)
+        else:
+            record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=tree_item)
+            child_records = record.get(spc_func.CHILDREN_ATTR_NAME, None)
+            if child_records is None:
+                level_cod = record['cod']
+                child_records = self.ref_obj.getLevelRecsByCod(level_cod)
+            for child_record in child_records:
+                self.addRefObjListRow(child_record, False)
 
         # Re-size columns
         fields = self.getEditableFields()
@@ -724,7 +737,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         # Search code in current item
         record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=parent_item)
         if record:
-            if code == record['cod']:
+            if code == record.get('cod', None):
                 return parent_item
         
         # Search in child elements
@@ -733,7 +746,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         while child_item.IsOk():
             record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=child_item)
             if record:
-                if code == record['cod']:
+                if code == record.get('cod', None):
                     find_result = child_item
                     break
             child_item, cookie = self.refobj_treeCtrl.GetNextChild(parent_item, cookie)
@@ -903,7 +916,6 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         if find_text:
             do_find = True
             if self.not_actual_search:
-                # search_codes = self.ref_obj.getStorage().search(find_text)
                 search_records = self.ref_obj.searchRecsByColValues()
                 search_codes = self.ref_obj.searchCodes(find_text)
                 if search_codes:
@@ -962,17 +974,18 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         for i_row, row in enumerate(self._list_ctrl_dataset[start_row:]):
             if i_row == 0:
                 for i_col, field in enumerate(fields[start_col:]):
-                    field_name = field['name']
+                    # log_func.debug(u'Field %s : %s' % (field, field.__class__.__name__))
+                    field_name = field['name'] if isinstance(field, dict) else field.name
                     value = str(row[field_name]).lower()
                     if find_word in value:
                         log_func.debug(u'Found matching %s <%s> in <%s>' % (field_name, find_word, value))
                         return start_row+i_row, start_col+i_col
             else:
                 for i_col, field in enumerate(fields):
-                    field_name = field['name']
+                    field_name = field['name'] if isinstance(field, dict) else field.name
                     value = str(row[field_name]).lower()
                     if find_word in value:
-                        log_func.debug(u'Found matching in field %s <%s> : <%s>'  % (field_name, find_word, value))
+                        log_func.debug(u'Found matching in field %s <%s> : <%s>' % (field_name, find_word, value))
                         return start_row+i_row, i_col
         log_func.warning(u'Not found <%s>. Search over.' % find_word)
         return None
@@ -986,7 +999,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         cur_row = start_row
         if cur_row is None:
-            cur_row = self.getItemSelectedIdx(self.recs_listCtrl)
+            cur_row = self.getListCtrlSelectedRowIdx(listctrl_or_event=self.recs_listCtrl)
 
         find_word = self.find_textCtrl.GetValue()
         find_result = self.findWordInRecords(find_word, start_row=cur_row + 1)
@@ -995,7 +1008,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
 
         if do_find:
             find_row, find_col = find_result
-            self.selectItem_list_ctrl(self.recs_listCtrl, find_row)
+            self.selectListCtrlItem(listctrl=self.recs_listCtrl, item=find_row)
         else:
             msg = u'No search word found. Start the search from the beginning?'
             if wxdlg_func.openAskBox(_(u'SEARCH'), msg):
@@ -1007,7 +1020,10 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         find_txt = self.find_textCtrl.GetValue()
         if find_txt:
-            self.findWordInRecordsListCtrl()
+            try:
+                self.findWordInRecordsListCtrl()
+            except:
+                log_func.fatal(u'Error find ref object by name')
         else:
             wxdlg_func.openWarningBox(_(u'WARNING'),
                                       _(u'No search string selected'))

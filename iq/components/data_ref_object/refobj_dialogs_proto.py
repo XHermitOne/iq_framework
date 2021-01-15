@@ -114,7 +114,7 @@ class iqChoiceListDlgProto ( wx.Dialog ):
 class iqEditDlgProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Edit"), pos = wx.DefaultPosition, size = wx.Size( 1097,408 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Edit"), pos = wx.DefaultPosition, size = wx.Size( 1646,723 ), style = wx.DEFAULT_DIALOG_STYLE )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -179,7 +179,7 @@ class iqEditDlgProto ( wx.Dialog ):
 		self.m_panel2.SetSizer( bSizer5 )
 		self.m_panel2.Layout()
 		bSizer5.Fit( self.m_panel2 )
-		self.m_splitter1.SplitVertically( self.m_panel1, self.m_panel2, 400 )
+		self.m_splitter1.SplitVertically( self.m_panel1, self.m_panel2, 500 )
 		bSizer3.Add( self.m_splitter1, 1, wx.EXPAND, 5 )
 
 		bSizer11 = wx.BoxSizer( wx.HORIZONTAL )
@@ -246,7 +246,7 @@ class iqEditDlgProto ( wx.Dialog ):
 		event.Skip()
 
 	def m_splitter1OnIdle( self, event ):
-		self.m_splitter1.SetSashPosition( 400 )
+		self.m_splitter1.SetSashPosition( 500 )
 		self.m_splitter1.Unbind( wx.EVT_IDLE )
 
 

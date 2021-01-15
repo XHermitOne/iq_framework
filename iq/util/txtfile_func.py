@@ -10,7 +10,7 @@ import os.path
 
 from . import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def saveTextFile(txt_filename, txt='', rewrite=True):
@@ -22,6 +22,9 @@ def saveTextFile(txt_filename, txt='', rewrite=True):
     :param rewrite: Rewrite file if it exists?
     :return: True/False.
     """
+    if not isinstance(txt, str):
+        txt = str(txt)
+
     file_obj = None
     try:
         if rewrite and os.path.exists(txt_filename):
@@ -53,15 +56,47 @@ def loadTextFile(txt_filename):
         log_func.warning(u'File <%s> not found' % txt_filename)
         return ''
 
-    f = None
+    file_obj = None
     try:
-        f = open(txt_filename, 'rt')
-        txt = f.read()
-        f.close()
+        file_obj = open(txt_filename, 'rt')
+        txt = file_obj.read()
+        file_obj.close()
     except:
-        if f:
-            f.close()
+        if file_obj:
+            file_obj.close()
         log_func.fatal(u'Load text file <%s> error' % txt_filename)
         return ''
 
     return txt
+
+
+def appendTextFile(txt_filename, txt, cr='\n'):
+    """
+    Add lines to text file.
+    If the file does not exist, then the file is created.
+
+    :param txt_filename: Text filename.
+    :param txt: Added text.
+    :param cr: Carriage return character.
+    :return: True/False.
+    """
+    if not isinstance(txt, str):
+        txt = str(txt)
+
+    txt_filename = os.path.normpath(txt_filename)
+
+    if not os.path.exists(txt_filename):
+        cr = ''
+
+    file_obj = None
+    try:
+        file_obj = open(txt_filename, 'at')
+        file_obj.write(cr)
+        file_obj.write(txt)
+        file_obj.close()
+        return True
+    except:
+        if file_obj:
+            file_obj.close()
+        log_func.fatal(u'Error append to text file <%s>' % txt_filename)
+    return False

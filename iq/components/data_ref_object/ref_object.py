@@ -593,3 +593,24 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         recs = self.getLevelRecsByCod(cod)
         return bool(recs)
+
+    def isParentLevelCod(self, cod):
+        """
+        Is it a parent level code?
+
+        :param cod: Code.
+        :return: True/False.
+        """
+        cod_tuple = tuple([subcod for subcod in self.getCodAsTuple(cod) if subcod])
+        # log_func.debug(u'Cod tuple %s' % str(cod_tuple))
+        return len(cod_tuple) < self.getLevelCount()
+
+    def isGrandParentLevelCod(self, cod):
+        """
+        Is it a grandparent level code?
+
+        :param cod: Code.
+        :return: True/False.
+        """
+        cod_tuple = tuple([subcod for subcod in self.getCodAsTuple(cod) if subcod])
+        return len(cod_tuple) < (self.getLevelCount() - 1)
