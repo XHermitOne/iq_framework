@@ -868,7 +868,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                                                             col in model.__table__.columns.items() if col_name != 'id'])
         # Set default code
         parent_rec = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=self.refobj_treeCtrl.GetSelection())
-        struct_parent_code = self.ref_obj.getCodAsTuple(parent_rec['cod']) if parent_rec else list()
+        struct_parent_code = self.ref_obj.getCodAsTuple(parent_rec['cod']) if 'cod' in parent_rec else list()
         struct_parent_code = [sub_code for sub_code in struct_parent_code if sub_code]
         level_idx = len(struct_parent_code)
         struct_code = struct_parent_code
