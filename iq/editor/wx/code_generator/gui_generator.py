@@ -72,6 +72,9 @@ def gen(src_filename=None, dst_filename=None, src_class_name=None, parent=None, 
                 src_class_name = dlg_func.getSingleChoiceDlg(parent=parent, title=u'GENERATOR',
                                                              prompt_text=u'Select prototype class:',
                                                              choices=choices)
+                if not src_class_name:
+                    # Cancel pressed
+                    return
 
         if dst_filename is None:
             # If the output file name is not defined, then generate the file name from the form class name

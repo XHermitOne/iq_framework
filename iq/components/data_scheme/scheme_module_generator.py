@@ -14,6 +14,9 @@ from ...util import spc_func
 from ...util import file_func
 from ...dialog import dlg_func
 
+from ...components.data_column import spc as data_column_spc
+from ...components.data_model import spc as data_model_spc
+
 __version__ = (0, 0, 0, 1)
 
 SCHEME_TEXT_FMT = '''#!/usr/bin/env python3
@@ -29,7 +32,7 @@ import datetime
 
 import sqlalchemy.ext.declarative
 # import sqlalchemy.orm.exc
-# import sqlalchemy.orm
+import sqlalchemy.orm
 import sqlalchemy
 
 import iq
@@ -48,9 +51,17 @@ class %s(Base):
     __tablename__ = '%s'
 
 %s
+%s
+%s
+%s
+
+%s
 '''
 
 COLUMN_TEXT_FMT = '    %s = sqlalchemy.Column(%s)'
+
+RELATIONSHIP_TEXT_FMT = '    %s = sqlalchemy.orm.relationship(%s)'
+FOREIGNKEY_TEXT_FMT = '    %s_id = sqlalchemy.Column(sqlalchemy.ForeignKey(\'%s.id\'))'
 
 
 class iqSchemeModuleGenerator(object):
@@ -132,11 +143,12 @@ class iqSchemeModuleGenerator(object):
             log_func.fatal(u'Error generate scheme module')
         return None
 
-    def genModelTxt(self, resource):
+    def genModelTxt(self, resource, parent_model_resource=None):
         """
         Generate model text.
 
         :param resource: Model resource.
+        :param parent_model_resource: Parent model resource.
         :return: Model text.
         """
         if not resource.get('activate', True):
@@ -146,9 +158,24 @@ class iqSchemeModuleGenerator(object):
         description = resource.get('description', '')
         tablename = resource.get('tablename', '')
         tablename = tablename if tablename else name.lower()
-        columns_text = [self.genColumnTxt(column) for column in resource.get(spc_func.CHILDREN_ATTR_NAME, list())]
+
+        # Gen columns
+        columns_text = [self.genColumnTxt(column) for column in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if column.get('type', None) == data_column_spc.COMPONENT_TYPE]
         columns_text = [column_line for column_line in columns_text if column_line]
-        return MODEL_TEXT_FMT % (name, description, tablename, os.linesep.join(columns_text))
+
+        # Gen relationships
+        foreignkey_txt = self.genForeignKeyTxt(resource=parent_model_resource) if parent_model_resource else u''
+        parent_relationship_txt = self.genRelationshipTxt(resource=parent_model_resource, link_name=name.lower()) if parent_model_resource else u''
+        relationships_txt = [self.genRelationshipTxt(model, link_name=name) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if model.get('type', None) == data_model_spc.COMPONENT_TYPE]
+
+        # Gen modeles
+        modeles_txt = [self.genModelTxt(model, parent_model_resource=resource) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if model.get('type', None) == data_model_spc.COMPONENT_TYPE]
+        return MODEL_TEXT_FMT % (name, description, tablename,
+                                 os.linesep.join(columns_text),
+                                 foreignkey_txt,
+                                 parent_relationship_txt,
+                                 os.linesep.join(relationships_txt),
+                                 os.linesep.join(modeles_txt))
 
     def genColumnTxt(self, resource):
         """
@@ -228,6 +255,40 @@ class iqSchemeModuleGenerator(object):
             column_attrs.append('doc=\'%s\'' % description)
 
         return COLUMN_TEXT_FMT % (name, ', '.join(column_attrs))
+
+    def genRelationshipTxt(self, resource, link_name=None):
+        """
+        Generate relationship text.
+
+        :param resource: Model resource.
+        :param link_name: Linked model name.
+        :return: Relationship text.
+        """
+        model_name = resource.get('name', 'Unknown')
+        name = model_name.lower()
+
+        relationship_attrs = list()
+        relationship_attrs.append('\'%s\'' % model_name)
+        if link_name:
+            relationship_attrs.append('back_populates=\'%s\'' % link_name.lower())
+
+        return RELATIONSHIP_TEXT_FMT % (name, ', '.join(relationship_attrs))
+
+    def genForeignKeyTxt(self, resource, table_name=None):
+        """
+        Generate relationship text.
+
+        :param resource: Model resource.
+        :param table_name: Linked table name.
+        :return: Relationship text.
+        """
+        model_name = resource.get('name', 'Unknown')
+        name = model_name.lower()
+        if table_name is None:
+            table_name = resource.get('tablename', '')
+            table_name = table_name if table_name else name.lower()
+
+        return FOREIGNKEY_TEXT_FMT % (name, table_name)
 
 
 def genModule(module_filename=None, resource=None):

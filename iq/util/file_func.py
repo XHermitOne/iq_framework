@@ -20,6 +20,10 @@ __version__ = (0, 0, 0, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
+ALTER_HOME_DIRNAME = '~' + os.sep
+ALTER_CUR_DIRNAME = '.' + os.sep
+ALTER_PARENT_DIRNAME = '..' + os.sep
+
 
 def getDirectoryNames(path):
     """
@@ -467,3 +471,26 @@ def createDir(dirname):
     except:
         log_func.fatal(u'Error create directory <%s>' % dirname)
     return False
+
+
+def getNormalPath(path):
+    """
+    Get normal path.
+
+    :param path: Path
+    :return: Normal path.
+    """
+    try:
+        if path.startswith(ALTER_PARENT_DIRNAME):
+            return os.path.normpath(os.path.join(os.path.dirname(os.getcwd()),
+                                                 path.lstrip(ALTER_PARENT_DIRNAME)))
+        elif path.startswith(ALTER_CUR_DIRNAME):
+            return os.path.normpath(os.path.join(os.getcwd(),
+                                                 path.lstrip(ALTER_CUR_DIRNAME)))
+        elif path.startswith(ALTER_HOME_DIRNAME):
+            return os.path.normpath(os.path.join(getHomePath(),
+                                                 path.lstrip(ALTER_HOME_DIRNAME)))
+        return os.path.normpath(path)
+    except:
+        log_func.fatal(u'Error normal path <%s>' % path)
+    return path

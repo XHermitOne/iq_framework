@@ -14,6 +14,7 @@ from ..util import log_func
 from ..util import file_func
 from ..util import imp_func
 from ..util import py_func
+from ..util import id_func
 
 from .. import passport
 
@@ -71,6 +72,15 @@ class iqObject(object):
         if isinstance(res, dict):
             return res.get('type', u'Unknown')
         return u'Unknown'
+
+    def getGUID(self):
+        """
+        Object resource GUID.
+        """
+        res = self.getResource()
+        if isinstance(res, dict):
+            return res.get('guid', id_func.NONE_GUID)
+        return id_func.NONE_GUID
 
     def isActivate(self):
         """

@@ -15,6 +15,7 @@ from . import spc
 from ...util import log_func
 from ...util import lang_func
 from ...util import exec_func
+from ...util import file_func
 
 from . import filter_choicectrl
 
@@ -70,19 +71,19 @@ class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto,
         self.loadFilter()
         self.SetValue(self.getStrFilter())
 
-    def getGUID(self):
-        """
-        Get component GUID.
-        Not changeable depending on editing since passport does not change.
-
-        :return: GUID.
-        """
-        if self._widget_psp_uuid:
-            return self._widget_psp_uuid
-
-        psp = self.getPassport()
-        self._widget_psp_uuid = psp.getGUIDCheckSum()
-        return self._widget_psp_uuid
+    # def getGUID(self):
+    #     """
+    #     Get component GUID.
+    #     Not changeable depending on editing since passport does not change.
+    #
+    #     :return: GUID.
+    #     """
+    #     if self._widget_psp_uuid:
+    #         return self._widget_psp_uuid
+    #
+    #     psp = self.getPassport()
+    #     self._widget_psp_uuid = psp.getGUIDCheckSum()
+    #     return self._widget_psp_uuid
 
     def _canEditFilter(self):
         return role.isPermision('edit_filter')
@@ -134,7 +135,10 @@ class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto,
         """
         Filter storage filename.
         """
-        return self.getAttribute('save_filename')
+        res_save_filename = self.getAttribute('save_filename')
+        if res_save_filename:
+            return file_func.getNormalPath(res_save_filename)
+        return None
 
     def getEnvironment(self):
         """

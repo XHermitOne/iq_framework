@@ -15,6 +15,7 @@ from ....util import log_func
 from ....util import file_func
 from ....util import res_func
 from ....util import spc_func
+from ....util import id_func
 from ....engine.wx import wxbitmap_func
 from .... import components
 
@@ -72,6 +73,8 @@ class iqNewResourceDialog(new_resource_dlg.iqNewResourceDialogProto):
             self.resource = copy.deepcopy(component_spc)
             if component_name:
                 self.resource['name'] = component_name
+            if not self.resource.get('guid', None):
+                self.resource['guid'] = id_func.genGUID()
 
         self.ok_button.Enable(bool(component_spc) and bool(component_name) and bool(res_filename))
 
@@ -108,6 +111,8 @@ class iqNewResourceDialog(new_resource_dlg.iqNewResourceDialogProto):
         component_spc = components.findComponentSpc(component_type)
         self.resource = copy.deepcopy(component_spc)
         self.resource['name'] = self.name_textCtrl.GetValue().strip()
+        if not self.resource.get('guid', None):
+            self.resource['guid'] = id_func.genGUID()
 
         self.EndModal(wx.ID_OK)
         event.Skip()

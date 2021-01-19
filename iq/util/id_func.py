@@ -9,6 +9,8 @@ import uuid
 
 __version__ = (0, 0, 0, 1)
 
+NONE_GUID = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
+
 
 def genNewId(limit_len=5):
     """

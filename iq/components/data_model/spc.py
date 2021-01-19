@@ -41,7 +41,7 @@ DATAMODEL_SPC = {
     '__icon__': 'fatcow/table',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': ('iqDataColumn', ),
+    '__content__': ('iqDataColumn', 'iqDataModel'),
     '__edit__': {
         'tablename': property_editor_id.STRING_EDITOR,
     },

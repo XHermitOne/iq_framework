@@ -24,6 +24,9 @@ RU_MONTHS = (u'Январь', u'Февраль',
 
 DEFAULT_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 DEFAULT_DATE_FMT = '%Y-%m-%d'
+DEFAULT_TIME_FMT = '%H:%M:%S'
+DEFAULT_TIME_ZERO = '00:00:00'
+DEFAULT_DATE_ZERO = '0000-00-00'
 
 
 def getMonths():

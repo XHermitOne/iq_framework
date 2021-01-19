@@ -102,7 +102,7 @@ UNI_OBJ_DATAMODEL_SPC = {
     '__icon__': 'fatcow/table',
     '__parent__': spc.DATAMODEL_SPC,
     '__doc__': None,
-    '__content__': ('iqDataColumn', ),
+    '__content__': ('iqDataColumn', 'iqDataModel'),
     '__edit__': {
     },
     '__help__': {
