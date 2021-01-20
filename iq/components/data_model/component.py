@@ -10,6 +10,8 @@ from ... import object
 from . import spc
 from . import model
 
+from ..data_column import COMPONENT as column_component
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -37,7 +39,7 @@ class iqDataModel(model.iqModelManager, object.iqObject):
 
         :return:
         """
-        return self.getChildren()
+        return [child for child in self.getChildren() if issubclass(child.__class__, column_component)]
 
 
 COMPONENT = iqDataModel

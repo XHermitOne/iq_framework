@@ -190,6 +190,15 @@ def getDefaultShellEncoding():
     return global_data.getGlobal('DEFAULT_SHELL_ENCODING')
 
 
+def getDefaultEncoding():
+    """
+    Get default encoding for text output.
+
+    :return: Default text encoding.
+    """
+    return global_data.getGlobal('DEFAULT_ENCODING')
+
+
 def createApplication():
     """
     Create application object.

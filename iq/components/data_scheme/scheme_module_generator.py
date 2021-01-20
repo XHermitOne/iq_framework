@@ -44,6 +44,8 @@ Base = sqlalchemy.ext.declarative.declarative_base()
 %s'''
 
 MODEL_TEXT_FMT = '''
+%s
+
 class %s(Base):
     """
     %s.
@@ -53,8 +55,6 @@ class %s(Base):
 %s
 %s
 %s
-%s
-
 %s
 '''
 
@@ -156,8 +156,7 @@ class iqSchemeModuleGenerator(object):
 
         name = resource.get('name', 'Unknown')
         description = resource.get('description', '')
-        tablename = resource.get('tablename', '')
-        tablename = tablename if tablename else name.lower()
+        tablename = self.genTableName(resource)
 
         # Gen columns
         columns_text = [self.genColumnTxt(column) for column in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if column.get('type', None) == data_column_spc.COMPONENT_TYPE]
@@ -170,12 +169,12 @@ class iqSchemeModuleGenerator(object):
 
         # Gen modeles
         modeles_txt = [self.genModelTxt(model, parent_model_resource=resource) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if model.get('type', None) == data_model_spc.COMPONENT_TYPE]
-        return MODEL_TEXT_FMT % (name, description, tablename,
+        return MODEL_TEXT_FMT % (os.linesep.join(modeles_txt),
+                                 name, description, tablename,
                                  os.linesep.join(columns_text),
                                  foreignkey_txt,
                                  parent_relationship_txt,
-                                 os.linesep.join(relationships_txt),
-                                 os.linesep.join(modeles_txt))
+                                 os.linesep.join(relationships_txt))
 
     def genColumnTxt(self, resource):
         """
@@ -285,10 +284,21 @@ class iqSchemeModuleGenerator(object):
         model_name = resource.get('name', 'Unknown')
         name = model_name.lower()
         if table_name is None:
-            table_name = resource.get('tablename', '')
-            table_name = table_name if table_name else name.lower()
+            table_name = self.genTableName(resource)
 
         return FOREIGNKEY_TEXT_FMT % (name, table_name)
+
+    def genTableName(self, resource):
+        """
+        Generate table name.
+
+        :param resource: Model resource.
+        :return: Table name.
+        """
+        name = resource.get('name', 'Unknown')
+        tablename = resource.get('tablename', '')
+        tablename = tablename if tablename else name.lower() + '_tab'
+        return tablename
 
 
 def genModule(module_filename=None, resource=None):

@@ -12,6 +12,11 @@ from ...util import log_func
 
 __version__ = (0, 0, 0, 1)
 
+ENCODING2CHARSET = {
+    'utf_8': 'utf8',
+    'utf-8': 'utf8'
+}
+
 
 class iqDBEngineManager(object):
     """
@@ -101,13 +106,21 @@ class iqDBEngineManager(object):
             log_func.info(u'\tDB name: %s' % self.getDBName())
             log_func.info(u'\tUsername: %s' % self.getUsername())
 
+            query = None
+            charset = self.getCharset()
+            if charset:
+                if query is None:
+                    query = dict()
+                query['charset'] = charset
+                log_func.info(u'\tCharset: %s' % charset)
+
             url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
                                             username=self.getUsername(),
                                             password=self.getPassword(),
                                             host=self.getHost(),
                                             port=self.getPort(),
                                             database=self.getDBName(),
-                                            )
+                                            query=query)
             self._db_url = str(url)
         return self._db_url
 
@@ -121,7 +134,7 @@ class iqDBEngineManager(object):
         """
         return False
 
-    def getEncoding(self):
+    def getCharset(self):
         """
         """
         return 'utf-8'
@@ -164,3 +177,30 @@ class iqDBEngineManager(object):
                     connection.close()
                 is_connect = False
         return is_connect
+
+    def executeSQL(self, sql_query):
+        """
+        Execute SQL expression.
+
+        :param sql_query: SQL query text.
+        :return: Dataset record list or None if error.
+        """
+        if not self.checkConnection():
+            log_func.error(u'Not connect with DB <%s>' % self.getName())
+            return None
+
+        engine = self.create()
+        connection = None
+        try:
+            connection = engine.connect()
+            result = connection.execute(sql_query)
+            records = result.fetchall()
+            recordset = [dict(rec) for rec in records]
+            connection.close()
+            return recordset
+        except:
+            if connection:
+                connection.close()
+            err_txt = u'Error execute SQL query <%s>' % str(sql_query)
+            log_func.fatal(err_txt)
+        return None

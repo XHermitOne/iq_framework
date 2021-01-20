@@ -116,7 +116,7 @@ DATAENGINE_SPC = {
     'convert_unicode': False,
     'echo': False,
     # 'echo_pool': False,
-    'encoding': None,
+    'charset': None,
     # 'execution_options': None,
     # 'implicit_returning': True,
     # 'isolation_level': None,
@@ -147,7 +147,7 @@ DATAENGINE_SPC = {
         'convert_unicode': property_editor_id.CHECKBOX_EDITOR,
         'echo': property_editor_id.CHECKBOX_EDITOR,
         # 'echo_pool': property_editor_id.CHECKBOX_EDITOR,
-        'encoding': {
+        'charset': {
             'editor': property_editor_id.CHOICE_EDITOR,
             'choices': getEncodings,
         },
@@ -169,7 +169,7 @@ DATAENGINE_SPC = {
         'convert_unicode': u'If set to True, sets all String-based columns to accommodate Python unicode objects',
         'echo': u'If True, the engine will log all statements',
         # 'echo_pool': u'if True, the connection pool will log all checkouts/checkins to the logging stream',
-        'encoding': 'Database code page',
+        'charset': 'Database code page',
         # 'execution_options': u'Dictionary execution options which will be applied to all connections',
         # 'implicit_returning': u'When True, a RETURNING-compatible construct, if available, will be used to fetch newly generated primary key values',
         # 'isolation_level': u'This string parameter is interpreted by various dialects in order to affect the transaction isolation level of the database connection',

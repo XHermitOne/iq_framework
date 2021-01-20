@@ -13,18 +13,6 @@ from iq.util import str_func
 
 __version__ = (0, 0, 0, 1)
 
-# SPC_IC_TABLECHOICECTRL = {'table': None,  # Паспорт таблицы/запроса источника данных
-#                           'code_field': '',     # Поле, которое является кодом записи
-#                           'label_field': '',    # Поле, которое отображается в контроле
-#                           'get_label': None,    # Код определения записи контрола, в случае сложного оформления записи
-#                           'get_filter': None,   # Код дополнительной фильтрации данных таблицы/запроса
-#                           'can_empty': True,    # Возможно выбирать пустое значение?
-#
-#                           'on_change': None,  # Обработчик изменения выбранного кода
-#
-#                           '__parent__': icwidget.SPC_IC_WIDGET,
-#                           }
-
 
 class iqTableChoiceCtrlProto(wx.ComboBox):
     """
@@ -219,11 +207,7 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
         label = u''
         label_field_name = self.getLabelField()
         if label_field_name:
-            # Explicitly defined label field name
-            field_names = [field[0] for field in table_data.get('__fields__', [])]
-            field_idx = field_names.index(label_field_name)
-            # label = strfunc.toUnicode(record[field_idx])
-            label = record[field_idx]
+            label = record.get(label_field_name, u'')
         else:
             # If the field name is not defined,
             # then the function of defining the label of the element must be defined
@@ -234,8 +218,6 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
                 label = self.getLabelFunc(RECORD=rec_dict)
                 if label is None:
                     label = u''
-                # else:
-                #     label = strfunc.toUnicode(label)
             else:
                 log_func.warning(u'Method for getting the label of a picklist item in a component is not defined <%s>' % self.__class__.__name__)
         return label
@@ -250,6 +232,8 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
         """
         if table_data is None:
             table_data = self.getTableData()
+        else:
+            self._table_data = table_data
 
         if table_data is not None:
             # First, remove all elements
@@ -260,7 +244,7 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
                 if is_empty:
                     self.Append(u'')
 
-                for record in table_data.get('__data__', []):
+                for record in table_data:
                     label = self.getLabel(record, table_data)
                     self.Append(label)
 
@@ -288,12 +272,11 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
             table_data = self.getTableData()
 
         if table_data is not None:
-            records = table_data.get('__data__', [])
+            records = table_data
             len_records = len(records)
             if 0 <= selected_idx < len_records:
                 try:
-                    field_names = [field[0] for field in table_data.get('__fields__', [])]
-                    record = dict([(field_names[i], val) for i, val in enumerate(records[selected_idx])])
+                    record = records[selected_idx]
                     return record
                 except:
                     log_func.fatal(u'Error retrieving selected record')
@@ -309,8 +292,12 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
         """
         selected_idx = self.GetSelection() - int(self.getCanEmpty())
         selected_rec = self.getSelectedRecord(selected_idx=selected_idx)
+        # log_func.debug(u'Selected record %s' % str(selected_rec))
         if selected_rec is not None:
-            self._selected_code = selected_rec.get(self.getCodeField(), None)
+            code_field = self.getCodeField()
+            if not code_field:
+                log_func.warning(u'Not define code_field in <%s>' % self.getName())
+            self._selected_code = selected_rec.get(code_field, None)
         else:
             self._selected_code = None
         if event:

@@ -106,5 +106,13 @@ class iqDataEngine(db_engine.iqDBEngineManager, object.iqObject):
         """
         return self.getAttribute('password')
 
+    def getCharset(self):
+        """
+        Get DB code page.
+
+        :return:
+        """
+        charset = self.getAttribute('charset')
+        return db_engine.ENCODING2CHARSET.get(charset, charset)
 
 COMPONENT = iqDataEngine
