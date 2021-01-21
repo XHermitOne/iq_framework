@@ -76,10 +76,12 @@ class iqUser(object.iqObject, user.iqUserManager):
         Get role names.
         """
         roles_attr = self.getAttribute('roles')
-        if not isinstance(roles_attr, str):
-            log_func.warning(u'Type error roles for user <%s : %s>' % (self.getName(), str(roles_attr)))
-            roles_attr = u''
-        return tuple([name.strip('"') for name in roles_attr.replace('" "', '"; "').split('; ')]) if roles_attr else tuple()
+        if isinstance(roles_attr, str):
+            return tuple([name.strip('"') for name in roles_attr.replace('" "', '"; "').split('; ')]) if roles_attr else tuple()
+        elif isinstance(roles_attr, (list, tuple)):
+            return roles_attr
+        log_func.warning(u'Type error roles for user <%s : %s>' % (self.getName(), str(roles_attr)))
+        return tuple()
 
     def getRoles(self):
         """

@@ -272,3 +272,16 @@ def date2str(dt, fmt=DEFAULT_DATE_FMT):
     """
     dt = date2datetime(dt)
     return dt.strftime(fmt)
+
+
+def isStartDayTime(dt, cmp_microsecond=False):
+    """
+    Start time of the day?
+
+    :param dt: datetime.datetime.
+    :param cmp_microsecond: Compare microseconds?
+    :return: True-yes. For example 2018-01-01 00:00:00 / False - no.
+    """
+    if not cmp_microsecond:
+        return dt.hour == 0 and dt.minute == 0 and dt.second == 0
+    return dt.hour == 0 and dt.minute == 0 and dt.second == 0 and dt.microsecond == 0

@@ -11,7 +11,7 @@ import wx
 
 try:
     from . import start_py_dlg
-except:
+except ImportError:
     import start_py_dlg
 
 from ...util import log_func

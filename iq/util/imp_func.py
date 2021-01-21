@@ -38,10 +38,11 @@ def loadPyModule(name, path):
         module_spec = importlib.util.spec_from_file_location(name, path)
         module = importlib.util.module_from_spec(module_spec)
         module_spec.loader.exec_module(module)
+        return module
     except ImportError:
         log_func.fatal(u'Error import module <%s> by path <%s>' % (name, path))
 
-    return module
+    return None
 
 
 def unloadPyModule(name):
