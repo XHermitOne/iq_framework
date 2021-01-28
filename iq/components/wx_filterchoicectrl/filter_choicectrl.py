@@ -406,7 +406,7 @@ class iqFilterChoiceCtrlProto(wx.ComboCtrl):
 
         wx.ComboCtrl.__init__(self, *args, **kwargs)
 
-        self._uuid = None
+        # self._uuid = None
 
         self._initButton()
 
@@ -441,19 +441,6 @@ class iqFilterChoiceCtrlProto(wx.ComboCtrl):
         Get environment.
         """
         return self._environment
-
-    def getGUID(self):
-        if not self._uuid:
-            self._uuid = self._genGUID()
-        return self._uuid
-
-    def _genGUID(self):
-        """
-        Generate GUID.
-
-        :return: GUID.
-        """
-        return str(uuid.uuid4())
 
     def _initButton(self):
         """
@@ -634,8 +621,9 @@ class iqFilterChoiceCtrlProto(wx.ComboCtrl):
             res = res_func.loadResource(filter_filename)
             if res:
                 if self.getGUID() not in res:
-                    log_func.warning(u'Filter not found for control <%s> in file <%s>' % (self.getGUID(),
-                                                                                          filter_filename))
+                    log_func.warning(u'Filter not found for control <%s> in file <%s : %s>' % (self.getGUID(),
+                                                                                               filter_filename,
+                                                                                               str(res.keys() if res else res)))
                     self.saveFilter(filter_filename)
                     return
 

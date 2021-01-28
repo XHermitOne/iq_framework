@@ -17,10 +17,11 @@ class iqDataObject(object):
     """
     Data object interface class.
     """
-    def getDataset(self):
+    def getDataset(self, do_update=False):
         """
         Get dataset.
 
+        :param do_update: Update dataset?
         :return: Record dictionary list.
         """
         log_func.warning(u'Not define method <getDataset> in <%s>' % self.__class__.__name__)

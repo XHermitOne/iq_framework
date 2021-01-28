@@ -71,20 +71,6 @@ class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto,
         self.loadFilter()
         self.SetValue(self.getStrFilter())
 
-    # def getGUID(self):
-    #     """
-    #     Get component GUID.
-    #     Not changeable depending on editing since passport does not change.
-    #
-    #     :return: GUID.
-    #     """
-    #     if self._widget_psp_uuid:
-    #         return self._widget_psp_uuid
-    #
-    #     psp = self.getPassport()
-    #     self._widget_psp_uuid = psp.getGUIDCheckSum()
-    #     return self._widget_psp_uuid
-
     def _canEditFilter(self):
         return role.isPermision('edit_filter')
 
@@ -126,6 +112,8 @@ class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto,
         Change filter handler.
         """
         context = self.getContext()
+        context['self'] = self
+        context['event'] = event
         function_body = self.getAttribute('on_change')
         if function_body:
             return exec_func.execTxtFunction(function=function_body,

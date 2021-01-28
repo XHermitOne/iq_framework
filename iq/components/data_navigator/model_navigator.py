@@ -138,13 +138,14 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         """
         self.__rec_filter__ = rec_filter
 
-    def getDataset(self):
+    def getDataset(self, do_update=False):
         """
         Get current dataset.
 
-        :return:
+        :param do_update: Update dataset?
+        :return: Dataset.
         """
-        if self.__dataset__ is None:
+        if self.__dataset__ is None or do_update:
             return self.updateDataset()
         return self.__dataset__
 
