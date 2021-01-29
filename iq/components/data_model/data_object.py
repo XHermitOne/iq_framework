@@ -49,7 +49,7 @@ class iqDataObject(object):
             for column in columns:
                 if column.isAttributeValue('link'):
                     psp = column.getAttribute('link')
-                    link_obj = global_func.getKernel().createByPsp(psp=psp)
+                    link_obj = global_func.getKernel().getObject(psp=psp)
                     if link_obj:
                         for i, record in enumerate(dataset):
                             column_name = column.getName()

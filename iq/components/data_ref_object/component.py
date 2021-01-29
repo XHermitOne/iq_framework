@@ -86,6 +86,13 @@ class iqDataRefObject(ref_object.iqRefObjectManager, data_navigator.COMPONENT):
         labels = list(labels) + [u''] * (level_count-len(labels)) if labels else [u''] * level_count
         return tuple(labels)
 
+    def getCache(self):
+        """
+        Cache ref object data?
+        :return: True/False.
+        """
+        return self.getAttribute('cache')
+
     def test(self):
         """
         Object test function.

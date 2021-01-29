@@ -41,6 +41,9 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         model_navigator.iqModelNavigatorManager.__init__(self, model=model)
 
+        # Internal object data cache
+        self.__cache__ = dict()
+
     def getCodColumnName(self):
         """
         Get cod column name.
@@ -59,6 +62,19 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         return DEFAULT_ACTIVE_COL_NAME
 
+    def getCache(self):
+        """
+        Cache ref object data?
+        :return: True/False.
+        """
+        return False
+
+    def clearCache(self):
+        """
+        Clear internal ref object data cache.
+        """
+        self.__cache__.clear()
+
     def getRecByCod(self, cod):
         """
         Get record by cod.
@@ -66,8 +82,15 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :param cod: Reference data code.
         :return: Record dictionary or None if error.
         """
-        return self.getRecByColValue(column_name=self.getCodColumnName(),
-                                     column_value=cod)
+        is_cache = self.getCache()
+        if is_cache and cod in self.__cache__:
+            return self.__cache__[cod]
+
+        record = self.getRecByColValue(column_name=self.getCodColumnName(),
+                                       column_value=cod)
+        if is_cache:
+            self.__cache__[cod] = record
+        return record
 
     def getRecByColValue(self, column_name=None, column_value=None):
         """
