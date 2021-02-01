@@ -47,7 +47,7 @@ class iqSettingsDotUseProto(object):
         """
         prj_path = file_func.getProjectPath()
         if prj_path:
-            ini_filename = os.path.join(prj_path, self._cur_settings_list[0]+'.ini')
+            ini_filename = os.path.join(prj_path, self._cur_settings_list[0] + '.ini')
         else:
             prj_name = self._cur_settings_list[0]
             ini_filename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),

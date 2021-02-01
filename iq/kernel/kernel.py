@@ -280,7 +280,7 @@ class iqKernel(object):
 
         :return:
         """
-        return settings_access.iqSettingsDotUse()
+        return settings_access.iqSettingsDotUse(default_settings=[global_func.getProjectName(), None, None])
 
 
 def createKernel():
