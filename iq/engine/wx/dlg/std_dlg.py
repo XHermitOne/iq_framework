@@ -59,12 +59,13 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
     return value
 
 
-def getDateDlg(parent=None):
+def getDateDlg(parent=None, default_date=None):
     """
     Select date dalog.
 
     :param parent: Parent window.
         If None then get wx.GetApp().GetTopWindow()
+    :param default_date: If define then set default date.
     :return: Selected date (as datetime) or None if press <Cancel>.
     """
     selected_date = None
@@ -73,6 +74,8 @@ def getDateDlg(parent=None):
         parent = wx.GetApp().GetTopWindow()
 
     dlg = calendar_dlg.iqCalendarDialog(parent)
+    if default_date:
+        dlg.setSelectedDate(default_date)
     dlg.Centre()
 
     if dlg.ShowModal() == wx.ID_OK:

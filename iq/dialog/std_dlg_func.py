@@ -39,16 +39,17 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
     return None
 
 
-def getDateDlg(parent=None):
+def getDateDlg(parent=None, default_date=None):
     """
     Select date dalog.
 
     :param parent: Parent window.
         If None then get wx.GetApp().GetTopWindow()
+    :param default_date: If define then set default date.
     :return: Selected date (as datetime) or None if press <Cancel>.
     """
     if _std_dlg:
-        return _std_dlg.getDateDlg(parent=parent)
+        return _std_dlg.getDateDlg(parent=parent, default_date=default_date)
     return None
 
 

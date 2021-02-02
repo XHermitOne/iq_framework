@@ -5,6 +5,7 @@
 Calendar dialog module.
 """
 
+import datetime
 import wx
 from . import std_dialogs_proto
 
@@ -25,10 +26,32 @@ class iqCalendarDialog(std_dialogs_proto.calendarDialogProto):
 
         self._selected_date = None
 
+    def setSelectedDate(self, selected_date=None):
+        """
+        Set selected date.
+
+        :param selected_date:  Selected date.
+            If not defined then get today.
+        :return:
+        """
+        if selected_date is None:
+            selected_date = datetime.date.today()
+
+        if isinstance(selected_date, datetime.date):
+            selected_date = wxdatetime_func.date2wxDateTime(selected_date)
+        elif isinstance(selected_date, datetime.datetime):
+            selected_date = wxdatetime_func.datetime2wxDateTime(selected_date)
+
+        self._selected_date = selected_date
+        self.calendarCtrl.SetDate(self._selected_date)
+
     def getSelectedDate(self):
         return self._selected_date
 
     def getSelectedDateAsDatetime(self):
+        return wxdatetime_func.wxDateTime2datetime(self._selected_date)
+
+    def getSelectedDateAsDate(self):
         return wxdatetime_func.wxDateTime2date(self._selected_date)
 
     def onCancelButtonClick(self, event):
