@@ -46,7 +46,6 @@ class iqStoredCtrlManager(object):
         if save_filename is None:
             save_filename = self.genCustomDataFilename()
         if save_filename:
-            # Просто записать в файл
             return res_func.loadResourcePickle(save_filename)
         else:
             log_func.warning(u'File for store custom data not defined')
