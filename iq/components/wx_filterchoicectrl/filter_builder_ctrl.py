@@ -326,7 +326,7 @@ class iqItemComboBox(wx.ComboBox):
         self.items += list(items)
         
         for item in list(items):
-            name = item['name']
+            # name = item['name']
             description = item['description']
             data = None
             if 'data' in item:

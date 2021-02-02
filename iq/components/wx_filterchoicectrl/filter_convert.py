@@ -290,7 +290,6 @@ class iqFilter2SQLAlchemyQueryConverter(object):
     """
     Filter data to SQLAlchemy converter class.
     """
-
     def __init__(self, filter_data, model, query, code_page='utf-8'):
         """
         Constructor.
@@ -310,7 +309,7 @@ class iqFilter2SQLAlchemyQueryConverter(object):
         """
         if self.filter:
             if isinstance(self.filter, dict):
-                filter_list = self.filter.get('children', list())
+                filter_list = [self.filter]
             elif isinstance(self.filter, (list, tuple)):
                 filter_list = self.filter
             else:
@@ -329,11 +328,13 @@ class iqFilter2SQLAlchemyQueryConverter(object):
         """
         sql_alchemy_elements = list()
         children = group_data.get('children', list())
+        # log_func.debug(u'Convert filter group logic %s' % group_data['logic'])
         for element in children:
             if element['type'] == 'group':
                 sql_alchemy_element = self.genGroupSection(element)
             elif element['type'] == 'compare':
                 sql_alchemy_element = self.genRequisiteSection(element)
+                # log_func.debug(u'Convert filter compare %s' % sql_alchemy_element)
             else:
                 log_func.warning(u'Not defined filter item type <%s>' % element['type'])
                 continue

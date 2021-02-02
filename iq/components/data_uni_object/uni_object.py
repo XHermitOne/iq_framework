@@ -5,8 +5,6 @@
 Unique data object manager.
 """
 
-import sqlalchemy.sql
-
 from ..data_navigator import model_navigator
 
 from ...util import log_func
@@ -123,13 +121,20 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
         :return: True/False.
         """
+        scheme = self.getScheme()
+        session = None
         try:
             self.getModelQuery().delete(synchronize_session=False)
-            self.getScheme().getSession().commit()
+            session = scheme.getSession()
+            session.commit()
             log_func.info(u'Clear unique data object <%s>' % self.getName())
+            session.close()
+            session = None
             return True
         except:
-            self.getScheme().getSession().rollback()
+            if session:
+                session.rollback()
+                scheme.closeSession()
             log_func.fatal(u'Error clear unique data object <%s>' % self.getName())
         return False
 

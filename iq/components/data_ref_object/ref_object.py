@@ -411,7 +411,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             elif cod_len and parent_cod is None:
                 level_cod_len = cod_len[0]
                 cod_column = getattr(model, self.getCodColumnName())
-                records = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len)
+                records = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len).all()
             elif cod_len and parent_cod:
                 cod_len_list = list(cod_len) + [0]
                 parent_cod_len = len(parent_cod)
@@ -420,13 +420,14 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                     level_cod_len = parent_cod_len + level_subcod_len
                     cod_column = getattr(model, self.getCodColumnName())
                     records = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
-                                                          cod_column.like(parent_cod + '%'))
+                                                          cod_column.like(parent_cod + '%')).all()
             else:
                 log_func.warning(u'Not supported getting level records in <%s>' % self.getName())
 
             return [vars(record) for record in records]
         except:
             log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
+            # raise
         return None
 
     def hasChildrenCodes(self, parent_cod=None):

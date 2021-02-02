@@ -327,18 +327,21 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param auto_commit: Automatic commit?
         :return: True/False.
         """
-        session = self.getScheme().getSession()
+        scheme = self.getScheme()
+        session = scheme.getSession()
         try:
             new_obj = self.newRec(record)
 
             if session and new_obj:
                 session.add(new_obj)
                 session.commit()
+                scheme.closeSession()
                 return True
         except:
             if session:
                 session.rollback()
             log_func.fatal(u'<%s>. Error add record %s' % (self.getName(), str(record)))
+        scheme.closeSession()
         return False
 
     def addRecs(self, records):
@@ -348,7 +351,8 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param records: Record list.
         :return: True/False.
         """
-        session = self.getScheme().getSession()
+        scheme = self.getScheme()
+        session = scheme.getSession()
         try:
             if not isinstance(records, (list, tuple)):
                 # List casting
@@ -361,11 +365,14 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
             if session:
                 session.commit()
+                scheme.closeSession()
                 return True
         except:
             if session:
                 session.rollback()
             log_func.fatal(u'<%s>. Error add records' % self.getName())
+
+        scheme.closeSession()
         return False
 
     def saveRec(self, id, record, id_field=None):
@@ -417,18 +424,21 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         if id_field is None:
             id_field = 'id'
 
-        session = self.getScheme().getSession()
+        scheme = self.getScheme()
+        session = scheme.getSession()
         try:
             model = self.getModel()
             query = self.getModelQuery()
             query.filter(getattr(model, id_field) == id).delete()
             if session:
                 session.commit()
+            scheme.closeSession()
             return True
         except:
             if session:
                 session.rollback()
             log_func.fatal(u'Error delete record [%s]' % str(id))
+        scheme.closeSession()
         return False
 
     def loadRec(self, id, id_field=None):
@@ -553,14 +563,20 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
         :return: True/False.
         """
+        scheme = self.getScheme()
+        session = None
         try:
             self.getModelQuery().delete(synchronize_session=False)
-            self.getScheme().getSession().commit()
+            session = scheme.getSession()
+            session.commit()
             log_func.info(u'Clear reference data object <%s>' % self.getName())
+            scheme.closeSession()
             return True
         except:
-            self.getScheme().getSession().rollback()
+            if session:
+                session.rollback()
             log_func.fatal(u'Error clear reference data object <%s>' % self.getName())
+        scheme.closeSession()
         return False
 
     def setDefault(self, records=()):
@@ -609,8 +625,9 @@ class iqModelNavigatorManager(data_object.iqDataObject):
                     requisite_env['name'] = column_name
                     requisite_env['description'] = column.getDescription()
                     requisite_env['field'] = column_name
-                    field_type = column.getFieldType()
-                    requisite_env['type'] = filter_builder_env.DB_FLD_TYPE2REQUISITE_TYPE.get(field_type)
+                    # field_type = column.getFieldType()
+                    # requisite_env['type'] = filter_builder_env.DB_FLD_TYPE2REQUISITE_TYPE.get(field_type)
+                    requisite_env['type'] = column.getFilterRequisiteType()
                     requisite_env['funcs'] = column.getFilterFuncs()
                     link_psp = column.getLinkPsp()
                     if link_psp:

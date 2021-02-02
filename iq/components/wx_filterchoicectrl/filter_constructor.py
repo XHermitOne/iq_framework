@@ -265,10 +265,13 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                         requisite = requisite_combobox.getSelectedData() or {}
                         if requisite.get('type', None) == filter_builder_env.REQUISITE_TYPE_REF:
                             psp = requisite.get('link_psp', None)
+                            # log_func.debug(u'Ref edit %s : %s' % (str(psp), str(arg_edit)))
                             if psp:
-                                arg_edit.setSpravByPsp(psp)
+                                arg_edit.setRefObjByPsp(psp)
                             else:
                                 log_func.warning(u'Not define ref object passport in requisite <%s>' % requisite['requisite'])
+                        else:
+                            log_func.warning(u'Incorrect requisite type <%s : %s : %s : %s>' % (requisite.get('name', None), requisite.get('type', None), str(arg_edit), str(requisite_combobox)))
                 else:
                     # Create string editor by default
                     arg_edit = filter_builder_ctrl.iqStrArgEdit(self.GetMainWindow(), arg)

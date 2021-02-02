@@ -143,6 +143,10 @@ class iqSchemeManager(object):
         :param auto_open: Open session automatically?
         :return: Session object or None if error.
         """
+        # Auto close previous transaction
+        if self._session and auto_open:
+            self.closeSession(self._session)
+
         if self._session is None and auto_open:
             self._session = self.openSession()
 

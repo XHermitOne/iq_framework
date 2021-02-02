@@ -59,9 +59,9 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
                 log_func.warning(u'Not define link object in column <%s>' % self.getName())
         return self.link_obj
 
-    def getFilterFuncs(self):
+    def getFilterRequisiteType(self):
         """
-        Список функций фильтрации.
+        Get filter requisite type.
         """
         from ..wx_filterchoicectrl import filter_builder_env
 
@@ -70,6 +70,22 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
         if not link_psp:
             field_type = self.getFieldType()
             req_type = filter_builder_env.DB_FLD_TYPE2REQUISITE_TYPE.get(field_type)
+        else:
+            req_type = filter_builder_env.REQUISITE_TYPE_REF
+        return req_type
+
+    def getFilterFuncs(self):
+        """
+        List of filtering functions.
+        """
+        from ..wx_filterchoicectrl import filter_builder_env
+
+        link_psp = self.getLinkPsp()
+
+        if not link_psp:
+            field_type = self.getFieldType()
+            req_type = filter_builder_env.DB_FLD_TYPE2REQUISITE_TYPE.get(field_type)
+            # log_func.debug(u'Column filter <%s : %s>' % (self.getName(), req_type))
             return filter_builder_env.DEFAULT_FUNCS.get(req_type)
         else:
             funcs = filter_builder_env.DEFAULT_FUNCS.get(filter_builder_env.REQUISITE_TYPE_REF)
@@ -77,7 +93,7 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
             # Change link with ref object in extension editor
             for func_body in filter_builder_env.DEFAULT_ENV_REF_FUNCS.values():
                 func_body['args'][0]['ext_kwargs']['component'] = {'link_psp': link_psp}
-
+                # log_func.debug(u'Column link filter <%s : %s>' % (self.getName(), func_body))
             return funcs
 
 
