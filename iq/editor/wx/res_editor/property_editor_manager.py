@@ -565,7 +565,7 @@ class iqPropertyEditorManager(object):
             value = str_value if str_value else None
 
         elif property_type == property_editor_id.PASSPORT_EDITOR:
-            value = str_value
+            value = str_value if str_value and str_value != str(None) else None
 
         elif property_type == property_editor_id.ICON_EDITOR:
             lib_icon_path = icon_func.getIconPath()

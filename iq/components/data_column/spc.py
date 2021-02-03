@@ -14,6 +14,8 @@ from ...editor import property_editor_id
 
 from ... import passport
 
+from ...util import log_func
+
 __version__ = (0, 0, 0, 1)
 
 SQLALCHEMY_FIELD_TYPES = copy.deepcopy(sqlalchemy.types.__all__)
@@ -29,6 +31,11 @@ def validObjLinkPsp(psp, *args, **kwargs):
     :param kwargs:
     :return: True/False.
     """
+    if not psp or psp == str(None):
+        # No link
+        log_func.debug(u'Validate object link passport <%s>' % str(psp))
+        return True
+
     from .. import data_ref_object
     from .. import data_uni_object
 

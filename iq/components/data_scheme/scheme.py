@@ -94,6 +94,9 @@ class iqSchemeManager(object):
             log_func.warning(u'Not define DB engine in data scheme <%s>' % self.getName())
             return None
 
+        if db_url is None:
+            db_url = db_engine.getDBUrl()
+
         if base is None:
             module = self.getModule()
             base = module.Base if module else None
@@ -136,15 +139,16 @@ class iqSchemeManager(object):
             log_func.warning(u'Not define session object in data scheme <%s>' % self.getName())
         return False
 
-    def getSession(self, auto_open=True):
+    def getSession(self, auto_open=True, auto_close=False):
         """
         Get session object.
 
         :param auto_open: Open session automatically?
+        :param auto_close: Close previous session automatically?
         :return: Session object or None if error.
         """
         # Auto close previous transaction
-        if self._session and auto_open:
+        if self._session and auto_close:
             self.closeSession(self._session)
 
         if self._session is None and auto_open:

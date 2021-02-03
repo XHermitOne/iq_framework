@@ -69,7 +69,8 @@ ADAPTATION_REPLACES = (
     dict(compare=CONTAIN_SIGNATURE, src='_treeListCtrl.AppendColumn(', dst='_treeListCtrl.AddColumn('),
     dict(compare=CONTAIN_SIGNATURE, src=', wx.COL_RESIZABLE )', dst=')'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.COL_WIDTH_AUTOSIZE', dst='300'),
-    dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
+    dict(compare=CONTAIN_SIGNATURE, src='wx.COL_WIDTH_DEFAULT', dst='300'),
+    # dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
     dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
     dict(compare=CONTAIN_SIGNATURE, src=', agwStyle=wx.lib.gizmos.TR_', dst=', agwStyle=wx.lib.gizmos.TR_'),
     # StatusBar

@@ -37,14 +37,16 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
         return 'TextCtrlAndButton'
 
     def ValueToString(self, value, flags):
-        return str(value)
+        # log_func.debug(u'ValueToString <%s : %s>' % (value, type(value)))
+        return str(value) if value else str(None)
 
     def StringToValue(self, text, flags):
         """
         If failed, return False or (False, None). If success, return tuple
             (True, newValue).
         """
-        value = text    # self.str_to_val_user_property(text, self.property_edit_manager)
+        # log_func.debug(u'StringToValue <%s : %s>' % (text, type(text)))
+        value = text if text and text != str(None) else None    # self.str_to_val_user_property(text, self.property_edit_manager)
         return True, value
 
     def CreateControls(self, propgrid, property, pos, sz):
@@ -102,9 +104,13 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
             value = select_passport_dialog.selectPassportDlg(parent=None,
                                                              prj_name=global_func.getProjectName(),
                                                              default_psp=property_value)
-
-            if value is not None:
+            if value is None:
+                return True
+            elif value:
                 property.SetValueInEvent(value)
+            else:
+                # log_func.debug(u'Property passport value <%s : %s>' % (str(value), type(value)))
+                property.SetValueInEvent(str(None))
             return True
 
         return False

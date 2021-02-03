@@ -147,10 +147,10 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         """
         try:
             model = self.getModel()
-            records = self.getModelQuery().filter(getattr(model, self.getGuidColumnName()) == guid)
-            if records.count():
+            query = self.getModelQuery().filter(getattr(model, self.getGuidColumnName()) == guid)
+            if self.existsQuery(query):
                 # Presentation of query result in the form of a dictionary
-                return records.first().__dict__
+                return query.first().__dict__
             else:
                 log_func.warning(u'Unique data guid <%s> not found in <%s>' % (guid, self.getName()))
         except:
@@ -173,9 +173,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         try:
-            rec_count = self.getModelQuery().count()
-            # log_func.debug(u'Check empty ref object <%s>' % rec_count)
-            return not bool(rec_count)
+            return not self.existsQuery(self.getModelQuery())
         except:
             log_func.fatal(u'Error check empty unique object <%s>' % self.getName())
         return None
@@ -189,8 +187,9 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         """
         try:
             model = self.getModel()
-            rec_count = self.getModelQuery().filter(getattr(model, self.getGuidColumnName()) == guid).count()
-            return bool(rec_count)
+            query = self.getModelQuery().filter(getattr(model, self.getGuidColumnName()) == guid)
+            rec_exists = self.existsQuery(query)
+            return rec_exists
         except:
             log_func.fatal(u'Error check GUID unique object <%s>' % self.getName())
         return None

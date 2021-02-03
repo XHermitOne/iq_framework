@@ -441,6 +441,27 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         scheme.closeSession()
         return False
 
+    def existsQuery(self, query):
+        """
+        Exists query result?
+
+        :param query: SQLAlchemy query object.
+        :return: True/False or None if error.
+        """
+        session = None
+        try:
+            scheme = self.getScheme()
+            session = scheme.openSession()
+            result = session.query(query.exists()).scalar()
+            # scheme.closeSession(session=session)
+            session.close()
+            return result
+        except:
+            if session:
+                session.close()
+            log_func.fatal(u'Exists query result error')
+        return None
+
     def loadRec(self, id, id_field=None):
         """
         Load record from model.

@@ -127,7 +127,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             model = self.getModel()
             filter_data = [getattr(model, column_name) == value for column_name, value in column_values.items()]
             query = self.getModelQuery().filter(*filter_data)
-            if query.count():
+            if self.existsQuery(query):
                 # Presentation of query result in the form of a dictionary
                 records = query.all()
                 return [vars(record) for record in records]
@@ -179,7 +179,8 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                     order_by_data = [getattr(model, col_name) for col_name in order_by]
                     query = query.order_by(*order_by_data)
 
-            if query.count():
+            # if query.count():
+            if self.existsQuery(query):
                 if not only_first:
                     # Presentation of query result in the form of a dictionary
                     records = query.all()
@@ -330,9 +331,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         try:
-            rec_count = self.getModelQuery().count()
-            # log_func.debug(u'Check empty ref object <%s>' % rec_count)
-            return not bool(rec_count)
+            return not self.existsQuery(self.getModelQuery())
         except:
             log_func.fatal(u'Error check empty ref object <%s>' % self.getName())
         return None
@@ -346,8 +345,8 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         try:
             model = self.getModel()
-            rec_count = self.getModelQuery().filter(getattr(model, self.getCodColumnName()) == cod).count()
-            return bool(rec_count)
+            query = self.getModelQuery().filter(getattr(model, self.getCodColumnName()) == cod)
+            return self.existsQuery(query)
         except:
             log_func.fatal(u'Error check code ref object <%s>' % self.getName())
         return None
@@ -427,7 +426,6 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             return [vars(record) for record in records]
         except:
             log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
-            # raise
         return None
 
     def hasChildrenCodes(self, parent_cod=None):
@@ -442,13 +440,13 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
 
             model = self.getModel()
 
-            record_count = 0
+            record_exists = False
             if not cod_len:
-                record_count = self.getModelQuery().count()
+                record_exists = self.existsQuery(self.getModelQuery())
             elif cod_len and parent_cod is None:
                 level_cod_len = cod_len[0]
                 cod_column = getattr(model, self.getCodColumnName())
-                record_count = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len).count()
+                record_exists = self.existsQuery(self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len))
             elif cod_len and parent_cod:
                 cod_len_list = list(cod_len) + [0]
                 parent_cod_len = len(parent_cod)
@@ -456,13 +454,13 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 if level_subcod_len:
                     level_cod_len = parent_cod_len + level_subcod_len
                     cod_column = getattr(model, self.getCodColumnName())
-                    record_count = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
-                                                               cod_column.like(parent_cod + '%')).count()
+                    record_exists = self.existsQuery(self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
+                                                               cod_column.like(parent_cod + '%')))
             else:
                 log_func.warning(u'Not supported getting level record count in <%s>' % self.getName())
 
             # log_func.debug(u'Record count <%s : %s>' % (parent_cod, record_count))
-            return bool(record_count)
+            return record_exists
         except:
             log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
         return None

@@ -310,6 +310,14 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         self.EndModal(wx.ID_OK)
         event.Skip()
 
+    def onDeleteButtonClick(self, event):
+        """
+        Delete button click handler.
+        """
+        self.passport = ''
+        self.EndModal(wx.ID_OK)
+        event.Skip()
+
     def onPrjTreelistSelectionChanged(self, event):
         """
         Projects treelist control item selection changed handler.
