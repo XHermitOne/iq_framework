@@ -14,7 +14,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -27,6 +27,8 @@ DEFAULT_DATE_FMT = '%Y-%m-%d'
 DEFAULT_TIME_FMT = '%H:%M:%S'
 DEFAULT_TIME_ZERO = '00:00:00'
 DEFAULT_DATE_ZERO = '0000-00-00'
+
+DT_FORMATS = (DEFAULT_DATETIME_FMT, DEFAULT_DATE_FMT, DEFAULT_TIME_FMT)
 
 
 def getMonths():
@@ -285,3 +287,27 @@ def isStartDayTime(dt, cmp_microsecond=False):
     if not cmp_microsecond:
         return dt.hour == 0 and dt.minute == 0 and dt.second == 0
     return dt.hour == 0 and dt.minute == 0 and dt.second == 0 and dt.microsecond == 0
+
+
+def parseDTStr(dt_str, dt_formats=DT_FORMATS):
+    """
+    Parse datetime/date/time string.
+
+    :param dt_str: Datetime string.
+    :param dt_formats: Datetime/date/time formats.
+    :return: Datetime or MIN datetime if error.
+    """
+    dt = None
+    for dt_fmt in dt_formats:
+        try:
+            if dt_fmt == DEFAULT_DATETIME_FMT:
+                dt = str2datetime(dt_str=dt_str, fmt=dt_fmt)
+            elif dt_fmt == DEFAULT_DATE_FMT:
+                dt = str2date(dt_str=dt_str, fmt=dt_fmt)
+            else:
+                dt = datetime.datetime.strptime(dt_str, dt_fmt)
+        except:
+            dt = None
+        if dt is not None:
+            break
+    return dt

@@ -5,15 +5,20 @@
 JSON RPC client functions.
 """
 
+import datetime
 import jsonrpclib
 
 from . import log_func
+from . import dt_func
 
 __version__ = (0, 0, 0, 1)
 
 HTTP_URL_FMT = 'http://%s:%s'
 # Error message signature
 TASK_ERROR_SIGNATURE = u'ERROR: '
+
+JSONRPC_DATE_FMT = dt_func.DEFAULT_DATE_FMT
+JSONRPC_DATETIME_FMT = dt_func.DEFAULT_DATETIME_FMT
 
 
 def createJSONRPCServerUrl(host=None, port=None):
@@ -127,6 +132,30 @@ def isTaskErrorText(text):
     return text.startswith(TASK_ERROR_SIGNATURE) if isinstance(text, str) else False
 
 
+def getErrorText(text):
+    """
+    Get error text.
+
+    :param text: Task error text.
+    :return:
+    """
+    return text.lstrip(TASK_ERROR_SIGNATURE) if isinstance(text, str) else str(text)
+
+
+def _toJSONRPCType(value):
+    """
+    Casting to a data transfer type.
+
+    :param value: Value.
+    :return: Value in transfer type.
+    """
+    if isinstance(value, datetime.date):
+        return value.strftime(JSONRPC_DATE_FMT)
+    elif isinstance(value, datetime.datetime):
+        return value.strftime(JSONRPC_DATETIME_FMT)
+    return value
+
+
 def executeJSONRPCServerTask(connection, username, task_name, *args, **kwargs):
     """
     Execute remote task JSON RPC server.
@@ -138,6 +167,9 @@ def executeJSONRPCServerTask(connection, username, task_name, *args, **kwargs):
     :param kwargs: Task named arguments.
     :return: Task result or None if error.
     """
+    args = tuple([_toJSONRPCType(arg) for arg in args])
+    kwargs = dict([(name, _toJSONRPCType(value)) for name, value in kwargs.items()])
+
     if not connection:
         msg = u'Execute task <%s>. Not define JSON RPC server connection' % task_name
         log_func.warning(msg)

@@ -7,7 +7,7 @@ Object identification functions.
 
 import uuid
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 NONE_GUID = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
 
@@ -29,3 +29,22 @@ def genGUID():
     :return: New GUID as string.
     """
     return str(uuid.uuid4())
+
+
+def isGUID(guid_string):
+    """
+    Is GUID?
+
+    :param guid_string: Text.
+    :return: True - guid / False - not guid.
+    """
+    if not isinstance(guid_string, str):
+        return False
+
+    try:
+        val = uuid.UUID(guid_string, version=4)
+    except ValueError:
+        # If it's a value error, then the string
+        # is not a valid hex code for a UUID.
+        return False
+    return val.hex == guid_string.replace('-', '')
