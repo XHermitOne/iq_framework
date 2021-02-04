@@ -71,16 +71,17 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
             if self._filter:
                 model = self.getModel()
                 transaction = self.startTransaction()
-                query = transaction.query(model)
                 sql_filter = filter_convert.convertFilter2SQLAlchemyQuery(filter_data=self._filter,
                                                                           model=model,
-                                                                          query=query,
+                                                                          query=transaction.query(model),
                                                                           limit=limit,
                                                                           order_by=sort_columns)
                 # Execute SQL
                 try:
                     records = sql_filter.all()
-                    log_func.debug(u'Filter uni object <%s>:\n%s\nRecord count [%d]' % (self.getName(), str(sql_filter), len(records)))
+                    log_func.debug(u'Filter uni object <%s>:\n%s\nRecord count [%d]' % (self.getName(),
+                                                                                        str(sql_filter),
+                                                                                        len(records)))
                 except:
                     log_func.fatal(u'Error execute SQL filter <%s>' % str(sql_filter))
                     records = list()

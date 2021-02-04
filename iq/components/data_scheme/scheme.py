@@ -48,8 +48,8 @@ class iqSchemeManager(object):
 
         log_func.debug(u'Module filename <%s>' % module_filename)
         if module_filename and os.path.exists(module_filename):
-            return imp_func.loadPyModule(name=self.getName(),
-                                         path=module_filename)
+            return imp_func.importPyModule(import_name=self.getName(),
+                                           import_filename=module_filename)
         else:
             log_func.warning(u'Scheme <%s> module <%s> not exists' % (self.getName(), module_filename))
         return None

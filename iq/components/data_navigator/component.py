@@ -47,7 +47,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         model_psp = self.getModelPsp()
 
         if not model_psp:
-            log_func.warning(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
+            log_func.error(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
             return None
 
         psp = self.newPassport().setAsStr(model_psp)

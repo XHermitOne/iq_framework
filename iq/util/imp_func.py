@@ -15,65 +15,68 @@ from . import py_func
 __version__ = (0, 0, 0, 1)
 
 
-def loadPyModule(name, path):
+def importPyModule(import_name, import_filename):
     """
     Load/Import python module.
 
-    :type name: C{string}
-    :param name: Module name.
-    :type path: C{string}
-    :param path: Module path.
+    :type import_name: C{string}
+    :param import_name: Module import name.
+    :type import_filename: C{string}
+    :param import_filename: Module path.
     :return: Python module or None is error.
     """
-    if os.path.isdir(path):
-        path = os.path.join(path, py_func.INIT_PY_FILENAME)
+    if import_name in sys.modules:
+        return sys.modules[import_name]
 
-    if not os.path.exists(path):
-        log_func.warning(u'Module file <%s> not exists' % path)
+    if os.path.isdir(import_filename):
+        import_filename = os.path.join(import_filename, py_func.INIT_PY_FILENAME)
+
+    if not os.path.exists(import_filename):
+        log_func.warning(u'Module file <%s> not exists' % import_filename)
         return None
 
     module = None
     try:
-        log_func.info(u'Load/Import python module <%s> by path <%s>' % (name, path))
-        module_spec = importlib.util.spec_from_file_location(name, path)
+        log_func.info(u'Load/Import python module <%s> by path <%s>' % (import_name, import_filename))
+        module_spec = importlib.util.spec_from_file_location(import_name, import_filename)
         module = importlib.util.module_from_spec(module_spec)
         module_spec.loader.exec_module(module)
-        return module
+        sys.modules[import_name] = module
     except ImportError:
-        log_func.fatal(u'Error import module <%s> by path <%s>' % (name, path))
+        log_func.fatal(u'Error import module <%s> by path <%s>' % (import_name, path))
 
-    return None
+    return module
 
 
-def unloadPyModule(name):
+def deImportPyModule(import_name):
     """
     UnLoad/DeImport python module.
 
-    :type name: C{string}
-    :param name: Module name.
+    :type import_name: C{string}
+    :param import_name: Module import name.
     """
-    if name in sys.modules:
-        log_func.info(u'UnLoad/DeImport python module <%s>' % name)
-        del sys.modules[name]
+    if import_name in sys.modules:
+        log_func.info(u'UnLoad/DeImport python module <%s>' % import_name)
+        del sys.modules[import_name]
         return True
     return False
 
 
-def reloadPyModule(name, path=None):
+def reImportPyModule(import_name, path=None):
     """
     ReLoad/ReImport python module.
 
-    :type name: C{string}
-    :param name: Module name.
+    :type import_name: C{string}
+    :param import_name: Module import name.
     :type path: C{string}
     :param path: Module path.
         If None then define from imported module object.
     :return: Python module or None is error.
     """
     if path is None:
-        if name in sys.modules:
+        if import_name in sys.modules:
             try:
-                py_file_name = sys.modules[name].__file__
+                py_file_name = sys.modules[import_name].__file__
                 py_file_name = os.path.splitext(py_file_name)[0]+'.py'
                 path = py_file_name
             except:
@@ -81,8 +84,8 @@ def reloadPyModule(name, path=None):
                 return None
         else:
             return None
-    unloadPyModule(name)
-    return loadPyModule(name, path)
+    deImportPyModule(import_name)
+    return importPyModule(import_name, path)
 
 
 def canImportName(import_name):

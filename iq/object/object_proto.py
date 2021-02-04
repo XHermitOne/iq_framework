@@ -162,8 +162,8 @@ class iqObject(object):
         if module_filename is None:
             module_filename = self.getModuleFilename()
         if module_filename:
-            module = imp_func.loadPyModule(name=self.getName(),
-                                           path=module_filename)
+            module = imp_func.importPyModule(import_name=self.getName(),
+                                             import_filename=module_filename)
             return module
         return None
 

@@ -63,6 +63,8 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
         :return: Model or None if error.
         """
+        log_func.error(u'Not define method createModel in <%s : %s>' % (self.getName(),
+                                                                        self.getType()))
         return None
 
     def setModel(self, model=None):
@@ -77,6 +79,15 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         """
         Get model resource object.
         """
+        return None
+
+    def getScheme(self):
+        """
+        Get scheme object by model.
+
+        :return: Data scheme object or None if error.
+        """
+        log_func.error(u'Not define method getScheme in <%s>' % self.__class__.__name__)
         return None
 
     def startTransaction(self, *args, **kwargs):

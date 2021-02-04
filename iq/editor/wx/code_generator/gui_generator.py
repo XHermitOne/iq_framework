@@ -76,7 +76,8 @@ def gen(src_filename=None, dst_filename=None, src_class_name=None, parent=None, 
     try:
         src_module_name = os.path.splitext(os.path.basename(src_filename))[0]
         src_module_path = os.path.dirname(src_filename)
-        fb_module = imp_func.loadPyModule(src_module_name, src_filename)
+        fb_module = imp_func.importPyModule(import_name=src_module_name,
+                                            import_filename=src_filename)
         if fb_module is not None:
             fb_module_classes = [var_name for var_name in dir(fb_module) if inspect.isclass(getattr(fb_module, var_name))]
         else:
