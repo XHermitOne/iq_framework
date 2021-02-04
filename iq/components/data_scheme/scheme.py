@@ -21,12 +21,6 @@ class iqSchemeManager(object):
     """
     Data scheme manager.
     """
-    def __init__(self):
-        """
-        Constructor.
-        """
-        self._session = None
-
     def destroy(self):
         """
         Destructor.
@@ -80,7 +74,7 @@ class iqSchemeManager(object):
             log_func.warning(u'Model <%s> not find in module <%s>' % (model_name, module.__file__))
         return None
 
-    def openSession(self, db_url=None, base=None):
+    def openSession(self, db_url=None, base=None, *args, **kwargs):
         """
         Create session object.
 
@@ -109,7 +103,7 @@ class iqSchemeManager(object):
         base.metadata.create_all(engine, checkfirst=True)
 
         # creating a Session class configuration
-        Session = sqlalchemy.orm.sessionmaker(bind=engine, autoflush=True, autocommit=False)
+        Session = sqlalchemy.orm.sessionmaker(bind=engine, *args, **kwargs)
 
         # create Session object
         session = Session()
@@ -128,7 +122,8 @@ class iqSchemeManager(object):
         :return: True/False.
         """
         if session is None:
-            session = self.getSession(auto_open=False)
+            log_func.warning(u'Not define session for close')
+            return False
 
         if session is not None:
             # session.expunge_all()
@@ -139,19 +134,19 @@ class iqSchemeManager(object):
             log_func.warning(u'Not define session object in data scheme <%s>' % self.getName())
         return False
 
-    def getSession(self, auto_open=True, auto_close=False):
+    def startTransaction(self, *args, **kwargs):
         """
-        Get session object.
+        Start transaction.
 
-        :param auto_open: Open session automatically?
-        :param auto_close: Close previous session automatically?
-        :return: Session object or None if error.
+        :return: Session/transaction object.
         """
-        # Auto close previous transaction
-        if self._session and auto_close:
-            self.closeSession(self._session)
+        return self.openSession(*args, **kwargs)
 
-        if self._session is None and auto_open:
-            self._session = self.openSession()
+    def stopTransaction(self, transaction):
+        """
+        Stop transaction.
 
-        return self._session
+        :param transaction: Session/transaction object.
+        :return: True/False.
+        """
+        return self.closeSession(session=transaction)

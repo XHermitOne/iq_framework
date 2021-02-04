@@ -79,17 +79,22 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         """
         return None
 
-    def getModelQuery(self):
+    def startTransaction(self, *args, **kwargs):
         """
-        Get model query object.
+        Start transaction.
 
-        :return: Query object or None if error.
+        :return: Session/transaction object.
         """
-        session = self.getScheme().getSession()
-        model = self.getModel()
-        if session and model:
-            return session.query(model)
-        return None
+        return self.getScheme().startTransaction(*args, **kwargs)
+
+    def stopTransaction(self, transaction, *args, **kwargs):
+        """
+        Stop transaction.
+
+        :param transaction: Session/transaction object.
+        :return: True/False.
+        """
+        return self.getScheme().stopTransaction(transaction, *args, **kwargs)
 
     def getLimit(self):
         """
@@ -249,7 +254,8 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
             if not rec_filter:
                 model = self.getModel()
-                query = self.getModelQuery().filter(*search_args, **search_kwargs)
+                transaction = self.startTransaction()
+                query = transaction.query(model).filter(*search_args, **search_kwargs)
                 if limit >= 0:
                     query = query.limit(limit)
                 if order_by:
@@ -258,6 +264,7 @@ class iqModelNavigatorManager(data_object.iqDataObject):
                     order_by_columns = [getattr(model, fld_name) for fld_name in order_by]
                     query = query.order_by(*order_by_columns)
                 records = query
+                self.stopTransaction(transaction)
             else:
                 table = self.getTable()
                 select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
@@ -328,18 +335,19 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :return: True/False.
         """
         scheme = self.getScheme()
-        session = scheme.getSession()
+        transaction = scheme.startTransaction()
         try:
             new_obj = self.newRec(record)
 
-            if session and new_obj:
-                session.add(new_obj)
-                session.commit()
-                scheme.closeSession()
+            if transaction and new_obj:
+                transaction.add(new_obj)
+                transaction.commit()
+                scheme.stopTransaction(transaction)
                 return True
         except:
-            if session:
-                session.rollback()
+            if transaction:
+                transaction.rollback()
+                scheme.stopTransaction(transaction)
             log_func.fatal(u'<%s>. Error add record %s' % (self.getName(), str(record)))
         scheme.closeSession()
         return False
@@ -352,7 +360,7 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :return: True/False.
         """
         scheme = self.getScheme()
-        session = scheme.getSession()
+        transaction = scheme.startTransaction()
         try:
             if not isinstance(records, (list, tuple)):
                 # List casting
@@ -360,19 +368,19 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
             for record in records:
                 new_obj = self.newRec(record)
-                if session and new_obj:
-                    session.add(new_obj)
+                if transaction and new_obj:
+                    transaction.add(new_obj)
 
-            if session:
-                session.commit()
-                scheme.closeSession()
+            if transaction:
+                transaction.commit()
+                scheme.stopTransaction(transaction)
                 return True
         except:
-            if session:
-                session.rollback()
+            if transaction:
+                transaction.rollback()
             log_func.fatal(u'<%s>. Error add records' % self.getName())
 
-        scheme.closeSession()
+        scheme.stopTransaction(transaction)
         return False
 
     def saveRec(self, id, record, id_field=None):
@@ -387,21 +395,22 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         if id_field is None:
             id_field = 'id'
 
-        session = self.getScheme().getSession()
+        model = self.getModel()
+        transaction = self.startTransaction()
         try:
-            model = self.getModel()
-            query = self.getModelQuery()
-
+            query = transaction.query(model)
             save_record = [(col_name, value) for col_name, value in record.items() if hasattr(model, col_name)]
             values = dict([(getattr(model, col_name), value) for col_name, value in save_record])
             query.filter(getattr(model, id_field) == id).update(values=values, synchronize_session=False)
-            if session:
-                session.commit()
+            if transaction:
+                transaction.commit()
+            self.stopTransaction(transaction)
             return True
         except:
-            if session:
-                session.rollback()
+            if transaction:
+                transaction.rollback()
             log_func.fatal(u'Error save record [%s]' % str(id))
+        self.stopTransaction(transaction)
         return False
 
     def saveDatasetRecs(self, id_field=None):
@@ -424,21 +433,20 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         if id_field is None:
             id_field = 'id'
 
-        scheme = self.getScheme()
-        session = scheme.getSession()
+        model = self.getModel()
+        transaction = self.startTransaction()
         try:
-            model = self.getModel()
-            query = self.getModelQuery()
+            query = transaction.query(model)
             query.filter(getattr(model, id_field) == id).delete()
-            if session:
-                session.commit()
-            scheme.closeSession()
+            if transaction:
+                transaction.commit()
+            self.stopTransaction(transaction)
             return True
         except:
-            if session:
-                session.rollback()
+            if transaction:
+                transaction.rollback()
             log_func.fatal(u'Error delete record [%s]' % str(id))
-        scheme.closeSession()
+        self.stopTransaction(transaction)
         return False
 
     def existsQuery(self, query):
@@ -448,18 +456,15 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param query: SQLAlchemy query object.
         :return: True/False or None if error.
         """
-        session = None
+        scheme = self.getScheme()
+        transaction = scheme.startTransaction()
         try:
-            scheme = self.getScheme()
-            session = scheme.openSession()
-            result = session.query(query.exists()).scalar()
-            # scheme.closeSession(session=session)
-            session.close()
+            result = transaction.query(query.exists()).scalar()
+            scheme.stopTransaction(transaction)
             return result
         except:
-            if session:
-                session.close()
             log_func.fatal(u'Exists query result error')
+        scheme.stopTransaction(transaction)
         return None
 
     def loadRec(self, id, id_field=None):
@@ -584,20 +589,18 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
         :return: True/False.
         """
-        scheme = self.getScheme()
-        session = None
+        transaction = self.startTransaction()
         try:
-            self.getModelQuery().delete(synchronize_session=False)
-            session = scheme.getSession()
-            session.commit()
+            transaction.query(self.getModel()).delete(synchronize_session=False)
+            transaction.commit()
             log_func.info(u'Clear reference data object <%s>' % self.getName())
-            scheme.closeSession()
+            self.stopTransaction(transaction)
             return True
         except:
-            if session:
-                session.rollback()
+            if transaction:
+                transaction.rollback()
             log_func.fatal(u'Error clear reference data object <%s>' % self.getName())
-        scheme.closeSession()
+        self.stopTransaction(transaction)
         return False
 
     def setDefault(self, records=()):

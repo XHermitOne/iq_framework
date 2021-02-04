@@ -123,21 +123,26 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.warning(u'Not define column values for search in <%s>' % self.getName())
             return None
 
+        model = self.getModel()
+        transaction = self.startTransaction()
+        recordset = None
         try:
-            model = self.getModel()
             filter_data = [getattr(model, column_name) == value for column_name, value in column_values.items()]
-            query = self.getModelQuery().filter(*filter_data)
+            query = transaction.query(model).filter(*filter_data)
+
             if self.existsQuery(query):
                 # Presentation of query result in the form of a dictionary
                 records = query.all()
-                return [vars(record) for record in records]
+                recordset = [vars(record) for record in records]
             else:
                 log_func.warning(u'Reference data columns %s not found in <%s>' % (column_values,
                                                                                    self.getName()))
+
         except:
             log_func.fatal(u'Error get reference data records by column values %s in <%s>' % (column_values,
                                                                                               self.getName()))
-        return None
+        self.stopTransaction(transaction)
+        return recordset
 
     def searchRecsByColContent(self, column_name=None, search_text=None,
                                case_sensitive=False, do_sort=True,
@@ -162,16 +167,17 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         if column_name is None:
             column_name = self.getCodColumnName()
 
+        model = self.getModel()
+        transaction = self.startTransaction()
+        result = None
         try:
-            model = self.getModel()
-
             search_expression = '%' + search_text + '%'
             if case_sensitive:
                 filter_data = [getattr(model, column_name).like(search_expression)]
             else:
                 filter_data = [getattr(model, column_name).ilike(search_expression)]
 
-            query = self.getModelQuery().filter(*filter_data)
+            query = transaction.query(model).filter(*filter_data)
             if do_sort:
                 if not isinstance(order_by, (list, tuple)):
                     query = query.order_by(getattr(model, column_name))
@@ -188,7 +194,6 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 else:
                     record = query.one()
                     result = [vars(record)]
-                return result
             else:
                 log_func.warning(u'Reference data column <%s : %s> not found in <%s>' % (column_name,
                                                                                          search_text,
@@ -197,7 +202,8 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error get reference data records by column content <%s : \'%s\'> in <%s>' % (column_name,
                                                                                                           search_text,
                                                                                                           self.getName()))
-        return None
+        self.stopTransaction(transaction)
+        return result
 
     def findRecByColContent(self, column_name=None, search_text=None,
                             case_sensitive=False, do_sort=True):
@@ -239,25 +245,26 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         if isinstance(sort_columns, str):
             sort_columns = (sort_columns, )
 
+        model = self.getModel()
+        transaction = self.startTransaction()
         result = list()
         try:
-            model = self.getModel()
             column_type = model.__table__.columns[search_colname].type
             column = getattr(model, search_colname)
 
             query = None
             if column_type.__class__ in column_types.SQLALCHEMY_TEXT_TYPES:
                 search_like = '%%%s%%' % search_value
-                query = self.getModelQuery().filter(column.ilike(search_like))
+                query = transaction.query(model).filter(column.ilike(search_like))
             elif column_type.__class__ in column_types.SQLALCHEMY_INT_TYPES:
                 num_value = int(search_value)
-                query = self.getModelQuery().filter(column == num_value)
+                query = transaction.query(model).filter(column == num_value)
             elif column_type.__class__ in column_types.SQLALCHEMY_FLOAT_TYPES:
                 num_value = float(search_value)
-                query = self.getModelQuery().filter(column == num_value)
+                query = transaction.query(model).filter(column == num_value)
             elif column_type.__class__ in column_types.SQLALCHEMY_DATETIME_TYPES or column_type in column_types.SQLALCHEMY_DATE_TYPES:
                 # dt_value = datetimefunc.strDateFmt2DateTime(search_value)
-                query = self.getModelQuery().filter(column == search_value)
+                query = transaction.query(model).filter(column == search_value)
             else:
                 log_func.warning(u'Find by column type <%s : %s> not supported' % (search_colname,
                                                                                    column_type.__class__.__name__))
@@ -276,6 +283,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 result = [record.cod for record in records]
         except:
             log_func.fatal(u'Error search codes by column <%s> value <%s>' % (search_colname, search_value))
+        self.stopTransaction(transaction)
         return result
 
     def getColumnValues(self, cod, *column_names):
@@ -330,11 +338,16 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
 
         :return: True/False.
         """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        result = None
         try:
-            return not self.existsQuery(self.getModelQuery())
+            query = transaction.query(model)
+            result = not self.existsQuery(query)
         except:
             log_func.fatal(u'Error check empty ref object <%s>' % self.getName())
-        return None
+        self.stopTransaction(transaction)
+        return result
 
     def hasCod(self, cod):
         """
@@ -343,13 +356,17 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :param cod: Code.
         :return: True/False.
         """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        result = None
         try:
-            model = self.getModel()
-            query = self.getModelQuery().filter(getattr(model, self.getCodColumnName()) == cod)
-            return self.existsQuery(query)
+            query = transaction.query(model).filter(getattr(model, self.getCodColumnName()) == cod)
+            result = self.existsQuery(query)
         except:
             log_func.fatal(u'Error check code ref object <%s>' % self.getName())
-        return None
+
+        self.stopTransaction(transaction)
+        return result
 
     def getCodLen(self):
         """
@@ -399,18 +416,18 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :param parent_cod: Parent level code. If None then get root level.
         :return: Record list or None if error.
         """
+        cod_len = self.getCodLen()
+        model = self.getModel()
+        transaction = self.startTransaction()
+        recordset = None
         try:
-            cod_len = self.getCodLen()
-
-            model = self.getModel()
-
             records = list()
             if not cod_len:
-                records = self.getModelQuery().all()
+                records = transaction.query(model).all()
             elif cod_len and parent_cod is None:
                 level_cod_len = cod_len[0]
                 cod_column = getattr(model, self.getCodColumnName())
-                records = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len).all()
+                records = transaction.query(model).filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len).all()
             elif cod_len and parent_cod:
                 cod_len_list = list(cod_len) + [0]
                 parent_cod_len = len(parent_cod)
@@ -418,15 +435,16 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 if level_subcod_len:
                     level_cod_len = parent_cod_len + level_subcod_len
                     cod_column = getattr(model, self.getCodColumnName())
-                    records = self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
-                                                          cod_column.like(parent_cod + '%')).all()
+                    records = transaction.query(model).filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
+                                                              cod_column.like(parent_cod + '%')).all()
             else:
                 log_func.warning(u'Not supported getting level records in <%s>' % self.getName())
 
-            return [vars(record) for record in records]
+            recordset = [vars(record) for record in records]
         except:
             log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
-        return None
+        self.stopTransaction(transaction)
+        return recordset
 
     def hasChildrenCodes(self, parent_cod=None):
         """
@@ -435,18 +453,18 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :param parent_cod: Code.
         :return: True/False.
         """
+        cod_len = self.getCodLen()
+
+        model = self.getModel()
+        transaction = self.startTransaction()
+        record_exists = None
         try:
-            cod_len = self.getCodLen()
-
-            model = self.getModel()
-
-            record_exists = False
             if not cod_len:
-                record_exists = self.existsQuery(self.getModelQuery())
+                record_exists = self.existsQuery(transaction.query(model))
             elif cod_len and parent_cod is None:
                 level_cod_len = cod_len[0]
                 cod_column = getattr(model, self.getCodColumnName())
-                record_exists = self.existsQuery(self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len))
+                record_exists = self.existsQuery(transaction.query(model).filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len))
             elif cod_len and parent_cod:
                 cod_len_list = list(cod_len) + [0]
                 parent_cod_len = len(parent_cod)
@@ -454,16 +472,17 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 if level_subcod_len:
                     level_cod_len = parent_cod_len + level_subcod_len
                     cod_column = getattr(model, self.getCodColumnName())
-                    record_exists = self.existsQuery(self.getModelQuery().filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
-                                                               cod_column.like(parent_cod + '%')))
+                    record_exists = self.existsQuery(transaction.query(model).filter(sqlalchemy.sql.func.length(cod_column) == level_cod_len,
+                                                                                     cod_column.like(parent_cod + '%')))
             else:
                 log_func.warning(u'Not supported getting level record count in <%s>' % self.getName())
+                record_exists = False
 
             # log_func.debug(u'Record count <%s : %s>' % (parent_cod, record_count))
-            return record_exists
         except:
             log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
-        return None
+        self.stopTransaction(transaction)
+        return record_exists
 
     def canEdit(self):
         """

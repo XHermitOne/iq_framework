@@ -70,7 +70,8 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         try:
             if self._filter:
                 model = self.getModel()
-                query = self.getModelQuery()
+                transaction = self.startTransaction()
+                query = transaction.query(model)
                 sql_filter = filter_convert.convertFilter2SQLAlchemyQuery(filter_data=self._filter,
                                                                           model=model,
                                                                           query=query,
@@ -86,6 +87,8 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
                 self.__dataset__ = [vars(record) for record in records]
                 self.__dataset__ = self._updateLinkDataDataset(self.__dataset__)
+
+                self.stopTransaction(transaction)
             return self.getDataset()
         except:
             log_func.fatal(u'Error filter dataset unic object <%s>' % self.getName())
@@ -121,22 +124,20 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
         :return: True/False.
         """
-        scheme = self.getScheme()
-        session = None
+        model = self.getModel()
+        transaction = self.startTransaction()
+        result = False
         try:
-            self.getModelQuery().delete(synchronize_session=False)
-            session = scheme.getSession()
-            session.commit()
+            transaction.query(model).delete(synchronize_session=False)
+            transaction.commit()
             log_func.info(u'Clear unique data object <%s>' % self.getName())
-            session.close()
-            session = None
-            return True
+            result = True
         except:
-            if session:
-                session.rollback()
-                scheme.closeSession()
+            if transaction:
+                transaction.rollback()
             log_func.fatal(u'Error clear unique data object <%s>' % self.getName())
-        return False
+        self.stopTransaction(transaction)
+        return result
 
     def getRecByGuid(self, guid):
         """
@@ -145,17 +146,20 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param guid: Unique data GUID.
         :return: Record dictionary or None if error.
         """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        record = None
         try:
-            model = self.getModel()
-            query = self.getModelQuery().filter(getattr(model, self.getGuidColumnName()) == guid)
+            query = transaction.query(model).filter(getattr(model, self.getGuidColumnName()) == guid)
             if self.existsQuery(query):
                 # Presentation of query result in the form of a dictionary
-                return query.first().__dict__
+                record = query.first().__dict__
             else:
                 log_func.warning(u'Unique data guid <%s> not found in <%s>' % (guid, self.getName()))
         except:
             log_func.fatal(u'Error get unique data object <%s> record by guid' % self.getName())
-        return False
+        self.stopTransaction(transaction)
+        return record
 
     def getDataObjectRec(self, value):
         """
@@ -172,11 +176,15 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
         :return: True/False.
         """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        result = None
         try:
-            return not self.existsQuery(self.getModelQuery())
+            result = not self.existsQuery(transaction.query(model))
         except:
             log_func.fatal(u'Error check empty unique object <%s>' % self.getName())
-        return None
+        self.stopTransaction(transaction)
+        return result
 
     def hasGuid(self, guid):
         """
@@ -185,14 +193,16 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param guid: Unique object GUID.
         :return: True/False.
         """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        result = None
         try:
-            model = self.getModel()
-            query = self.getModelQuery().filter(getattr(model, self.getGuidColumnName()) == guid)
-            rec_exists = self.existsQuery(query)
-            return rec_exists
+            query = transaction.query(model).filter(getattr(model, self.getGuidColumnName()) == guid)
+            result = self.existsQuery(query)
         except:
             log_func.fatal(u'Error check GUID unique object <%s>' % self.getName())
-        return None
+        self.stopTransaction(transaction)
+        return result
 
     def newRec(self, record):
         """

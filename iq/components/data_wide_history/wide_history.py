@@ -80,18 +80,21 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             rec_filter = self.getFilter()
 
         model = self.getModel()
-        if model:
-            dt_field = getattr(model, self.getDTColumnName())
-            recordset = self.getModelQuery().filter(dt_field.between(start_dt, stop_dt)).order_by(dt_field)
-            records = [vars(record) for record in recordset]
+        transaction = self.startTransaction()
+        recordset = list()
+        try:
+            if model:
+                dt_field = getattr(model, self.getDTColumnName())
+                recordset = transaction.query(model).filter(dt_field.between(start_dt, stop_dt)).order_by(dt_field)
+                records = [vars(record) for record in recordset]
 
-            if rec_filter:
-                return self.filterFuncRecords(rec_filter, records)
+                recordset =  self.filterFuncRecords(rec_filter, records) if rec_filter else records
             else:
-                return records
-        else:
-            log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
-        return list()
+                log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
+        except:
+            log_func.fatal(u'Error et historical data for the specified range')
+        self.stopTransaction(transaction)
+        return recordset
 
     def getValues(self, col_name, start_dt, stop_dt, rec_filter=None):
         """
@@ -138,26 +141,31 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
 
         model = self.getModel()
         # log_func.debug(u'Model <%s>' % str(tab))
-        if model:
-            dt_fieldname = self.getDTColumnName()
-            dt_field = getattr(model, dt_fieldname)
-            recordset = self.getModelQuery().order_by(sqlalchemy.desc(dt_field)).limit(rec_limit).all()
-            records = [vars(record) for record in recordset]
+        transaction = self.startTransaction()
+        record = dict()
+        try:
+            if model:
+                dt_fieldname = self.getDTColumnName()
+                dt_field = getattr(model, dt_fieldname)
+                recordset = transaction.query(model).order_by(sqlalchemy.desc(dt_field)).limit(rec_limit).all()
+                records = [vars(record) for record in recordset]
 
-            if rec_filter:
-                records = self.filterFuncRecords(rec_filter, records)
+                if rec_filter:
+                    records = self.filterFuncRecords(rec_filter, records)
 
-            if records:
-                record = dict(records[0])
-                if DEFAULT_DT_FIELDNAME not in record:
-                    # Set time using a standard key
-                    record[DEFAULT_DT_FIELDNAME] = record[dt_fieldname]
-                return record
+                if records:
+                    record = dict(records[0])
+                    if DEFAULT_DT_FIELDNAME not in record:
+                        # Set time using a standard key
+                        record[DEFAULT_DT_FIELDNAME] = record[dt_fieldname]
+                else:
+                    log_func.warning(u'No data in historical data table <%s>' % model.__name__)
             else:
-                log_func.warning(u'No data in historical data table <%s>' % model.__name__)
-        else:
-            log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
-        return dict()
+                log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
+        except:
+            log_func.fatal(u'Error get the latest recorded historical data')
+        self.stopTransaction(transaction)
+        return record
 
     def getLastValue(self, col_name, rec_filter=None, rec_limit=1):
         """
@@ -217,25 +225,30 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
             rec_filter = self.getFilter()
 
         model = self.getModel()
-        if model:
-            dt_fieldname = self.getDTColumnName()
-            dt_field = getattr(model, dt_fieldname)
-            recordset = self.getModelQuery().order_by(dt_field).limit(rec_limit).all()
-            records = [vars(record) for record in recordset]
+        transaction = self.startTransaction()
+        record = dict()
+        try:
+            if model:
+                dt_fieldname = self.getDTColumnName()
+                dt_field = getattr(model, dt_fieldname)
+                recordset = transaction.query(model).order_by(dt_field).limit(rec_limit).all()
+                records = [vars(record) for record in recordset]
 
-            if rec_filter:
-                records = self.filterFuncRecords(rec_filter, records)
+                if rec_filter:
+                    records = self.filterFuncRecords(rec_filter, records)
 
-            if records:
-                record = dict(records[0])
-                if DEFAULT_DT_FIELDNAME not in record:
-                    record[DEFAULT_DT_FIELDNAME] = record[dt_fieldname]
-                return record
+                if records:
+                    record = dict(records[0])
+                    if DEFAULT_DT_FIELDNAME not in record:
+                        record[DEFAULT_DT_FIELDNAME] = record[dt_fieldname]
+                else:
+                    log_func.warning(u'No data in historical data table <%s>' % model.getName())
             else:
-                log_func.warning(u'No data in historical data table <%s>' % model.getName())
-        else:
-            log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
-        return dict()
+                log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
+        except:
+            log_func.fatal(u'Error get the first recorded historical data')
+        self.stopTransaction(transaction)
+        return record
 
     def getFirstValue(self, col_name, rec_filter=None, rec_limit=1):
         """

@@ -29,7 +29,6 @@ class iqDataScheme(scheme.iqSchemeManager, object.iqObject):
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
-        scheme.iqSchemeManager.__init__(self, *args, **kwargs)
 
     def getDBEngine(self):
         """
