@@ -465,7 +465,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             listctrl.SetItemTextColour(item, colour)
             return True
         except:
-            log_func.warning(u'Set row [%s] foreground colour error' % item)
+            log_func.fatal(u'Set row [%s] foreground colour error' % item)
         return False
 
     def setListCtrlRowBackgroundColour(self, listctrl=None, item=0, colour=None):
