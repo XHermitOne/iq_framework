@@ -19,7 +19,7 @@ except ImportError:
 
 from . import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -97,3 +97,21 @@ def beep(count=1):
     """
     for i in range(count):
         print('\a')
+
+
+def getSystemUsername():
+    """
+    Get system username.
+    """
+    if 'USERNAME' in os.environ:
+        return os.environ['USERNAME']
+    return os.environ.get('USER', None)
+
+
+def isSystemRoot():
+    """
+    System username is root?
+
+    :return: True - root/ False - not root.
+    """
+    return getSystemUsername() == 'root'

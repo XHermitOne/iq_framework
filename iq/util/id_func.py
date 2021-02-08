@@ -7,9 +7,9 @@ Object identification functions.
 
 import uuid
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
-NONE_GUID = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
+NONE_GUID = '00000000-0000-0000-0000-000000000000'
 
 
 def genNewId(limit_len=5):
@@ -40,6 +40,9 @@ def isGUID(guid_string):
     """
     if not isinstance(guid_string, str):
         return False
+
+    if guid_string == NONE_GUID:
+        return True
 
     try:
         val = uuid.UUID(guid_string, version=4)

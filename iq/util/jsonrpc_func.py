@@ -7,6 +7,7 @@ JSON RPC client functions.
 
 import datetime
 import jsonrpclib
+import hashlib
 
 from . import log_func
 from . import dt_func
@@ -92,7 +93,8 @@ def loginJSONRPCServerTask(connection, username, password=None):
         return False
 
     try:
-        return connection.login(username, password)
+        hash_password = hashlib.md5(password.encode()).hexdigest() if isinstance(password, str) else None
+        return connection.login(username, hash_password)
     except:
         log_func.fatal(u'Error login to JSON RPC tasks server')
     return False
@@ -116,7 +118,8 @@ def logoutJSONRPCServerTask(connection, username, password=None):
         return False
 
     try:
-        return connection.logout(username, password)
+        hash_password = hashlib.md5(password.encode()).hexdigest() if isinstance(password, str) else None
+        return connection.logout(username, hash_password)
     except:
         log_func.fatal(u'Error logout from JSON RPC tasks server')
     return False

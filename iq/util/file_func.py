@@ -16,7 +16,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -223,6 +223,18 @@ def getHomePath():
         log_func.warning(u'OS <%s> not support' % os_platform)
         return None
     return os.path.normpath(home_path)
+
+
+def getUserHomePath():
+    """
+    User home directory path.
+    """
+    os_platform = platform.uname()[0].lower()
+    if os_platform == 'linux':
+        if 'SUDO_USER' in os.environ:
+            home_path = os.path.join('/home', os.environ['SUDO_USER'])
+            return os.path.normpath(home_path)
+    return getHomePath()
 
 
 def getFileCheckSum(filename):
