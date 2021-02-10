@@ -24,6 +24,7 @@ sudo apt install --assume-yes python3-apt
 # Work with the console
 sudo apt install --assume-yes python3-dialog
 sudo apt install --assume-yes python3-urwid
+sudo apt install --assume-yes python3-termcolor
 sudo apt install --assume-yes curl
 
 # wxPython

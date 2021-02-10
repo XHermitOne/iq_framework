@@ -13,26 +13,33 @@ import tempfile
 import stat
 import traceback
 
+
 try:
-    import colorama
-    if sys.platform.startswith('win'):
+    import termcolor
+except IndexError:
+    print(u'Import error termcolor. Install: pip3 install termcolor')
+
+if sys.platform.startswith('win'):
+    try:
+        import colorama
         colorama.init()
-except ImportError:
-    print(u'Import error colorama. Install: pip3 install colorama')
+    except ImportError:
+        print(u'Import error colorama. Install: pip3 install colorama')
 
 from . import global_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 # Shell text colors
-RED_COLOR_TEXT = '\x1b[31;1m'       # red
-GREEN_COLOR_TEXT = '\x1b[32m'       # green
-YELLOW_COLOR_TEXT = '\x1b[33;1m'    # yellow
-BLUE_COLOR_TEXT = '\x1b[34m'        # blue
-PURPLE_COLOR_TEXT = '\x1b[35m'      # purple
-CYAN_COLOR_TEXT = '\x1b[36m'        # cyan
-WHITE_COLOR_TEXT = '\x1b[37m'       # white
-NORMAL_COLOR_TEXT = '\x1b[0m'       # normal
+RED_COLOR_TEXT = 'red'
+GREEN_COLOR_TEXT = 'green'
+YELLOW_COLOR_TEXT = 'yellow'
+BLUE_COLOR_TEXT = 'blue'
+MAGENTA_COLOR_TEXT = 'magenta'
+CYAN_COLOR_TEXT = 'cyan'
+WHITE_COLOR_TEXT = 'white'
+GREY_COLOR_TEXT = 'grey'
+NORMAL_COLOR_TEXT = None
 
 NOT_INIT_LOG_SYS_MSG = u'Not Initialized Logging System'
 
@@ -46,33 +53,29 @@ def printColourText(text, color=NORMAL_COLOR_TEXT):
     :param text: Text.
     :param color: Colour code.
     """
-    if sys.platform.startswith('win'):
+    if color == NORMAL_COLOR_TEXT:
+        txt = text
+    elif sys.platform.startswith('win'):
         try:
-            if color == RED_COLOR_TEXT:
-                txt = colorama.Fore.RED + text + colorama.Style.RESET_ALL
-            elif color == GREEN_COLOR_TEXT:
-                txt = colorama.Fore.GREEN + text + colorama.Style.RESET_ALL
-            elif color == YELLOW_COLOR_TEXT:
-                txt = colorama.Fore.YELLOW + text + colorama.Style.RESET_ALL
-            elif color == BLUE_COLOR_TEXT:
-                txt = colorama.Fore.BLUE + text + colorama.Style.RESET_ALL
-            elif color == PURPLE_COLOR_TEXT:
-                txt = colorama.Fore.MAGENTA + text + colorama.Style.RESET_ALL
-            elif color == CYAN_COLOR_TEXT:
-                txt = colorama.Fore.CYAN + text + colorama.Style.RESET_ALL
-            elif color == WHITE_COLOR_TEXT:
-                txt = colorama.Fore.WHITE + text + colorama.Style.RESET_ALL
-            elif color == NORMAL_COLOR_TEXT:
-                txt = colorama.Style.RESET_ALL + text
+            if color in termcolor.COLORS:
+                txt = termcolor.colored(text, color)
             else:
+                print(termcolor.colored(u'Not supported color <%s>' % color, 'red'))
                 txt = text
         except NameError:
-            print(u'ERROR: Not install colorama library: pip3 install colorama')
+            print(u'ERROR: Not install colorama and termcolor libraries')
             txt = text
     else:
-        # Add color coloring
-        txt = color + text + NORMAL_COLOR_TEXT
-    print(txt)        
+        try:
+            if color in termcolor.COLORS:
+                txt = termcolor.colored(text, color)
+            else:
+                print(termcolor.colored(u'Not supported color <%s>' % color, 'red'))
+                txt = text
+        except:
+            print(u'ERROR: Not install termcolor library')
+            txt = text
+    print(txt)
 
 
 def init(log_filename=None):
