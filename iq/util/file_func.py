@@ -56,7 +56,7 @@ def getFileNames(path):
     :return: Directory name list.
     """
     return [dirname for dirname in os.listdir(path) if os.path.isfile(os.path.join(path,
-                                                            dirname)) and dirname not in HIDDEN_DIRNAMES]
+                                                                                   dirname)) and dirname not in HIDDEN_DIRNAMES]
 
 
 def getFilePaths(path):
@@ -68,7 +68,7 @@ def getFilePaths(path):
     """
     return [os.path.join(path,
                          dirname) for dirname in os.listdir(path) if os.path.isfile(os.path.join(path,
-                         dirname)) and dirname not in HIDDEN_DIRNAMES]
+                                                                                    dirname)) and dirname not in HIDDEN_DIRNAMES]
 
 
 def getAbsolutePath(path, cur_dir=None):
