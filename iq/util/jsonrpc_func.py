@@ -12,7 +12,7 @@ import hashlib
 from . import log_func
 from . import dt_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 0, 2)
 
 HTTP_URL_FMT = 'http://%s:%s'
 # Error message signature
@@ -142,7 +142,7 @@ def getErrorText(text):
     :param text: Task error text.
     :return:
     """
-    return text.lstrip(TASK_ERROR_SIGNATURE) if isinstance(text, str) else str(text)
+    return text.replace(TASK_ERROR_SIGNATURE, u'') if isinstance(text, str) else str(text)
 
 
 def _toJSONRPCType(value):
@@ -186,7 +186,7 @@ def executeJSONRPCServerTask(connection, username, task_name, *args, **kwargs):
     try:
         result = connection.execute(username, task_name, *args, **kwargs)
         if isTaskErrorText(result):
-            msg = result.lstrip(TASK_ERROR_SIGNATURE)
+            msg = result.replace(TASK_ERROR_SIGNATURE, u'')
             log_func.error(u'Error execute task <%s>: %s' % (task_name, msg))
             return None
         return result
