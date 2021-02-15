@@ -66,10 +66,10 @@ class iqLibraryIconPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
 
             s = property.GetDisplayedString()
 
-            self.tc = wx.TextCtrl(propgrid.GetPanel(), wx.propgrid.PG_SUBID1, s,
+            self.tc = wx.TextCtrl(propgrid.GetPanel(), wx.ID_ANY, s,
                                   (x, y), (w, h),
                                   wx.TE_PROCESS_ENTER)
-            btn = wx.Button(propgrid.GetPanel(), wx.propgrid.PG_SUBID2, '...',
+            btn = wx.Button(propgrid.GetPanel(), wx.ID_ANY, '...',
                             (x+w, y),
                             (bw, h), wx.WANTS_CHARS)
             return wx.propgrid.PGWindowList(self.tc, btn)
