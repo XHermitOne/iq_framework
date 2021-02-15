@@ -50,6 +50,7 @@ class iqWxPlateButton(wx.lib.platebtn.PlateButton,
 
         background_colour = self.getBackgroundColour()
         if background_colour is not None:
+            # log_func.debug(u'wx PlateButton set background colour %s' % str(background_colour))
             self.SetBackgroundColour(wx.Colour(background_colour[0], background_colour[1], background_colour[2]))
 
         self.Bind(wx.EVT_BUTTON, self.onButtonClick)

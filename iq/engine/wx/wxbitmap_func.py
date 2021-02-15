@@ -33,7 +33,8 @@ def createBitmap(img_filename, mask_colour=None):
 
         bmp = wx.Bitmap(img_filename, getImageFileType(img_filename))
         if mask_colour is not None:
-            bmp.SetMask(wx.Colour(bmp, mask_colour))
+            mask = wx.Mask(bmp, mask_colour)
+            bmp.SetMask(mask)
         return bmp
     except:
         log_func.fatal(u'Error create wx.Bitmap object from <%s>' % img_filename)

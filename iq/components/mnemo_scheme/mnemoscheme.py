@@ -3,6 +3,25 @@
 
 """
 Mnemoscheme manager.
+
+SVG background mnemoscheme file edit by Inkscape program.
+
+Install:
+*********************************
+sudo apt install inkscape
+*********************************
+
+SVG background mnemoscheme file optimise by scour program.
+
+Install:
+*********************************
+sudo apt install scour
+*********************************
+
+Use:
+*************************************************
+scour -i src_filename.svg -o dest_filename.svg
+*************************************************
 """
 
 import os.path
@@ -12,10 +31,10 @@ from ...util import file_func
 
 from ...engine.wx import wxbitmap_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 0, 2)
 
 # Conversion start command format SVG -> PNG
-SVG2PNG_CONVERT_CMD_FMT = 'convert -background none -resize %dx%d -extent %dx%d -gravity center %s %s'
+SVG2PNG_CONVERT_CMD_FMT = 'convert -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'
 
 
 class iqMnemoSchemeManager(object):
@@ -99,7 +118,7 @@ class iqMnemoSchemeManager(object):
         The external SVG -> PNG conversion utility is used.
         And PNG is already displayed on the device context.
 
-        :param auto_rewrite: Automatically overwrite the intermediate PNG file.         :return: True/False.
+        :param auto_rewrite: Automatically overwrite the intermediate PNG file.         :return: True/False.
         :return: True/False.
         """
         try:
@@ -110,7 +129,7 @@ class iqMnemoSchemeManager(object):
                                         '%s_background_%dx%d.png' % (self.getName(), width, height))
             svg_filename = os.path.join(file_func.getProjectProfilePath(),
                                         os.path.basename(self._svg_background))
-            # Save SVG file to HOME folder             
+            # Save SVG file to HOME folder
             # This is done so that you can replace the mnemonic diagram on
             # the fly
             if not os.path.exists(svg_filename) or not file_func.isSameFile(svg_filename, self._svg_background):
@@ -120,16 +139,25 @@ class iqMnemoSchemeManager(object):
                 file_func.delFilesByMask(file_func.getProjectProfilePath(),
                                          '%s_background_*.png' % self.getName())
 
+            background_colour = self.getBackgroundColour()
             if not os.path.exists(png_filename) or auto_rewrite:
+                # Define background colour
+                if isinstance(background_colour, str):
+                    bg_colour = background_colour.lower()
+                elif isinstance(background_colour, (list, tuple)):
+                    bg_colour = '\'rgb(%s)\'' % str(background_colour[:3]).strip('()[]')
+                else:
+                    bg_colour = 'none'
+
                 # Launch file conversion
-                cmd = SVG2PNG_CONVERT_CMD_FMT % (width, height, width, height, svg_filename, png_filename)
+                cmd = SVG2PNG_CONVERT_CMD_FMT % (bg_colour, width, height, width, height, svg_filename, png_filename)
                 log_func.info(u'Start SVG -> PNG covert command: <%s> ' % cmd)
                 os.system(cmd)
                 if not os.path.exists(png_filename):
                     log_func.warning(u'Conversion error SVG -> PNG (<%s> -> <%s>)' % (svg_filename, png_filename))
                     return False
 
-            self._background_bitmap = wxbitmap_func.createBitmap(png_filename)
+            self._background_bitmap = wxbitmap_func.createBitmap(png_filename, background_colour)
             return True
         except:
             log_func.fatal(u'Mnemoscheme background rendering error')
@@ -137,8 +165,9 @@ class iqMnemoSchemeManager(object):
 
     def getBackgroundBitmap(self):
         """
-        A picture object to display the background.
+        A picture object to display the background.
 
-        :return: The wx.Bitmap object corresponding to the current background of the mnemonic.
+        :return: The wx.Bitmap object corresponding to the current background of the mnemonic.
         """
         return self._background_bitmap
+

@@ -339,8 +339,13 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
             graph_filename = os.path.splitext(frame_filename)[0] + DATA_FILE_EXT
         elif isinstance(points, str) and os.path.exists(points):
             graph_filename = points
+        elif points is None:
+            # Empty frame
+            points = list()
+            graph_filename = os.path.splitext(frame_filename)[0] + DATA_FILE_EXT
         else:
-            log_func.warning(u'Invalid type of list of points for drawing a trend frame <%s>' % self.getName())
+            log_func.warning(u'Invalid type of list of points for drawing a trend frame <%s : %s>' % (self.getName(),
+                                                                                                      str(points)))
             return None
 
         # log_func.debug(u'Frame filename: %s' % frame_filename)
@@ -402,6 +407,8 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
     def drawEmpty(self, size=None):
         """
         Drawing an empty trend.
+
+        :return: Frame filename.
         """
         if size is None:
             # size = self.canvas.GetSize()
@@ -409,6 +416,7 @@ class iqGnuplotTrendProto(trend_proto.iqTrendProto):
         log_func.debug(u'Drawing an empty trend. Size %s' % str(size))
         frame_filename = self.drawFrame(size=tuple(size))
         self.setFrame(frame_filename)
+        return frame_filename
 
     def setFrame(self, frame_filename=None):
         """
