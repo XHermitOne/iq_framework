@@ -10,7 +10,7 @@ import os.path
 
 from . import log_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 
 def saveTextFile(txt_filename, txt='', rewrite=True):
@@ -70,7 +70,7 @@ def loadTextFile(txt_filename):
     return txt
 
 
-def appendTextFile(txt_filename, txt, cr='\n'):
+def appendTextFile(txt_filename, txt, cr=None):
     """
     Add lines to text file.
     If the file does not exist, then the file is created.
@@ -80,6 +80,9 @@ def appendTextFile(txt_filename, txt, cr='\n'):
     :param cr: Carriage return character.
     :return: True/False.
     """
+    if cr is None:
+        cr = os.linesep
+
     if not isinstance(txt, str):
         txt = str(txt)
 
@@ -99,4 +102,74 @@ def appendTextFile(txt_filename, txt, cr='\n'):
         if file_obj:
             file_obj.close()
         log_func.fatal(u'Error append to text file <%s>' % txt_filename)
+    return False
+
+
+def replaceTextFile(txt_filename, src_text, dst_text, auto_add=True, cr=None):
+    """
+    Replacing a text in a text file.
+
+    :param txt_filename: Text filename.
+    :param src_text: Source text.
+    :param dst_text: Destination text.
+    :param auto_add: A flag to automatically add a new line.
+    :param cr: Carriage return character.
+    :return: True/False.
+    """
+    if cr is None:
+        cr = os.linesep
+
+    txt_filename = os.path.normpath(txt_filename)
+
+    if os.path.exists(txt_filename):
+        file_obj = None
+        try:
+            file_obj = open(txt_filename, 'rt')
+            txt = file_obj.read()
+            file_obj.close()
+            txt = txt.replace(src_text, dst_text)
+            if auto_add and (dst_text not in txt):
+                txt += cr
+                txt += dst_text
+                log_func.info('Text file append <%s> in <%s>' % (dst_text, txt_filename))
+            file_obj = None
+            file_obj = open(txt_filename, 'wt')
+            file_obj.write(txt)
+            file_obj.close()
+            file_obj = None
+            return True
+        except:
+            if file_obj:
+                file_obj.close()
+            log_func.fatal('Error replace in text file <%s>' % txt_filename)
+    else:
+        log_func.warning('Text file <%s> not exists' % txt_filename)
+    return False
+
+
+def isInTextFile(txt_filename, find_text):
+    """
+    Is there text in a text file?
+
+    :param txt_filename: Text filename.
+    :param find_text: Find text.
+    :return: True/False.
+    """
+    txt_filename = os.path.normpath(txt_filename)
+
+    if os.path.exists(txt_filename):
+        file_obj = None
+        try:
+            file_obj = open(txt_filename, 'rt')
+            txt = file_obj.read()
+            result = find_text in txt
+            file_obj.close()
+            file_obj = None
+            return result
+        except:
+            if file_obj:
+                file_obj.close()
+            log_func.fatal('Error find <%s> in text file <%s>' % (find_text, txt_filename))
+    else:
+        log_func.warning('Text file <%s> not exists' % txt_filename)
     return False
