@@ -86,13 +86,19 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
                     for rec in self._ref_obj.getLevelRecsByCod():
                         if self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
                             level_choice = (rec[self._ref_obj.getCodColumnName()],
-                                            rec[self._ref_obj.getNameColumnName()])
+                                            rec[self._ref_obj.getNameColumnName()],
+                                            rec)
                             level_choices.append(level_choice)
+
+                # Sort level choices
+                sort_col = self.getSortColumn()
+                if sort_col:
+                    level_choices = sorted(level_choices, key=lambda item: item[2].get(sort_col, ''))
 
                 choice_id = wx.NewId()
                 choice = wx.Choice(self.scrolled_win, choice_id,
                                    wx.DefaultPosition, wx.DefaultSize)
-                for code, name in level_choices:
+                for code, name, rec in level_choices:
                     item = choice.Append(name)
                     choice.SetClientData(item, code)
 
@@ -242,10 +248,16 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
             for rec in self._ref_obj.getLevelRecsByCod(str_code):
                 if self._ref_obj and self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
                     level_choice = (rec[self._ref_obj.getCodColumnName()][len(str_code):],
-                                    rec[self._ref_obj.getNameColumnName()])
+                                    rec[self._ref_obj.getNameColumnName()],
+                                    rec)
                     level_choices.append(level_choice)
 
-            for code, name in level_choices:
+            # Sort level choices
+            sort_col = self.getSortColumn()
+            if sort_col:
+                level_choices = sorted(level_choices, key=lambda item: item[2].get(sort_col, ''))
+
+            for code, name, rec in level_choices:
                 item = choice_ctrl.Append(name)
                 choice_ctrl.SetClientData(item, code)
             if auto_select:
@@ -286,6 +298,13 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
         :return: True/False.
         """
         return True
+
+    def getSortColumn(self):
+        """
+        Get sort column name.
+        """
+        log_func.warning(u'Not define method getSortColumn in <%s>' % self.__class__.__name__)
+        return None
 
     def onLevelCodeChange(self, event):
         """

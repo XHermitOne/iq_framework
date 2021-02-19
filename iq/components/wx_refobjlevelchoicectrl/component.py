@@ -62,6 +62,12 @@ class iqWxRefObjLevelChoiceCtrl(refobjlevelchoicectrl.iqRefObjLevelChoiceCtrlPro
         """
         return self.getAttribute('label')
 
+    def getSortColumn(self):
+        """
+        Get sort column name.
+        """
+        return self.getAttribute('sort_col')
+
     def onSelectCode(self):
         """
         Select code handler.

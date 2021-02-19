@@ -30,6 +30,7 @@ WXREFOBJLEVELCHOICECTRL_SPC = {
 
     'label': None,
     'auto_select': True,
+    'sort_col': 'id',
     'on_select_code': None,
 
     '__package__': u'wxPython',
@@ -45,6 +46,7 @@ WXREFOBJLEVELCHOICECTRL_SPC = {
 
         'label': property_editor_id.STRING_EDITOR,
         'auto_select': property_editor_id.CHECKBOX_EDITOR,
+        'sort_col': property_editor_id.STRING_EDITOR,
         'on_select_code': property_editor_id.EVENT_EDITOR,
     },
     '__help__': {
@@ -52,6 +54,7 @@ WXREFOBJLEVELCHOICECTRL_SPC = {
 
         'label': u'Selection area title',
         'auto_select': u'Auto-complete',
+        'sort_col': u'Sort column name',
         'on_select_code': u'Select code handler',
     },
 }

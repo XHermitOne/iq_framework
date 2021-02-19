@@ -75,7 +75,7 @@ class iqFilterChoiceDlgProto ( wx.Dialog ):
 		bSizer4.Add( self.okButton, 0, wx.ALL, 5 )
 
 
-		bSizer2.Add( bSizer4, 0, wx.ALIGN_RIGHT|wx.EXPAND, 5 )
+		bSizer2.Add( bSizer4, 0, wx.EXPAND, 5 )
 
 
 		self.SetSizer( bSizer2 )
