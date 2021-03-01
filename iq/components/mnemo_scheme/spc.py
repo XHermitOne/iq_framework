@@ -22,9 +22,6 @@ MNEMOSCHEME_SPC = {
 
     '_children_': [],
 
-    # 'engines': list(),
-    # 'scan_class': None,
-    # 'auto_run': False,
     'svg_background': None,
     'svg_width': 0.0,
     'svg_height': 0.0,
@@ -40,9 +37,6 @@ MNEMOSCHEME_SPC = {
         'svg_height': property_editor_id.FLOAT_EDITOR,
     },
     '__help__': {
-        # 'engines': u'List of SCADA system engines',
-        # 'scan_class': u'Scan class',
-        # 'auto_run': u'Sign of autostart and auto-stop of all engines when creating / closing a window',
         'svg_background': u'Mnemoscheme background svg file',
         'svg_width': u'SVG width in source units',
         'svg_height': u'SVG height in source units',

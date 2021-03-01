@@ -94,9 +94,15 @@ class iqSelectComponentMenu(wx.Menu, iqSelectComponentMenuManager):
         """
         self.menuitem2component_spc = dict()
 
-        for package_name in list(self.component_palette.keys()):
+        package_names = list(self.component_palette.keys())
+        package_names.sort()
+        for package_name in package_names:
             package_menu = wx.Menu()
-            for component_spc in self.component_palette[package_name]:
+
+            component_specifications = self.component_palette[package_name]
+            component_specifications = sorted(component_specifications,
+                                              key=lambda component_spc: component_spc.get('type', ''))
+            for component_spc in component_specifications:
                 icon = component_spc.get(spc_func.ICON_ATTR_NAME, None)
                 component_type = component_spc.get('type', 'UndefinedType')
                 menuitem_id = wx.NewId()
@@ -179,10 +185,16 @@ class iqSelectComponentFlatMenu(flatmenu.FlatMenu,
         """
         self.menuitem2component_spc = dict()
 
-        for package_name in list(self.component_palette.keys()):
+        package_names = list(self.component_palette.keys())
+        package_names.sort()
+        for package_name in package_names:
             package_menu = flatmenu.FlatMenu()
             # log_func.debug(u'Component palette. Package name <%s>' % package_name)
-            for component_spc in self.component_palette[package_name]:
+
+            component_specifications = self.component_palette[package_name]
+            component_specifications = sorted(component_specifications,
+                                              key=lambda component_spc: component_spc.get('type', ''))
+            for component_spc in component_specifications:
                 icon = component_spc.get(spc_func.ICON_ATTR_NAME, None)
                 bmp = wxbitmap_func.createIconBitmap(icon)
                 component_type = component_spc.get('type', 'UndefinedType')
