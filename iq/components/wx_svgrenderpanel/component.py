@@ -99,13 +99,5 @@ class iqWxSVGRenderPanel(svgrenderpanel.iqSVGRenderPanel, wx_panel.COMPONENT):
             # new_context.SetTransform(matrix)
             # self._img2.RenderToGC(new_context, scale/2)
 
-    def design(self):
-        """
-        Design component.
-
-        :return: True/False.
-        """
-        return self.editSVG(svg_filename=self.getSVGFilename())
-
 
 COMPONENT = iqWxSVGRenderPanel

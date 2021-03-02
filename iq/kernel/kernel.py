@@ -5,6 +5,7 @@
 Kernel - general dispatcher of all program objects.
 """
 
+import sys
 import os.path
 
 from .. import global_data
@@ -295,4 +296,5 @@ def createKernel():
     import iq
     iq.KERNEL = kernel
     log_func.info(u'Create KERNEL object')
+    log_func.info(u'Python (%s) version: %s' % (sys.platform, sys.version.replace(os.linesep, '')))
     return kernel

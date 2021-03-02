@@ -39,6 +39,10 @@ class iqSVGFile(object):
         :param svg_filename: SVG filename.
         :return: SVG file root object or None if error.
         """
+        if svg_filename is None:
+            log_func.warning(u'SVG file not defined for load')
+            return False
+
         if not os.path.exists(svg_filename):
             log_func.warning(u'SVG file <%s> not found' % svg_filename)
             self._root = None
@@ -59,6 +63,10 @@ class iqSVGFile(object):
         :param svg_filename: SVG filename.
         :return: True/False.
         """
+        if svg_filename is None:
+            log_func.warning(u'SVG file not defined for save')
+            return False
+
         try:
             if self._root is not None and svg_filename:
                 self._root.save(svg_filename)
@@ -80,6 +88,10 @@ class iqSVGFile(object):
         if svg_filename is None:
             svg_filename = self._svg_filename
 
+        if svg_filename is None:
+            log_func.warning(u'SVG file not defined for edit')
+            return False
+
         if not os.path.exists(svg_filename):
             log_func.warning(u'SVG file <%s> not found for edit' % svg_filename)
             return False
@@ -97,6 +109,7 @@ class iqSVGFile(object):
                 return False
 
             os.system(cmd)
+            log_func.info(u'Exec command <%s>' % cmd)
             return True
         except:
             log_func.fatal(u'Error edit SVG file <%s>' % svg_filename)
