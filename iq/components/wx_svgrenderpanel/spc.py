@@ -11,6 +11,21 @@ from .. import wx_panel
 
 __version__ = (0, 0, 0, 1)
 
+
+def designComponent(spc, *args, **kwargs):
+    """
+    Design component.
+
+    :param spc: Component specification.
+    :return: True/False.
+    """
+    from ..wx_svgrenderimage import svg_file
+
+    svg_filename = spc.get('svg_background', None)
+    svg_file_obj = svg_file.iqSVGFile(svg_filename=svg_filename)
+    return svg_file_obj.editSVG()
+
+
 COMPONENT_TYPE = 'iqWxSVGRenderPanel'
 
 WXSVGRENDERPANEL_SPC = {
@@ -32,6 +47,8 @@ WXSVGRENDERPANEL_SPC = {
     '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
     '__doc__': None,
     '__content__': ('iqWxSVGRenderImage', ),
+    '__design__': designComponent,
+
     '__edit__': {
         'svg_background': property_editor_id.FILE_EDITOR,
         # 'svg_width': property_editor_id.FLOAT_EDITOR,

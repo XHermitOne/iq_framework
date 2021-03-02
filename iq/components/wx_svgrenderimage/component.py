@@ -47,5 +47,13 @@ class iqWxSVGRenderImage(svgrenderimage.iqSVGRenderImage, object.iqObject):
             return svg_filename
         return os.path.join(file_func.getFrameworkPath(), svg_filename)
 
+    def design(self):
+        """
+        Design component.
+
+        :return: True/False.
+        """
+        return self.editSVG(svg_filename=self.getSVGFilename())
+
 
 COMPONENT = iqWxSVGRenderImage
