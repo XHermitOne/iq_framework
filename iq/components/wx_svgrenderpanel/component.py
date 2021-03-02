@@ -77,8 +77,8 @@ class iqWxSVGRenderPanel(svgrenderpanel.iqSVGRenderPanel, wx_panel.COMPONENT):
         width = int(image_width * scale)
         height = int(image_height * scale)
 
-        #dc.SetBrush(wx.Brush('white'))
-        #dc.DrawRectangle(0, 0, width, height)
+        # dc.SetBrush(wx.Brush('white'))
+        # dc.DrawRectangle(0, 0, width, height)
 
         # Center
         if self.isCenter():

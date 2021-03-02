@@ -153,13 +153,13 @@ class iqProjectManager(object):
                                                  'main_form_proto.fbp')
             mainform_py_filename = file_func.setFilenameExt(mainform_res_filename, '.py')
 
-            from ..editor.wx.code_generator import frame_generator
+            from ..editor.wx.code_generator import mainform_generator
             from ..editor.wx.code_generator import gui_generator
             from ..editor.wx import wxfb_manager
 
-            return all([frame_generator.genDefaultMainFormFormBuilderPrj(prj_filename=mainform_res_filename),
+            return all([mainform_generator.genDefaultMainFormFormBuilderPrj(prj_filename=mainform_res_filename),
                         wxfb_manager.adaptWXWFormBuilderPy(mainform_py_filename),
-                        gui_generator.gen(src_filename=mainform_py_filename)])
+                        gui_generator.gen_mainform(src_filename=mainform_py_filename)])
         return False
 
     def createDefaultReportsFolder(self, engine=global_data.WX_ENGINE_TYPE,

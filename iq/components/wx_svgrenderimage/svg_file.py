@@ -101,3 +101,25 @@ class iqSVGFile(object):
         except:
             log_func.fatal(u'Error set element style option')
         return False
+
+    def setElementStyleOptions(self, element, **options):
+        """
+        Set element style options.
+
+        :param element: Element object.
+        :param options: Dictionary {Option name: Option value, ...}.
+        :return: True/False.
+        """
+        try:
+            style = element.get_style()
+            style_dict = dict([option.split(':') for option in style.split(';')])
+
+            for option_name, option_value in options.items():
+                style_dict[option_name] = option_value
+
+            style_str = ';'.join(['%s:%s' % (opt_name, opt_value) for opt_name, opt_value in style_dict.items()])
+            element.set_style(style_str)
+            return True
+        except:
+            log_func.fatal(u'Error set element style options')
+        return False
