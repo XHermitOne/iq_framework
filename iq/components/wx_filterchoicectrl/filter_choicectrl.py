@@ -16,6 +16,7 @@ from ...engine.wx.dlg import wxdlg_func
 from ...util import res_func
 from ...util import log_func
 from ...util import lang_func
+from ...util import id_func
 
 from . import filter_choice_dlg
 from . import filter_constructor_dlg
@@ -52,14 +53,6 @@ class iqFilterChoiceDlg(filter_choice_dlg.iqFilterChoiceDlgProto):
             Format: filter_builder_env.FILTER_ENVIRONMENT.
         """
         self.environment = env
-
-    def _genUUID(self):
-        """
-        Generate UUID.
-
-        :return: UUID.
-        """
-        return str(uuid.uuid4())
 
     def addFilter(self, new_filter=None):
         """
@@ -168,7 +161,7 @@ class iqFilterChoiceDlg(filter_choice_dlg.iqFilterChoiceDlgProto):
 
         # Set filter list
         for filter_dict in self._filters:
-            name = filter_dict.get('description', filter_dict.get('uuid', self._genUUID()))
+            name = filter_dict.get('description', filter_dict.get('guid', id_func.genGUID()))
             item = self.filterCheckList.Append(name, name)
             # Mark immediately if items are marked in the filter
             self.filterCheckList.Check(item, filter_dict.get('check', False))

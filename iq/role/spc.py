@@ -39,7 +39,6 @@ ROLE_SPC = {
     'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
-    'uuid': None,
 
     'permissions': '',
 

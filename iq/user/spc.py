@@ -51,7 +51,6 @@ USER_SPC = {
     'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
-    'uuid': None,
 
     'password': None,
     'roles': '',

@@ -31,7 +31,6 @@ DATAMODEL_SPC = {
     'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
-    'uuid': None,
 
     '_children_': [ID_COLUMN_SPC],
 

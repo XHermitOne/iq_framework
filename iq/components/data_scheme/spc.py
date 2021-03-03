@@ -23,7 +23,6 @@ DATASCHEME_SPC = {
     'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
-    'uuid': None,
     'module': None,
 
     '_children_': [],

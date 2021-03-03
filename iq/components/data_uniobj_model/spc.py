@@ -84,7 +84,6 @@ UNI_OBJ_DATAMODEL_SPC = {
     'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
-    'uuid': None,
 
     '_children_': [spc.ID_COLUMN_SPC,
                    GUID_COLUMN_SPC,

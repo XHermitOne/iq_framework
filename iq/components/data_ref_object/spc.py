@@ -65,7 +65,6 @@ DATAREFOBJECT_SPC = {
     'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
-    'uuid': None,
 
     '_children_': [],
 

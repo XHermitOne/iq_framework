@@ -17,7 +17,6 @@ WXCOLUMN_SPC = {
     'type': COMPONENT_TYPE,
     'description': '',
     'activate': True,
-    'uuid': None,
 
     'label': 'column',
     'width': 50,
