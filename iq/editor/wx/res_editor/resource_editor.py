@@ -23,6 +23,7 @@ from ....util import global_func
 from ....util import file_func
 from ....util import exec_func
 from ....util import lang_func
+from ....util import id_func
 
 from ....engine.wx import wxbitmap_func
 from ....engine.wx import imglib_manager
@@ -151,6 +152,10 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         :return: True/False.
         """
         name = resource.get('name', u'Unknown')
+        guid = resource.get('guid', None)
+        if not guid:
+            resource['guid'] = id_func.genGUID()
+
         component_type = resource.get('type', None)
         if component_type == project.COMPONENT_TYPE:
             global_func.setProjectName(name)
@@ -600,6 +605,12 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             context_menu.AppendSeparator()
 
             menuitem_id = wx.NewId()
+            menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Cut',
+                                             normalBmp=wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_MENU))
+            self.Bind(wx.EVT_MENU, self.onCutResourceMenuitem, id=menuitem_id)
+            context_menu.AppendItem(menuitem)
+
+            menuitem_id = wx.NewId()
             menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Copy',
                                              normalBmp=wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_MENU))
             self.Bind(wx.EVT_MENU, self.onCopyResourceMenuitem, id=menuitem_id)
@@ -609,12 +620,6 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Paste',
                                              normalBmp=wx.ArtProvider.GetBitmap(wx.ART_PASTE, wx.ART_MENU))
             self.Bind(wx.EVT_MENU, self.onPasteResourceMenuitem, id=menuitem_id)
-            context_menu.AppendItem(menuitem)
-
-            menuitem_id = wx.NewId()
-            menuitem = flatmenu.FlatMenuItem(context_menu, menuitem_id, label='Cut',
-                                             normalBmp=wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_MENU))
-            self.Bind(wx.EVT_MENU, self.onCutResourceMenuitem, id=menuitem_id)
             context_menu.AppendItem(menuitem)
 
             context_menu.AppendSeparator()
@@ -664,6 +669,9 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 description = resource.get('description', '')
                 component_type = resource.get('type', None)
                 activate = resource.get('activate', True)
+                guid = resource.get('guid', None)
+                if not guid:
+                    resource['guid'] = id_func.genGUID()
 
                 # Add but only if the name is unique
                 children_names = [child_res.get('name', 'Unknown') for child_res in item_resource[spc_func.CHILDREN_ATTR_NAME]]
@@ -727,6 +735,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
                 resource_item = copy.deepcopy(resource_item)
                 resource_item['name'] = resource_item.get('name', 'default') + str(wx.NewId())
+                resource_item['guid'] = id_func.genGUID()
                 clipboard.toClipboard(resource_item, do_copy=False)
             else:
                 log_func.warning(u'Item <%s> not correct' % str(item))
@@ -777,6 +786,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             if item and item.IsOk():
                 resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
                 resource_item = copy.deepcopy(resource_item)
+                resource_item['guid'] = id_func.genGUID()
                 clipboard.toClipboard(resource_item, do_copy=False)
                 self.resource_treeListCtrl.GetMainWindow().Delete(item)
                 return resource_item
