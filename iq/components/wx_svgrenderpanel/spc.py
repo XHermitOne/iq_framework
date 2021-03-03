@@ -5,9 +5,13 @@
 Wx SVGRenderPanel specification module.
 """
 
+import wx
+
 from ...editor import property_editor_id
 
 from .. import wx_panel
+
+from ...util import log_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -24,6 +28,28 @@ def designComponent(spc, *args, **kwargs):
     svg_filename = spc.get('svg_background', None)
     svg_file_obj = svg_file.iqSVGFile(svg_filename=svg_filename)
     return svg_file_obj.editSVG()
+
+
+def testComponent(spc, *args, **kwargs):
+    """
+    Test function.
+
+    :param spc: Component specification.
+    :return: True/False.
+    """
+    from . import component
+
+    app = wx.GetApp()
+    if app:
+        frame = wx.Frame(parent=app.GetTopWindow())
+        panel = component.iqWxSVGRenderPanel(parent=frame, resource=spc, context=dict())
+        frame.Show()
+        return True
+    else:
+        obj_type = spc.get('type', None)
+        obj_name = spc.get('name', u'Unknown')
+        log_func.warning(u'Not define WX application object for test component <%s : %s>' % (obj_type, obj_name))
+    return False
 
 
 COMPONENT_TYPE = 'iqWxSVGRenderPanel'
@@ -47,6 +73,7 @@ WXSVGRENDERPANEL_SPC = {
     '__doc__': None,
     '__content__': ('iqWxSVGRenderImage', ),
     '__design__': designComponent,
+    '__test__': testComponent,
 
     '__edit__': {
         'svg_background': property_editor_id.FILE_EDITOR,

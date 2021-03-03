@@ -36,7 +36,9 @@ class iqWxSVGRenderPanel(svgrenderpanel.iqSVGRenderPanel, wx_panel.COMPONENT):
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         wx_panel.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
-        svgrenderpanel.iqSVGRenderPanel.__init__(self, *args, **kwargs)
+
+        svgrenderpanel.iqSVGRenderPanel.__init__(self, parent=parent,
+                                                 svg_filename=self.getSVGFilename())
 
         self.Bind(wx.EVT_PAINT, self.onPaint)
         self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
@@ -61,6 +63,15 @@ class iqWxSVGRenderPanel(svgrenderpanel.iqSVGRenderPanel, wx_panel.COMPONENT):
         :return: True/False.
         """
         return self.getAttribute('center')
+
+    def getImages(self):
+        """
+        Get SVG image list.
+
+        :return: SVG image list.
+        """
+        svg_images = [child.getImage() for child in self.getChildren()]
+        return svg_images
 
     def onPaint(self, event):
         """
@@ -91,13 +102,15 @@ class iqWxSVGRenderPanel(svgrenderpanel.iqSVGRenderPanel, wx_panel.COMPONENT):
             context = renderer.CreateContext(dc)
             background_img.RenderToGC(context, scale)
 
-            # new_context = renderer.CreateContext(dc)
-            # matrix = new_context.CreateMatrix()
-            # matrix.Invert()
-            # matrix.Translate(100, 100)
-            # matrix.Rotate(math.pi * 2.0 * 60.0 / 360.0)
-            # new_context.SetTransform(matrix)
-            # self._img2.RenderToGC(new_context, scale/2)
+            images = self.getImages()
+            for image in images:
+                image_context = renderer.CreateContext(dc)
+                # matrix = new_context.CreateMatrix()
+                # matrix.Invert()
+                # matrix.Translate(100, 100)
+                # matrix.Rotate(math.pi * 2.0 * 60.0 / 360.0)
+                # new_context.SetTransform(matrix)
+                image.RenderToGC(image_context, scale)
 
 
 COMPONENT = iqWxSVGRenderPanel

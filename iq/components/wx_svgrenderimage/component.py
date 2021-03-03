@@ -32,7 +32,9 @@ class iqWxSVGRenderImage(svgrenderimage.iqSVGRenderImage, object.iqObject):
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
-        svgrenderimage.iqSVGRenderImage.__init__(self, parent=parent, *args, **kwargs)
+
+        svgrenderimage.iqSVGRenderImage.__init__(self, parent=parent,
+                                                 svg_filename=self.getSVGFilename())
 
     def getSVGFilename(self):
         """

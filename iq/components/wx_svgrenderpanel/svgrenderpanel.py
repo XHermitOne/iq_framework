@@ -48,6 +48,9 @@ class iqSVGRenderPanel(svg_file.iqSVGFile):
         try:
             dst_svg_filename = os.path.join(file_func.getProjectProfilePath(),
                                             '%s.svg' % self.getGUID())
+            if svg_filename and os.path.exists(svg_filename):
+                file_func.copyFile(svg_filename, dst_svg_filename, True)
+
             self.loadSVG(dst_svg_filename)
             self._background_image = wx.svg.SVGimage.CreateFromFile(dst_svg_filename)
             return True
@@ -70,3 +73,12 @@ class iqSVGRenderPanel(svg_file.iqSVGFile):
         :return: Get renderer object.
         """
         return self._renderer
+
+    def getImages(self):
+        """
+        Get SVG image list.
+
+        :return: SVG image list.
+        """
+        log_func.warning(u'Not define method getImages in class <%s>' % self.__class__.__name__)
+        return list()

@@ -42,6 +42,9 @@ class iqSVGRenderImage(svg_file.iqSVGFile):
         try:
             dst_svg_filename = os.path.join(file_func.getProjectProfilePath(),
                                             '%s.svg' % self.getGUID())
+            if svg_filename and os.path.exists(svg_filename):
+                file_func.copyFile(svg_filename, dst_svg_filename, True)
+
             self.loadSVG(dst_svg_filename)
             self._image = wx.svg.SVGimage.CreateFromFile(dst_svg_filename)
             return True
