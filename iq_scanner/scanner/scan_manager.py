@@ -113,7 +113,7 @@ class iqScanManager(object):
         # Задублированные опции сканирования
         self.options = dict()
 
-    def init_options_order(self):
+    def initOptionsOrder(self):
         """
         Initialization.
         How to set scan options.
@@ -169,7 +169,7 @@ class iqScanManager(object):
         """
         try:
             self.scan_device_obj = sane.open(device_name)
-            self.init_options_order()
+            self.initOptionsOrder()
         except:
             log_func.fatal(u'Error opening scan device <%s>' % device_name)
             self.scan_device_obj = None
@@ -329,7 +329,7 @@ class iqScanManager(object):
             # So we display scanning errors
             trace_txt = traceback.format_exc()
             if DOC_FEEDER_JAMMED_ERR in trace_txt:
-                self.show_scan_error_msg(u'Document misfeed in the paper feed tray')
+                self.showScanErrorMsg(u'Document misfeed in the paper feed tray')
 
         return None
 
@@ -441,11 +441,11 @@ class iqScanManager(object):
 
             trace_txt = traceback.format_exc()
             if DOC_FEEDER_JAMMED_ERR in trace_txt:
-                self.show_scan_error_msg(u'Document misfeed in the paper feed tray')
+                self.showScanErrorMsg(u'Document misfeed in the paper feed tray')
 
         return False
 
-    def show_scan_error_msg(self, err_msg=u''):
+    def showScanErrorMsg(self, err_msg=u''):
         """
         Function for displaying scan errors.
 
@@ -464,9 +464,9 @@ class iqScanManager(object):
         except:
             # If we do not display an error message,
             # the scanning process should not stop
-            log_func.fatal(u'Error in function <show_scan_error_msg> of scan manager')
+            log_func.fatal(u'Error in function <showScanErrorMsg> of scan manager')
 
-    def scan_pack(self, scan_filenames=()):
+    def scanPack(self, scan_filenames=()):
         """
         Scan documents in batch mode and save them to files.
 
@@ -493,7 +493,7 @@ class iqScanManager(object):
             if tray_sheet_count <= max_sheets:
                 # Until the scan counter has exceeded the tray size limit,
                 # then continue the usual scan
-                scan_result = self.scan_pack_part(scan_filename, n_pages, is_duplex)
+                scan_result = self.scanPackPart(scan_filename, n_pages, is_duplex)
                 result.append(scan_filename if scan_result and os.path.exists(scan_filename) else None)
             else:
                 log_func.debug(u'Enabling document scan mode <%s> piecemeal. Number of pages [%d] Current counter %d. ' % (scan_filename, n_pages, tray_sheet_count))
@@ -504,7 +504,7 @@ class iqScanManager(object):
                     locale.Init(wx.LANGUAGE_RUSSIAN)
 
                 # If the tray runs out of paper, you need to start the process of gluing the last document
-                glue_result = self.scan_glue(scan_filename, n_pages, is_duplex)
+                glue_result = self.scanGlue(scan_filename, n_pages, is_duplex)
                 result.append(scan_filename if glue_result and os.path.exists(scan_filename) else None)
 
                 # ATTENTION! After a successfully scanned large document,
@@ -519,7 +519,7 @@ class iqScanManager(object):
 
         return result
 
-    def scan_pack_part(self, scan_filename, n_pages, is_duplex):
+    def scanPackPart(self, scan_filename, n_pages, is_duplex):
         """
         Scan one part of the package.
 
@@ -540,7 +540,7 @@ class iqScanManager(object):
             log_func.warning(u'Invalid page count <%s> batch scan' % n_pages)
         return False
 
-    def scan_glue(self, scan_filename, n_pages, is_duplex):
+    def scanGlue(self, scan_filename, n_pages, is_duplex):
         """
         Starting the document gluing mode from parts.
 

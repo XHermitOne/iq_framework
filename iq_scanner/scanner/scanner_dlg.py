@@ -330,7 +330,7 @@ class iqScanAdministrator(iqScanOptions):
                     log_func.fatal(u'Error delete file <%s>' % full_scan_filename)
 
         try:
-            scan_filenames = self.scan_manager.scan_pack(scan_filenames=scans)
+            scan_filenames = self.scan_manager.scanPack(scan_filenames=scans)
 
             # Transfer scanned files to the resulting folder
             if self.scan_dir and os.path.exists(self.scan_dir):
