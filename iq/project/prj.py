@@ -303,9 +303,18 @@ python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s
         """
         result = False
         if username is None:
-            result = dlg_func.getLoginDlg(title=_(u'LOGIN'),
-                                          reg_users=self.getUserNames(),
-                                          user_descriptions=[user.getDescription() for user in self.getUsers()])
+            if global_func.isWXEngine():
+                result = dlg_func.getLoginDlg(title=_(u'LOGIN'),
+                                              reg_users=self.getUserNames(),
+                                              user_descriptions=[user.getDescription() for user in self.getUsers()])
+            elif global_func.isCUIEngine():
+                from ..engine.cui.dlg import cui_dlg_func
+                result = cui_dlg_func.getLoginDlg(title=_(u'LOGIN'),
+                                                  reg_users=self.getUserNames(),
+                                                  user_descriptions=[user.getDescription() for user in self.getUsers()])
+            else:
+                log_func.warning(u'Not supported %s engine login' % global_func.getEngineType())
+
             if not result:
                 # If login failed then exit
                 log_func.warning(u'Failed login')

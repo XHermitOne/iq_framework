@@ -5,6 +5,8 @@
 CUI dialog class module.
 """
 
+import hashlib
+
 from ....util import log_func
 from ....util import lang_func
 
@@ -199,20 +201,30 @@ class iqCUIPyDlgListDialog(iqCUIPyDlgDialog):
             raise
 
 
+DEFAULT_USERNAME_DLG_WIDTH = 120
+DEFAULT_USERNAME_DLG_HEIGHT = 15
+DEFAULT_USERNAME_DLG_LIST_HEIGHT = 7
+
+
 class iqCUIUsernameDialog(iqCUIPyDlgDialog):
     """
     CUI select username dialog class.
     """
-    def __init__(self, title='', height=DEFAULT_DLG_HEIGHT, width=DEFAULT_DLG_WIDTH,
-                 list_height=DEFAULT_LIST_HEIGHT, body='', background_title='',
-                 default_username='', reg_users=None, *args, **kwargs):
+    def __init__(self, title='',
+                 height=DEFAULT_USERNAME_DLG_HEIGHT, width=DEFAULT_USERNAME_DLG_WIDTH,
+                 list_height=DEFAULT_USERNAME_DLG_LIST_HEIGHT, body='', background_title='',
+                 default_username='', reg_users=None, user_descriptions=(),
+                 *args, **kwargs):
         """
         Constructor.
         """
         iqCUIPyDlgDialog.__init__(self, title=title, height=height, width=width, body=body,
                                   background_title=background_title, *args, **kwargs)
 
-        self.reg_users = reg_users if reg_users else list()
+        if not isinstance(user_descriptions, (list, tuple)):
+            user_descriptions = tuple()
+
+        self.choices = [(username, user_descriptions[i] if i < len(user_descriptions) else '')for i, username in enumerate(reg_users)] if reg_users else list()
         self.default_username = default_username
         self.list_height = list_height
         self.result = None
@@ -220,23 +232,33 @@ class iqCUIUsernameDialog(iqCUIPyDlgDialog):
     def main(self):
         try:
             if self.body:
-                self.result = self.mixedform(text=self.title, elements=self.reg_users,
-                                             height=self.height, width=self.width,
-                                             form_height=self.list_height)
-
-                return self.result[0] == self.OK
+                code, tag = self.menu(text=_(u'Select a user to login '),
+                                      title=self.title,
+                                      height=self.height, width=self.width,
+                                      choices=self.choices)
+                self.result = (code, tag)
+                return code == self.OK
             else:
                 #
                 return True
         except:
-            raise
+            log_func.fatal(u'Error CUI username dialog')
+        return False
+
+    def getUsername(self):
+        """
+        Get selected username.
+
+        :return: Username or None if error.
+        """
+        return self.result[1] if self.result else None
 
 
 class iqCUIPasswordDialog(iqCUIPyDlgDialog):
     """
     CUI password dialog class.
     """
-    def __init__(self, title='', height=DEFAULT_DLG_HEIGHT, width=DEFAULT_DLG_WIDTH,
+    def __init__(self, title='', height=None, width=None,
                  body='', background_title='',
                  *args, **kwargs):
         """
@@ -249,12 +271,28 @@ class iqCUIPasswordDialog(iqCUIPyDlgDialog):
     def main(self):
         try:
             if self.body:
-                self.result = self.passwordform(text=self.title,
-                                                height=self.height, width=self.width)
+                code, password = self.passwordbox(text=_(u'Enter user password to login'),
+                                                  title=self.title,
+                                                  height=self.height, width=self.width,
+                                                  insecure=True)
+                self.result = (code, password)
 
-                return self.result[0] == self.OK
+                return code == self.OK
             else:
                 #
                 return True
         except:
-            raise
+            log_func.fatal(u'Error CUI password dialog')
+        return False
+
+    def getPassword(self):
+        """
+        Get password.
+        """
+        return self.result[1] if self.result else None
+
+    def getPasswordHash(self):
+        """
+        Get password hash as md5.
+        """
+        return hashlib.md5(self.result[1].encode()).hexdigest() if self.result else None

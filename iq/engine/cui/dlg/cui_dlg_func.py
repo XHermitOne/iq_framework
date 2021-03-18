@@ -19,7 +19,8 @@ LOGIN_PASSWORD_IDX = 1
 LOGIN_PASSWORD_MD5_IDX = 2
 
 
-def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
+def getLoginDlg(parent=None, title='', default_username='', reg_users=None,
+                user_descriptions=()):
     """
     Open login user dialog.
 
@@ -27,6 +28,7 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
     :param title: Dialog form title.
     :param default_username: Default user name.
     :param reg_users: User name list.
+    :param user_descriptions: User description list.
     :return: Tuple: (username, password, password hash) or None if error.
     """
     try:
@@ -34,15 +36,18 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None):
                                                    body=_(u'User name:'),
                                                    background_title=_(u'LOGIN'),
                                                    default_username=default_username,
-                                                   reg_users=reg_users)
-        username_dlg.main()
-        print(username_dlg.result)
+                                                   reg_users=reg_users,
+                                                   user_descriptions=user_descriptions)
+        username = username_dlg.getUsername() if username_dlg.main() else None
+        if username:
+            password_dlg = cui_dlg.iqCUIPasswordDialog(title=title,
+                                                       body=_(u'Password:'),
+                                                       background_title=_(u'LOGIN'))
+            password = password_dlg.getPassword() if password_dlg.main() else None
 
-        password_dlg = cui_dlg.iqCUIPasswordDialog(title=title,
-                                                   body=_(u'Password:'),
-                                                   background_title=_(u'LOGIN'))
-        password_dlg.main()
-        print(password_dlg.result)
+            # log_func.info(u'Login <%s : %s>' % (username, password))
+            if username and password is not None:
+                return username, password, password_dlg.getPasswordHash()
     except:
         log_func.fatal(u'Error login dialog')
     return None
