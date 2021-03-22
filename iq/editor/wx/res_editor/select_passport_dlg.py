@@ -95,7 +95,7 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		bSizer4.Add( self.ok_button, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
-		bSizer1.Add( bSizer4, 0, wx.ALIGN_RIGHT|wx.EXPAND, 5 )
+		bSizer1.Add( bSizer4, 0, wx.EXPAND, 5 )
 
 
 		self.SetSizer( bSizer1 )

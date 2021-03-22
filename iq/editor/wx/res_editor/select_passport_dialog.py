@@ -60,11 +60,13 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         """
         self.initImageLib()
 
-        self.addImageLibBitmap('none', wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU))
+        bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+        self.addImageLibBitmap('none', bmp)
         self.component_icons[None] = self.getImageLibImageIdx('none')
 
         # Add framework icon
-        self.addImageLibBitmap('root', wx.ArtProvider.GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_MENU))
+        bmp = wx.ArtProvider.GetBitmap(wx.ART_FOLDER, wx.ART_MENU)
+        self.addImageLibBitmap('root', bmp)
         self.component_icons['root'] = self.getImageLibImageIdx('root')
 
         component_spc_cache = components.getComponentSpcPalette()

@@ -467,6 +467,7 @@ def game():
     global PLAYER_COLOR
 
     # Show logo
+    clear()
     print(termcolor.colored(chess_figures.CHESS_LOGO_ASCII, chess_figures.LOGO_COLOR))
     print('Player')
 

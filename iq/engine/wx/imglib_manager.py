@@ -31,6 +31,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
                                        wxbitmap_func.DEFAULT_ICON_HEIGHT)
 
         empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+        # log_func.debug(u'Bitmap size %s' % str(empty_bmp.GetSize()))
         empty_icon_idx = self._imagelist.Add(empty_bmp)
         self.__img_idx[None] = empty_icon_idx
 
@@ -73,6 +74,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
         if not hasattr(self, '_imagelist'):
             self.initImageLib()
 
+        # log_func.debug(u'Bitmap size %s' % str(bmp.GetSize()))
         img_idx = self._imagelist.Add(bmp)
         self.__img_idx[img_name] = img_idx
         return bmp

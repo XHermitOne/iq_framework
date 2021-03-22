@@ -100,7 +100,7 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
 
         if eventType == wx.wxEVT_COMMAND_BUTTON_CLICKED:
             property_value = property.GetValue()
-            # log_func.debug(u'Property <%s : %s>. Select passport' % (property.GetName(), str(property_value)))
+            log_func.debug(u'Property <%s : %s>. Select passport' % (property.GetName(), str(property_value)))
             value = select_passport_dialog.selectPassportDlg(parent=None,
                                                              prj_name=global_func.getProjectName(),
                                                              default_psp=property_value)
@@ -112,5 +112,7 @@ class iqPassportPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
                 # log_func.debug(u'Property passport value <%s : %s>' % (str(value), type(value)))
                 property.SetValueInEvent(str(None))
             return True
+        # else:
+        #     log_func.warning(u'Unsupported event type <%s>' % eventType)
 
         return False
