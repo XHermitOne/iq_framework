@@ -492,13 +492,15 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         self.root_code = None if self.view_all else self.view_code
 
         if refobj_psp:
-            self._data_source = refobjtreedatasource.iqRefObjTreeDataSource(refobj_psp, self.root_code,
+            self._data_source = refobjtreedatasource.iqRefObjTreeDataSource(refobj_psp=refobj_psp,
+                                                                            root_code=self.root_code,
                                                                             sort_col=self.getSortColumn())
             self._combo_popup.root_name = self._data_source.getRefObjDescription()
         else:
-            log_func.warning(u'Not define ref object passport in init <%s> component' % self.__class__.__name__)
+            log_func.warning(u'Not define ref object passport in init <%s : %s> component' % (self.__class__.__name__,
+                                                                                              self.getName()))
 
-        if self._data_source:
+        if self._data_source is not None:
             self._combo_popup.tree.DeleteAllItems()
             # Because the root element is hidden, then the parent of all objects is None
             if complex_load:
@@ -507,13 +509,15 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
                 self._addBranch(self._data_source, None)
 
             # If plowing is defined, then open the root level
-            if self._expand:
+            if self._expand and self._data_source.hasChildren():
                 self._combo_popup.tree.Expand(self._combo_popup.tree.GetRootItem())
 
-            if self.view_all:
+            if self.view_all and self._data_source.hasChildren():
                 self._combo_popup.tree.ExpandAll()
         else:
-            log_func.warning(u'Not define data source in init <%s> component' % self.__class__.__name__)
+            # log_func.debug(str(self._data_source))
+            log_func.warning(u'Not define data source in init <%s : %s> component' % (self.__class__.__name__,
+                                                                                      self.getName()))
 
     def clear(self):
         """
@@ -656,6 +660,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
             get_label_func = self.getLabelFunc(child)
             label = child.getLabel(get_label_func)
             code = child.getCode()
+            # log_func.debug(u'Add code <%s>' % code)
             ref_obj = self.getRefObj()
             if ref_obj and ref_obj.isActive(code):
                 item = self._combo_popup.AddItem(label, parent=parent_item, data=child)

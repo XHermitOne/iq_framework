@@ -152,6 +152,7 @@ class iqRefObjItemDataSource(iqRefObjItemDataSourceBase):
         root = self.getRoot()
         ref_obj = root.getRefObj()
         if ref_obj:
+            # log_func.debug(u'Has children codes <%s>' % self._code)
             return ref_obj.hasChildrenCodes(self._code)
         return False
 
@@ -162,7 +163,7 @@ class iqRefObjItemDataSource(iqRefObjItemDataSourceBase):
         :param auto_sort: Sort entries automatically by code?
         :return: Returns a list of objects of child items.
         """
-        children = []
+        children = list()
         root = self.getRoot()
         ref_obj = root.getRefObj()
         if ref_obj:
@@ -301,6 +302,8 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
                 item = iqRefObjItemDataSource(parent_item=self, cod=child_code)
                 item.setData(rec)
                 children.append(item)
+        else:
+            log_func.warning(u'Not define ref object for data source')
         
         return children
         
@@ -309,7 +312,14 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
         Get children items.
         """
         return self._children
-    
+
+    def hasChildren(self):
+        """
+        Has children items?
+        :return: True/False.
+        """
+        return bool(self._children)
+
     def find(self, find_text, find_column='name'):
         """
         Find item label by text.
