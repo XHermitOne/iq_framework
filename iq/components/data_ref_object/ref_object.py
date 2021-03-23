@@ -312,6 +312,19 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 log_func.warning(u'Ref object <%s> cod <%s> not activate' % (self.getName(), cod))
         return None
 
+    def getColumnValue(self, cod, column_name):
+        """
+        Get column value by cod.
+
+        :param cod: Reference data code.
+        :param column_name: Column name.
+            If not defined then get column 'name'.
+        :return: Column value if activate,
+            or None if error.
+        """
+        values = self.getColumnValues(cod, column_name)
+        return values.get(column_name, None) if values else None
+
     def getColumnNameValue(self, cod):
         """
         Get column name value by cod.
