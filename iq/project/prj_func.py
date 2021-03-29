@@ -49,7 +49,8 @@ def getProjectDescriptions():
     for dirpath in prj_paths:
         prj_name = os.path.basename(dirpath)
         pkg = imp_func.importPyModule(import_name='prj_package',
-                                      import_filename=dirpath)
+                                      import_filename=dirpath,
+                                      reimport=True)
         try:
             prj_description = pkg.__doc__.strip().splitlines()[0]
         except:

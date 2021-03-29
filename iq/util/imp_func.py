@@ -15,7 +15,7 @@ from . import py_func
 __version__ = (0, 0, 0, 1)
 
 
-def importPyModule(import_name, import_filename):
+def importPyModule(import_name, import_filename, reimport=False):
     """
     Load/Import python module.
 
@@ -23,9 +23,10 @@ def importPyModule(import_name, import_filename):
     :param import_name: Module import name.
     :type import_filename: C{string}
     :param import_filename: Module path.
+    :param reimport: Reimport module?
     :return: Python module or None is error.
     """
-    if import_name in sys.modules:
+    if import_name in sys.modules and not reimport:
         return sys.modules[import_name]
 
     if os.path.isdir(import_filename):
