@@ -81,7 +81,7 @@ DATACOLUMN_SPC = {
     '__content__': (),
     '__edit__': {
         'field_type': {
-            'editor': property_editor_id.CHOICE_EDITOR,
+            'editor': property_editor_id.SINGLE_CHOICE_EDITOR,
             'choices': SQLALCHEMY_FIELD_TYPES,
         },
         'field_attr': property_editor_id.SCRIPT_EDITOR,

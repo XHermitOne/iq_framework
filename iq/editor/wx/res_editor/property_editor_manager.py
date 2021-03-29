@@ -27,6 +27,7 @@ from . import libicon_property_editor
 from . import file_property_editor
 from . import dir_property_editor
 from . import script_property_editor
+from . import single_choice_property
 
 __version__ = (0, 0, 0, 1)
 
@@ -150,8 +151,23 @@ class iqPropertyEditorManager(object):
                 choices = list()
 
             idx = choices.index(value) if value in choices else 0
-            wx_property = wx.propgrid.EnumProperty(name, name, choices,
-                                                   [i for i in range(len(choices))], idx)
+            wx_property = wx.propgrid.EnumProperty(label=name, name=name, labels=choices,
+                                                   values=list(range(len(choices))), value=idx)
+
+        elif property_type == property_editor_id.SINGLE_CHOICE_EDITOR:
+            # log_func.debug(u'Attribute <%s>' % name)
+            choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
+            if isinstance(choices, (list, tuple)):
+                choices = [str(item) for item in choices]
+            elif callable(choices):
+                choices = choices(resource=spc)
+            else:
+                log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                choices = list()
+
+            # idx = choices.index(value) if value in choices else 0
+            wx_property = single_choice_property.iqSingleChoiceProperty(label=name, name=name,
+                                                                        choices=choices, value=value)
 
         elif property_type == property_editor_id.CHECKBOX_EDITOR:
             if isinstance(value, str):
@@ -479,6 +495,9 @@ class iqPropertyEditorManager(object):
                 value = 0.0
 
         elif property_type == property_editor_id.CHOICE_EDITOR:
+            value = str_value
+
+        elif property_type == property_editor_id.SINGLE_CHOICE_EDITOR:
             value = str_value
 
         elif property_type == property_editor_id.CHECKBOX_EDITOR:
