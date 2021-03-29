@@ -173,3 +173,66 @@ def isInTextFile(txt_filename, find_text):
     else:
         log_func.warning('Text file <%s> not exists' % txt_filename)
     return False
+
+
+def readTextFileLines(txt_filename, auto_strip_line=True):
+    """
+    Read text file as lines.
+
+    :param txt_filename: Text filename.
+    :param auto_strip_line: Strip text file lines automatic?
+    :return: Text file lines.
+    """
+    file_obj = None
+    lines = list()
+
+    if not os.path.exists(txt_filename):
+        # If not exists file then create it
+        log_func.warning(u'File <%s> not found' % txt_filename)
+
+        try:
+            file_obj = open(txt_filename, 'wt')
+            file_obj.close()
+            log_func.info(u'Create text file <%s>' % txt_filename)
+        except:
+            if file_obj:
+                file_obj.close()
+            log_func.fatal(u'Error create text file <%s>' % txt_filename)
+        return lines
+
+    try:
+        file_obj = open(txt_filename, 'rt')
+        lines = file_obj.readlines()
+        if auto_strip_line:
+            lines = [filename.strip() for filename in lines]
+        file_obj.close()
+        file_obj = None
+    except:
+        if file_obj:
+            file_obj.close()
+        log_func.fatal(u'Error read text file <%s>' % txt_filename)
+    return list(lines)
+
+
+def appendTextFileLine(line, txt_filename=None, add_linesep=True):
+    """
+    Add new line in text file.
+
+    :param line: Line as string.
+    :param txt_filename: Text filename.
+    :param add_linesep: Add line separator / carriage return?
+    :return: True/False.
+    """
+    file_obj = None
+    try:
+        file_obj = open(txt_filename, 'at+')
+        file_obj.write(str(line))
+        if add_linesep:
+            file_obj.write(os.linesep)
+        file_obj.close()
+        return True
+    except:
+        if file_obj:
+            file_obj.close()
+        log_func.fatal(u'Error add line in text file <%s>' % txt_filename)
+    return False

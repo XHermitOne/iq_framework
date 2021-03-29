@@ -80,6 +80,8 @@ sudo apt install --assume-yes unixodbc unixodbc-dev freetds-bin freetds-dev tdso
 pip3 install JayDeBeApi
 # For Ubuntu 18.04
 # pip3 install JayDeBeApi3
+# For Ubuntu 20.04
+pip3 install jaydebeapi==1.2.3 jpype1==1.2.1
 
 # DBase
 # pip3 install dbfpy

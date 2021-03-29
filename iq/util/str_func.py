@@ -275,18 +275,81 @@ def isRUSText(text):
     return False
 
 
-def isWordsInText(text, *words):
+def isWordsInText(text, words, case_sensitivity=True):
     """
     Are there words in the text?
     The search is conducted before the first finding of one of the indicated words.
 
     :param text: Text.
     :param words: Words.
+    :param case_sensitivity: Check case sensitive?
     :return: True (there are such words in the text)/False (no words found).
     """
     if not isinstance(text, str):
-        text = toUnicode(text)
-    find = any([word in text for word in words])
+        text = str(text)
+
+    find = False
+    for word in words:
+        if case_sensitivity:
+            # Case sensitive check
+            find = word in text
+        else:
+            # Case insensitive check
+            find = word.lower() in text.lower()
+        if find:
+            break
+    return find
+
+
+def startswithWords(text, words, case_sensitivity=True):
+    """
+    Search for words at the beginning of the text.
+    The search is carried out until the first finding of one of the specified words.
+
+    :param text: Text.
+    :param words: Words.
+    :param case_sensitivity: Check case sensitive?
+    :return: True (there are such words at the beginning of the text)/False (words not found).
+    """
+    if not isinstance(text, str):
+        text = str(text)
+
+    find = False
+    for word in words:
+        if case_sensitivity:
+            # Case sensitive check
+            find = text.startswith(word)
+        else:
+            # Case insensitive check
+            find = text.lower().startswith(word.lower())
+        if find:
+            break
+    return find
+
+
+def endswithWords(text, words, case_sensitivity=True):
+    """
+    Search for words at the end of the text.
+    The search is carried out until the first finding of one of the specified words. \
+
+    :param text: Text.
+    :param words: Words.
+    :param case_sensitivity: Check case sensitive?
+    :return: True (there are such words at the end of the text )/False (words not found).
+    """
+    if not isinstance(text, str):
+        text = str(text)
+
+    find = False
+    for word in words:
+        if case_sensitivity:
+            # Case sensitive check
+            find = text.endswith(word)
+        else:
+            # Case insensitive check
+            find = text.lower().endswith(word.lower())
+        if find:
+            break
     return find
 
 
