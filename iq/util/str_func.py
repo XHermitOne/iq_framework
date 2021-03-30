@@ -365,3 +365,130 @@ def isMultiLineText(text=u''):
         return None
 
     return u'\n' in text.strip()
+
+
+def isDigitsInText(text):
+    """
+    Checking the presence of numbers in the text.
+
+    :param text: Text.
+    :return: True - there are numbers in the text  / False - no numbers .
+    """
+    for symbol in text:
+        if symbol.isdigit():
+            return True
+    return False
+
+
+def isSerialSymbol(text, symbol=' '):
+    """
+    Checking what the text is
+    a sequence of one specific character.
+
+    :param text: Text.
+    :param symbol: Symbol.
+    :return: True/False.
+    """
+    if not text or not isinstance(text, str):
+        # If it is an empty string, then it is not a sequence at all
+        return False
+
+    return all([symb == symbol for symb in text])
+
+
+def isSerial(text):
+    """
+    Checking what the text is a sequence of one character.
+
+    :param text: Text.
+    :return: True/False.
+    """
+    return isSerialSymbol(text, text[0]) if text and isinstance(text, str) else False
+
+
+def isSerialZero(text):
+    """
+    Checking what the text is a sequence of one character '0'.
+
+    :param text: Text.
+    :return: True/False.
+    """
+    return isSerialSymbol(text, '0')
+
+
+def getStrDigit(text):
+    """
+    Get all numbers from a string of text as a string.
+
+    :param text: Text. For example '12ASD321'.
+    :return: Text with numbers . For example '12321'
+    """
+    return u''.join([symb for symb in text if symb.isdigit()])
+
+
+def getStrDigitAsInt(text):
+    """
+    Get all digits from a string of text as an integer.
+
+    :param text: Text. For example '12ASD321'.
+    :return: Integer. For example 12321. If there are no digits, then 0 is returned.
+    """
+    num_txt = getStrDigit(text)
+    return int(num_txt) if num_txt else 0
+
+
+def replaceInText(text, replacements):
+    """
+    Make a number of replacements in the text.
+
+    :param text: Text.
+    :param replacements: Replacements.
+        Can be specified as a dictionary or a list of tuples.
+        Dictionary:
+            {
+            'source replace': 'destination replace', ...
+            }
+        List of tuples (used when the order of replacements is important ):
+            [
+            ('source replace', 'destination replace'), ...
+            ]
+    :return: The text with all the replacements made, or the original text in case of an error.
+    """
+    result_text = text
+    try:
+        if isinstance(replacements, dict):
+            for src_txt, dst_txt in replacements.items():
+                result_text = result_text.replace(src_txt, dst_txt)
+        elif isinstance(replacements, list) or isinstance(replacements, tuple):
+            for src_txt, dst_txt in replacements:
+                result_text = result_text.replace(src_txt, dst_txt)
+        else:
+            # Incorrect type
+            return text
+        return result_text
+    except:
+        log_func.fatal(u'Error replace in text')
+        return text
+
+
+def deleteInText(text, delete_txt_list):
+    """
+    Remove lines from text.
+
+    :param text: Text.
+    :param delete_txt_list: List of lines to remove from text.
+    :return: The text with all the replacements made, or the original text in case of an error.
+    """
+    replacements = [(str(delete_txt), u'') for delete_txt in delete_txt_list]
+    return replaceInText(text, replacements=replacements)
+
+
+def deleteSymbolInText(text, symbol=u' '):
+    """
+    Remove character from text.
+
+    :param text: Text.
+    :param symbol: The character to remove.
+    :return: Text with a deleted character, or the original text in case of an error.
+    """
+    return deleteInText(text, (symbol, ))
