@@ -61,22 +61,27 @@ class iqFilterChoiceDlg(filter_choice_dlg.iqFilterChoiceDlgProto):
         :param new_filter: New filter structure.
         :return: True/False.
         """
-        if new_filter is None:
-            # Open filter constructor
-            new_filter = filter_constructor_dlg.getFilterConstructorDlg(self, None, self.environment)
+        try:
+            if new_filter is None:
+                # Open filter constructor
+                new_filter = filter_constructor_dlg.getFilterConstructorDlg(self, None, self.environment)
+
+                if new_filter:
+                    filter_id = id_func.genGUID()
+                    filter_description = wxdlg_func.getTextEntryDlg(self, _(u'Filter'), _(u'Enter filter name'))
+                    new_filter['record_id'] = filter_id
+                    new_filter['description'] = filter_description
+                else:
+                    log_func.warning(u'No filter defined to add')
+                    return False
 
             if new_filter:
-                filter_id = self._genUUID()
-                filter_description = wxdlg_func.getTextEntryDlg(self, _(u'Filter'), _(u'Enter filter name'))
-                new_filter['record_id'] = filter_id
-                new_filter['description'] = filter_description
-            else:
-                log_func.warning(u'No filter defined to add')
-                return False
-
-        if new_filter:
-            self._filters.append(new_filter)
-            self.filterCheckList.Append(new_filter['description'], new_filter['record_id'])
+                self._filters.append(new_filter)
+                self.filterCheckList.Append(new_filter['description'], new_filter['record_id'])
+                return True
+        except:
+            log_func.fatal(u'Error add filter')
+        return False
 
     def delFilter(self, filter_name=None):
         """
