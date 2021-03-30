@@ -16,6 +16,7 @@ from ...util import log_func
 from ...util import lang_func
 from ...util import exec_func
 from ...util import file_func
+from ...util import global_func
 
 from . import filter_choicectrl
 
@@ -72,7 +73,11 @@ class iqWxFilterChoiceCtrl(filter_choicectrl.iqFilterChoiceCtrlProto,
         self.SetValue(self.getStrFilter())
 
     def _canEditFilter(self):
-        return role.isPermision('edit_filter')
+        cur_user = global_func.getUser()
+        can_edit = cur_user.isPermission('edit_filter')
+        log_func.info(u'User <%s : %s>. Can edit filters ... %s' % (cur_user.getName(),
+                                                                    cur_user.getDescription(), can_edit))
+        return can_edit
 
     def OnButtonClick(self):
         """

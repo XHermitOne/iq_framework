@@ -42,7 +42,7 @@ def getFilterConstructorDlg(parent=None, default_filter_data=None, env=None):
         dlg = iqFilterConstructorDialog(parent, default_filter_data, env)
         if dlg.ShowModal() in (wx.ID_OK,):
             result = dlg.getFilterData()
-            log_func.debug(u'Filter: %s' % str(result))
+            # log_func.debug(u'Filter: %s' % str(result))
             dlg.Destroy()
             # Destroy parent window
             if win_clear:

@@ -17,6 +17,7 @@ from ...util import res_func
 from ...util import log_func
 from ...util import lang_func
 from ...util import id_func
+from ...util import global_func
 
 from . import filter_choice_dlg
 from . import filter_constructor_dlg
