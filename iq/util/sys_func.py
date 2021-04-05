@@ -68,7 +68,7 @@ def getActiveProcessCount(find_process):
     processes_txt = get_procesess_module.getoutput('ps -eo pid,cmd')
     processes = processes_txt.strip().split('\n')
     find_processes = [process for process in processes if find_process in process]
-    # log_func.debug(u'Find processes %s' % str(find_processes))
+    log_func.debug(u'Find processes %s' % str(find_processes))
     return len(find_processes)
 
 
