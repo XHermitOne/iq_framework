@@ -9,8 +9,16 @@ import os
 import os.path
 
 from . import log_func
+from . import global_func
+from . import str_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
+
+DEFAULT_ENCODING = global_func.getDefaultEncoding()
+DEFAULT_REPLACEMENTS = {u'"': u'\''}
+
+DEFAULT_CSV_DELITEMER = u','
+ALTER_CSV_DELITEMER = u';'
 
 
 def saveTextFile(txt_filename, txt='', rewrite=True):
@@ -236,3 +244,57 @@ def appendTextFileLine(line, txt_filename=None, add_linesep=True):
             file_obj.close()
         log_func.fatal(u'Error add line in text file <%s>' % txt_filename)
     return False
+
+
+def saveCSVFile(csv_filename, records=(),
+                delim=DEFAULT_CSV_DELITEMER, encoding=DEFAULT_ENCODING,
+                replacements=None):
+    """
+    Save CSV file.
+
+    :param csv_filename: CSV filename.
+    :param records: Record list.
+        Each record is a list of field values.
+    :param delim: Separator character.
+    :param encoding: Result file encoding.
+    :param replacements: Dictionary of automatic field value substitutions.
+    :return: True/False.
+    """
+    global DEFAULT_REPLACEMENTS
+    if replacements is None:
+        replacements = DEFAULT_REPLACEMENTS
+        if delim not in replacements:
+            replacements[delim] = ALTER_CSV_DELITEMER if delim == DEFAULT_CSV_DELITEMER else (DEFAULT_CSV_DELITEMER if delim == ALTER_CSV_DELITEMER else DEFAULT_CSV_DELITEMER)
+    prepare_records = [[str_func.replaceInText(str_func.toUnicode(field, encoding), replacements) for field in record] for record in records]
+    txt = u'\n'.join([delim.join(record) for record in prepare_records])
+    return saveTextFile(csv_filename, txt)
+
+
+def loadCSVFile(csv_filename, delim=u','):
+    """
+    Load CSV file as record list.
+
+    :param csv_filename: CSV filename.
+    :param delim: Separator character.
+    :return: Record list.
+        Each record is a list of field values.
+        Or None if error.
+    """
+    if not os.path.exists(csv_filename):
+        log_func.warning(u'File <%s> not found' % csv_filename)
+        return None
+
+    txt = loadTextFile(csv_filename)
+    if txt:
+        txt = txt.strip()
+
+        try:
+            records = list()
+            txt_lines = txt.split(u'\n')
+            for txt_line in txt_lines:
+                record = [str_func.parseWiseTypeStr(field) for field in txt_line.split(delim)]
+                records.append(record)
+            return records
+        except:
+            log_func.fatal(u'Error convert CSV file <%s> to record list' % csv_filename)
+    return None

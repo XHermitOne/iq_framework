@@ -492,3 +492,59 @@ def deleteSymbolInText(text, symbol=u' '):
     :return: Text with a deleted character, or the original text in case of an error.
     """
     return deleteInText(text, (symbol, ))
+
+
+def isFloatStr(text):
+    """
+    Determine if a string is a floating point number.
+
+    :param text: Text.
+    :return: True/False
+    """
+    try:
+        float(text)
+        return True
+    except ValueError:
+        return False
+
+
+def isIntStr(text):
+    """
+    Determine if a string is an integer.
+
+    :param text: Text.
+    :return: True/False
+    """
+    return text.isdigit()
+
+
+def isNoneStr(text):
+    """
+    Determine if string is None.
+
+    :param text: Text.
+    :return: True/False
+    """
+    return text.strip() == 'None'
+
+
+def parseWiseTypeStr(text):
+    """
+    Type conversion from string to real type.
+
+    :param text: Text.
+    :return: Real type value.
+        For example:
+            text = 'None' - None
+            text = '099' - 99
+            text = '3.14' - 3.14
+            text = 'XYZ' - 'XYZ'
+    """
+    if isNoneStr(text):
+        return None
+    elif isIntStr(text):
+        return int(text)
+    elif isFloatStr(text):
+        return float(text)
+    # String
+    return text
