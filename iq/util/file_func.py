@@ -16,13 +16,17 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
-ALTER_HOME_DIRNAME = '~' + os.sep
-ALTER_CUR_DIRNAME = '.' + os.sep
-ALTER_PARENT_DIRNAME = '..' + os.sep
+ALTER_HOME_DIRNAME = '~'
+ALTER_CUR_DIRNAME = '.'
+ALTER_PARENT_DIRNAME = '..'
+
+ALTER_HOME_DIRNAME_SEP = ALTER_HOME_DIRNAME + os.sep
+ALTER_CUR_DIRNAME_SEP = ALTER_CUR_DIRNAME + os.sep
+ALTER_PARENT_DIRNAME_SEP = ALTER_PARENT_DIRNAME + os.sep
 
 
 def getDirectoryNames(path):
@@ -493,16 +497,45 @@ def getNormalPath(path):
     :return: Normal path.
     """
     try:
-        if path.startswith(ALTER_PARENT_DIRNAME):
+        if path.startswith(ALTER_PARENT_DIRNAME_SEP):
             return os.path.normpath(os.path.join(os.path.dirname(os.getcwd()),
-                                                 path.lstrip(ALTER_PARENT_DIRNAME)))
-        elif path.startswith(ALTER_CUR_DIRNAME):
+                                                 path.lstrip(ALTER_PARENT_DIRNAME_SEP)))
+        elif path.startswith(ALTER_CUR_DIRNAME_SEP):
             return os.path.normpath(os.path.join(os.getcwd(),
-                                                 path.lstrip(ALTER_CUR_DIRNAME)))
-        elif path.startswith(ALTER_HOME_DIRNAME):
+                                                 path.lstrip(ALTER_CUR_DIRNAME_SEP)))
+        elif path.startswith(ALTER_HOME_DIRNAME_SEP):
             return os.path.normpath(os.path.join(getHomePath(),
-                                                 path.lstrip(ALTER_HOME_DIRNAME)))
+                                                 path.lstrip(ALTER_HOME_DIRNAME_SEP)))
         return os.path.normpath(path)
     except:
         log_func.fatal(u'Error normal path <%s>' % path)
     return path
+
+
+def getRelativePath(path):
+    """
+    Get relative path.
+
+    :param path: Path.
+    :return: Relative path.
+    """
+    try:
+        path = os.path.normpath(path)
+
+        cur_path = os.getcwd()
+        if path.startswith(cur_path):
+            return path.replace(cur_path, ALTER_CUR_DIRNAME)
+
+        parent_path = os.path.dirname(os.getcwd())
+        if path.startswith(parent_path):
+            return path.replace(parent_path, ALTER_PARENT_DIRNAME)
+
+        home_path = getHomePath()
+        if path.startswith(home_path):
+            return path.replace(home_path, ALTER_HOME_DIRNAME)
+
+        return path
+    except:
+        log_func.fatal(u'Error relative path <%s>' % path)
+    return path
+

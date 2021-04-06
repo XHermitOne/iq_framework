@@ -101,7 +101,7 @@ class iqIndicatorConstructorDlgProto ( wx.Dialog ):
 		self.expression_edit = wx.stc.StyledTextCtrl(parent=self, id=wx.NewId())
 		bSizer1.Add( self.expression_edit, 1, wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, u"* Выражение должно возвращать True/False. True - индикатор в текущем состоянии и дальнейшая проверка не нужна. False - индикатор не в текущем стостоянии,\nпроисходит дальнейшая проверка других состояний.\nCначала должны проверятся самые критичные состояния (они должные стоять в списке описаний состояний на первом месте), а затем менее критичные.\nПри выполнении выражения в его окружении присутствует объект RECORDS. RECORDS - список словарей записей.", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, u"* The expression must return True / False. True - the indicator is in the current state and no further verification is needed. False - the indicator is not in the current state,\nfurther checking of other states occurs.\nThe most critical conditions should be checked first (they should be in the first place in the list of state descriptions), and then less critical ones.\nWhen an expression is executed, a RECORDS object is present in its environment. RECORDS - list of recording dictionaries. ", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText3.Wrap( -1 )
 
 		bSizer1.Add( self.m_staticText3, 0, wx.ALL, 5 )

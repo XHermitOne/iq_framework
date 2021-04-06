@@ -57,7 +57,7 @@ WXGROUPLISTVIEW_SPC = {
     'conv_record': None,
     'conv_dataset': None,
 
-    'get_row_text_colour': None,
+    'get_row_foreground_colour': None,
     'get_row_background_colour': None,
 
     'show_items_count': False,

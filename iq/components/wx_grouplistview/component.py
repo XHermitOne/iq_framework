@@ -365,8 +365,8 @@ class iqWxGroupListView(ObjectListView.GroupListView,
         context['RECORD'] = record
 
         text_colour = None
-        if self.isAttributeValue('get_row_text_colour'):
-            function_body = self.getAttribute('get_row_text_colour')
+        if self.isAttributeValue('get_row_foreground_colour'):
+            function_body = self.getAttribute('get_row_foreground_colour')
             if function_body:
                 text_colour = exec_func.execTxtFunction(function=function_body,
                                                         context=context)

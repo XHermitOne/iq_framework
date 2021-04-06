@@ -34,7 +34,8 @@ class iqDirPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
         return 'TextCtrlAndButton'
 
     def ValueToString(self, value, flags):
-        return str(value)
+        path = str(value)
+        return path     # file_func.getRelativePath(path) if value and os.path.exists(path) else path
 
     def StringToValue(self, text, flags):
         """
@@ -96,6 +97,8 @@ class iqDirPropertyEditor(wx.propgrid.PGTextCtrlAndButtonEditor):
                     if value.startswith(os.path.sep):
                         value = value[1:]
 
+                value = file_func.getRelativePath(value) if value and os.path.exists(value) else value
+                log_func.debug(u'Property <%s : %s>. Select directory' % (property.GetName(), value))
                 property.SetValueInEvent(value)
             return True
         elif eventType == wx.wxEVT_COMMAND_TEXT_ENTER:

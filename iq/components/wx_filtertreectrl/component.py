@@ -15,6 +15,7 @@ from . import spc
 from ...util import log_func
 from ...util import lang_func
 from ...util import exec_func
+from ...util import file_func
 
 from . import filter_tree_ctrl
 from ..wx_filterchoicectrl import filter_choicectrl
@@ -112,7 +113,10 @@ class iqWxFilterTreeCtrl(filter_tree_ctrl.iqFilterTreeCtrlProto,
         """
         Filter storage filename.
         """
-        return self.getAttribute('save_filename')
+        if self._save_filename is None:
+            save_filename = self.getAttribute('save_filename')
+            self._save_filename = file_func.getNormalPath(save_filename) if save_filename else save_filename
+        return self._save_filename
 
     def getEnvironment(self):
         """

@@ -1014,7 +1014,7 @@
                         <property name="gripper">0</property>
                         <property name="hidden">0</property>
                         <property name="id">wxID_ANY</property>
-                        <property name="label">* Выражение должно возвращать True/False. True - индикатор в текущем состоянии и дальнейшая проверка не нужна. False - индикатор не в текущем стостоянии,&#x0A;происходит дальнейшая проверка других состояний.&#x0A;Cначала должны проверятся самые критичные состояния (они должные стоять в списке описаний состояний на первом месте), а затем менее критичные.&#x0A;При выполнении выражения в его окружении присутствует объект RECORDS. RECORDS - список словарей записей.</property>
+                        <property name="label">* The expression must return True / False. True - the indicator is in the current state and no further verification is needed. False - the indicator is not in the current state,&#x0A;further checking of other states occurs.&#x0A;The most critical conditions should be checked first (they should be in the first place in the list of state descriptions), and then less critical ones.&#x0A;When an expression is executed, a RECORDS object is present in its environment. RECORDS - list of recording dictionaries. </property>
                         <property name="markup">0</property>
                         <property name="max_size"></property>
                         <property name="maximize_button">0</property>

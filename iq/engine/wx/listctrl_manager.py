@@ -240,7 +240,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
                     value = str(value)
 
                 if i == 0:
-                    item = listctrl.InsertItem(sys.maxsize, value)
+                    item = listctrl.InsertItem(listctrl.GetItemCount(), value)
                 else:
                     listctrl.SetItem(item, i, value)
 
@@ -513,8 +513,8 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         """
         if idx >= 0:
             try:
-                item = listctrl.GetItem(idx)
-                data = listctrl.GetItemData(item=item)
+                # item = listctrl.GetItem(idx)
+                data = listctrl.GetItemData(idx)
                 return data
             except:
                 log_func.fatal(u'Error get item data in wx.ListCtrl by index <%s>' % str(idx))
