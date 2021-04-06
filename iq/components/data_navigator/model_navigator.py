@@ -274,7 +274,7 @@ class iqModelNavigatorManager(data_object.iqDataObject):
                         order_by = (order_by,)
                     order_by_columns = [getattr(model, fld_name) for fld_name in order_by]
                     query = query.order_by(*order_by_columns)
-                records = query
+                records = [vars(record) for record in query]
                 self.stopTransaction(transaction)
             else:
                 table = self.getTable()
@@ -284,9 +284,9 @@ class iqModelNavigatorManager(data_object.iqDataObject):
                                                                        order_by=order_by)
                 transaction = self.startTransaction()
                 result = transaction.execute(select)
-                records = result.fetchall()
+                records = [dict(record) for record in result.fetchall()]
                 self.stopTransaction(transaction)
-            return [vars(record) for record in records]
+            return records
         except:
             log_func.fatal(u'Error search records by %s %s' % (str(search_args), str(search_kwargs)))
         return list()
