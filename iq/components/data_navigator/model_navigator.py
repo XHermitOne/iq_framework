@@ -282,8 +282,10 @@ class iqModelNavigatorManager(data_object.iqDataObject):
                                                                        table=table,
                                                                        limit=limit if limit >= 0 else None,
                                                                        order_by=order_by)
-                result = select.execute()
+                transaction = self.startTransaction()
+                result = transaction.execute(select)
                 records = result.fetchall()
+                self.stopTransaction(transaction)
             return [vars(record) for record in records]
         except:
             log_func.fatal(u'Error search records by %s %s' % (str(search_args), str(search_kwargs)))

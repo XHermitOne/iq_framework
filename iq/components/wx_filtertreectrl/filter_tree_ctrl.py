@@ -347,15 +347,15 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
 
         # To update the list of objects
         self._cur_item_filter = self.buildItemFilter(item)
-        self.OnChange(event)
+        self.onChange(event)
 
         # event.Skip()
 
-    def OnChange(self, event):
+    def onChange(self, event):
         """
         Filter change.
         """
-        log_func.warning(u'Not define <OnChange> function in <%s> component' % self.__class__.__name__)
+        log_func.warning(u'Not define <onChange> function in <%s> component' % self.__class__.__name__)
 
     def onItemSelectChanged(self, event):
         """
@@ -365,7 +365,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
         self._cur_item_filter = self.buildItemFilter(item)
 
         # Transfer processing to component
-        self.OnChange(event)
+        self.onChange(event)
 
         event.Skip()
 
@@ -696,7 +696,7 @@ class iqFilterTreeCtrlProto(wx.TreeCtrl,
 
         # To update the list of objects
         self._cur_item_filter = self.buildItemFilter(cur_item)
-        self.OnChange(event)
+        self.onChange(event)
 
         # event.Skip()
 

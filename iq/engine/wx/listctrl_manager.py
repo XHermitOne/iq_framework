@@ -503,6 +503,33 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             return listctrl_or_event.GetFirstSelected()
         return -1
 
+    def getListCtrlItemDataByIdx(self, listctrl, idx=-1):
+        """
+        Get the item data by item index.
+
+        :param listctrl: Object of wx.ListCtrl control.
+        :param idx: Item index.
+        :return: Data or None if index incorrect.
+        """
+        if idx >= 0:
+            try:
+                item = listctrl.GetItem(idx)
+                data = listctrl.GetItemData(item=item)
+                return data
+            except:
+                log_func.fatal(u'Error get item data in wx.ListCtrl by index <%s>' % str(idx))
+        return None
+
+    def getListCtrlSelectedItemData(self, listctrl):
+        """
+        Get the data of the selected item.
+
+        :param listctrl: Object of wx.ListCtrl control.
+        :return: Data or None if nothing is selected.
+        """
+        selected_idx = self.getListCtrlSelectedRowIdx(listctrl_or_event=listctrl)
+        return self.getListCtrlItemDataByIdx(listctrl=listctrl, idx=selected_idx)
+
     def selectListCtrlItem(self, listctrl=None, item=-1,
                            is_focus=True, deselect_prev=True):
         """

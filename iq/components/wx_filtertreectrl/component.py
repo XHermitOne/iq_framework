@@ -102,6 +102,7 @@ class iqWxFilterTreeCtrl(filter_tree_ctrl.iqFilterTreeCtrlProto,
         Change filter handler.
         """
         context = self.getContext()
+        context['event'] = event
         function_body = self.getAttribute('on_change')
         if function_body:
             return exec_func.execTxtFunction(function=function_body,
