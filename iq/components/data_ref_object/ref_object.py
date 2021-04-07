@@ -205,6 +205,25 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         self.stopTransaction(transaction)
         return result
 
+    def searchCodes(self, **column_values):
+        """
+        Search codes by column values.
+
+        :param column_values: Column values dictionary.
+            For example:
+                {
+                    'name': u'Name',
+                    'alter_id': 'Alter ID',
+                    ...
+                }
+            The search is made for exact comparison by <AND>.
+        :return: The list of found codes that match the desired value.
+            Or None if error.
+        """
+        search_records = self.searchRecsByColValues(**column_values)
+        cod_column_name = self.getCodColumnName()
+        return [record.get(cod_column_name, None)for record in search_records] if search_records is not None else list()
+
     def findRecByColContent(self, column_name=None, search_text=None,
                             case_sensitive=False, do_sort=True):
         """
@@ -227,10 +246,10 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                                               only_first=True)
         return records[0] if records else None
 
-    def searchCodes(self, search_value, search_colname=None,
-                    sort_columns=None, reverse=False):
+    def searchCodesByColValue(self, search_value, search_colname=None,
+                              sort_columns=None, reverse=False):
         """
-        Search codes by field.
+        Search codes by column value.
 
         :param search_value: Search value.
         :param search_colname: Search column name.
@@ -307,6 +326,10 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         if rec:
             activate = rec.get(self.getActiveColumnName(), False)
             if activate:
+                for column_name in column_names:
+                    if column_name not in rec:
+                        log_func.warning(u'Column <%s> not define in ref object <%s>' % (column_name, self.getName()))
+
                 return dict([(column_name, rec.get(column_name, None)) for column_name in column_names])
             else:
                 log_func.warning(u'Ref object <%s> cod <%s> not activate' % (self.getName(), cod))

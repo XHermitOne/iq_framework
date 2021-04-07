@@ -102,10 +102,8 @@ class iqRefObjItemDataSource(iqRefObjItemDataSourceBase):
         """
         ref_obj = self.getRoot().getRefObj()
         if ref_obj:
-            storage = ref_obj.getStorage()
-            if storage:
-                rec_dict = storage.getRecByCod(self.getCode())
-                return rec_dict
+            rec_dict = ref_obj.getRecByCod(self.getCode())
+            return rec_dict
         return None
         
     def getCode(self):

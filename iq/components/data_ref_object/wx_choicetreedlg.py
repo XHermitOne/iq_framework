@@ -696,8 +696,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         # ----------------------------------------
 
         try:
-            search_codes = self.ref_obj.searchCodes(search_txt, search_fieldname,
-                                                    sort_columns=order_by, reverse=is_reverse)
+            search_codes = self.ref_obj.searchCodesByColValue(search_txt, search_fieldname,
+                                                              sort_columns=order_by, reverse=is_reverse)
         except:
             log_func.fatal(u'Error searching codes by text')
             search_codes = list()

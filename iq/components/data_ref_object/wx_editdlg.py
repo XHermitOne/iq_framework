@@ -917,7 +917,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
             do_find = True
             if self.not_actual_search:
                 search_records = self.ref_obj.searchRecsByColValues()
-                search_codes = self.ref_obj.searchCodes(find_text)
+                search_codes = self.ref_obj.searchCodesByColValue(find_text)
                 if search_codes:
                     self.search_codes = search_codes
                     self.search_codes.sort()
