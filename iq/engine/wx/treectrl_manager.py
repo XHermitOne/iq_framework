@@ -89,38 +89,34 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
 
         if parent_item is None:
-            if isinstance(node, (list, tuple)) and len(node) > 1:
+            if isinstance(node, (list, tuple)):
                 log_func.debug(u'Create UNKNOWN root item of wx.TreeCtrl control')
                 parent_item = treectrl.AddRoot(base_manager.UNKNOWN)
-                result = self.appendTreeCtrlBranch(treectrl, parent_item=parent_item,
-                                                   node={spc_func.CHILDREN_ATTR_NAME: node},
-                                                   label=label, ext_func=ext_func)
+                result = self._appendTreeCtrlBranch(treectrl, parent_item=parent_item,
+                                                    node={spc_func.CHILDREN_ATTR_NAME: node},
+                                                    label=label, ext_func=ext_func)
                 return result
-            elif isinstance(node, (list, tuple)) and len(node) == 1:
-                node = node[0]
-                parent_item = self.addTreeCtrlRootItem(treectrl, node, label, ext_func)
             elif isinstance(node, dict):
-                parent_item = self.addTreeCtrlRootItem(treectrl, node, label, ext_func)
+                item = self.addTreeCtrlRootItem(treectrl, node, label, ext_func)
             else:
                 log_func.warning(u'Node type <%s> not support in wx.TreeCtrl manager' % str(type(node)))
                 return False
-
-        for record in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
-            item_label = str(record.get(label, u''))
-            # log_func.debug(u'Append tree item data <%s>' % item_label)
+        else:
+            item_label = str(node.get(label, u''))
+            # log_func.debug(u'Append tree item data <%s> %s' % (item_label, str(record.get(spc_func.CHILDREN_ATTR_NAME, None))))
             item = treectrl.AppendItem(parent_item, item_label)
 
             if ext_func:
                 try:
-                    ext_func(treectrl, item, record)
+                    ext_func(treectrl, item, node)
                 except:
                     log_func.fatal(u'Extended function <%s> error' % str(ext_func))
 
-            treectrl.SetItemData(item, record)
+            treectrl.SetItemData(item, node)
 
-            if spc_func.CHILDREN_ATTR_NAME in record and record[spc_func.CHILDREN_ATTR_NAME]:
-                for child in record[spc_func.CHILDREN_ATTR_NAME]:
-                    self.appendTreeCtrlBranch(treectrl, item, child, label=label, ext_func=ext_func)
+        # Create children items
+        for child in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
+            self._appendTreeCtrlBranch(treectrl, item, child, label=label, ext_func=ext_func)
 
     def appendTreeCtrlBranch(self, treectrl=None, parent_item=None, node=None, label='name', ext_func=None):
         """

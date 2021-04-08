@@ -112,6 +112,16 @@ def getFilter(filter_tree_data):
     return filter_tree_data['__filter__']
 
 
+def getCopyFilter(filter_tree_data):
+    """
+    Get copy node filter.
+
+    :param filter_tree_data: Node data.
+    :return: Node filter data.
+    """
+    return copy.deepcopy(filter_tree_data['__filter__'])
+
+
 def getIndicator(filter_tree_data):
     """
     Get node indicator.
@@ -144,6 +154,7 @@ def findLabel(filter_tree_data, label=u''):
     """
     if filter_tree_data.get('label', None) == label:
         return filter_tree_data
+
     if spc_func.CHILDREN_ATTR_NAME in filter_tree_data and filter_tree_data[spc_func.CHILDREN_ATTR_NAME]:
         for child in filter_tree_data[spc_func.CHILDREN_ATTR_NAME]:
             find_result = findLabel(child, label=label)

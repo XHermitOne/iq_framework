@@ -8,7 +8,7 @@ Data query component.
 from ...util import log_func
 from ...util import txtgen_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqDBQuery(object):
@@ -58,4 +58,24 @@ class iqDBQuery(object):
                 return db.executeSQL(full_sql_txt)
         except:
             log_func.fatal(u'Error execute query <%s>' % sql_txt)
+        return None
+
+    def genSQLText(self, **variables):
+        """
+        Generate SQL query text.
+
+        :param variables: SQL query variables.
+        :return: SQL query text or None if error.
+        """
+        sql_txt = self.getSQLText()
+
+        if not sql_txt:
+            log_func.warning(u'Empty SQL text for generation in <%s>' % self.getName())
+            return None
+
+        try:
+            full_sql_txt = txtgen_func.generate(sql_txt, variables)
+            return full_sql_txt
+        except:
+            log_func.fatal(u'Error generate SQL query <%s>' % sql_txt)
         return None
