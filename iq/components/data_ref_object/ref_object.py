@@ -106,7 +106,12 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
 
         filter_data = {column_name: column_value}
         records = self.searchRecsByColValues(**filter_data)
-        return records[0] if records else None
+        result = records[0] if records else None
+        if records and len(records) > 1:
+            log_func.warning(u'Found several records by column <%s> value <%s>' % (column_name, str(column_value)))
+            # for rec in records:
+            #     print(rec[self.getCodColumnName()], rec[self.getNameColumnName()], rec)
+        return result
 
     def searchRecsByColValues(self, **column_values):
         """
