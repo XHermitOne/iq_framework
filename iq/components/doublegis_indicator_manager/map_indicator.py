@@ -16,6 +16,7 @@ Developer cabinet Yandex: https://developer.tech.yandex.ru/services/
 API Key is stored in a separate file API_KEY_YANDEX_FILENAME.
 """
 
+import itertools
 import os.path
 import uuid
 
@@ -27,8 +28,14 @@ from iq.engine.wx import wxcolour_func
 try:
     import yandex_maps
 except ImportError:
-    log_func.warning(u'Error importing yandex_maps to determine geolocation by address')
+    log_func.warning(u'Error importing <yandex_maps> library to determine geolocation by address')
     yandex_maps = None
+
+try:
+    import dadata
+except ImportError:
+    log_func.warning(u'Error importing <dadata> labrary to determine geolocation by address')
+    dadata = None
 
 import urllib.request
 import urllib.parse
@@ -54,10 +61,54 @@ API_KEY_2GIS_FILENAME = os.path.join(os.path.dirname(__file__), 'api_key_2gis.tx
 DOUBLEGIS_GEO_LOCATOR_API_KEY = txtfile_func.loadTextFile(API_KEY_2GIS_FILENAME).strip()
 DOUBLEGIS_GEO_LACATOR_URL_FMT = 'https://catalog_func.api.2gis.ru/geo/search?q=%s&format=json&limit=1&version=2.0&key=%s'
 
+SPUTNIK_GEO_LOCATOR_URL_FMT = 'http://search.maps.sputnik.ru/search/addr?q=%s'
 
-def getDefaultGeolocations(address_query, geo_key=None):
+
+def getDefaultGeolocations(address_query, *args, **kwargs):
+    """
+    Get all geolocation data for the requested address by yandex maps.
+
+    :param address_query: Address.
+        For example:
+            Moscow, Gagarin street, 10.
+    :return: [(latitude, longitude),...] Geolocation data list or empty list in case of error.
+    """
+    # Default Sputnik service
+    return getSputnikGeolocations(address_query=address_query, *args, **kwargs)
+
+
+def getDefaultGeolocation(address_query, geo_key=None, item=0, cache=True):
     """
     Get all geolocation data for the requested address.
+
+    :param address_query: Address.
+        For example:
+            Moscow, Gagarin street, 10.
+    :param geo_key: Geolocator API key.
+    :param item: The index of the item to select.
+    :param cache: Use internal cache?
+    :return: (latitude, longitude) of geolocation data or (None, None) in case of error.
+    """
+    global GEO_LOCATOR_CACHE
+    if cache:
+        if GEO_LOCATOR_CACHE is None:
+            GEO_LOCATOR_CACHE = dict()
+        if address_query in GEO_LOCATOR_CACHE:
+            # If such an address is in the cache, then we take it from the cache
+            return GEO_LOCATOR_CACHE[address_query]
+
+    geo_locations = getDefaultGeolocations(address_query, geo_key=geo_key)
+    if geo_locations and item < len(geo_locations):
+        if cache:
+            # We save in the cache
+            GEO_LOCATOR_CACHE[address_query] = geo_locations[item]
+        return geo_locations[item]
+    return None, None
+
+
+def getYandexMapsGeolocations(address_query, geo_key=None):
+    """
+    Get all geolocation data for the requested address by yandex maps.
 
     :param address_query: Address.
         For example:
@@ -92,35 +143,6 @@ def getDefaultGeolocations(address_query, geo_key=None):
     return list()
 
 
-def getDefaultGeolocation(address_query, geo_key=None, item=0, cache=True):
-    """
-    Get all geolocation data for the requested address.
-
-    :param address_query: Address.
-        For example:
-            Moscow, Gagarin street, 10.
-    :param geo_key: Geolocator API key.
-    :param item: The index of the item to select.
-    :param cache: Use internal cache?
-    :return: (latitude, longitude) of geolocation data or (None, None) in case of error.
-    """
-    if cache:
-        global GEO_LOCATOR_CACHE
-        if GEO_LOCATOR_CACHE is None:
-            GEO_LOCATOR_CACHE = dict()
-        if address_query in GEO_LOCATOR_CACHE:
-            # If such an address is in the cache, then we take it from the cache
-            return GEO_LOCATOR_CACHE[address_query]
-
-    geo_locations = getDefaultGeolocations(address_query, geo_key=geo_key)
-    if geo_locations and item < len(geo_locations):
-        if cache:
-            # We save in the cache
-            GEO_LOCATOR_CACHE[address_query] = geo_locations[item]
-        return geo_locations[item]
-    return None, None
-
-
 def getYandexMapsGeolocation(address_query, geo_key=None, cache=True):
     """
     Get geolocation data for the requested address.
@@ -134,8 +156,8 @@ def getYandexMapsGeolocation(address_query, geo_key=None, cache=True):
     :param cache: Use internal cache?
     :return: (latitude, longitude) of geolocation data or (None, None) in case of error.
     """
+    global GEO_LOCATOR_CACHE
     if cache:
-        global GEO_LOCATOR_CACHE
         if GEO_LOCATOR_CACHE is None:
             GEO_LOCATOR_CACHE = dict()
         if address_query in GEO_LOCATOR_CACHE:
@@ -172,8 +194,8 @@ def get2GISGeolocations(address_query, geo_key=None, cache=True):
     :param cache: Use internal cache?
     :return: [(latitude, longitude),...] Geolocation data list or empty list in case of error.
     """
+    global GEO_LOCATOR_CACHE
     if cache:
-        global GEO_LOCATOR_CACHE
         if GEO_LOCATOR_CACHE is None:
             GEO_LOCATOR_CACHE = dict()
         if address_query in GEO_LOCATOR_CACHE:
@@ -201,6 +223,87 @@ def get2GISGeolocations(address_query, geo_key=None, cache=True):
         return geo_locations
     except Exception as e:
         log_func.fatal(u'2GIS. Error retrieving geolocation data by address <%s>' % address_query)
+    return list()
+
+
+def getDaDataGeolocation(address_query, api_key=None, secret_key=None, cache=True):
+    """
+    Get geolocation data for the requested address.
+    Library used https://github.com/hflabs/dadata-py.
+    Ubuntu installation: pip3 install dadata
+
+    :param address_query: Address.
+        For example:
+            Moscow, Gagarin street, 10.
+    :param api_key: Geolocator API key.
+    :param secret_key: Secret key.
+    :param cache: Use internal cache?
+    :return: (latitude, longitude) of geolocation data or (None, None) in case of error.
+    """
+    global GEO_LOCATOR_CACHE
+    if cache:
+        if GEO_LOCATOR_CACHE is None:
+            GEO_LOCATOR_CACHE = dict()
+        if address_query in GEO_LOCATOR_CACHE:
+            # If such an address is in the cache, then we take it from the cache
+            return GEO_LOCATOR_CACHE[address_query]
+
+    dadata_client = None
+    try:
+        if not dadata:
+            log_func.warning(u'DaData library not installed. Ubuntu installation: pip3 install dadata')
+            return None, None
+        dadata_client = dadata.Dadata(token=api_key, secret=secret_key)
+        geo_data = dadata_client.clean(name='address', source=address_query)
+        dadata_client.close()
+        dadata_client = None
+
+        geo_latitude = geo_data.get('geo_lat', None)
+        geo_latitude = float(geo_latitude.replace(',', '.')) if isinstance(geo_latitude, str) else geo_latitude
+        geo_longitude = geo_data.get('geo_lon', None)
+        geo_longitude = float(geo_longitude.replace(',', '.')) if isinstance(geo_longitude, str) else geo_longitude
+        log_func.debug(u'Address <%s>. Geo position [%f x %f]' % (address_query, geo_latitude, geo_longitude))
+        if cache:
+            # Save in the cache
+            GEO_LOCATOR_CACHE[address_query] = (geo_latitude, geo_longitude)
+        return geo_latitude, geo_longitude
+    except Exception as e:
+        if dadata_client:
+            dadata_client.close()
+        log_func.fatal(u'DaData. Error retrieving geolocation data by address <%s>' % address_query)
+    return None, None
+
+
+def getSputnikGeolocations(address_query):
+    """
+    Get all geolocation data for the requested address
+    by service http://api.sputnik.ru/maps/geocoder/.
+
+    :param address_query: Address.
+        For example:
+            Moscow, Gagarin street, 10.
+    :return: [(latitude, longitude),...] Geolocation data list or empty list in case of error.
+    """
+    try:
+        address = urllib.parse.quote(address_query)
+        url = SPUTNIK_GEO_LOCATOR_URL_FMT % address
+        log_func.debug(u'Geodata retrieval URL <%s>' % url)
+        response = urllib.request.urlopen(url)
+        data = response.read()
+        # ERROR: JSON object must be str not bytes
+        #                                      V
+        geo_location_data = json.loads(data.decode('utf-8'))
+
+        find_address = geo_location_data.get('result',
+                                             dict()).get('address', list())
+        find_features = list(itertools.chain(*[item.get('features', list()) for item in find_address]))
+        find_geometries = list(itertools.chain(*[item.get('geometry', dict()).get('geometries', list()) for item in find_features]))
+        find_coordinates = [item.get('coordinates', list()) for item in find_geometries]
+        find_coordinates = [list(reversed(item)) for item, _ in itertools.groupby(find_coordinates)]
+
+        return find_coordinates
+    except Exception as e:
+        log_func.fatal(u'Sputnik. Error retrieving geolocation data by address <%s>' % address_query)
     return list()
 
 
