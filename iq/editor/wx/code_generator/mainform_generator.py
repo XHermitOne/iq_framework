@@ -88,7 +88,7 @@ class %s(%s.%s,
         \"\"\"
         %s.%s.__init__(self, *args, **kwargs)
 
-        self.main_menubar = main_menubar.iqMainMenubar()
+        self.main_menubar = main_menubar.createMainMenubar()
         self.SetMenuBar(self.main_menubar)
 
     def init(self):
