@@ -54,12 +54,13 @@ GEO_LOCATOR_CACHE = None
 
 # Yandex API key
 API_KEY_YANDEX_FILENAME = os.path.join(os.path.dirname(__file__), 'api_key_yandexmaps.txt')
-YANDEX_GEO_LOCATOR_API_KEY = txtfile_func.loadTextFile(API_KEY_YANDEX_FILENAME).strip()
 YANDEX_GEO_LACATOR_URL_FMT = 'http://geocode-maps.yandex.ru/1.x/?geocode=%s&apikey=%s&format=json'
 
 API_KEY_2GIS_FILENAME = os.path.join(os.path.dirname(__file__), 'api_key_2gis.txt')
-DOUBLEGIS_GEO_LOCATOR_API_KEY = txtfile_func.loadTextFile(API_KEY_2GIS_FILENAME).strip()
 DOUBLEGIS_GEO_LACATOR_URL_FMT = 'https://catalog_func.api.2gis.ru/geo/search?q=%s&format=json&limit=1&version=2.0&key=%s'
+
+API_KEY_DADATA_FILENAME = os.path.join(os.path.dirname(__file__), 'api_key_dadata.txt')
+SECRET_KEY_DADATA_FILENAME = os.path.join(os.path.dirname(__file__), 'secret_key_dadata.txt')
 
 SPUTNIK_GEO_LOCATOR_URL_FMT = 'http://search.maps.sputnik.ru/search/addr?q=%s'
 
@@ -67,24 +68,43 @@ SPUTNIK_GEO_LOCATOR_URL_FMT = 'http://search.maps.sputnik.ru/search/addr?q=%s'
 def getDefaultGeolocations(address_query, *args, **kwargs):
     """
     Get all geolocation data for the requested address by yandex maps.
+    Checking geolocations from different sources sequentially:
+    DaData.
+    YandexMaps (by yandexmaps library).
+    YandexMaps.
 
     :param address_query: Address.
         For example:
             Moscow, Gagarin street, 10.
     :return: [(latitude, longitude),...] Geolocation data list or empty list in case of error.
     """
-    # Default Sputnik service
-    return getSputnikGeolocations(address_query=address_query, *args, **kwargs)
+    try:
+        # DaData geolocator
+        geo_location = getDaDataGeolocation(address_query=address_query, *args, **kwargs)
+        if geo_location and geo_location[0] and geo_location[1]:
+            return [geo_location]
+        # Yandex geolocator
+        geo_location = getYandexMapsGeolocation(address_query=address_query, *args, **kwargs)
+        if geo_location and geo_location[0] and geo_location[1]:
+            return [geo_location]
+        # Yandex geolocations
+        geo_locations = getYandexMapsGeolocations(address_query=address_query, *args, **kwargs)
+        if geo_locations:
+            return geo_locations
+
+        log_func.warning(u'Not available geolocators')
+    except:
+        log_func.fatal(u'Error get default geolocations')
+    return list()
 
 
-def getDefaultGeolocation(address_query, geo_key=None, item=0, cache=True):
+def getDefaultGeolocation(address_query, item=0, cache=True):
     """
     Get all geolocation data for the requested address.
 
     :param address_query: Address.
         For example:
             Moscow, Gagarin street, 10.
-    :param geo_key: Geolocator API key.
     :param item: The index of the item to select.
     :param cache: Use internal cache?
     :return: (latitude, longitude) of geolocation data or (None, None) in case of error.
@@ -97,7 +117,7 @@ def getDefaultGeolocation(address_query, geo_key=None, item=0, cache=True):
             # If such an address is in the cache, then we take it from the cache
             return GEO_LOCATOR_CACHE[address_query]
 
-    geo_locations = getDefaultGeolocations(address_query, geo_key=geo_key)
+    geo_locations = getDefaultGeolocations(address_query)
     if geo_locations and item < len(geo_locations):
         if cache:
             # We save in the cache
@@ -117,7 +137,7 @@ def getYandexMapsGeolocations(address_query, geo_key=None):
     :return: [(latitude, longitude),...] Geolocation data list or empty list in case of error.
     """
     if geo_key is None:
-        geo_key = YANDEX_GEO_LOCATOR_API_KEY
+        geo_key = txtfile_func.loadTextFile(API_KEY_YANDEX_FILENAME).strip()
 
     try:
         address = urllib.parse.quote(address_query)
@@ -156,6 +176,9 @@ def getYandexMapsGeolocation(address_query, geo_key=None, cache=True):
     :param cache: Use internal cache?
     :return: (latitude, longitude) of geolocation data or (None, None) in case of error.
     """
+    if geo_key is None:
+        geo_key = txtfile_func.loadTextFile(API_KEY_YANDEX_FILENAME).strip()
+
     global GEO_LOCATOR_CACHE
     if cache:
         if GEO_LOCATOR_CACHE is None:
@@ -168,7 +191,7 @@ def getYandexMapsGeolocation(address_query, geo_key=None, cache=True):
         if not yandex_maps:
             log_func.warning(u'Yandexmaps library not installed. Ubuntu installation: pip3 install Yandexmaps')
             return None, None
-        yandex = yandex_maps.Yandexmaps()
+        yandex = yandex_maps.Yandexmaps(api_key=geo_key)
         geo_location = yandex.address(address=address_query)
         # [NOTE] In API Yandex Maps longitude first, then latitude,
         #                             V
@@ -194,6 +217,9 @@ def get2GISGeolocations(address_query, geo_key=None, cache=True):
     :param cache: Use internal cache?
     :return: [(latitude, longitude),...] Geolocation data list or empty list in case of error.
     """
+    if geo_key is None:
+        geo_key = txtfile_func.loadTextFile(API_KEY_2GIS_FILENAME).strip()
+
     global GEO_LOCATOR_CACHE
     if cache:
         if GEO_LOCATOR_CACHE is None:
@@ -201,9 +227,6 @@ def get2GISGeolocations(address_query, geo_key=None, cache=True):
         if address_query in GEO_LOCATOR_CACHE:
             # If such an address is in the cache, then we take it from the cache
             return GEO_LOCATOR_CACHE[address_query]
-
-    if geo_key is None:
-        geo_key = DOUBLEGIS_GEO_LOCATOR_API_KEY
 
     try:
         address = urllib.parse.quote(address_query)
@@ -240,6 +263,11 @@ def getDaDataGeolocation(address_query, api_key=None, secret_key=None, cache=Tru
     :param cache: Use internal cache?
     :return: (latitude, longitude) of geolocation data or (None, None) in case of error.
     """
+    if api_key is None:
+        api_key = txtfile_func.loadTextFile(API_KEY_DADATA_FILENAME).strip()
+    if secret_key is None:
+        secret_key = txtfile_func.loadTextFile(SECRET_KEY_DADATA_FILENAME).strip()
+
     global GEO_LOCATOR_CACHE
     if cache:
         if GEO_LOCATOR_CACHE is None:

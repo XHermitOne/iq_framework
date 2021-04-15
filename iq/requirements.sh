@@ -114,7 +114,7 @@ sudo apt install --assume-yes python3-pandas
 
 # Maps
 pip3 install folium
-#pip3 install yandex-maps
+pip3 install yandex-maps
 pip3 install dadata
 
 # Java
