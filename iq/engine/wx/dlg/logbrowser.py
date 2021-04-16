@@ -302,7 +302,7 @@ class iqLogBrowserPanelManager:
         self.filter_panel.msg_listCtrl.DeleteAllItems()
         self.records = self.getRecords()
         for i, record in enumerate(self.records):
-            # item_idx = self.filter_panel.msg_listCtrl.InsertItem(i, record['dt'].strftime(logfile_func.DATETIME_LOG_FMT))
+            item_idx = self.filter_panel.msg_listCtrl.InsertItem(i, record['dt'].strftime(logfile_func.DATETIME_LOG_FMT))
             self.filter_panel.msg_listCtrl.SetItem(i, 1, record.get('type', u''))
             self.filter_panel.msg_listCtrl.SetItem(i, 2, record.get('short', u''))
 
