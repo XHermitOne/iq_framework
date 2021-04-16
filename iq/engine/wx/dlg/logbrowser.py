@@ -34,15 +34,15 @@ _ = lang_func.getTranslation().gettext
 
 TIME_FMT = '%H:%M:%S'
 
-LOG_TYPE_COLOURS = {
-                    logfile_func.INFO_LOG_TYPE: wx.Colour('DARKGREEN'),
-                    logfile_func.WARNING_LOG_TYPE: wx.Colour('GOLDENROD'),
-                    logfile_func.ERROR_LOG_TYPE: wx.Colour('RED4'),
-                    logfile_func.FATAL_LOG_TYPE: wx.Colour('RED3'),
-                    logfile_func.DEBUG_LOG_TYPE: wx.Colour('BLUE4'),
-                    logfile_func.DEBUG_SERVICE_LOG_TYPE: wx.Colour('CYAN4'),
-                    logfile_func.SERVICE_LOG_TYPE: wx.Colour('CYAN4'),
-                    }
+LOG_TYPE_COLOUR_NAMES = {
+                         logfile_func.INFO_LOG_TYPE: 'DARKGREEN',
+                         logfile_func.WARNING_LOG_TYPE: 'GOLDENROD',
+                         logfile_func.ERROR_LOG_TYPE: 'RED4',
+                         logfile_func.FATAL_LOG_TYPE: 'RED3',
+                         logfile_func.DEBUG_LOG_TYPE: 'BLUE4',
+                         logfile_func.DEBUG_SERVICE_LOG_TYPE: 'CYAN4',
+                         logfile_func.SERVICE_LOG_TYPE: 'CYAN4',
+                        }
 
 LOG_TYPE_LABELS = {
                    logfile_func.INFO_LOG_TYPE: _(u'Information'),
@@ -306,7 +306,9 @@ class iqLogBrowserPanelManager:
             self.filter_panel.msg_listCtrl.SetItem(i, 1, record.get('type', u''))
             self.filter_panel.msg_listCtrl.SetItem(i, 2, record.get('short', u''))
 
-            self.filter_panel.msg_listCtrl.SetItemTextColour(i, LOG_TYPE_COLOURS.get(record['type'], wx.BLACK))
+            colour_name = LOG_TYPE_COLOUR_NAMES.get(record['type'], None)
+            colour = wx.Colour(colour_name) if colour_name else wx.BLACK
+            self.filter_panel.msg_listCtrl.SetItemTextColour(i, colour)
 
         # Resize the column of the message text
         self.filter_panel.msg_listCtrl.SetColumnWidth(2, wx.LIST_AUTOSIZE)
