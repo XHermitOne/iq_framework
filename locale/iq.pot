@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-12-23 09:36+0700\n"
+"POT-Creation-Date: 2021-04-16 13:12+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,6 +61,8 @@ msgstr ""
 
 #: ./dealer_sales/menubars/main_menubar_proto.py:66
 #: ./online_warehouse/menubars/main_menubar_proto.py:69
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:94
+#: ./sales_map/menubars/main_menubar_proto.py:49
 #: ./secretary/menubars/main_menubar_proto.py:96
 msgid "Справочники"
 msgstr ""
@@ -102,32 +104,102 @@ msgid "Аналитика"
 msgstr ""
 
 #: ./dealer_sales/menubars/main_menubar_proto.py:98
+#: ./sales_map/menubars/main_menubar_proto.py:28
 msgid "Карта продаж"
 msgstr ""
 
 #: ./dealer_sales/menubars/main_menubar_proto.py:101
+#: ./sales_map/menubars/main_menubar_proto.py:31
 msgid "Карты"
 msgstr ""
 
 #: ./iq/components/data_engine/component.py:45
-#: ./iq/components/data_query/component.py:45
 msgid "MESSAGE"
 msgstr ""
 
 #: ./iq/components/data_engine/component.py:46
-#: ./iq/components/data_query/component.py:46
 msgid "Database connection established"
 msgstr ""
 
 #: ./iq/components/data_engine/component.py:49
-#: ./iq/components/data_query/component.py:49
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg.py:43
 msgid "ERROR"
 msgstr ""
 
 #: ./iq/components/data_engine/component.py:50
-#: ./iq/components/data_query/component.py:50
 msgid "Database connection not established"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:26
+msgid "Viewing SQL query results"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:44
+msgid "Variables:"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:59
+msgid "SQL:"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:82
+msgid "Collapse panel"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:82
+msgid "Свернуть панель"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:84
+msgid "Expand panel"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:84
+msgid "Развернуть панель"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:88
+msgid "Refresh"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:88
+msgid "Обновить результаты запроса"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:92
+msgid "Limiting the number of records:"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:107
+msgid "Total records:"
+msgstr ""
+
+#: ./iq/components/data_query/view_sql_query_dlg_proto.py:129
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:66
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:187
+#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:286
+#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:74
+#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:91
+#: ./iq/editor/wx/res_editor/new_resource_dlg.py:83
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:92
+#: ./iq/engine/wx/dlg/log_browser_proto.py:200
+#: ./iq/engine/wx/dlg/login_dialog_proto.py:63
+#: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:35
+#: ./iq/engine/wx/dlg/wxdlg_func.py:592 ./iq/engine/wx/dlg/wxdlg_func.py:690
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:209
+#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:380
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:209
+#: ./secretary/in_documents/new_in_doc_dlg_proto.py:380
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:188
+#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:338
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:188
+#: ./secretary/out_documents/new_out_doc_dlg_proto.py:338
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:136
+#: ./secretary/phone_book/edit_phone_dlg_proto.py:240
+#: ./secretary/phone_book/new_phone_dlg_proto.py:136
+#: ./secretary/phone_book/new_phone_dlg_proto.py:240
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:140
+msgid "OK"
 msgstr ""
 
 #: ./iq/components/data_ref_object/component.py:24
@@ -148,6 +220,18 @@ msgstr ""
 
 #: ./iq/components/data_ref_object/component.py:28
 msgid "Can edit records/change ref objects"
+msgstr ""
+
+#: ./iq/components/data_ref_object/ref_object.py:549
+msgid " Computer "
+msgstr ""
+
+#: ./iq/components/data_ref_object/ref_object.py:549
+msgid "Editing locked by user "
+msgstr ""
+
+#: ./iq/components/data_ref_object/ref_object.py:550
+msgid "ATTENTION"
 msgstr ""
 
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:40
@@ -222,9 +306,9 @@ msgstr ""
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:283
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:360
 #: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:71
-#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:93
+#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:94
 #: ./iq/editor/wx/res_editor/new_resource_dlg.py:80
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:80
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:89
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:44
 #: ./iq/engine/wx/dlg/login_dialog_proto.py:60
 #: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:32
@@ -249,35 +333,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:66
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:187
-#: ./iq/components/data_ref_object/refobj_dialogs_proto.py:286
-#: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:74
-#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:90
-#: ./iq/editor/wx/res_editor/new_resource_dlg.py:83
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:83
-#: ./iq/engine/wx/dlg/login_dialog_proto.py:63
-#: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:35
-#: ./iq/engine/wx/dlg/wxdlg_func.py:592 ./iq/engine/wx/dlg/wxdlg_func.py:690
-#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:209
-#: ./secretary/in_documents/edit_in_doc_dlg_proto.py:380
-#: ./secretary/in_documents/new_in_doc_dlg_proto.py:209
-#: ./secretary/in_documents/new_in_doc_dlg_proto.py:380
-#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:188
-#: ./secretary/out_documents/edit_out_doc_dlg_proto.py:338
-#: ./secretary/out_documents/new_out_doc_dlg_proto.py:188
-#: ./secretary/out_documents/new_out_doc_dlg_proto.py:338
-#: ./secretary/phone_book/edit_phone_dlg_proto.py:136
-#: ./secretary/phone_book/edit_phone_dlg_proto.py:240
-#: ./secretary/phone_book/new_phone_dlg_proto.py:136
-#: ./secretary/phone_book/new_phone_dlg_proto.py:240
-#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:140
-msgid "OK"
-msgstr ""
-
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:117
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:155
-#: ./iq/components/data_ref_object/wx_editdlg.py:365
+#: ./iq/components/data_ref_object/wx_editdlg.py:376
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:25
 #: ./iq_report/report/report_browser.py:257
 #: ./online_warehouse/product/product_browser_proto.py:37
@@ -325,6 +383,7 @@ msgstr ""
 
 #: ./iq/components/data_ref_object/refobj_dialogs_proto.py:159
 #: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:68
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:83
 #: ./online_warehouse/product/product_browser_proto.py:33
 msgid "Delete"
 msgstr ""
@@ -367,19 +426,27 @@ msgstr ""
 
 #: ./iq/components/data_ref_object/wx_choicelistdlg.py:48
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:75
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:53
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:66
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:56
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:69
 msgid "Name"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:718
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:733
-#: ./iq/components/data_ref_object/wx_editdlg.py:281
-#: ./iq/components/data_ref_object/wx_editdlg.py:314
-#: ./iq/components/data_ref_object/wx_editdlg.py:836
-#: ./iq/components/data_ref_object/wx_editdlg.py:870
-#: ./iq/components/data_ref_object/wx_editdlg.py:885
-#: ./iq/components/data_ref_object/wx_editdlg.py:968
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:310
+msgid "Open ref object"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:313
+msgid "Ref object"
+msgstr ""
+
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:723
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:738
+#: ./iq/components/data_ref_object/wx_editdlg.py:290
+#: ./iq/components/data_ref_object/wx_editdlg.py:323
+#: ./iq/components/data_ref_object/wx_editdlg.py:893
+#: ./iq/components/data_ref_object/wx_editdlg.py:926
+#: ./iq/components/data_ref_object/wx_editdlg.py:941
+#: ./iq/components/data_ref_object/wx_editdlg.py:1028
 #: ./iq_report/report/report_browser.py:312
 #: ./iq_report/report/report_browser.py:328
 #: ./iq_report/report/report_browser.py:341
@@ -389,27 +456,27 @@ msgstr ""
 msgid "WARNING"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:719
-#: ./iq/components/data_ref_object/wx_editdlg.py:871
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:724
+#: ./iq/components/data_ref_object/wx_editdlg.py:927
 msgid "No records found matching search string"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_choicetreedlg.py:733
+#: ./iq/components/data_ref_object/wx_choicetreedlg.py:738
 msgid "No search bar selected"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_editdlg.py:792
-#: ./iq/components/data_uni_object/uni_object.py:231
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:99
+#: ./iq/components/data_ref_object/wx_editdlg.py:849
+#: ./iq/components/data_uni_object/uni_object.py:246
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:98
 msgid "DELETE"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_editdlg.py:886
-#: ./iq/components/data_ref_object/wx_editdlg.py:969
+#: ./iq/components/data_ref_object/wx_editdlg.py:942
+#: ./iq/components/data_ref_object/wx_editdlg.py:1029
 msgid "No search string selected"
 msgstr ""
 
-#: ./iq/components/data_ref_object/wx_editdlg.py:957
+#: ./iq/components/data_ref_object/wx_editdlg.py:1014
 msgid "SEARCH"
 msgstr ""
 
@@ -417,7 +484,23 @@ msgstr ""
 msgid "Can edit uni objects"
 msgstr ""
 
-#: ./iq/components/data_uni_object/uni_object.py:232
+#: ./iq/components/data_uni_object/component.py:24
+msgid "Can add new uni objects"
+msgstr ""
+
+#: ./iq/components/data_uni_object/component.py:25
+msgid "Can delete uni objects"
+msgstr ""
+
+#: ./iq/components/data_uni_object/component.py:26
+msgid "Can activate/deactivate uni objects"
+msgstr ""
+
+#: ./iq/components/data_uni_object/component.py:27
+msgid "Can edit records/change uni objects"
+msgstr ""
+
+#: ./iq/components/data_uni_object/uni_object.py:247
 msgid "Confirm deletion"
 msgstr ""
 
@@ -431,7 +514,7 @@ msgstr ""
 msgid "This feature has not yet been implemented"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/component.py:29
+#: ./iq/components/wx_filterchoicectrl/component.py:31
 msgid "Can edit filters"
 msgstr ""
 
@@ -446,14 +529,16 @@ msgstr ""
 #: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:744
 #: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:771
 #: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:31
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:132
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:131
+#: ./iq/engine/wx/dlg/log_browser_proto.py:131
 msgid "AND"
 msgstr ""
 
 #: ./iq/components/wx_filterchoicectrl/filter_builder_env.py:772
 #: ./iq/components/wx_filterchoicectrl/filter_choice_dlg.py:31
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:132
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:392
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:131
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:391
+#: ./iq/engine/wx/dlg/log_browser_proto.py:131
 msgid "OR"
 msgstr ""
 
@@ -695,23 +780,23 @@ msgstr ""
 msgid "Переместить вниз"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:28
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:30
 msgid "Limit the number of objects"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:29
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:31
 msgid "Limit exceeded"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:77
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:72
 msgid "Enter filter name"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:77
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:72
 msgid "Filter"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:99
+#: ./iq/components/wx_filterchoicectrl/filter_choicectrl.py:98
 msgid "Delete filter?"
 msgstr ""
 
@@ -731,23 +816,23 @@ msgstr ""
 msgid "Argument 2"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:360
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:363
 msgid "Add compare"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:367
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:370
 msgid "Add group"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:376
+#: ./iq/components/wx_filterchoicectrl/filter_constructor.py:379
 msgid "Delete group"
 msgstr ""
 
-#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:72
+#: ./iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:73
 msgid "Filter constructor"
 msgstr ""
 
-#: ./iq/components/wx_filtertreectrl/component.py:30
+#: ./iq/components/wx_filtertreectrl/component.py:31
 msgid "Can edit tree filters"
 msgstr ""
 
@@ -776,42 +861,42 @@ msgstr ""
 msgid "Select a folder"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:82
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:337
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:83
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:353
 msgid "Properties"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:84
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:378
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:85
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:394
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:91
 msgid "Methods"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:86
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:391
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:87
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:407
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:93
 msgid "Events"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:674
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:697
 msgid "Not define attribute editor"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:676
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:688
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:699
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:711
 msgid "VALIDATION"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/property_editor_manager.py:686
+#: ./iq/editor/wx/res_editor/property_editor_manager.py:709
 msgid "Error valid property/attribute"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor.py:219
+#: ./iq/editor/wx/res_editor/resource_editor.py:224
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:27
 msgid "Resource editor"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/resource_editor.py:361
+#: ./iq/editor/wx/res_editor/resource_editor.py:366
 msgid "VALIDATE"
 msgstr ""
 
@@ -857,8 +942,8 @@ msgid "Show object inspector"
 msgstr ""
 
 #: ./iq/editor/wx/res_editor/resource_editor_frm.py:76
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:54
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:67
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:57
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:70
 msgid "Description"
 msgstr ""
 
@@ -866,12 +951,21 @@ msgstr ""
 msgid "Attributes"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:25
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:26
 msgid "Select passport"
 msgstr ""
 
-#: ./iq/editor/wx/res_editor/select_passport_dlg.py:33
+#: ./iq/editor/wx/res_editor/select_passport_dlg.py:34
 msgid "Passport:"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/single_choice_property.py:36
+msgid "Caption"
+msgstr ""
+
+#: ./iq/editor/wx/res_editor/single_choice_property.py:36
+#: ./iq/engine/wx/dlg/logbrowser.py:101
+msgid "Message"
 msgstr ""
 
 #: ./iq/editor/wx/start_editor_dlg.py:25
@@ -895,7 +989,10 @@ msgid "External tools"
 msgstr ""
 
 #: ./iq/editor/wx/start_editor_dlg.py:80
+#: ./iq_chess/menubars/main_menubar_proto.py:31
 #: ./online_warehouse/menubars/main_menubar_proto.py:75
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:100
+#: ./sales_map/menubars/main_menubar_proto.py:55
 #: ./secretary/menubars/main_menubar_proto.py:102
 msgid "Help"
 msgstr ""
@@ -942,28 +1039,111 @@ msgstr ""
 msgid "Migrate wxFormBuilder project"
 msgstr ""
 
-#: ./iq/engine/cui/dlg/cui_dlg.py:144
+#: ./iq/engine/cui/dlg/cui_dlg.py:146
 msgid "Check list is empty"
 msgstr ""
 
-#: ./iq/engine/cui/dlg/cui_dlg_func.py:34
+#: ./iq/engine/cui/dlg/cui_dlg.py:235
+msgid "Select a user to login "
+msgstr ""
+
+#: ./iq/engine/cui/dlg/cui_dlg.py:274
+msgid "Enter user password to login"
+msgstr ""
+
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:36
 #: ./iq/engine/wx/dlg/login_dialog_proto.py:33
 msgid "User name:"
 msgstr ""
 
-#: ./iq/engine/cui/dlg/cui_dlg_func.py:35
-#: ./iq/engine/cui/dlg/cui_dlg_func.py:43
-#: ./iq/engine/wx/dlg/login_dialog_proto.py:25 ./iq/project/prj.py:306
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:37
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:45
+#: ./iq/engine/wx/dlg/login_dialog_proto.py:25 ./iq/project/prj.py:307
+#: ./iq/project/prj.py:312
 msgid "LOGIN"
 msgstr ""
 
-#: ./iq/engine/cui/dlg/cui_dlg_func.py:42
+#: ./iq/engine/cui/dlg/cui_dlg_func.py:44
 #: ./iq/engine/wx/dlg/login_dialog_proto.py:47
 msgid "Password:"
 msgstr ""
 
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:31
 msgid "Редактирование:"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:35
+msgid "*.log"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:35
+msgid "Выберите файл журнала сообщений"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:40
+#: ./iq/engine/wx/dlg/log_browser_proto.py:63
+msgid "On"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:58
+msgid "-"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:86
+#: ./iq/engine/wx/dlg/logbrowser.py:48
+msgid "Information"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:92
+#: ./iq/engine/wx/dlg/logbrowser.py:49
+msgid "Warning"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:98
+#: ./iq/engine/wx/dlg/logbrowser.py:50
+msgid "Error"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:104
+#: ./iq/engine/wx/dlg/logbrowser.py:51
+msgid "Critical error"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:110
+#: ./iq/engine/wx/dlg/logbrowser.py:52
+msgid "Debug"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:116
+msgid "Service messages"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:132
+msgid "Selection logic"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/log_browser_proto.py:189
+msgid "Programm log"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/logbrowser.py:53
+msgid "Debug service message"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/logbrowser.py:54
+msgid "Service message"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/logbrowser.py:99
+msgid "Date/Time"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/logbrowser.py:100
+msgid "Type"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/logbrowser.py:354
+msgid "Time"
 msgstr ""
 
 #: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:24
@@ -1016,6 +1196,14 @@ msgstr ""
 
 #: ./iq/role/component.py:99
 msgid "Can edit"
+msgstr ""
+
+#: ./iq_chess/menubars/main_menubar_proto.py:28
+#: ./online_warehouse/menubars/main_menubar_proto.py:72
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:97
+#: ./sales_map/menubars/main_menubar_proto.py:52
+#: ./secretary/menubars/main_menubar_proto.py:99
+msgid "About..."
 msgstr ""
 
 #: ./iq_report/report/dlg/report_action_dlg.py:49
@@ -1265,11 +1453,6 @@ msgstr ""
 msgid "Редактирование"
 msgstr ""
 
-#: ./online_warehouse/menubars/main_menubar_proto.py:72
-#: ./secretary/menubars/main_menubar_proto.py:99
-msgid "About..."
-msgstr ""
-
 #: ./online_warehouse/product/product_browser_proto.py:41
 msgid "Очистить"
 msgstr ""
@@ -1348,6 +1531,106 @@ msgstr ""
 msgid "Продукция. Редактирование."
 msgstr ""
 
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:28
+msgid "Журнал  оперативных данных АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:32
+msgid "Журнал  суточных данных АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:35
+msgid "Журнал  контроля оперативных данных АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:40
+msgid "Монитор оперативных данных АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:45
+msgid "Суточные данные счетчиков АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:48
+msgid "Отправка суточных данных АСИиУ в ручном режиме"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:51
+msgid "Счетчики АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:54
+msgid "Просмотр архивных данных"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:57
+msgid "Сравнение суточного журнала АСИиУ и архива Абсолют-Универсал"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:60
+msgid "Архив"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:63
+msgid "Управление режимами производства"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:66
+msgid "Производство"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:70
+msgid "Установить значения по умолчанию справочника состояний журнала АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:73
+msgid "Установить значения по умолчанию справочника режимов АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:76
+msgid "Установить значения по умолчанию справочника алкогольной продукции"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:79
+msgid "Заполнение справочников значениями по умолчанию"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:82
+msgid "Редактирование справочника состояний журнала АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:85
+msgid "Редактирование справочника режимов АСИиУ"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:88
+msgid "Редактирование справочника алкогольной продукции"
+msgstr ""
+
+#: ./rozliv_asiiu/menubars/main_menubar_proto.py:92
+msgid "Редактирование справочников"
+msgstr ""
+
+#: ./sales_map/menubars/main_menubar_proto.py:35
+msgid "Справочник продукции"
+msgstr ""
+
+#: ./sales_map/menubars/main_menubar_proto.py:38
+msgid "Справочник геозон"
+msgstr ""
+
+#: ./sales_map/menubars/main_menubar_proto.py:41
+msgid "Справочник дилеров"
+msgstr ""
+
+#: ./sales_map/menubars/main_menubar_proto.py:44
+msgid "Справочник контрагентов"
+msgstr ""
+
+#: ./sales_map/menubars/main_menubar_proto.py:47
+msgid "Заполнение данными по умолчанию"
+msgstr ""
+
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:27
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:244
 msgid "Редактирование входящего документа"
@@ -1356,7 +1639,7 @@ msgstr ""
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:35
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:252
 #: ./secretary/in_documents/in_doc_browse_panel_proto.py:60
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:329
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:338
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:35
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:252
 msgid "Номер входящего документа:"
@@ -1365,7 +1648,7 @@ msgstr ""
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:43
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:260
 #: ./secretary/in_documents/in_doc_browse_panel_proto.py:68
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:337
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:346
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:43
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:260
 msgid "Дата входящего документа:"
@@ -1381,7 +1664,7 @@ msgstr ""
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:64
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:273
 #: ./secretary/in_documents/in_doc_browse_panel_proto.py:131
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:389
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:398
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:64
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:273
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:64
@@ -1389,7 +1672,7 @@ msgstr ""
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:64
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:252
 #: ./secretary/out_documents/out_doc_browse_panel_proto.py:102
-#: ./secretary/out_documents/out_doc_browse_panel_proto.py:342
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:351
 msgid "Тип документа:"
 msgstr ""
 
@@ -1401,7 +1684,7 @@ msgstr ""
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:98
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:314
 #: ./secretary/out_documents/out_doc_browse_panel_proto.py:136
-#: ./secretary/out_documents/out_doc_browse_panel_proto.py:391
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:400
 msgid "Отправитель:"
 msgstr ""
 
@@ -1422,7 +1705,7 @@ msgstr ""
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:106
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:343
 #: ./secretary/in_documents/in_doc_browse_panel_proto.py:152
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:432
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:441
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:106
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:343
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:77
@@ -1450,7 +1733,7 @@ msgstr ""
 
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:140
 #: ./secretary/in_documents/in_doc_browse_panel_proto.py:102
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:407
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:416
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:140
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:119
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:119
@@ -1484,11 +1767,11 @@ msgid "Теги"
 msgstr ""
 
 #: ./secretary/in_documents/edit_in_doc_dlg_proto.py:291
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:371
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:380
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:291
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:270
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:270
-#: ./secretary/out_documents/out_doc_browse_panel_proto.py:360
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:369
 #: ./secretary/phone_book/edit_phone_dlg_proto.py:80
 #: ./secretary/phone_book/edit_phone_dlg_proto.py:200
 #: ./secretary/phone_book/new_phone_dlg_proto.py:80
@@ -1524,24 +1807,24 @@ msgid "Развернуть"
 msgstr ""
 
 #: ./secretary/in_documents/in_doc_browse_panel_proto.py:81
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:350
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:359
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:35
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:231
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:35
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:231
 #: ./secretary/out_documents/out_doc_browse_panel_proto.py:60
-#: ./secretary/out_documents/out_doc_browse_panel_proto.py:321
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:330
 msgid "Номер исходящего документа:"
 msgstr ""
 
 #: ./secretary/in_documents/in_doc_browse_panel_proto.py:89
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:358
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:367
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:43
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:239
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:43
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:239
 #: ./secretary/out_documents/out_doc_browse_panel_proto.py:68
-#: ./secretary/out_documents/out_doc_browse_panel_proto.py:329
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:338
 msgid "Дата исходящего документа:"
 msgstr ""
 
@@ -1595,11 +1878,16 @@ msgstr ""
 msgid "Сортировать по"
 msgstr ""
 
-#: ./secretary/in_documents/in_doc_browse_panel_proto.py:419
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:329
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:321
+msgid "Текущий год"
+msgstr ""
+
+#: ./secretary/in_documents/in_doc_browse_panel_proto.py:428
 #: ./secretary/in_documents/new_in_doc_dlg_proto.py:361
 #: ./secretary/out_documents/edit_out_doc_dlg_proto.py:301
 #: ./secretary/out_documents/new_out_doc_dlg_proto.py:301
-#: ./secretary/out_documents/out_doc_browse_panel_proto.py:378
+#: ./secretary/out_documents/out_doc_browse_panel_proto.py:387
 msgid "Тема/Содержание:"
 msgstr ""
 
