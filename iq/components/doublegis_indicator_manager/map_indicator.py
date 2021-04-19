@@ -57,7 +57,7 @@ API_KEY_YANDEX_FILENAME = os.path.join(os.path.dirname(__file__), 'api_key_yande
 YANDEX_GEO_LACATOR_URL_FMT = 'http://geocode-maps.yandex.ru/1.x/?geocode=%s&apikey=%s&format=json'
 
 API_KEY_2GIS_FILENAME = os.path.join(os.path.dirname(__file__), 'api_key_2gis.txt')
-DOUBLEGIS_GEO_LACATOR_URL_FMT = 'https://catalog_func.api.2gis.ru/geo/search?q=%s&format=json&limit=1&version=2.0&key=%s'
+DOUBLEGIS_GEO_LACATOR_URL_FMT = 'https://catalog.api.2gis.ru/geo/search?q=%s&format=json&limit=1&version=2.0&key=%s'
 
 API_KEY_DADATA_FILENAME = os.path.join(os.path.dirname(__file__), 'api_key_dadata.txt')
 SECRET_KEY_DADATA_FILENAME = os.path.join(os.path.dirname(__file__), 'secret_key_dadata.txt')
@@ -89,6 +89,11 @@ def getDefaultGeolocations(address_query, *args, **kwargs):
             return [geo_location]
         # Yandex geolocations
         geo_locations = getYandexMapsGeolocations(address_query=address_query, *args, **kwargs)
+        if geo_locations:
+            return geo_locations
+
+        # 2GIS
+        geo_locations = get2GISGeolocations(address_query=address_query, *args, **kwargs)
         if geo_locations:
             return geo_locations
 
