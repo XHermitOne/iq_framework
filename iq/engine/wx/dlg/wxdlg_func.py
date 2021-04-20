@@ -391,7 +391,7 @@ class iqProgressDlg(wx.ProgressDialog):
                                        message=prompt_text,
                                        maximum=self._ProgressMAX - self._ProgressMIN,
                                        parent=self._ProgressFrame,
-                                       style=style | wx.PD_APP_MODAL)
+                                       style=style | wx.PD_APP_MODAL | wx.PD_SMOOTH)
 
             self.SetSize(wx.Size(500, 130))
             self.CenterOnScreen()
@@ -461,6 +461,10 @@ def openProgressDlg(parent=None, title='', prompt_text='',
     global PROGRESS_DLG
     PROGRESS_DLG = None
     try:
+        if parent is None:
+            app = wx.GetApp()
+            parent = app.GetTopWindow()
+
         PROGRESS_DLG = iqProgressDlg(parent, title, prompt_text, min_value, max_value, style)
     except:
         log_func.fatal(u'Error open progress bar dialog')

@@ -52,12 +52,13 @@ class iqDBQuery(object):
         if not db or not sql_txt:
             return None
 
+        full_sql_txt = txtgen_func.generate(sql_txt, variables)
+        log_func.debug(u'Execute SQL:\n%s' % full_sql_txt)
         try:
-            full_sql_txt = txtgen_func.generate(sql_txt, variables)
             if full_sql_txt:
                 return db.executeSQL(full_sql_txt)
         except:
-            log_func.fatal(u'Error execute query <%s>' % sql_txt)
+            log_func.fatal(u'Error execute query <%s>' % full_sql_txt)
         return None
 
     def genSQLText(self, **variables):
