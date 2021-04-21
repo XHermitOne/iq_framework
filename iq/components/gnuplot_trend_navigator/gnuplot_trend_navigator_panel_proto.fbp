@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <wxFormBuilder_Project>
-    <FileVersion major="1" minor="13" />
+    <FileVersion major="1" minor="15" />
     <object class="Project" expanded="1">
         <property name="class_decoration"></property>
         <property name="code_generation">Python</property>
@@ -14,6 +14,7 @@
         <property name="file">gnuplot_trend_navigator_panel_proto</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
+        <property name="indent_with_spaces"></property>
         <property name="internationalize">1</property>
         <property name="name">gnuplot_trend_navigator_panel_proto</property>
         <property name="namespace"></property>
@@ -48,36 +49,8 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
-            <event name="OnAuiFindManager"></event>
-            <event name="OnAuiPaneButton"></event>
             <event name="OnAuiPaneClose">onNavigatorAuiPaneClose</event>
-            <event name="OnAuiPaneMaximize"></event>
-            <event name="OnAuiPaneRestore"></event>
-            <event name="OnAuiRender"></event>
-            <event name="OnChar"></event>
-            <event name="OnEnterWindow"></event>
-            <event name="OnEraseBackground"></event>
-            <event name="OnInitDialog"></event>
-            <event name="OnKeyDown"></event>
-            <event name="OnKeyUp"></event>
-            <event name="OnKillFocus"></event>
-            <event name="OnLeaveWindow"></event>
-            <event name="OnLeftDClick"></event>
-            <event name="OnLeftDown"></event>
-            <event name="OnLeftUp"></event>
-            <event name="OnMiddleDClick"></event>
-            <event name="OnMiddleDown"></event>
-            <event name="OnMiddleUp"></event>
-            <event name="OnMotion"></event>
-            <event name="OnMouseEvents"></event>
-            <event name="OnMouseWheel"></event>
-            <event name="OnPaint"></event>
-            <event name="OnRightDClick"></event>
-            <event name="OnRightDown"></event>
-            <event name="OnRightUp"></event>
-            <event name="OnSetFocus"></event>
             <event name="OnSize">onNavigatorSize</event>
-            <event name="OnUpdateUI"></event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer1</property>
@@ -114,6 +87,7 @@
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -127,9 +101,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -144,11 +119,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -160,29 +136,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onViewButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="0">
@@ -207,6 +160,7 @@
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -220,9 +174,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -237,11 +192,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -253,29 +209,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onPrintButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="0">
@@ -303,13 +236,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-justify-fill; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_LIST_VIEW; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -323,9 +257,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -340,11 +275,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -356,29 +292,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onLegendButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="0">
@@ -396,13 +309,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-properties; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_EXECUTABLE_FILE; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -416,9 +330,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -433,11 +348,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -449,29 +365,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onSettingsButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                     </object>
@@ -546,33 +439,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
                                 <event name="OnSize">onTrendSplitterSize</event>
-                                <event name="OnSplitterDClick"></event>
-                                <event name="OnSplitterSashPosChanged"></event>
-                                <event name="OnSplitterSashPosChanging"></event>
-                                <event name="OnSplitterUnsplit"></event>
-                                <event name="OnUpdateUI"></event>
                                 <object class="splitteritem" expanded="1">
                                     <object class="wxPanel" expanded="1">
                                         <property name="BottomDockable">1</property>
@@ -625,29 +492,6 @@
                                         <property name="window_extra_style"></property>
                                         <property name="window_name"></property>
                                         <property name="window_style">wxTAB_TRAVERSAL</property>
-                                        <event name="OnChar"></event>
-                                        <event name="OnEnterWindow"></event>
-                                        <event name="OnEraseBackground"></event>
-                                        <event name="OnKeyDown"></event>
-                                        <event name="OnKeyUp"></event>
-                                        <event name="OnKillFocus"></event>
-                                        <event name="OnLeaveWindow"></event>
-                                        <event name="OnLeftDClick"></event>
-                                        <event name="OnLeftDown"></event>
-                                        <event name="OnLeftUp"></event>
-                                        <event name="OnMiddleDClick"></event>
-                                        <event name="OnMiddleDown"></event>
-                                        <event name="OnMiddleUp"></event>
-                                        <event name="OnMotion"></event>
-                                        <event name="OnMouseEvents"></event>
-                                        <event name="OnMouseWheel"></event>
-                                        <event name="OnPaint"></event>
-                                        <event name="OnRightDClick"></event>
-                                        <event name="OnRightDown"></event>
-                                        <event name="OnRightUp"></event>
-                                        <event name="OnSetFocus"></event>
-                                        <event name="OnSize"></event>
-                                        <event name="OnUpdateUI"></event>
                                         <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer6</property>
@@ -713,49 +557,6 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnChar"></event>
-                                                    <event name="OnEnterWindow"></event>
-                                                    <event name="OnEraseBackground"></event>
-                                                    <event name="OnKeyDown"></event>
-                                                    <event name="OnKeyUp"></event>
-                                                    <event name="OnKillFocus"></event>
-                                                    <event name="OnLeaveWindow"></event>
-                                                    <event name="OnLeftDClick"></event>
-                                                    <event name="OnLeftDown"></event>
-                                                    <event name="OnLeftUp"></event>
-                                                    <event name="OnListBeginDrag"></event>
-                                                    <event name="OnListBeginLabelEdit"></event>
-                                                    <event name="OnListBeginRDrag"></event>
-                                                    <event name="OnListCacheHint"></event>
-                                                    <event name="OnListColBeginDrag"></event>
-                                                    <event name="OnListColClick"></event>
-                                                    <event name="OnListColDragging"></event>
-                                                    <event name="OnListColEndDrag"></event>
-                                                    <event name="OnListColRightClick"></event>
-                                                    <event name="OnListDeleteAllItems"></event>
-                                                    <event name="OnListDeleteItem"></event>
-                                                    <event name="OnListEndLabelEdit"></event>
-                                                    <event name="OnListInsertItem"></event>
-                                                    <event name="OnListItemActivated"></event>
-                                                    <event name="OnListItemDeselected"></event>
-                                                    <event name="OnListItemFocused"></event>
-                                                    <event name="OnListItemMiddleClick"></event>
-                                                    <event name="OnListItemRightClick"></event>
-                                                    <event name="OnListItemSelected"></event>
-                                                    <event name="OnListKeyDown"></event>
-                                                    <event name="OnMiddleDClick"></event>
-                                                    <event name="OnMiddleDown"></event>
-                                                    <event name="OnMiddleUp"></event>
-                                                    <event name="OnMotion"></event>
-                                                    <event name="OnMouseEvents"></event>
-                                                    <event name="OnMouseWheel"></event>
-                                                    <event name="OnPaint"></event>
-                                                    <event name="OnRightDClick"></event>
-                                                    <event name="OnRightDown"></event>
-                                                    <event name="OnRightUp"></event>
-                                                    <event name="OnSetFocus"></event>
-                                                    <event name="OnSize"></event>
-                                                    <event name="OnUpdateUI"></event>
                                                 </object>
                                             </object>
                                         </object>
@@ -813,29 +614,6 @@
                                         <property name="window_extra_style"></property>
                                         <property name="window_name"></property>
                                         <property name="window_style">wxTAB_TRAVERSAL</property>
-                                        <event name="OnChar"></event>
-                                        <event name="OnEnterWindow"></event>
-                                        <event name="OnEraseBackground"></event>
-                                        <event name="OnKeyDown"></event>
-                                        <event name="OnKeyUp"></event>
-                                        <event name="OnKillFocus"></event>
-                                        <event name="OnLeaveWindow"></event>
-                                        <event name="OnLeftDClick"></event>
-                                        <event name="OnLeftDown"></event>
-                                        <event name="OnLeftUp"></event>
-                                        <event name="OnMiddleDClick"></event>
-                                        <event name="OnMiddleDown"></event>
-                                        <event name="OnMiddleUp"></event>
-                                        <event name="OnMotion"></event>
-                                        <event name="OnMouseEvents"></event>
-                                        <event name="OnMouseWheel"></event>
-                                        <event name="OnPaint"></event>
-                                        <event name="OnRightDClick"></event>
-                                        <event name="OnRightDown"></event>
-                                        <event name="OnRightUp"></event>
-                                        <event name="OnSetFocus"></event>
-                                        <event name="OnSize"></event>
-                                        <event name="OnUpdateUI"></event>
                                         <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer5</property>
@@ -901,36 +679,15 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnChar"></event>
-                                                    <event name="OnEnterWindow"></event>
-                                                    <event name="OnEraseBackground"></event>
-                                                    <event name="OnKeyDown"></event>
-                                                    <event name="OnKeyUp"></event>
-                                                    <event name="OnKillFocus"></event>
-                                                    <event name="OnLeaveWindow"></event>
-                                                    <event name="OnLeftDClick"></event>
-                                                    <event name="OnLeftDown"></event>
-                                                    <event name="OnLeftUp"></event>
-                                                    <event name="OnMiddleDClick"></event>
-                                                    <event name="OnMiddleDown"></event>
-                                                    <event name="OnMiddleUp"></event>
-                                                    <event name="OnMotion"></event>
-                                                    <event name="OnMouseEvents"></event>
-                                                    <event name="OnMouseWheel"></event>
                                                     <event name="OnPaint">onTrendPain</event>
-                                                    <event name="OnRightDClick"></event>
-                                                    <event name="OnRightDown"></event>
-                                                    <event name="OnRightUp"></event>
-                                                    <event name="OnSetFocus"></event>
                                                     <event name="OnSize">onTrendSize</event>
-                                                    <event name="OnUpdateUI"></event>
                                                 </object>
                                             </object>
                                             <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxEXPAND</property>
                                                 <property name="proportion">0</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer7</property>
                                                     <property name="orient">wxVERTICAL</property>
@@ -950,13 +707,14 @@
                                                             <property name="aui_row"></property>
                                                             <property name="best_size"></property>
                                                             <property name="bg"></property>
-                                                            <property name="bitmap">Load From Art Provider; gtk-go-up; wxART_TOOLBAR</property>
+                                                            <property name="bitmap">Load From Art Provider; wxART_GO_UP; wxART_TOOLBAR</property>
                                                             <property name="caption"></property>
                                                             <property name="caption_visible">1</property>
                                                             <property name="center_pane">0</property>
                                                             <property name="close_button">1</property>
                                                             <property name="context_help"></property>
                                                             <property name="context_menu">1</property>
+                                                            <property name="current"></property>
                                                             <property name="default">0</property>
                                                             <property name="default_pane">0</property>
                                                             <property name="disabled"></property>
@@ -970,9 +728,10 @@
                                                             <property name="font"></property>
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
-                                                            <property name="hover"></property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="label">MyButton</property>
+                                                            <property name="margins"></property>
+                                                            <property name="markup">0</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
@@ -987,11 +746,12 @@
                                                             <property name="permission">protected</property>
                                                             <property name="pin_button">1</property>
                                                             <property name="pos"></property>
+                                                            <property name="position"></property>
+                                                            <property name="pressed"></property>
                                                             <property name="resize">Resizable</property>
-                                                            <property name="selected"></property>
                                                             <property name="show">1</property>
                                                             <property name="size"></property>
-                                                            <property name="style">wxBU_AUTODRAW</property>
+                                                            <property name="style"></property>
                                                             <property name="subclass"></property>
                                                             <property name="toolbar_pane">0</property>
                                                             <property name="tooltip"></property>
@@ -1003,29 +763,6 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnButtonClick">onUpButtonClick</event>
-                                                            <event name="OnChar"></event>
-                                                            <event name="OnEnterWindow"></event>
-                                                            <event name="OnEraseBackground"></event>
-                                                            <event name="OnKeyDown"></event>
-                                                            <event name="OnKeyUp"></event>
-                                                            <event name="OnKillFocus"></event>
-                                                            <event name="OnLeaveWindow"></event>
-                                                            <event name="OnLeftDClick"></event>
-                                                            <event name="OnLeftDown"></event>
-                                                            <event name="OnLeftUp"></event>
-                                                            <event name="OnMiddleDClick"></event>
-                                                            <event name="OnMiddleDown"></event>
-                                                            <event name="OnMiddleUp"></event>
-                                                            <event name="OnMotion"></event>
-                                                            <event name="OnMouseEvents"></event>
-                                                            <event name="OnMouseWheel"></event>
-                                                            <event name="OnPaint"></event>
-                                                            <event name="OnRightDClick"></event>
-                                                            <event name="OnRightDown"></event>
-                                                            <event name="OnRightUp"></event>
-                                                            <event name="OnSetFocus"></event>
-                                                            <event name="OnSize"></event>
-                                                            <event name="OnUpdateUI"></event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">
@@ -1053,13 +790,14 @@
                                                             <property name="aui_row"></property>
                                                             <property name="best_size"></property>
                                                             <property name="bg"></property>
-                                                            <property name="bitmap">Load From Art Provider; gtk-zoom-in; wxART_TOOLBAR</property>
+                                                            <property name="bitmap">Load From Art Provider; wxART_PLUS; wxART_TOOLBAR</property>
                                                             <property name="caption"></property>
                                                             <property name="caption_visible">1</property>
                                                             <property name="center_pane">0</property>
                                                             <property name="close_button">1</property>
                                                             <property name="context_help"></property>
                                                             <property name="context_menu">1</property>
+                                                            <property name="current"></property>
                                                             <property name="default">0</property>
                                                             <property name="default_pane">0</property>
                                                             <property name="disabled"></property>
@@ -1073,9 +811,10 @@
                                                             <property name="font"></property>
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
-                                                            <property name="hover"></property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="label">MyButton</property>
+                                                            <property name="margins"></property>
+                                                            <property name="markup">0</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
@@ -1090,11 +829,12 @@
                                                             <property name="permission">protected</property>
                                                             <property name="pin_button">1</property>
                                                             <property name="pos"></property>
+                                                            <property name="position"></property>
+                                                            <property name="pressed"></property>
                                                             <property name="resize">Resizable</property>
-                                                            <property name="selected"></property>
                                                             <property name="show">1</property>
                                                             <property name="size"></property>
-                                                            <property name="style">wxBU_AUTODRAW</property>
+                                                            <property name="style"></property>
                                                             <property name="subclass"></property>
                                                             <property name="toolbar_pane">0</property>
                                                             <property name="tooltip"></property>
@@ -1106,29 +846,6 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnButtonClick">onZoomInButtonClick</event>
-                                                            <event name="OnChar"></event>
-                                                            <event name="OnEnterWindow"></event>
-                                                            <event name="OnEraseBackground"></event>
-                                                            <event name="OnKeyDown"></event>
-                                                            <event name="OnKeyUp"></event>
-                                                            <event name="OnKillFocus"></event>
-                                                            <event name="OnLeaveWindow"></event>
-                                                            <event name="OnLeftDClick"></event>
-                                                            <event name="OnLeftDown"></event>
-                                                            <event name="OnLeftUp"></event>
-                                                            <event name="OnMiddleDClick"></event>
-                                                            <event name="OnMiddleDown"></event>
-                                                            <event name="OnMiddleUp"></event>
-                                                            <event name="OnMotion"></event>
-                                                            <event name="OnMouseEvents"></event>
-                                                            <event name="OnMouseWheel"></event>
-                                                            <event name="OnPaint"></event>
-                                                            <event name="OnRightDClick"></event>
-                                                            <event name="OnRightDown"></event>
-                                                            <event name="OnRightUp"></event>
-                                                            <event name="OnSetFocus"></event>
-                                                            <event name="OnSize"></event>
-                                                            <event name="OnUpdateUI"></event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">
@@ -1146,13 +863,14 @@
                                                             <property name="aui_row"></property>
                                                             <property name="best_size"></property>
                                                             <property name="bg"></property>
-                                                            <property name="bitmap">Load From Art Provider; gtk-zoom-out; wxART_TOOLBAR</property>
+                                                            <property name="bitmap">Load From Art Provider; wxART_MINUS; wxART_TOOLBAR</property>
                                                             <property name="caption"></property>
                                                             <property name="caption_visible">1</property>
                                                             <property name="center_pane">0</property>
                                                             <property name="close_button">1</property>
                                                             <property name="context_help"></property>
                                                             <property name="context_menu">1</property>
+                                                            <property name="current"></property>
                                                             <property name="default">0</property>
                                                             <property name="default_pane">0</property>
                                                             <property name="disabled"></property>
@@ -1166,9 +884,10 @@
                                                             <property name="font"></property>
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
-                                                            <property name="hover"></property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="label">MyButton</property>
+                                                            <property name="margins"></property>
+                                                            <property name="markup">0</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
@@ -1183,11 +902,12 @@
                                                             <property name="permission">protected</property>
                                                             <property name="pin_button">1</property>
                                                             <property name="pos"></property>
+                                                            <property name="position"></property>
+                                                            <property name="pressed"></property>
                                                             <property name="resize">Resizable</property>
-                                                            <property name="selected"></property>
                                                             <property name="show">1</property>
                                                             <property name="size"></property>
-                                                            <property name="style">wxBU_AUTODRAW</property>
+                                                            <property name="style"></property>
                                                             <property name="subclass"></property>
                                                             <property name="toolbar_pane">0</property>
                                                             <property name="tooltip"></property>
@@ -1199,29 +919,6 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnButtonClick">onZoomOutButtonClick</event>
-                                                            <event name="OnChar"></event>
-                                                            <event name="OnEnterWindow"></event>
-                                                            <event name="OnEraseBackground"></event>
-                                                            <event name="OnKeyDown"></event>
-                                                            <event name="OnKeyUp"></event>
-                                                            <event name="OnKillFocus"></event>
-                                                            <event name="OnLeaveWindow"></event>
-                                                            <event name="OnLeftDClick"></event>
-                                                            <event name="OnLeftDown"></event>
-                                                            <event name="OnLeftUp"></event>
-                                                            <event name="OnMiddleDClick"></event>
-                                                            <event name="OnMiddleDown"></event>
-                                                            <event name="OnMiddleUp"></event>
-                                                            <event name="OnMotion"></event>
-                                                            <event name="OnMouseEvents"></event>
-                                                            <event name="OnMouseWheel"></event>
-                                                            <event name="OnPaint"></event>
-                                                            <event name="OnRightDClick"></event>
-                                                            <event name="OnRightDown"></event>
-                                                            <event name="OnRightUp"></event>
-                                                            <event name="OnSetFocus"></event>
-                                                            <event name="OnSize"></event>
-                                                            <event name="OnUpdateUI"></event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">
@@ -1256,6 +953,7 @@
                                                             <property name="close_button">1</property>
                                                             <property name="context_help"></property>
                                                             <property name="context_menu">1</property>
+                                                            <property name="current"></property>
                                                             <property name="default">0</property>
                                                             <property name="default_pane">0</property>
                                                             <property name="disabled"></property>
@@ -1269,9 +967,10 @@
                                                             <property name="font"></property>
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
-                                                            <property name="hover"></property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="label">MyButton</property>
+                                                            <property name="margins"></property>
+                                                            <property name="markup">0</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
@@ -1286,11 +985,12 @@
                                                             <property name="permission">protected</property>
                                                             <property name="pin_button">1</property>
                                                             <property name="pos"></property>
+                                                            <property name="position"></property>
+                                                            <property name="pressed"></property>
                                                             <property name="resize">Resizable</property>
-                                                            <property name="selected"></property>
                                                             <property name="show">1</property>
                                                             <property name="size"></property>
-                                                            <property name="style">wxBU_AUTODRAW</property>
+                                                            <property name="style"></property>
                                                             <property name="subclass"></property>
                                                             <property name="toolbar_pane">0</property>
                                                             <property name="tooltip"></property>
@@ -1302,29 +1002,6 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnButtonClick">onDownButtonClick</event>
-                                                            <event name="OnChar"></event>
-                                                            <event name="OnEnterWindow"></event>
-                                                            <event name="OnEraseBackground"></event>
-                                                            <event name="OnKeyDown"></event>
-                                                            <event name="OnKeyUp"></event>
-                                                            <event name="OnKillFocus"></event>
-                                                            <event name="OnLeaveWindow"></event>
-                                                            <event name="OnLeftDClick"></event>
-                                                            <event name="OnLeftDown"></event>
-                                                            <event name="OnLeftUp"></event>
-                                                            <event name="OnMiddleDClick"></event>
-                                                            <event name="OnMiddleDown"></event>
-                                                            <event name="OnMiddleUp"></event>
-                                                            <event name="OnMotion"></event>
-                                                            <event name="OnMouseEvents"></event>
-                                                            <event name="OnMouseWheel"></event>
-                                                            <event name="OnPaint"></event>
-                                                            <event name="OnRightDClick"></event>
-                                                            <event name="OnRightDown"></event>
-                                                            <event name="OnRightUp"></event>
-                                                            <event name="OnSetFocus"></event>
-                                                            <event name="OnSize"></event>
-                                                            <event name="OnUpdateUI"></event>
                                                         </object>
                                                     </object>
                                                 </object>
@@ -1360,13 +1037,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-goto-first; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_GOTO_FIRST; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -1380,9 +1058,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -1397,11 +1076,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -1413,29 +1093,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onFirstButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="1">
@@ -1453,13 +1110,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-go-back; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_GO_BACK; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -1473,9 +1131,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -1490,11 +1149,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -1506,29 +1166,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onPrevButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="1">
@@ -1556,13 +1193,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-zoom-out; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_MINUS; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -1576,9 +1214,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -1593,11 +1232,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -1609,29 +1249,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onTimeZoomOutButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="1">
@@ -1649,13 +1266,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-zoom-in; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_PLUS; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -1669,9 +1287,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -1686,11 +1305,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -1702,29 +1322,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onTimeZoomInButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="1">
@@ -1752,13 +1349,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-go-forward; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_GO_FORWARD; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -1772,9 +1370,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -1789,11 +1388,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -1805,29 +1405,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onNextButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                         <object class="sizeritem" expanded="1">
@@ -1845,13 +1422,14 @@
                                 <property name="aui_row"></property>
                                 <property name="best_size"></property>
                                 <property name="bg"></property>
-                                <property name="bitmap">Load From Art Provider; gtk-goto-last; wxART_TOOLBAR</property>
+                                <property name="bitmap">Load From Art Provider; wxART_GOTO_LAST; wxART_TOOLBAR</property>
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
+                                <property name="current"></property>
                                 <property name="default">0</property>
                                 <property name="default_pane">0</property>
                                 <property name="disabled"></property>
@@ -1865,9 +1443,10 @@
                                 <property name="font"></property>
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
-                                <property name="hover"></property>
                                 <property name="id">wxID_ANY</property>
                                 <property name="label">MyButton</property>
+                                <property name="margins"></property>
+                                <property name="markup">0</property>
                                 <property name="max_size"></property>
                                 <property name="maximize_button">0</property>
                                 <property name="maximum_size"></property>
@@ -1882,11 +1461,12 @@
                                 <property name="permission">protected</property>
                                 <property name="pin_button">1</property>
                                 <property name="pos"></property>
+                                <property name="position"></property>
+                                <property name="pressed"></property>
                                 <property name="resize">Resizable</property>
-                                <property name="selected"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxBU_AUTODRAW</property>
+                                <property name="style"></property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -1898,29 +1478,6 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnButtonClick">onLastButtonClick</event>
-                                <event name="OnChar"></event>
-                                <event name="OnEnterWindow"></event>
-                                <event name="OnEraseBackground"></event>
-                                <event name="OnKeyDown"></event>
-                                <event name="OnKeyUp"></event>
-                                <event name="OnKillFocus"></event>
-                                <event name="OnLeaveWindow"></event>
-                                <event name="OnLeftDClick"></event>
-                                <event name="OnLeftDown"></event>
-                                <event name="OnLeftUp"></event>
-                                <event name="OnMiddleDClick"></event>
-                                <event name="OnMiddleDown"></event>
-                                <event name="OnMiddleUp"></event>
-                                <event name="OnMotion"></event>
-                                <event name="OnMouseEvents"></event>
-                                <event name="OnMouseWheel"></event>
-                                <event name="OnPaint"></event>
-                                <event name="OnRightDClick"></event>
-                                <event name="OnRightDown"></event>
-                                <event name="OnRightUp"></event>
-                                <event name="OnSetFocus"></event>
-                                <event name="OnSize"></event>
-                                <event name="OnUpdateUI"></event>
                             </object>
                         </object>
                     </object>
