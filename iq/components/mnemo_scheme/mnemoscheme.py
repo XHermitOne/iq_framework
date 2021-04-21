@@ -149,7 +149,10 @@ class iqMnemoSchemeManager(object):
                 if isinstance(background_colour, str):
                     bg_colour = background_colour.lower()
                 elif isinstance(background_colour, (list, tuple)):
-                    bg_colour = '\'rgb(%s)\'' % str(background_colour[:3]).strip('()[]')
+                    if sys_func.isWindowsPlatform():
+                        bg_colour = '\"rgb(%s)\"' % str(background_colour[:3]).strip('()[]')
+                    else:
+                        bg_colour = '\'rgb(%s)\'' % str(background_colour[:3]).strip('()[]')
                 else:
                     bg_colour = 'none'
 
