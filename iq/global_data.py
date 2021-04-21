@@ -10,7 +10,7 @@ import locale
 import os.path
 import datetime
 
-VERSION = (0, 0, 1, 1)
+VERSION = (0, 0, 1, 2)
 
 DEBUG_MODE = False
 LOG_MODE = False
@@ -27,17 +27,17 @@ DEFAULT_ENCODING = 'utf-8'
 # Default shell encoding
 DEFAULT_SHELL_ENCODING = sys.stdout.encoding if sys.platform.startswith('win') else locale.getpreferredencoding()
 
-# Log file name
+# Home path
 HOME_PATH = os.environ['HOME'] if 'HOME' in os.environ else (os.environ.get('HOMEDRIVE',
                                                                             '') + os.environ.get('HOMEPATH', ''))
+# Log file name
 LOG_PATH = HOME_PATH if HOME_PATH else os.path.join(os.path.dirname(__file__), 'log')
 LOG_FILENAME = os.path.join(LOG_PATH,
                             PROFILE_DIRNAME,
                             'iq_%s.log' % datetime.date.today().isoformat())
 
 # Path to profile folder
-PROFILE_PATH = os.path.join(os.environ.get('HOME', os.path.dirname(__file__)),
-                            PROFILE_DIRNAME)
+PROFILE_PATH = os.path.join(HOME_PATH, PROFILE_DIRNAME)
 
 # Kernel object
 KERNEL = None
