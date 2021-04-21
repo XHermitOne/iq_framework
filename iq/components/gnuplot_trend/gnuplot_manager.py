@@ -28,15 +28,20 @@ import os
 import os.path
 import datetime
 
+import iq
 from iq.util import log_func
 from iq.util import txtfile_func
+from iq.util import sys_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 0, 2)
 
 # Gnuplot command delimiter
 COMMAND_DELIMETER = ';'
 
-GNUPLOT_COMMAND_FMT = 'gnuplot -e \"%s\"'
+UNIX_GNUPLOT_RUN = 'gnuplot'
+WIN_GNUPLOT_RUN = 'start gnuplot.exe'
+
+GNUPLOT_COMMAND_FMT = '%s -e \"%s\"'
 
 DATETIME_GRAPH_DATA_FMT = '%Y-%m-%d %H:%M:%S'
 
@@ -392,7 +397,15 @@ class iqGnuplotManager(object):
         :return: The resulting command to generate the chart file.
         """
         commands = COMMAND_DELIMETER.join(self.commands)
-        return GNUPLOT_COMMAND_FMT % commands
+        if sys_func.isLinuxPlatform():
+            return GNUPLOT_COMMAND_FMT % (UNIX_GNUPLOT_RUN, commands)
+        elif sys_func.isWindowsPlatform():
+            win_gnuplot_run = iq.KERNEL.settings.THIS.SETTINGS.win_gnuplot_run.get()
+            return GNUPLOT_COMMAND_FMT % (win_gnuplot_run if win_gnuplot_run else WIN_GNUPLOT_RUN,
+                                          commands)
+        else:
+            log_func.warning(u'Unsupported <%s> platform' % sys_func.getPlatform())
+        return None
 
     def runCommands(self):
         """
