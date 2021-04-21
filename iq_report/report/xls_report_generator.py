@@ -11,9 +11,11 @@ import os.path
 
 from .dlg import report_action_dlg
 
+import iq
 from iq.util import log_func
 from iq.dialog import dlg_func
 from iq.util import global_func
+from iq.util import sys_func
 
 from iq.components.virtual_spreadsheet import v_spreadsheet
 
@@ -168,10 +170,20 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         :param xls_filename: Report XLS filename.
         """
         if xls_filename and os.path.exists(xls_filename):
-            cmd = 'libreoffice -p %s&' % xls_filename
-            log_func.info(u'Execute command <%s>' % cmd)
-            os.system(cmd)
-            return True
+            if sys_func.isLinuxPlatform():
+                cmd = '%s -p %s&' % (report_gen_system.UNIX_OFFICE_OPEN, xls_filename)
+                log_func.info(u'Execute command <%s>' % cmd)
+                os.system(cmd)
+                return True
+            elif sys_func.isWindowsPlatform():
+                win_office_open = iq.KERNEL.settings.THIS.SETTINGS.win_libreoffice_run.get()
+                cmd = '%s -p %s&' % (win_office_open if win_office_open else report_gen_system.WIN_OFFICE_OPEN,
+                                     xls_filename)
+                log_func.info(u'Execute command <%s>' % cmd)
+                os.system(cmd)
+                return True
+            else:
+                log_func.warning(u'Unsupported platform <%s>' % sys_func.getPlatform())
         else:
             log_func.warning(u'Print. Report file <%s> not exists' % xls_filename)
         return False
@@ -201,10 +213,20 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         :param xls_filename: Report XLS filename.
         """
         if xls_filename and os.path.exists(xls_filename):
-            cmd = 'libreoffice %s&' % xls_filename
-            log_func.info('Execute command <%s>' % cmd)
-            os.system(cmd)
-            return True
+            if sys_func.isLinuxPlatform():
+                cmd = '%s %s&' % (report_gen_system.UNIX_OFFICE_OPEN, xls_filename)
+                log_func.info('Execute command <%s>' % cmd)
+                os.system(cmd)
+                return True
+            elif sys_func.isWindowsPlatform():
+                win_office_open = iq.KERNEL.settings.THIS.SETTINGS.win_libreoffice_run.get()
+                cmd = '%s %s&' % (win_office_open if win_office_open else report_gen_system.WIN_OFFICE_OPEN,
+                                  xls_filename)
+                log_func.info(u'Execute command <%s>' % cmd)
+                os.system(cmd)
+                return True
+            else:
+                log_func.warning(u'Unsupported platform <%s>' % sys_func.getPlatform())
         else:
             log_func.warning(u'Open. Report file <%s> not exists' % xls_filename)
         return False
@@ -216,11 +238,23 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         :param rep_filename: Report template filename.
         """
         # Set *.xls filename
-        xls_file = os.path.abspath(os.path.splitext(rep_filename)[0] + XLS_FILENAME_EXT)
-        cmd = 'libreoffice \"%s\"&' % xls_file
-        log_func.info('Execute command <%s>' % cmd)
-        os.system(cmd)
-        return True
+        xls_filename = os.path.abspath(os.path.splitext(rep_filename)[0] + XLS_FILENAME_EXT)
+        if sys_func.isLinuxPlatform():
+            cmd = '%s \"%s\"&' % (report_gen_system.UNIX_OFFICE_OPEN, xls_filename)
+            log_func.info('Execute command <%s>' % cmd)
+            os.system(cmd)
+            return True
+        elif sys_func.isWindowsPlatform():
+            win_office_open = iq.KERNEL.settings.THIS.SETTINGS.win_libreoffice_run.get()
+            cmd = '%s \"%s\"&' % (win_office_open if win_office_open else report_gen_system.WIN_OFFICE_OPEN,
+                                  xls_filename)
+            log_func.info(u'Execute command <%s>' % cmd)
+            os.system(cmd)
+            return True
+        else:
+            log_func.warning(u'Unsupported platform <%s>' % sys_func.getPlatform())
+
+        return False
 
     def generateReport(self, report=None, *args, **kwargs):
         """

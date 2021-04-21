@@ -8,9 +8,11 @@ XML report generator system module.
 import os 
 import os.path
 
+import iq
 from iq.util import log_func
 from iq.dialog import dlg_func
 from iq.util import global_func
+from iq.util import sys_func
 
 from . import report_gen_system
 from . import report_generator
