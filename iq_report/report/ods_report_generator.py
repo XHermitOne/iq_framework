@@ -150,10 +150,13 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             log_func.info(u'Convert to PDF. Execute command <%s>' % cmd)
             os.system(cmd)
 
-            cmd = report_gen_system.UNIX_OPEN_PDF_FMT % pdf_filename
-            log_func.info(u'Open PDF. Execute command <%s>' % cmd)
-            os.system(cmd)
-            return True
+            if os.path.exists(pdf_filename):
+                cmd = report_gen_system.UNIX_OPEN_PDF_FMT % pdf_filename
+                log_func.info(u'Open PDF. Execute command <%s>' % cmd)
+                os.system(cmd)
+                return True
+            else:
+                log_func.warning(u'Open PDF. PDF file <%s> not found' % pdf_filename)
         elif sys_func.isWindowsPlatform():
             win_conv_to_pdf_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_conv_to_pdf_fmt.get()
             if not win_conv_to_pdf_fmt:
@@ -162,14 +165,17 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             log_func.info(u'Convert to PDF. Execute command <%s>' % cmd)
             os.system(cmd)
 
-            win_open_pdf_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_open_pdf_fmt.get()
-            if not win_open_pdf_fmt:
-                win_open_pdf_fmt = report_gen_system.WIN_OPEN_PDF_FMT
+            if os.path.exists(pdf_filename):
+                win_open_pdf_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_open_pdf_fmt.get()
+                if not win_open_pdf_fmt:
+                    win_open_pdf_fmt = report_gen_system.WIN_OPEN_PDF_FMT
 
-            cmd = win_open_pdf_fmt % pdf_filename
-            log_func.info(u'Open PDF. Execute command <%s>' % cmd)
-            os.system(cmd)
-            return True
+                cmd = win_open_pdf_fmt % pdf_filename
+                log_func.info(u'Open PDF. Execute command <%s>' % cmd)
+                os.system(cmd)
+                return True
+            else:
+                log_func.warning(u'Open PDF. PDF file <%s> not found' % pdf_filename)
         else:
             log_func.warning(u'Unsupported <%s> platform' % sys_func.getPlatform())
         return False
