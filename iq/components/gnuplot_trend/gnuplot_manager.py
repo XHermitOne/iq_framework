@@ -39,7 +39,7 @@ __version__ = (0, 0, 0, 2)
 COMMAND_DELIMETER = ';'
 
 UNIX_GNUPLOT_RUN = 'gnuplot'
-WIN_GNUPLOT_RUN = 'start gnuplot.exe'
+WIN_GNUPLOT_RUN = 'start gnuplot.exe /B'
 
 GNUPLOT_COMMAND_FMT = '%s -e \"%s\"'
 
