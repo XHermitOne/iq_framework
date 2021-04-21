@@ -160,7 +160,7 @@ class iqXLSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             win_conv_to_pdf_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_conv_to_pdf_fmt.get()
             if not win_conv_to_pdf_fmt:
                 win_conv_to_pdf_fmt = report_gen_system.WIN_CONV_TO_PDF_FMT
-            cmd = win_conv_to_pdf_fmt % xls_filename
+            cmd = win_conv_to_pdf_fmt % (xls_filename, os.path.dirname(xls_filename))
             log_func.info(u'Convert to PDF. Execute command <%s>' % cmd)
             os.system(cmd)
 
