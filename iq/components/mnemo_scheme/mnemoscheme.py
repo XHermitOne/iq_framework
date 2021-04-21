@@ -28,13 +28,17 @@ import os.path
 
 from ...util import log_func
 from ...util import file_func
+from ...util import sys_func
 
 from ...engine.wx import wxbitmap_func
+
+import iq
 
 __version__ = (0, 0, 0, 2)
 
 # Conversion start command format SVG -> PNG
-SVG2PNG_CONVERT_CMD_FMT = 'convert -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'
+UNIX_SVG2PNG_CONVERT_CMD_FMT = 'convert -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'
+WIN_SVG2PNG_CONVERT_CMD_FMT = '\"C:\\Program Files\\SVG2PNG\\convert.exe\" -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'
 
 
 class iqMnemoSchemeManager(object):
@@ -150,7 +154,19 @@ class iqMnemoSchemeManager(object):
                     bg_colour = 'none'
 
                 # Launch file conversion
-                cmd = SVG2PNG_CONVERT_CMD_FMT % (bg_colour, width, height, width, height, svg_filename, png_filename)
+                if sys_func.isLinuxPlatform():
+                    cmd = UNIX_SVG2PNG_CONVERT_CMD_FMT % (bg_colour, width, height, width, height,
+                                                          svg_filename, png_filename)
+                elif sys_func.isWindowsPlatform():
+                    win_svg2png_convert_cmd_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_svg2png_convert_cmd_fmt.get()
+                    if not win_svg2png_convert_cmd_fmt:
+                        win_svg2png_convert_cmd_fmt = WIN_SVG2PNG_CONVERT_CMD_FMT
+                    cmd = win_svg2png_convert_cmd_fmt % (bg_colour, width, height, width, height,
+                                                         svg_filename, png_filename)
+                else:
+                    log_func.warning(u'Unsupported <%s> platform' % sys_func.getPlatform())
+                    return False
+
                 log_func.info(u'Start SVG -> PNG covert command: <%s> ' % cmd)
                 os.system(cmd)
                 if not os.path.exists(png_filename):

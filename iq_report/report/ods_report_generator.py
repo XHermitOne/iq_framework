@@ -145,14 +145,34 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             except:
                 log_func.fatal(u'Delete file <%s>' % pdf_filename)
 
-        cmd = 'unoconv --format=pdf %s' % ods_filename
-        log_func.info(u'UNOCONV. Execute command <%s>' % cmd)
-        os.system(cmd)
+        if sys_func.isLinuxPlatform():
+            cmd = report_gen_system.UNIX_CONV_TO_PDF_FMT % ods_filename
+            log_func.info(u'Convert to PDF. Execute command <%s>' % cmd)
+            os.system(cmd)
 
-        cmd = 'evince %s&' % pdf_filename
-        log_func.info(u'EVINCE. Execute command <%s>' % cmd)
-        os.system(cmd)
-        return True
+            cmd = report_gen_system.UNIX_OPEN_PDF_FMT % pdf_filename
+            log_func.info(u'Open PDF. Execute command <%s>' % cmd)
+            os.system(cmd)
+            return True
+        elif sys_func.isWindowsPlatform():
+            win_conv_to_pdf_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_conv_to_pdf_fmt.get()
+            if not win_conv_to_pdf_fmt:
+                win_conv_to_pdf_fmt = report_gen_system.WIN_CONV_TO_PDF_FMT
+            cmd = win_conv_to_pdf_fmt % ods_filename
+            log_func.info(u'Convert to PDF. Execute command <%s>' % cmd)
+            os.system(cmd)
+
+            win_open_pdf_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_open_pdf_fmt.get()
+            if not win_open_pdf_fmt:
+                win_open_pdf_fmt = report_gen_system.WIN_OPEN_PDF_FMT
+
+            cmd = win_open_pdf_fmt % pdf_filename
+            log_func.info(u'Open PDF. Execute command <%s>' % cmd)
+            os.system(cmd)
+            return True
+        else:
+            log_func.warning(u'Unsupported <%s> platform' % sys_func.getPlatform())
+        return False
 
     def print(self, report=None, *args, **kwargs):
         """

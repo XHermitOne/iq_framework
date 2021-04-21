@@ -40,6 +40,12 @@ DEFAULT_REP_TMPL_FILE = os.path.join(os.path.dirname(__file__), 'new_report_temp
 UNIX_OFFICE_OPEN = 'libreoffice'
 WIN_OFFICE_OPEN = 'start soffice.exe'
 
+UNIX_CONV_TO_PDF_FMT = 'unoconv --format=pdf %s'
+WIN_CONV_TO_PDF_FMT = 'start soffice.exe --convert-to pdf \"%s\"'
+
+UNIX_OPEN_PDF_FMT = 'evince %s&'
+WIN_OPEN_PDF_FMT = 'start AcroRd32.exe %s&'
+
 ODS_TEMPLATE_EXT = '.ods'
 XLS_TEMPLATE_EXT = '.xls'
 XML_TEMPLATE_EXT = '.xml'
