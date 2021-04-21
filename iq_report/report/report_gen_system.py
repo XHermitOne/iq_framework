@@ -41,7 +41,7 @@ UNIX_OFFICE_OPEN = 'libreoffice'
 WIN_OFFICE_OPEN = 'start soffice.exe'
 
 UNIX_CONV_TO_PDF_FMT = 'unoconv --format=pdf %s'
-WIN_CONV_TO_PDF_FMT = 'start soffice.exe --convert-to pdf \"%s\"'
+WIN_CONV_TO_PDF_FMT = 'start /WAIT soffice.exe --convert-to pdf \"%s\"'
 
 UNIX_OPEN_PDF_FMT = 'evince %s&'
 WIN_OPEN_PDF_FMT = 'start AcroRd32.exe \"%s\"'
