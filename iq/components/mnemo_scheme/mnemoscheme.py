@@ -24,6 +24,7 @@ scour -i src_filename.svg -o dest_filename.svg
 *************************************************
 """
 
+import os
 import os.path
 
 from ...util import log_func
@@ -38,7 +39,7 @@ __version__ = (0, 0, 0, 2)
 
 # Conversion start command format SVG -> PNG
 UNIX_SVG2PNG_CONVERT_CMD_FMT = 'convert -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'
-WIN_SVG2PNG_CONVERT_CMD_FMT = '\"\"C:\\Program Files\\SVG2PNG\\convert.exe\" -background %s -resize %dx%d -extent %dx%d -gravity center %s %s\"'
+WIN_SVG2PNG_CONVERT_CMD_FMT = '\"\"%s\\SVG2PNG\\convert.exe\" -background %s -resize %dx%d -extent %dx%d -gravity center %s %s\"'
 
 
 class iqMnemoSchemeManager(object):
@@ -164,7 +165,8 @@ class iqMnemoSchemeManager(object):
                     win_svg2png_convert_cmd_fmt = iq.KERNEL.settings.THIS.SETTINGS.win_svg2png_convert_cmd_fmt.get()
                     if not win_svg2png_convert_cmd_fmt:
                         win_svg2png_convert_cmd_fmt = WIN_SVG2PNG_CONVERT_CMD_FMT
-                    cmd = win_svg2png_convert_cmd_fmt % (bg_colour, width, height, width, height,
+                    cmd = win_svg2png_convert_cmd_fmt % (os.environ.get('PROGRAMFILES', 'C:\\Program Files'),
+                                                         bg_colour, width, height, width, height,
                                                          svg_filename, png_filename)
                 else:
                     log_func.warning(u'Unsupported <%s> platform' % sys_func.getPlatform())
