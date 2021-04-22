@@ -79,18 +79,20 @@ def getDefaultGeolocations(address_query, *args, **kwargs):
     :return: [(latitude, longitude),...] Geolocation data list or empty list in case of error.
     """
     try:
-        # DaData geolocator
-        geo_location = getDaDataGeolocation(address_query=address_query, *args, **kwargs)
-        if geo_location and geo_location[0] and geo_location[1]:
-            return [geo_location]
         # Yandex geolocator
         geo_location = getYandexMapsGeolocation(address_query=address_query, *args, **kwargs)
         if geo_location and geo_location[0] and geo_location[1]:
             return [geo_location]
+
         # Yandex geolocations
         geo_locations = getYandexMapsGeolocations(address_query=address_query, *args, **kwargs)
         if geo_locations:
             return geo_locations
+
+        # DaData geolocator
+        geo_location = getDaDataGeolocation(address_query=address_query, *args, **kwargs)
+        if geo_location and geo_location[0] and geo_location[1]:
+            return [geo_location]
 
         # 2GIS
         geo_locations = get2GISGeolocations(address_query=address_query, *args, **kwargs)
