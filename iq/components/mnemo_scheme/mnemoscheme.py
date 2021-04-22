@@ -38,7 +38,7 @@ __version__ = (0, 0, 0, 2)
 
 # Conversion start command format SVG -> PNG
 UNIX_SVG2PNG_CONVERT_CMD_FMT = 'convert -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'
-WIN_SVG2PNG_CONVERT_CMD_FMT = '\"C:\\Program Files\\SVG2PNG\\convert.exe\" -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'
+WIN_SVG2PNG_CONVERT_CMD_FMT = '\"\"C:\\Program Files\\SVG2PNG\\convert.exe\" -background %s -resize %dx%d -extent %dx%d -gravity center %s %s\"'
 
 
 class iqMnemoSchemeManager(object):
