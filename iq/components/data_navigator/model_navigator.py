@@ -462,6 +462,41 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         self.stopTransaction(transaction)
         return False
 
+    def deleteWhere(self, *where_args, **where_kwargs):
+        """
+        Delete record in model by filter.
+
+        :param where_args: Where options.
+        :param where_kwargs: Where options.
+        :return: True/False.
+        """
+        transaction = None
+        try:
+            rec_filter = self.getRecFilter()
+
+            if not rec_filter:
+                # log_func.debug(u'Delete by where %s %s' % (str(where_args), str(where_kwargs)))
+                model = self.getModel()
+                transaction = self.startTransaction()
+                query = transaction.query(model).filter(*where_args, **where_kwargs).delete(synchronize_session=False)
+                transaction.commit()
+                self.stopTransaction(transaction)
+            else:
+                # log_func.debug(u'Delete by record filter %s' % str(rec_filter))
+                table = self.getTable()
+                select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
+                                                                       table=table)
+                transaction = self.startTransaction()
+                transaction.execute(select).delete(synchronize_session=False)
+                transaction.commit()
+                self.stopTransaction(transaction)
+            return True
+        except:
+            if transaction:
+                transaction.rollback()
+            log_func.fatal(u'Error delete records by filter %s %s' % (str(where_args), str(where_kwargs)))
+        return False
+
     def existsQuery(self, query):
         """
         Exists query result?

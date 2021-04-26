@@ -453,7 +453,7 @@ class iqReportGeneratorSystem(object):
         func = query.replace(PY_SIGNATURE, '').strip()
         var_names = vars.keys() if vars else None
         log_func.debug(u'Execute function: <%s>. External variables %s' % (func, var_names))
-        return exec_func.execTxtFunction(func, context=vars)
+        return exec_func.execTxtFunction(func, context=vars, show_debug=True)
 
     def _isEmptyQueryTbl(self, query_tbl):
         """
@@ -511,6 +511,7 @@ class iqReportGeneratorSystem(object):
                 elif self._isQueryFunc(report['query']):
                     variables = kwargs.get('variables', None)
                     query = self._execQueryFunc(report['query'], vars=variables)
+                    log_func.debug(u'Execute query func <%s>' % str(query))
 
                     if isinstance(query, dict):
                         if '__sql__' in query:

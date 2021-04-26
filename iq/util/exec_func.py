@@ -57,12 +57,13 @@ def openHtmlBrowser(html_filename=None):
 INDENTATION = u' ' * 4
 
 
-def execTxtFunction(function, context=None):
+def execTxtFunction(function, context=None, show_debug=False):
     """
     Execute function.
 
     :param function: Function text body.
     :param context: Run function context dictionary.
+    :param show_debug: Show debug info?
     :return: Run function result.
     """
     if context is None:
@@ -83,12 +84,17 @@ def execTxtFunction(function, context=None):
     function_header = 'def __%s():%s' % (function_name, sys_func.LINESEP)
     function_footer = '%s__result__ = __%s()' % (sys_func.LINESEP, function_name)
     function_txt = function_header + function_body + function_footer
+
     try:
         exec(function_txt, context)
+        if show_debug:
+            log_func.debug(u'Execute function:')
+            log_func.debug(function_txt)
         return context['__result__']
     except:
-        log_func.warning(u'Execute function:')
-        log_func.warning(function_txt)
+        if show_debug:
+            log_func.warning(u'Execute function:')
+            log_func.warning(function_txt)
         log_func.fatal(u'Error execute function')
     return None
 
