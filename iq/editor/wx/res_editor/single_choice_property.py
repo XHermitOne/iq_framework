@@ -28,12 +28,22 @@ class iqSingleChoiceDialogAdapter(wx.propgrid.PGEditorDialogAdapter):
 
     def DoShowDialog(self, propGrid, property):
         """
+        Show property edit dialog.
 
         :param propGrid:
         :param property:
         :return:
         """
-        single_choice_value = wx.GetSingleChoice(_('Message'), _('Caption'), self.choices)
+        cur_value = property.GetValue()
+        try:
+            value_idx = self.choices.index(cur_value)
+        except IndexError:
+            value_idx = 0
+
+        single_choice_value = wx.GetSingleChoice(message=_('Message'),
+                                                 caption=_('Caption'),
+                                                 choices=self.choices,
+                                                 initialSelection=value_idx)
 
         if single_choice_value:
             self.SetValue(single_choice_value)
