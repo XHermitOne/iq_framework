@@ -164,6 +164,7 @@ def getYandexMapsGeolocations(address_query, geo_key=None):
         # [NOTE] In API Yandex Maps longitude first, then latitude,
         #                                                V
         geo_locations = [tuple([float(pos) for pos in reversed(location.split(' '))]) if location is not None else (None, None) for location in str_geo_locations]
+        # log_func.debug(u'Yandexmaps. Get geo locations %s' % str(geo_locations))
         return geo_locations
     except Exception as e:
         log_func.fatal(u'Yandex default. Error retrieving geolocation data by address <%s>' % address_query)
@@ -199,13 +200,14 @@ def getYandexMapsGeolocation(address_query, geo_key=None, cache=True):
             log_func.warning(u'Yandexmaps library not installed. Ubuntu installation: pip3 install Yandexmaps')
             return None, None
         yandex = yandex_maps.Yandexmaps(api_key=geo_key)
-        geo_location = yandex.address(address=address_query)
+        geo_location_revert = yandex.address(address=address_query)
         # [NOTE] In API Yandex Maps longitude first, then latitude,
         #                             V
-        geo_location_tuple = tuple(reversed(geo_location))
+        geo_location = tuple(reversed(geo_location_revert))
         if cache:
             # Save in the cache
-            GEO_LOCATOR_CACHE[address_query] = geo_location_tuple
+            GEO_LOCATOR_CACHE[address_query] = geo_location
+        # log_func.debug(u'Yandexmaps. Get geo location %s' % str(geo_location))
         return geo_location
     except Exception as e:
         log_func.fatal(u'Yandexmaps. Error retrieving geolocation data by address <%s>' % address_query)
@@ -250,6 +252,7 @@ def get2GISGeolocations(address_query, geo_key=None, cache=True):
         # [NOTE] In API Yandex Maps longitude first, then latitude,
         #                                                V
         geo_locations = [tuple([float(pos) for pos in reversed(location.split(' '))]) if location is not None else (None, None) for location in str_geo_locations]
+        # log_func.debug(u'2GIS. Get geo locations %s' % str(geo_locations))
         return geo_locations
     except Exception as e:
         log_func.fatal(u'2GIS. Error retrieving geolocation data by address <%s>' % address_query)
@@ -301,6 +304,7 @@ def getDaDataGeolocation(address_query, api_key=None, secret_key=None, cache=Tru
         if cache:
             # Save in the cache
             GEO_LOCATOR_CACHE[address_query] = (geo_latitude, geo_longitude)
+        # log_func.debug(u'DaData. Get geo locations (%s x %s)' % (str(geo_latitude), str(geo_longitude)))
         return geo_latitude, geo_longitude
     except Exception as e:
         if dadata_client:
@@ -336,6 +340,7 @@ def getSputnikGeolocations(address_query):
         find_coordinates = [item.get('coordinates', list()) for item in find_geometries]
         find_coordinates = [list(reversed(item)) for item, _ in itertools.groupby(find_coordinates)]
 
+        # log_func.debug(u'Sputnik. Get geo locations %s' % str(find_coordinates))
         return find_coordinates
     except Exception as e:
         log_func.fatal(u'Sputnik. Error retrieving geolocation data by address <%s>' % address_query)
