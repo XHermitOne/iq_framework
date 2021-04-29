@@ -4,7 +4,7 @@
 """
 Get marker icons functions.
 
-Used free icons from https://mapicons.mapsmarker.com/
+Used free icons from https://mapicons.mapsmarker.com
 """
 
 import os.path
