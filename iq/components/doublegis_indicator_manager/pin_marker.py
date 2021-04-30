@@ -52,7 +52,7 @@ class iq2GISMarker(object):
         self.popup = popup
         self.tooltip = tooltip
 
-        self.icon = marker_icon.getMarkerIconFilename(icon)
+        self.icon = marker_icon.getMarkerIconFilename(icon) if isinstance(icon, str) else icon
 
     def render(self, **kwargs):
         """

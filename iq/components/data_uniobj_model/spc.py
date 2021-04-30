@@ -23,6 +23,7 @@ GUID_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 GUID_COLUMN_SPC['name'] = GUID_FIELD_NAME
 GUID_COLUMN_SPC['description'] = 'Object global unique ID'
 GUID_COLUMN_SPC['field_type'] = 'Text'
+GUID_COLUMN_SPC['default'] = 'iq.genGUID'
 
 NAME_COLUMN_SPC = copy.deepcopy(data_column.SPC)
 NAME_COLUMN_SPC['name'] = 'name'

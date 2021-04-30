@@ -8,6 +8,7 @@ Main engine package.
 from .global_data import *
 from .util.global_func import *
 from .util.sys_func import *
+from .util.id_func import *
 
 from iq.kernel.kernel import createKernel
 from iq.kernel.kernel import RUNTIME_MODE_STATE
