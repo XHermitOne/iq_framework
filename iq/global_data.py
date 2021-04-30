@@ -79,6 +79,9 @@ FRAMEWORK_LOGO_TXT = u'''
 
 OPERATE_YEAR = datetime.datetime.now().year
 
+DEFAULT_STR_DATE_FMT = '%Y-%m-%d'
+DEFAULT_STR_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
+
 
 def getGlobal(name):
     """

@@ -15,6 +15,7 @@ import wx.grid
 
 from ...util import log_func
 from ...util import dt_func
+from ...util import global_func
 
 from . import wxdatetime_func
 # from . import listctrl_manager
@@ -61,12 +62,29 @@ class iqPanelManager(validate_manager.iqValidateManager):
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
             try:
-                wx_dt = wxdatetime_func.datetime2wxDateTime(value)
-                ctrl.SetValue(wx_dt)
-                result = True
+                wx_dt = None
+                if isinstance(value, datetime.datetime):
+                    wx_dt = wxdatetime_func.datetime2wxDateTime(value)
+                elif isinstance(value, datetime.date):
+                    wx_dt = wxdatetime_func.date2wxDateTime(value)
+                elif isinstance(value, wx.DateTime):
+                    wx_dt = value
+                elif isinstance(value, str) and len(value) == 10:
+                    dt = datetime.datetime.strptime(value, global_func.getDefaultStrDateFmt())
+                    wx_dt = wxdatetime_func.date2wxDateTime(dt)
+                elif isinstance(value, str) and len(value) == 18:
+                    dt = datetime.datetime.strptime(value, global_func.getDefaultStrDatetimeFmt())
+                    wx_dt = wxdatetime_func.date2wxDateTime(dt)
+                else:
+                    log_func.warning(u'Incorrect date type <%s : %s>' % (value.__class__.__name__, str(value)))
+                    result = False
+                if wx_dt is not None:
+                    ctrl.SetValue(wx_dt)
+                    result = True
             except:
                 log_func.fatal(u'Error set value <%s : %s> in DatePickerCtrl' % (str(value),
                                                                                  value.__class__.__name__))
+                result = False
         elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
             ctrl.SetPath(value)
             result = True

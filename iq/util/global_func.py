@@ -247,3 +247,17 @@ def getMainWin():
         if main_win:
             global_data.setGlobal('MAIN_WINDOW', main_win)
     return main_win
+
+
+def getDefaultStrDateFmt():
+    """
+    Get default string date format.
+    """
+    return global_data.getGlobal('DEFAULT_STR_DATE_FMT')
+
+
+def getDefaultStrDatetimeFmt():
+    """
+    Get default string datetime format.
+    """
+    return global_data.getGlobal('DEFAULT_STR_DATETIME_FMT')
