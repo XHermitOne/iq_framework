@@ -14,8 +14,7 @@ from iq.util import log_func
 __version__ = (0, 0, 0, 1)
 
 MARKER_TEMPLATE = '''
-DG.circleMarker({{ location }}).setRadius({{ radius }}).setStyle({{ options }}){% if popup %}.bindPopup('{{ popup }}'){% endif %}{% if tooltip %}.bindLabel('{{ tooltip }}'){% endif %}.addTo(map);
-'''
+DG.circleMarker({{ location }}).setRadius({{ radius }}).setStyle({{ options }}){% if popup %}.bindPopup('{{ popup }}'){% endif %}{% if tooltip %}.bindLabel('{{ tooltip }}'){% endif %}.addTo(map);'''
 
 
 class iq2GISCircleMarker(object):
@@ -51,8 +50,8 @@ class iq2GISCircleMarker(object):
 
         self.radius = int(radius)
 
-        self.popup = popup
-        self.tooltip = tooltip
+        self.popup = popup.replace('\'', '^') if isinstance(popup, str) else popup
+        self.tooltip = tooltip.replace('\'', '^') if isinstance(tooltip, str) else tooltip
 
         self.color = color
         self.fill = fill

@@ -835,14 +835,6 @@ class iqMapIndicatorManagerProto(iqMapIndicator):
         """
         if self._geo_map is not None:
             try:
-                color = wxcolour_func.wxColour2StrRGB(color) if color else None
-
-                # marker_icon = None
-                # if icon and color:
-                #     marker_icon = folium.Icon(color=color, icon=icon)
-                # elif icon and color:
-                #     marker_icon = folium.Icon(color=color)
-
                 marker = self._rendering.Marker(location=[geo_latitude, geo_longitude],
                                                 popup=popup_text if popup_text else None,
                                                 tooltip=tooltip_text if tooltip_text else None,

@@ -39,9 +39,9 @@ MAP_TEMPLATE = '''
             zoom: {{ zoom }}
         });
         
-        {% for marker in markers %}
-            {{ marker.render() }}
-        {% endfor %}
+{% for marker in markers %}
+    {{ marker.render() }}
+{% endfor %}
     });
 </script>
 '''
