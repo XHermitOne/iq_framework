@@ -71,7 +71,6 @@ ADAPTATION_REPLACES = (
     dict(compare=CONTAIN_SIGNATURE, src='wx.COL_WIDTH_AUTOSIZE', dst='300'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.COL_WIDTH_DEFAULT', dst='300'),
     # dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
-    dict(compare=CONTAIN_SIGNATURE, src=')', dst=')'),
     dict(compare=CONTAIN_SIGNATURE, src=', agwStyle=wx.lib.gizmos.TR_', dst=', agwStyle=wx.lib.gizmos.TR_'),
     # StatusBar
     dict(compare=CONTAIN_SIGNATURE, src='wx.ST_SIZEGRIP', dst='wx.STB_SIZEGRIP'),
@@ -82,6 +81,8 @@ ADAPTATION_REPLACES = (
     dict(compare=CONTAIN_SIGNATURE, src='wx.DATAVIEW_COL_', dst='wx.COL_'),
     # Art provider
     dict(compare=CONTAIN_SIGNATURE, src='wx.ART_EDIT', dst='u"gtk-edit"'),
+    # Events
+    dict(compare=CONTAIN_SIGNATURE, src='( self, event ):', dst='(self, event):'),
     )
 
 
