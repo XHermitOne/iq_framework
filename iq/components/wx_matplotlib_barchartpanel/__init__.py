@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Trend pen component package.
+Matplotlib bar chart wx panel component package.
 """
 
 from .spc import SPC

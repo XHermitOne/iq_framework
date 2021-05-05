@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Trend pen component package.
+Transformation data component package.
 """
 
 from .spc import SPC

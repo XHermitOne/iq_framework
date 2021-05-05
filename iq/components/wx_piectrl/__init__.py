@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Trend pen component package.
+Wx PieCtrl component package.
 """
 
 from .spc import SPC

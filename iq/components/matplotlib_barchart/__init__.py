@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Trend pen component package.
+MatPlotLib bar chart component package.
 """
 
 from .spc import SPC
