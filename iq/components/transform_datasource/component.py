@@ -12,6 +12,7 @@ from . import transform_datasource_proto
 
 # from ...dialog import dlg_func
 from ...util import log_func
+from ...util import exec_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -54,5 +55,45 @@ class iqTransformDataSource(transform_datasource_proto.iqTransformDataSourceProt
         else:
             log_func.warning(u'Not define table datasource in transform datasource <%s>' % self.getName())
         return None
+
+    def transform(self, dataframe=None, **kwargs):
+        """
+        Transform DataFrame object.
+
+        :param dataframe: DataFrame object.
+            If not defined then get current DataFrame object.
+        :param kwargs: Data retrieval context.
+        :return: Transformed DataFrame object or None if error.
+        """
+        if dataframe is None:
+            table_datasource = self.getTabDataSource()
+            dataset = table_datasource.geDataset(**kwargs) if table_datasource else list()
+            self.importData(data=dataset)
+            dataframe = self.getDataFrame()
+
+        try:
+            context = self.getContext()
+            context.update(kwargs)
+            context['DATAFRAME'] = dataframe
+            function_body = self.getAttribute('transform')
+            new_dataframe = exec_func.execTxtFunction(function=function_body,
+                                                      context=context)
+            return new_dataframe
+        except:
+            log_func.fatal(u'Error transform method in <%s>' % self.getName())
+
+        return None
+
+    def test(self):
+        """
+        Object test function.
+
+        :return: True/False.
+        """
+        from . import view_transform_data_source_dialog
+
+        return view_transform_data_source_dialog.viewTransforDataSourceDlg(parent=None,
+                                                                           component=self)
+
 
 COMPONENT = iqTransformDataSource

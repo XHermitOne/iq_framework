@@ -5,7 +5,9 @@
 wxColour convert function.
 """
 
+import termcolor
 import wx
+import wx.lib.colourdb
 
 from ...util import log_func
 
@@ -173,3 +175,16 @@ def getDefaultOddRowsBGColour():
     The background color is not even lines by default.
     """
     return getTintColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX))
+
+
+DEFAULT_TERMINAL_COLOR_NAMES = [color_name.upper() for color_name in termcolor.COLORS.keys()]
+DEFAULT_COLOUR_NAMES = DEFAULT_TERMINAL_COLOR_NAMES + wx.lib.colourdb.getColourList()
+
+
+def getDefaultColourNames():
+    """
+    Get default colour name list.
+
+    :return: Default colour name list.
+    """
+    return DEFAULT_COLOUR_NAMES

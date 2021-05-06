@@ -503,23 +503,6 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             return listctrl_or_event.GetFirstSelected()
         return -1
 
-    def getListCtrlItemDataByIdx(self, listctrl, idx=-1):
-        """
-        Get the item data by item index.
-
-        :param listctrl: Object of wx.ListCtrl control.
-        :param idx: Item index.
-        :return: Data or None if index incorrect.
-        """
-        if idx >= 0:
-            try:
-                # item = listctrl.GetItem(idx)
-                data = listctrl.GetItemData(idx)
-                return data
-            except:
-                log_func.fatal(u'Error get item data in wx.ListCtrl by index <%s>' % str(idx))
-        return None
-
     def getListCtrlSelectedItemData(self, listctrl):
         """
         Get the data of the selected item.
@@ -527,8 +510,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         :param listctrl: Object of wx.ListCtrl control.
         :return: Data or None if nothing is selected.
         """
-        selected_idx = self.getListCtrlSelectedRowIdx(listctrl_or_event=listctrl)
-        return self.getListCtrlItemDataByIdx(listctrl=listctrl, idx=selected_idx)
+        return self.getListCtrlItemData(listctrl=listctrl)
 
     def selectListCtrlItem(self, listctrl=None, item=-1,
                            is_focus=True, deselect_prev=True):
@@ -834,3 +816,61 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
 
         listctrl.DeleteAllItems()
         return True
+
+    def setListCtrlItemData(self, listctrl=None, item=None, data=None):
+        """
+        Set item data.
+
+        :param listctrl: wx.ListCtrl object.
+        :param item: List item.
+            A list item can be specified by either an index or a wx.ListItem object.
+            If None, then there is the currently selected item.
+        :param data: Item data.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        item_idx = -1
+        try:
+            if item is None:
+                item_idx = self.getListCtrlSelectedRowIdx(listctrl)
+                item = listctrl.GetItem(item_idx)
+            elif isinstance(item, wx.ListItem):
+                item_idx = item.GetId()
+            elif isinstance(item, int):
+                item_idx = item
+                item = listctrl.GetItem(item_idx)
+
+            listctrl.SetItemData(item=item, data=data)
+            return True
+        except:
+            log_func.fatal(u'Error set ListCtrl item <%s> data <%s>' % (str(item_idx), str(data)))
+        return False
+
+    def getListCtrlItemData(self, listctrl=None, item=None):
+        """
+        Get item data.
+
+        :param listctrl: wx.ListCtrl object.
+        :param item: List item.
+            A list item can be specified by either an index or a wx.ListItem object.
+            If None, then there is the currently selected item.
+        :return: Item data or None if error.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        item_idx = -1
+        try:
+            if item is None:
+                item_idx = self.getListCtrlSelectedRowIdx(listctrl)
+                item = listctrl.GetItem(item_idx)
+            elif isinstance(item, wx.ListItem):
+                item_idx = item.GetId()
+            elif isinstance(item, int):
+                item_idx = item
+                item = listctrl.GetItem(item_idx)
+
+            return listctrl.GetItemData(item=item)
+        except:
+            log_func.fatal(u'Error get ListCtrl item <%s> data' % str(item_idx))
+        return None

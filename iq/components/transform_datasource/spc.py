@@ -28,6 +28,18 @@ def validTableDataSourcePsp(psp, *args, **kwargs):
     return psp_obj.getType() in TABLE_DATASOURCE_TYPES
 
 
+def testComponent(spc, *args, **kwargs):
+    """
+    Test component.
+
+    :param spc: Component specification.
+    :return: True/False.
+    """
+    from . import component
+    obj = component.iqTransformDataSource(parent=None, resource=spc, context=dict())
+    return obj.test()
+
+
 COMPONENT_TYPE = 'iqTransformDataSource'
 
 TRANSFORMDATASOURCE_SPC = {
@@ -39,21 +51,27 @@ TRANSFORMDATASOURCE_SPC = {
     '_children_': [],
 
     'tab_datasource': None,
+    'transform': None,
+    'sum_by': None,
 
     '__package__': u'Data',
     '__icon__': 'fatcow/table_lightning',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),
-    '__test__': None,
+    '__test__': testComponent,
     '__edit__': {
         'tab_datasource': {
             'editor': property_editor_id.PASSPORT_EDITOR,
             'valid': validTableDataSourcePsp,
         },
+        'transform': property_editor_id.METHOD_EDITOR,
+        'sum_by': property_editor_id.STRINGLIST_EDITOR,
     },
     '__help__': {
         'tab_datasource': u'Table datasource object',
+        'transform': u'Transform DataFrame method',
+        'sum_by': u'Total sum group column names',
     },
 }
 
