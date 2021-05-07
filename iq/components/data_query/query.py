@@ -8,10 +8,11 @@ Data query component.
 from ...util import log_func
 from ...util import txtgen_func
 
+from ..data_model import data_object
 __version__ = (0, 0, 1, 1)
 
 
-class iqDBQuery(object):
+class iqDBQuery(data_object.iqDataObjectProto):
     """
     Database query class.
     """
@@ -80,3 +81,14 @@ class iqDBQuery(object):
         except:
             log_func.fatal(u'Error generate SQL query <%s>' % sql_txt)
         return None
+
+    def getDataset(self, *args, **kwargs):
+        """
+        Get dataset.
+
+        :return: Record dictionary list.
+        """
+        records = self.execute(**kwargs)
+        if records is not None:
+            return records
+        return list()

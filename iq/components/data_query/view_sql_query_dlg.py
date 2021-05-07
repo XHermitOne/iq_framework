@@ -280,6 +280,7 @@ def viewSQLQueryDlg(parent=None, db=None, sql_txt=None):
     if parent is None:
         parent = global_func.getMainWin()
 
+    dlg = None
     try:
         dlg = iqViewSQLQueryDialog(parent)
 
@@ -288,8 +289,11 @@ def viewSQLQueryDlg(parent=None, db=None, sql_txt=None):
 
         dlg.init()
         dlg.ShowModal()
+        dlg.Destroy()
         return True
     except:
         log_func.fatal(u'Error view SQL query result dialog')
 
+    if dlg:
+        dlg.Destroy()
     return False

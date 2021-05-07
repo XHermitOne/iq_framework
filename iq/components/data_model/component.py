@@ -10,6 +10,8 @@ from ... import object
 from . import spc
 from . import model
 
+from ...util import log_func
+
 from ..data_column import COMPONENT as column_component
 
 __version__ = (0, 0, 0, 1)
@@ -40,6 +42,43 @@ class iqDataModel(model.iqModelManager, object.iqObject):
         :return:
         """
         return [child for child in self.getChildren() if issubclass(child.__class__, column_component)]
+
+    def getScheme(self):
+        """
+        Get scheme object.
+
+        :return:
+        """
+        scheme = self.getParent()
+        return scheme
+
+    def getModel(self):
+        """
+        Get model.
+        """
+        try:
+            scheme = self.getScheme()
+            if scheme:
+                return scheme.getModel(model_name=self.getName())
+        except:
+            log_func.fatal(u'Error get model in <%s>' % self.getName())
+        return None
+
+    def getDataset(self, *args, **kwargs):
+        """
+        Get dataset.
+
+        :return: Record dictionary list.
+        """
+        try:
+            model = self.getModel()
+            if model:
+                records = model.query.all()
+                dataset = [dict(record) for record in records]
+                return dataset
+        except:
+            log_func.fatal(u'Error get dataset in <%s>' % self.getName())
+        return list()
 
 
 COMPONENT = iqDataModel

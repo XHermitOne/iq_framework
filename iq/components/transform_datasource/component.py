@@ -67,18 +67,20 @@ class iqTransformDataSource(transform_datasource_proto.iqTransformDataSourceProt
         """
         if dataframe is None:
             table_datasource = self.getTabDataSource()
-            dataset = table_datasource.geDataset(**kwargs) if table_datasource else list()
+            dataset = table_datasource.getDataset(**kwargs) if table_datasource else list()
             self.importData(data=dataset)
             dataframe = self.getDataFrame()
 
         try:
-            context = self.getContext()
-            context.update(kwargs)
-            context['DATAFRAME'] = dataframe
-            function_body = self.getAttribute('transform')
-            new_dataframe = exec_func.execTxtFunction(function=function_body,
-                                                      context=context)
-            return new_dataframe
+            if self.isAttributeValue('transform'):
+                context = self.getContext()
+                context.update(kwargs)
+                context['DATAFRAME'] = dataframe
+                function_body = self.getAttribute('transform')
+                new_dataframe = exec_func.execTxtFunction(function=function_body,
+                                                          context=context)
+                return new_dataframe
+            return dataframe
         except:
             log_func.fatal(u'Error transform method in <%s>' % self.getName())
 

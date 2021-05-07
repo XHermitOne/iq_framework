@@ -5,28 +5,32 @@
 Data object interface class.
 """
 
-from iq.util import log_func
-from iq.util import global_func
+from ...util import log_func
+from ...util import global_func
 
 __version__ = (0, 0, 0, 1)
 
 DATA_NAME_DELIMETER = '.'
 
 
-class iqDataObject(object):
+class iqDataObjectProto(object):
     """
-    Data object interface class.
+    Data object interface prototype class.
     """
-    def getDataset(self, do_update=False):
+    def getDataset(self, *args, **kwargs):
         """
         Get dataset.
 
-        :param do_update: Update dataset?
         :return: Record dictionary list.
         """
         log_func.warning(u'Not define method <getDataset> in <%s>' % self.__class__.__name__)
         return list()
 
+
+class iqDataObject(iqDataObjectProto):
+    """
+    Data object interface class.
+    """
     def getDataObjectRec(self, value):
         """
         Get data object record by value.

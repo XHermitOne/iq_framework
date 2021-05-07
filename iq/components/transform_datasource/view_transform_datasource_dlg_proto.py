@@ -8,11 +8,13 @@
 ###########################################################################
 
 import wx
-import wx.xrc
+import wx.adv
+import wx.lib.gizmos
+import wx.aui
 import wx.propgrid as pg
 
-import gettext
-_ = gettext.gettext
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqViewTransformDataSourceDialogProto
@@ -58,13 +60,13 @@ class iqViewTransformDataSourceDialogProto ( wx.Dialog ):
 		bSizer4 = wx.BoxSizer( wx.VERTICAL )
 
 		self.ctrl_toolBar = wx.ToolBar( self.table_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL )
-		self.collapse_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"Свернуть панель"), wx.ArtProvider.GetBitmap( wx.ART_GO_UP, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Collapse panel"), _(u"Collapse panel"), None )
+		self.collapse_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Свернуть панель"), wx.ArtProvider.GetBitmap( wx.ART_GO_UP, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Collapse panel"), _(u"Collapse panel"), None )
 
-		self.expand_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"Развернуть панель"), wx.ArtProvider.GetBitmap( wx.ART_GO_DOWN, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Expand panel"), _(u"Expand panel"), None )
+		self.expand_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Развернуть панель"), wx.ArtProvider.GetBitmap( wx.ART_GO_DOWN, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Expand panel"), _(u"Expand panel"), None )
 
 		self.ctrl_toolBar.AddSeparator()
 
-		self.refresh_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"Обновить результаты запроса"), wx.ArtProvider.GetBitmap( u"gtk-refresh", wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Refresh"), _(u"Refresh"), None )
+		self.refresh_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Обновить результаты запроса"), wx.ArtProvider.GetBitmap( u"gtk-refresh", wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Refresh"), _(u"Refresh"), None )
 
 		self.ctrl_toolBar.AddSeparator()
 
@@ -130,19 +132,19 @@ class iqViewTransformDataSourceDialogProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, overide them in your derived class
-	def onCollapseToolClicked( self, event ):
+	def onCollapseToolClicked(self, event):
 		event.Skip()
 
-	def onExpandToolClicked( self, event ):
+	def onExpandToolClicked(self, event):
 		event.Skip()
 
-	def onRefreshToolClicked( self, event ):
+	def onRefreshToolClicked(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
-	def panel_splitterOnIdle( self, event ):
+	def panel_splitterOnIdle(self, event):
 		self.panel_splitter.SetSashPosition( 0 )
 		self.panel_splitter.Unbind( wx.EVT_IDLE )
 

@@ -136,6 +136,8 @@ class iqViewTransformDataSourceDialog(view_transform_datasource_dlg_proto.iqView
 
         try:
             dataframe = self.testing_component.transform(**variables)
+            log_func.debug(u'Transformed DataFrame:')
+            print(dataframe)
             dataset = self.testing_component.exportData(dataframe)
             if dataset:
                 # Columns
@@ -220,6 +222,7 @@ def viewTransforDataSourceDlg(parent=None, component=None):
     if parent is None:
         parent = global_func.getMainWin()
 
+    dlg = None
     try:
         dlg = iqViewTransformDataSourceDialog(parent)
 
@@ -227,9 +230,13 @@ def viewTransforDataSourceDlg(parent=None, component=None):
 
         dlg.init()
         dlg.ShowModal()
+
+        dlg.Destroy()
         return True
     except:
         log_func.fatal(u'Error view transform datasource result dialog')
 
+    if dlg:
+        dlg.Destroy()
     return False
 

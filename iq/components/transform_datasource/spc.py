@@ -8,11 +8,14 @@ Transformation data specification module.
 from ...object import object_spc
 from ...editor import property_editor_id
 from ... import passport
+
 from .. import data_query
+from .. import data_model
 
 __version__ = (0, 0, 0, 1)
 
-TABLE_DATASOURCE_TYPES = (data_query.COMPONENT_TYPE, )
+TABLE_DATASOURCE_TYPES = (data_query.COMPONENT_TYPE,
+                          data_model.COMPONENT_TYPE)
 
 
 def validTableDataSourcePsp(psp, *args, **kwargs):
@@ -52,7 +55,7 @@ TRANSFORMDATASOURCE_SPC = {
 
     'tab_datasource': None,
     'transform': None,
-    'sum_by': None,
+    # 'sum_by': None,
 
     '__package__': u'Data',
     '__icon__': 'fatcow/table_lightning',
@@ -66,12 +69,12 @@ TRANSFORMDATASOURCE_SPC = {
             'valid': validTableDataSourcePsp,
         },
         'transform': property_editor_id.METHOD_EDITOR,
-        'sum_by': property_editor_id.STRINGLIST_EDITOR,
+        # 'sum_by': property_editor_id.STRINGLIST_EDITOR,
     },
     '__help__': {
         'tab_datasource': u'Table datasource object',
         'transform': u'Transform DataFrame method',
-        'sum_by': u'Total sum group column names',
+        # 'sum_by': u'Total sum group column names',
     },
 }
 
