@@ -10,7 +10,6 @@ from ... import object
 from . import spc
 from . import transform_datasource_proto
 
-# from ...dialog import dlg_func
 from ...util import log_func
 from ...util import exec_func
 
@@ -67,6 +66,7 @@ class iqTransformDataSource(transform_datasource_proto.iqTransformDataSourceProt
         """
         if dataframe is None:
             table_datasource = self.getTabDataSource()
+            log_func.info(u'Get table datasource <%s> for transform' % table_datasource.getName())
             dataset = table_datasource.getDataset(**kwargs) if table_datasource else list()
             self.importData(data=dataset)
             dataframe = self.getDataFrame()
@@ -77,9 +77,12 @@ class iqTransformDataSource(transform_datasource_proto.iqTransformDataSourceProt
                 context.update(kwargs)
                 context['DATAFRAME'] = dataframe
                 function_body = self.getAttribute('transform')
-                new_dataframe = exec_func.execTxtFunction(function=function_body,
-                                                          context=context)
-                return new_dataframe
+                self._dataframe = exec_func.execTxtFunction(function=function_body,
+                                                            context=context)
+
+                log_func.debug(u'Transform result DataFrame:')
+                log_func.debug(str(self._dataframe))
+                return self._dataframe
             return dataframe
         except:
             log_func.fatal(u'Error transform method in <%s>' % self.getName())

@@ -8,8 +8,7 @@ MatPlotLib bar chart wx panel specification module.
 from ...editor import property_editor_id
 from .. import wx_panel
 
-# from . import trend_proto
-# from . import gnuplot_trend_proto
+from ..matplotlib_barchart import barchart_proto
 
 __version__ = (0, 0, 0, 1)
 
@@ -23,14 +22,15 @@ WXMATPLOTLIBBARCHARTPANEL_SPC = {
 
     '_children_': [],
 
-    # 'x_format': trend_proto.DEFAULT_X_FORMAT,
-    # 'y_format': trend_proto.DEFAULT_Y_FORMAT,
-    # 'scene_min': ('00:00:00', 0.0),
-    # 'scene_max': ('23:59:59', 100.0),
-    # 'adapt_scene': False,
-    #
-    # 'x_precision': gnuplot_trend_proto.DEFAULT_X_PRECISION,
-    # 'y_precision': gnuplot_trend_proto.DEFAULT_Y_PRECISION,
+    'bar_count': 1,
+    'bar_width': barchart_proto.DEFAULT_BAR_WIDTH,
+
+    'title': None,
+    'x_label': None,
+    'y_label': None,
+    'legend': None,
+
+    'orientation': barchart_proto.HORIZONTAL_ORIENTATION,
 
     '__package__': u'wxPython',
     '__icon__': 'fatcow/barchart',
@@ -38,29 +38,30 @@ WXMATPLOTLIBBARCHARTPANEL_SPC = {
     '__doc__': None,
     '__content__': (),
     '__edit__': {
-        # 'adapt_scene': property_editor_id.CHECKBOX_EDITOR,
-        # 'scene_min': property_editor_id.SCRIPT_EDITOR,
-        # 'scene_max': property_editor_id.SCRIPT_EDITOR,
-        # 'x_format': {
-        #     'editor': property_editor_id.CHOICE_EDITOR,
-        #     'choices': trend_proto.DEFAULT_X_FORMATS,
-        # },
-        # 'y_format': {
-        #     'editor': property_editor_id.CHOICE_EDITOR,
-        #     'choices': trend_proto.DEFAULT_Y_FORMATS,
-        # },
-        # 'x_precision': property_editor_id.STRING_EDITOR,
-        # 'y_precision': property_editor_id.STRING_EDITOR,
+        'bar_count': property_editor_id.INTEGER_EDITOR,
+        'bar_width': property_editor_id.FLOAT_EDITOR,
+
+        'title': property_editor_id.STRING_EDITOR,
+        'x_label': property_editor_id.STRING_EDITOR,
+        'y_label': property_editor_id.STRING_EDITOR,
+        'legend': property_editor_id.STRINGLIST_EDITOR,
+
+        'orientation': {
+            'editor': property_editor_id.CHOICE_EDITOR,
+            'choices': (barchart_proto.HORIZONTAL_ORIENTATION,
+                        barchart_proto.VERTICAL_ORIENTATION),
+        },
     },
     '__help__': {
-        # 'x_format': u'X axis data presentation format',
-        # 'y_format': u'Y axis data presentation format',
-        # 'scene_min': u'The minimum value of the visible trend scene',
-        # 'scene_max': u'The maximum value of the visible trend scene',
-        # 'adapt_scene': u'Sign of scene adaptation according to',
-        #
-        # 'x_precision': u'X grid trend precision',
-        # 'y_precision': u'Y grid trend precision',
+        'bar_count': u'Bar count',
+        'bar_width': u'Bar width',
+
+        'title': u'Title',
+        'x_label': u'X axis label',
+        'y_label': u'Y axis label',
+        'legend': u'Bar chart legend',
+
+        'orientation': u'Bar chart orientation',
     },
 }
 

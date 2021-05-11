@@ -44,15 +44,8 @@ class iqTransformDataSourceProto(object):
 
         try:
             self._dataframe = pandas.DataFrame(data)
-
-            # sum_by = self.getSumBy()
-            # if sum_by and len(sum_by) == 1:
-            #     # Group by one column
-            #     self._dataframe = self._dataframe.groupby(sum_by[0]).sum()
-            # elif sum_by:
-            #     # Group by multiple column
-            #     self._dataframe = self._dataframe.groupby(sum_by).sum()
-
+            # log_func.debug(u'Transformed DataFrame:')
+            # log_func.debug(str(self._dataframe))
             return True
         except:
             log_func.fatal(u'Error import data in <%s>' % self.getName())
@@ -107,12 +100,3 @@ class iqTransformDataSourceProto(object):
         """
         log_func.warning(u'not defined <transform> method in component <%s>' % self.__class__.__name__)
         return None
-
-    # def getSumBy(self):
-    #     """
-    #     Get total sum group column names.
-    #
-    #     :return: Column names or empty list.
-    #     """
-    #     log_func.warning(u'Not define getSumBy in component <%s>' % self.__class__.__name__)
-    #     return list()

@@ -55,7 +55,6 @@ TRANSFORMDATASOURCE_SPC = {
 
     'tab_datasource': None,
     'transform': None,
-    # 'sum_by': None,
 
     '__package__': u'Data',
     '__icon__': 'fatcow/table_lightning',
@@ -69,12 +68,10 @@ TRANSFORMDATASOURCE_SPC = {
             'valid': validTableDataSourcePsp,
         },
         'transform': property_editor_id.METHOD_EDITOR,
-        # 'sum_by': property_editor_id.STRINGLIST_EDITOR,
     },
     '__help__': {
         'tab_datasource': u'Table datasource object',
         'transform': u'Transform DataFrame method',
-        # 'sum_by': u'Total sum group column names',
     },
 }
 

@@ -104,6 +104,31 @@ def getStopYearDT(year=None):
     return datetime.datetime(year=year, month=12, day=31, hour=23, minute=59, second=59, microsecond=999999)
 
 
+def getStartMonthDT(now=None):
+    """
+    Get start month datetime.
+
+    :param now: Now datetime.
+    :return: Start month as datetime.
+    """
+    if now is None:
+        now = datetime.datetime.now()
+    return now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+
+def getStopMonthDT(now=None):
+    """
+    Get stop month datetime.
+
+    :param now: Now datetime.
+    :return: Stop month as datetime.
+    """
+    if now is None:
+        now = datetime.datetime.now()
+    day_month_range = calendar.monthrange(year=now.year, month=now.month)
+    return now.replace(day=day_month_range[1], hour=23, minute=59, second=59, microsecond=999999)
+
+
 def getOperateYear():
     """
     Get operate year.

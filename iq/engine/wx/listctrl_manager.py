@@ -16,6 +16,8 @@ from . import imglib_manager
 
 __version__ = (0, 0, 0, 1)
 
+LISTCTRL_DATA_CACHE_ATTR_NAME = '__listctrl_data'
+
 
 class iqListCtrlManager(imglib_manager.iqImageLibManager):
     """
@@ -834,15 +836,17 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         try:
             if item is None:
                 item_idx = self.getListCtrlSelectedRowIdx(listctrl)
-                item = listctrl.GetItem(item_idx)
             elif isinstance(item, wx.ListItem):
                 item_idx = item.GetId()
             elif isinstance(item, int):
                 item_idx = item
-                item = listctrl.GetItem(item_idx)
 
-            listctrl.SetItemData(item=item, data=data)
-            return True
+            if not hasattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME):
+                setattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME, dict())
+            data_idx = wx.NewId()
+            data_cache = getattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME)
+            data_cache[data_idx] = data
+            return listctrl.SetItemData(item=item_idx, data=data_idx)
         except:
             log_func.fatal(u'Error set ListCtrl item <%s> data <%s>' % (str(item_idx), str(data)))
         return False
@@ -863,14 +867,15 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         try:
             if item is None:
                 item_idx = self.getListCtrlSelectedRowIdx(listctrl)
-                item = listctrl.GetItem(item_idx)
             elif isinstance(item, wx.ListItem):
                 item_idx = item.GetId()
             elif isinstance(item, int):
                 item_idx = item
-                item = listctrl.GetItem(item_idx)
 
-            return listctrl.GetItemData(item=item)
+            data_cache = getattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) if hasattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) else dict()
+
+            data_idx = listctrl.GetItemData(item=item_idx)
+            return data_cache.get(data_idx, None)
         except:
             log_func.fatal(u'Error get ListCtrl item <%s> data' % str(item_idx))
         return None

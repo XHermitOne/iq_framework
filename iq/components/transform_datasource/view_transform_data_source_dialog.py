@@ -136,8 +136,8 @@ class iqViewTransformDataSourceDialog(view_transform_datasource_dlg_proto.iqView
 
         try:
             dataframe = self.testing_component.transform(**variables)
-            log_func.debug(u'Transformed DataFrame:')
-            print(dataframe)
+            # log_func.debug(u'Transformed DataFrame:')
+            # log_func.debug(str(dataframe))
             dataset = self.testing_component.exportData(dataframe)
             if dataset:
                 # Columns

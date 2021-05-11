@@ -5,6 +5,7 @@
 Data engine manager.
 """
 
+import decimal
 import sqlalchemy
 import sqlalchemy.engine.url
 
@@ -195,7 +196,7 @@ class iqDBEngineManager(object):
             connection = engine.connect()
             result = connection.execute(sql_query)
             records = result.fetchall()
-            recordset = [dict(rec) for rec in records]
+            recordset = [dict([(name, float(value) if isinstance(value, decimal.Decimal) else value) for name, value in dict(rec).items()]) for rec in records]
             connection.close()
             return recordset
         except:
