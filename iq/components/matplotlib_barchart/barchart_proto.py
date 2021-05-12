@@ -31,18 +31,12 @@ class iqMatplotlibBarChartProto(object):
         """
         Constructor.
         """
-        # self._bar_count = 1
-        # self._bar_width = DEFAULT_BAR_WIDTH
-
         self._kind = tuple(pandas.plotting._matplotlib.PLOT_CLASSES.keys())[0]
         self._title = None
         self._x_label = None
         self._y_label = None
         self._legend = tuple()
         self._grid = False
-
-        # self._x_tick_labels = tuple()
-        # self._bar_data = list()
 
         # Current datasource object
         self._current_datasource = None
@@ -65,24 +59,6 @@ class iqMatplotlibBarChartProto(object):
         else:
             log_func.warning(u'Incorrect type bar chart datasource <%s>' % datasource.__class__.__name__)
             self._current_datasource = None
-
-    # def getBarWidth(self):
-    #     """
-    #     Get bar width.
-    #     """
-    #     return self._bar_width
-    #
-    # def setBarWidth(self, bar_width=DEFAULT_BAR_WIDTH):
-    #     """
-    #     Set bar width.
-    #     """
-    #     self._bar_width = bar_width
-    #
-    # def getBarCount(self):
-    #     """
-    #     Get bar count.
-    #     """
-    #     return self._bar_count
 
     def getTitle(self):
         """
@@ -145,21 +121,6 @@ class iqMatplotlibBarChartProto(object):
         if kind:
             self._kind = kind
 
-    # def getXTickLabels(self):
-    #     """
-    #     Get X tick labels.
-    #     """
-    #     return self._x_tick_labels
-    #
-    # def setXTickLabels(self, x_tick_labels=()):
-    #     """
-    #     Set X tick labels.
-    #
-    #     :param x_tick_labels: X tick label list.
-    #     :return:
-    #     """
-    #     self._x_tick_labels = x_tick_labels
-
     def getGrid(self):
         """
         Get grid.
@@ -174,20 +135,6 @@ class iqMatplotlibBarChartProto(object):
         :return:
         """
         self._grid = grid
-
-    # def addBarData(self, bar_data=()):
-    #     """
-    #     Add bar data.
-    #
-    #     :param bar_data: Bar data list.
-    #     :return: True/False.
-    #     """
-    #     if len(self._bar_data) <= self.getBarCount():
-    #         self._bar_data.append(bar_data)
-    #         return True
-    #     else:
-    #         log_func.warning(u'Error limit bar count')
-    #     return False
 
     def genPNGFilename(self):
         """
@@ -254,7 +201,6 @@ class iqMatplotlibBarChartProto(object):
                 if png_filename is None:
                     png_filename = self.genPNGFilename()
                 figure = plot_graph.get_figure()
-                # matplotlib.pyplot.savefig(png_filename)
                 figure.savefig(fname=png_filename, dpi=DEFAULT_DPI)
 
             return True

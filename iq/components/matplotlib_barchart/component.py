@@ -31,20 +31,6 @@ class iqMatplotlibBarChart(object.iqObject, barchart_proto.iqMatplotlibBarChartP
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         barchart_proto.iqMatplotlibBarChartProto.__init__(self, *args, **kwargs)
 
-    # def getBarCount(self):
-    #     """
-    #     Get bar count.
-    #     """
-    #     self._bar_count = self.getAttribute('bar_count')
-    #     return self._bar_count
-    #
-    # def getBarWidth(self):
-    #     """
-    #     Get bar width.
-    #     """
-    #     self._bar_width = self.getAttribute('bar_width')
-    #     return self._bar_width
-
     def getKind(self):
         """
         Get chart kind.

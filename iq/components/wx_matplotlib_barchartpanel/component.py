@@ -51,20 +51,6 @@ class iqWxMatplotlibBarChartPanel(matplotlib_barchartpanel_proto.iqMatplotlibBar
             self.refresh()
         event.Skip()
 
-    # def getBarCount(self):
-    #     """
-    #     Get bar count.
-    #     """
-    #     self._bar_count = self.getAttribute('bar_count')
-    #     return self._bar_count
-    #
-    # def getBarWidth(self):
-    #     """
-    #     Get bar width.
-    #     """
-    #     self._bar_width = self.getAttribute('bar_width')
-    #     return self._bar_width
-
     def getKind(self):
         """
         Get chart kind.
@@ -106,13 +92,6 @@ class iqWxMatplotlibBarChartPanel(matplotlib_barchartpanel_proto.iqMatplotlibBar
         """
         self._grid = self.getAttribute('grid')
         return self._grid
-
-    # def getOrientation(self):
-    #     """
-    #     Get orientation.
-    #     """
-    #     self._orientation = self.getAttribute('orientation')
-    #     return self._orientation
 
 
 COMPONENT = iqWxMatplotlibBarChartPanel
