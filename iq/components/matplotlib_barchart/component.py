@@ -31,19 +31,26 @@ class iqMatplotlibBarChart(object.iqObject, barchart_proto.iqMatplotlibBarChartP
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         barchart_proto.iqMatplotlibBarChartProto.__init__(self, *args, **kwargs)
 
-    def getBarCount(self):
-        """
-        Get bar count.
-        """
-        self._bar_count = self.getAttribute('bar_count')
-        return self._bar_count
+    # def getBarCount(self):
+    #     """
+    #     Get bar count.
+    #     """
+    #     self._bar_count = self.getAttribute('bar_count')
+    #     return self._bar_count
+    #
+    # def getBarWidth(self):
+    #     """
+    #     Get bar width.
+    #     """
+    #     self._bar_width = self.getAttribute('bar_width')
+    #     return self._bar_width
 
-    def getBarWidth(self):
+    def getKind(self):
         """
-        Get bar width.
+        Get chart kind.
         """
-        self._bar_width = self.getAttribute('bar_width')
-        return self._bar_width
+        self._kind = self.getAttribute('kind')
+        return self._kind
 
     def getTitle(self):
         """
@@ -73,12 +80,12 @@ class iqMatplotlibBarChart(object.iqObject, barchart_proto.iqMatplotlibBarChartP
         self._legend = self.getAttribute('legend')
         return self._legend
 
-    def getOrientation(self):
+    def getGrid(self):
         """
-        Get orientation.
+        Get grid.
         """
-        self._orientation = self.getAttribute('orientation')
-        return self._orientation
+        self._grid = self.getAttribute('grid')
+        return self._grid
 
 
 COMPONENT = iqMatplotlibBarChart

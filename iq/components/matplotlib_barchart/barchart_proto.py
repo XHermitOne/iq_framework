@@ -9,6 +9,7 @@ import os
 import os.path
 import numpy
 import matplotlib.pyplot
+import pandas.plotting._matplotlib
 
 from ...util import log_func
 from ...util import file_func
@@ -17,8 +18,9 @@ __version__ = (0, 0, 0, 1)
 
 DEFAULT_BAR_WIDTH = 0.35
 
-HORIZONTAL_ORIENTATION = 'horizontal'
-VERTICAL_ORIENTATION = 'vertical'
+# HORIZONTAL_ORIENTATION = 'horizontal'
+# VERTICAL_ORIENTATION = 'vertical'
+DEFAULT_DPI = 150
 
 
 class iqMatplotlibBarChartProto(object):
@@ -29,37 +31,58 @@ class iqMatplotlibBarChartProto(object):
         """
         Constructor.
         """
-        self._bar_count = 1
-        self._bar_width = DEFAULT_BAR_WIDTH
+        # self._bar_count = 1
+        # self._bar_width = DEFAULT_BAR_WIDTH
 
+        self._kind = tuple(pandas.plotting._matplotlib.PLOT_CLASSES.keys())[0]
         self._title = None
         self._x_label = None
         self._y_label = None
         self._legend = tuple()
+        self._grid = False
 
-        self._x_tick_labels = tuple()
+        # self._x_tick_labels = tuple()
+        # self._bar_data = list()
 
-        self._orientation = HORIZONTAL_ORIENTATION
+        # Current datasource object
+        self._current_datasource = None
 
-        self._bar_data = list()
+    def getCurrentDataSource(self):
+        """
+        Get current datasource object.
+        """
+        return self._current_datasource
 
-    def getBarWidth(self):
+    def setCurrentDataSource(self, datasource=None):
         """
-        Get bar width.
+        Set current datasource object.
         """
-        return self._bar_width
+        if datasource is None:
+            self._current_datasource = None
+        elif isinstance(datasource, pandas.DataFrame):
+            log_func.debug(u'Set data source in <%s>' % self.getName())
+            self._current_datasource = datasource
+        else:
+            log_func.warning(u'Incorrect type bar chart datasource <%s>' % datasource.__class__.__name__)
+            self._current_datasource = None
 
-    def setBarWidth(self, bar_width=DEFAULT_BAR_WIDTH):
-        """
-        Set bar width.
-        """
-        self._bar_width = bar_width
-
-    def getBarCount(self):
-        """
-        Get bar count.
-        """
-        return self._bar_count
+    # def getBarWidth(self):
+    #     """
+    #     Get bar width.
+    #     """
+    #     return self._bar_width
+    #
+    # def setBarWidth(self, bar_width=DEFAULT_BAR_WIDTH):
+    #     """
+    #     Set bar width.
+    #     """
+    #     self._bar_width = bar_width
+    #
+    # def getBarCount(self):
+    #     """
+    #     Get bar count.
+    #     """
+    #     return self._bar_count
 
     def getTitle(self):
         """
@@ -109,128 +132,132 @@ class iqMatplotlibBarChartProto(object):
         """
         self._legend = legend
 
-    def getOrientation(self):
+    def getKind(self):
         """
-        Get bar chart orientation.
+        Get bar chart kind.
         """
-        return self._orientation
+        return self._kind
 
-    def setOrientation(self, orientation=HORIZONTAL_ORIENTATION):
+    def setKind(self, kind=None):
         """
-        Set bar chart orientation.
+        Set bar chart kind.
         """
-        self._orientation = orientation
+        if kind:
+            self._kind = kind
 
-    def getXTickLabels(self):
-        """
-        Get X tick labels.
-        """
-        return self._x_tick_labels
+    # def getXTickLabels(self):
+    #     """
+    #     Get X tick labels.
+    #     """
+    #     return self._x_tick_labels
+    #
+    # def setXTickLabels(self, x_tick_labels=()):
+    #     """
+    #     Set X tick labels.
+    #
+    #     :param x_tick_labels: X tick label list.
+    #     :return:
+    #     """
+    #     self._x_tick_labels = x_tick_labels
 
-    def setXTickLabels(self,x_tick_labels=()):
+    def getGrid(self):
         """
-        Set X tick labels.
+        Get grid.
+        """
+        return self._grid
 
-        :param x_tick_labels: X tick label list.
+    def setGrid(self, grid=True):
+        """
+        Set grid.
+
+        :param grid: Show grid? True or False.
         :return:
         """
-        self._x_tick_labels = x_tick_labels
+        self._grid = grid
 
-    def addBarData(self, bar_data=()):
+    # def addBarData(self, bar_data=()):
+    #     """
+    #     Add bar data.
+    #
+    #     :param bar_data: Bar data list.
+    #     :return: True/False.
+    #     """
+    #     if len(self._bar_data) <= self.getBarCount():
+    #         self._bar_data.append(bar_data)
+    #         return True
+    #     else:
+    #         log_func.warning(u'Error limit bar count')
+    #     return False
+
+    def genPNGFilename(self):
         """
-        Add bar data.
+        Generate image PNG filename.
 
-        :param bar_data: Bar data list.
-        :return: True/False.
+        :return:
         """
-        if len(self._bar_data) <= self.getBarCount():
-            self._bar_data.append(bar_data)
-            return True
-        else:
-            log_func.warning(u'Error limit bar count')
-        return False
+        base_png_filename = self.getGUID() + '.png'
+        return os.path.join(file_func.getProjectProfilePath(), base_png_filename)
 
-    def drawPNG(self, png_filename=None, show=False):
+    def getFigureSize(self):
         """
-        Draw PNG image file.
+        Get figure size.
+        :return:
+        """
+        return None
 
-        :param png_filename: PNG image filename.
+    def drawDataFrame(self, dataframe=None, png_filename=None, size=None, show=False):
+        """
+        Draw DataFrame object.
+
+        :param dataframe: Pandas DataFrame object.
+        :param png_filename: Image PNG filename.
+        :param size: Image size.
         :param show: Show result?
-        :return: True/False.
+        :return:
         """
-        if png_filename is None:
-            png_filename = os.path.join(file_func.getProjectProfilePath(),
-                                        self.getGUID() + '.png')
+        if dataframe is not None:
+            self.setCurrentDataSource(dataframe)
+
+        if self._current_datasource is None:
+            log_func.warning(u'Not define datasource object for draw in <%s>' % self.getName())
+            return False
+
+        assert isinstance(self._current_datasource, pandas.DataFrame), u'Type error DataFrame for draw'
+
         try:
-            orientation = self.getOrientation()
-            if orientation == HORIZONTAL_ORIENTATION:
-                return self.drawHorizontal(show=show)
-            elif orientation == VERTICAL_ORIENTATION:
-                return self.drawVertical(show=show)
+            kind = self.getKind()
+            if size is None:
+                size = self.getFigureSize()
+            plot_graph = self._current_datasource.plot(kind=kind,
+                                                       figsize=(size[0]/DEFAULT_DPI, size[1]/DEFAULT_DPI) if size else None)
+
+            title = self.getTitle()
+            if title:
+                plot_graph.set_title(title)
+
+            label = self.getXLabel()
+            if label:
+                plot_graph.set_xlabel(label)
+
+            label = self.getYLabel()
+            if label:
+                plot_graph.set_ylabel(label)
+
+            grid = self.getGrid()
+            if grid:
+                plot_graph.grid()
+
+            matplotlib.pyplot.tight_layout()
+            if show:
+                matplotlib.pyplot.show()
             else:
-                log_func.warning(u'Incorrect orientation value <%s>' % orientation)
+                if png_filename is None:
+                    png_filename = self.genPNGFilename()
+                figure = plot_graph.get_figure()
+                # matplotlib.pyplot.savefig(png_filename)
+                figure.savefig(fname=png_filename, dpi=DEFAULT_DPI)
+
+            return True
         except:
-            log_func.fatal(u'Error draw PNG image file <%s>' % png_filename)
+            log_func.fatal(u'Error draw DataFrame to png file <%s>' % png_filename)
         return False
-
-    def drawHorizontal(self, show=False):
-        """
-        Draw horizontal oriented bar chart.
-
-        :param show: Show result?
-        :return:
-        """
-        fig, ax = matplotlib.pyplot.subplots()
-
-        # Add some text for labels, title and custom x-axis tick labels, etc.
-        title = self.getTitle()
-        if title:
-            ax.set_title(title)
-
-        label = self.getXLabel()
-        if label:
-            ax.set_xlabel(label)
-
-        label = self.getYLabel()
-        if label:
-            ax.set_ylabel(label)
-
-        bar_width = self.getBarWidth()
-        legend = self.getLegend()
-        legend_count = len(legend) if legend else 0
-
-        if self._bar_data:
-            point_count = len(self._bar_data[0])
-
-            bar_count = self.getBarCount()
-            for i_bar in range(bar_count):
-                rects = ax.bar(point_count - bar_width / 2,
-                               self._bar_data[i_bar],
-                               bar_width,
-                               label=legend[i_bar] if legend and i_bar < legend_count else '')
-
-                ax.bar_label(rects, padding=3)
-
-        x_tick_labels = self.getXTickLabels()
-        if x_tick_labels:
-            ax.set_xticks(numpy.arange(len(x_tick_labels)))
-            ax.set_xticklabels(x_tick_labels)
-
-        if legend:
-            ax.legend()
-
-        fig.tight_layout()
-
-        if show:
-            matplotlib.pyplot.show()
-        return True
-
-    def drawVertical(self, show=False):
-        """
-        Draw vertical oriented bar chart.
-
-        :param show: Show result?
-        :return: True/False.
-        """
-        return False
-

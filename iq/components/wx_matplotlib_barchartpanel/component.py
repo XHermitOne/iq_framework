@@ -4,6 +4,7 @@
 """
 MatPlotLib bar chart wx panel component.
 """
+import wx
 
 from . import spc
 from . import matplotlib_barchartpanel_proto
@@ -31,19 +32,45 @@ class iqWxMatplotlibBarChartPanel(matplotlib_barchartpanel_proto.iqMatplotlibBar
         wx_panel.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         matplotlib_barchartpanel_proto.iqMatplotlibBarChartPanelProto.__init__(self, *args, **kwargs)
 
-    def getBarCount(self):
-        """
-        Get bar count.
-        """
-        self._bar_count = self.getAttribute('bar_count')
-        return self._bar_count
+        self.Bind(wx.EVT_SIZE, self.onSize)
 
-    def getBarWidth(self):
+    def getFigureSize(self):
         """
-        Get bar width.
+        Get size.
+        :return:
         """
-        self._bar_width = self.getAttribute('bar_width')
-        return self._bar_width
+        return tuple(self.GetSize())
+
+    def onSize(self, event):
+        """
+        Change size handler.
+        """
+        current_datasource = self.getCurrentDataSource()
+        if current_datasource is not None:
+            self.drawDataFrame()
+            self.refresh()
+        event.Skip()
+
+    # def getBarCount(self):
+    #     """
+    #     Get bar count.
+    #     """
+    #     self._bar_count = self.getAttribute('bar_count')
+    #     return self._bar_count
+    #
+    # def getBarWidth(self):
+    #     """
+    #     Get bar width.
+    #     """
+    #     self._bar_width = self.getAttribute('bar_width')
+    #     return self._bar_width
+
+    def getKind(self):
+        """
+        Get chart kind.
+        """
+        self._kind = self.getAttribute('kind')
+        return self._kind
 
     def getTitle(self):
         """
@@ -73,12 +100,19 @@ class iqWxMatplotlibBarChartPanel(matplotlib_barchartpanel_proto.iqMatplotlibBar
         self._legend = self.getAttribute('legend')
         return self._legend
 
-    def getOrientation(self):
+    def getGrid(self):
         """
-        Get orientation.
+        Get grid.
         """
-        self._orientation = self.getAttribute('orientation')
-        return self._orientation
+        self._grid = self.getAttribute('grid')
+        return self._grid
+
+    # def getOrientation(self):
+    #     """
+    #     Get orientation.
+    #     """
+    #     self._orientation = self.getAttribute('orientation')
+    #     return self._orientation
 
 
 COMPONENT = iqWxMatplotlibBarChartPanel
