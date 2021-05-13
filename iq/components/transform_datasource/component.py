@@ -77,11 +77,14 @@ class iqTransformDataSource(transform_datasource_proto.iqTransformDataSourceProt
                 context.update(kwargs)
                 context['DATAFRAME'] = dataframe
                 function_body = self.getAttribute('transform')
+
+                log_func.debug(u'Before transform DataFrame:')
+                log_func.debug(str(dataframe))
                 self._dataframe = exec_func.execTxtFunction(function=function_body,
                                                             context=context)
-
-                log_func.debug(u'Transform result DataFrame:')
+                log_func.debug(u'After transform DataFrame:')
                 log_func.debug(str(self._dataframe))
+
                 return self._dataframe
             return dataframe
         except:

@@ -145,6 +145,19 @@ class iqMatplotlibBarChartProto(object):
         base_png_filename = self.getGUID() + '.png'
         return os.path.join(file_func.getProjectProfilePath(), base_png_filename)
 
+    def delPNGFilename(self, png_filename=None):
+        """
+        Delete image PNG filename.
+
+        :param png_filename: Image PNG filename.
+        :return: True/False.
+        """
+        if png_filename is None:
+            png_filename = self.genPNGFilename()
+        if os.path.exists(png_filename):
+            return file_func.removeFile(png_filename)
+        return False
+
     def getFigureSize(self):
         """
         Get figure size.

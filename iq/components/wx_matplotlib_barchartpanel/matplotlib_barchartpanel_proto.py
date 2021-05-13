@@ -53,3 +53,16 @@ class iqMatplotlibBarChartPanelProto(barchart_proto.iqMatplotlibBarChartProto):
         except:
             log_func.fatal(u'Error refresh bar chart panel')
         return False
+
+    def clear(self):
+        """
+        Clear chart.
+
+        :return: True/False.
+        """
+        result = self.delPNGFilename()
+        empty_bitmap = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_CMN_DIALOG)
+        self.canvas.SetBitmap(empty_bitmap)
+        self.canvas.Refresh()
+        # self.Refresh()
+        return result
