@@ -840,12 +840,15 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
                 item_idx = item.GetId()
             elif isinstance(item, int):
                 item_idx = item
+            else:
+                log_func.warning(u'Incorrect ListCtrl item type <%s>' % item.__class__.__name__)
 
             if not hasattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME):
                 setattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME, dict())
             data_idx = wx.NewId()
             data_cache = getattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME)
             data_cache[data_idx] = data
+            # log_func.debug(u'Item index [%s] Data id [%s]' % (item_idx, data_idx))
             return listctrl.SetItemData(item=item_idx, data=data_idx)
         except:
             log_func.fatal(u'Error set ListCtrl item <%s> data <%s>' % (str(item_idx), str(data)))
@@ -871,6 +874,8 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
                 item_idx = item.GetId()
             elif isinstance(item, int):
                 item_idx = item
+            else:
+                log_func.warning(u'Incorrect ListCtrl item type <%s>' % item.__class__.__name__)
 
             data_cache = getattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) if hasattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) else dict()
 

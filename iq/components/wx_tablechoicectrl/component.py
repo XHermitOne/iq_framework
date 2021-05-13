@@ -11,7 +11,7 @@ from ..wx_widget import component
 
 from . import spc
 
-# from ...util import log_func
+from ...util import log_func
 from ...util import exec_func
 
 from . import tablechoicectrl
@@ -73,7 +73,8 @@ class iqWxTableChoiceCtrl(tablechoicectrl.iqTableChoiceCtrlProto,
         """
         if table_psp is None:
             table_psp = self.getTablePsp()
-        table = self.getKernel().createByPsp(table_psp) if table_psp else None
+        table = self.getKernel().createByPsp(psp=table_psp) if table_psp else None
+        # log_func.debug(u'Table object <%s> : %s' % (str(table_psp), str(table)))
         self.setTableDataSource(table, **kwargs)
         return table
 

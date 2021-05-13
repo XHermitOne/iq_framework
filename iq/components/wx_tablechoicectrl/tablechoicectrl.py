@@ -8,8 +8,10 @@ Control module for selecting a record by field from a table or query.
 import wx
 
 from iq.util import log_func
-
 from iq.util import str_func
+
+from .. import data_model
+from .. import data_query
 
 __version__ = (0, 0, 0, 1)
 
@@ -101,12 +103,18 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
         """
         if tab_data_src is None:
             tab_data_src = self._data_source
-        if tab_data_src is not None:
+        if isinstance(tab_data_src, data_model.COMPONENT):
             self._table_data = tab_data_src.get_normalized(**kwargs)
             self._table_data = self.setFilter(self._table_data)
             return self._table_data
-        else:
+        elif isinstance(tab_data_src, data_query.COMPONENT):
+            self._table_data = tab_data_src.execute(**kwargs)
+            self._table_data = self.setFilter(self._table_data)
+            return self._table_data
+        elif tab_data_src is None:
             log_func.warning(u'Data source table object not defined in control <%s>' % self.getName())
+        else:
+            log_func.warning(u'Incorrect table datasource type <%s>' % tab_data_src.__class__.__name__)
         return None
 
     def setFilter(self, table_data=None):
@@ -266,6 +274,10 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
         """
         if selected_idx < 0:
             # Nothing selected
+            selected_idx = self.GetSelection() - (1 if self.getCanEmpty() else 0)
+
+        if selected_idx < 0:
+            # Nothing selected
             return None
 
         if table_data is None:
@@ -285,6 +297,14 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
         else:
             log_func.warning(u'Not defined table data in control <%s>' % self.getName())
         return None
+
+    def getSelectedLabel(self):
+        """
+        Get selected label.
+        :return: Label or empty string if error.
+        """
+        selected_record = self.getSelectedRecord()
+        return self.getLabel(selected_record) if selected_record else u''
 
     def onComboBox(self, event):
         """
