@@ -306,6 +306,14 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
         selected_record = self.getSelectedRecord()
         return self.getLabel(selected_record) if selected_record else u''
 
+    def isSelected(self):
+        """
+        Something selected?
+
+        :return: True/False
+        """
+        return self.getSelectedRecord() is not None
+
     def onComboBox(self, event):
         """
         Element selection handler.

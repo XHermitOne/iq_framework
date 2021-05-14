@@ -747,7 +747,7 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
                 self.SetValue(u'')
         return data_item
 
-    def getSelectedCode(self, selected_code_func=None, value=None):
+    def getSelectedCode(self, selected_code_func=None):
         """
         Get selected cod.
         
@@ -758,6 +758,16 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
             return selected_code_func
 
         return self.getRefObjSelectedCode()
+
+    def getSelectedLabel(self, selected_code_func=None):
+        """
+        Get selected label.
+
+        :param selected_code_func: Altered selected code function.
+        :return: Selected label or empty string if item not selected.
+        """
+        selected_cod = self.getSelectedCode()
+        return self.getRefObj().getColumnValue(cod=selected_cod, column_name=self.getRefObj().getNameColumnName()) if selected_cod else u''
 
     def getRefObjSelectedCode(self, alt_cod_field=None):
         """
@@ -821,7 +831,20 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         else:
             log_func.warning(u'Not valid value type <%s> in <%s> control' % (type(value), self.__class__.__name__))
         return self.setSelectedCode(code)
-    
+
+    def clearValue(self):
+        """
+        Clear control value.
+
+        :return: True/False.
+        """
+        try:
+            self.setValue(None)
+            return True
+        except:
+            log_func.fatal(u'Error clear value in <%s>' % self.__class__.__name__)
+        return False
+
     def getSelectedRecord(self):
         """
         Get selected ref object record as dictionary.
@@ -835,3 +858,11 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
                     rec_dict = data_item.getRecDict()
 
         return rec_dict
+
+    def isSelected(self):
+        """
+        Something selected?
+
+        :return: True/False.
+        """
+        return self.getValue() is not None

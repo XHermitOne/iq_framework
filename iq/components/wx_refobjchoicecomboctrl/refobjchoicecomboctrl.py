@@ -147,6 +147,14 @@ class iqRefObjChoiceComboCtrlProto(wx.ComboCtrl):
     getValue = getCode
     setValue = setCode
 
+    def isSelected(self):
+        """
+        Something selected?
+
+        :return: True/False.
+        """
+        return self.getValue() is not None
+
     def refresh(self):
         """
         Refresh control.

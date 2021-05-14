@@ -157,6 +157,14 @@ class iqRefObjMultipleChoiceComboCtrlProto(wx.ComboCtrl):
     getValue = getCodes
     setValue = setCodes
 
+    def isSelected(self):
+        """
+        Something selected?
+
+        :return: True/False.
+        """
+        return bool(self.getValue())
+
     def choice(self):
         """
         Call selection.

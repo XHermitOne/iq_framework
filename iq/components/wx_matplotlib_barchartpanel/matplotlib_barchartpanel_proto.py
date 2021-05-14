@@ -60,9 +60,9 @@ class iqMatplotlibBarChartPanelProto(barchart_proto.iqMatplotlibBarChartProto):
 
         :return: True/False.
         """
+        self.setCurrentDataSource(None)
         result = self.delPNGFilename()
         empty_bitmap = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_CMN_DIALOG)
         self.canvas.SetBitmap(empty_bitmap)
         self.canvas.Refresh()
-        # self.Refresh()
         return result
