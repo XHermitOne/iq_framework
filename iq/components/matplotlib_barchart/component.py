@@ -66,12 +66,28 @@ class iqMatplotlibBarChart(object.iqObject, barchart_proto.iqMatplotlibBarChartP
         self._legend = self.getAttribute('legend')
         return self._legend
 
+    def getShowLegend(self):
+        """
+        Show legend?
+        """
+        self._show_legend = self.getAttribute('show_legend')
+        return self._show_legend
+
     def getGrid(self):
         """
         Get grid.
         """
         self._grid = self.getAttribute('grid')
         return self._grid
+
+    def getY(self):
+        """
+        Data column name for pie chart.
+        """
+        y = self.getAttribute('y')
+        kind = self.getKind()
+        self._y = y if kind == 'pie' else None
+        return self._y
 
 
 COMPONENT = iqMatplotlibBarChart

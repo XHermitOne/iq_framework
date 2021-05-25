@@ -36,7 +36,9 @@ class iqMatplotlibBarChartProto(object):
         self._x_label = None
         self._y_label = None
         self._legend = tuple()
+        self._show_legend = True
         self._grid = False
+        self._y = None
 
         # Current datasource object
         self._current_datasource = None
@@ -108,6 +110,18 @@ class iqMatplotlibBarChartProto(object):
         """
         self._legend = legend
 
+    def getShowLegend(self):
+        """
+        Show legend?
+        """
+        return self._show_legend
+
+    def setShowLegend(self, show_legend=True):
+        """
+        Set show legend.
+        """
+        self._show_legend = show_legend
+
     def getKind(self):
         """
         Get bar chart kind.
@@ -135,6 +149,18 @@ class iqMatplotlibBarChartProto(object):
         :return:
         """
         self._grid = grid
+
+    def getY(self):
+        """
+        Data column name for pie chart.
+        """
+        return self._grid
+
+    def setY(self, y=None):
+        """
+        Data column name for pie chart.
+        """
+        self._y = y
 
     def genPNGFilename(self):
         """
@@ -188,8 +214,11 @@ class iqMatplotlibBarChartProto(object):
             kind = self.getKind()
             if size is None:
                 size = self.getFigureSize()
+
             plot_graph = self._current_datasource.plot(kind=kind,
-                                                       figsize=(size[0]/DEFAULT_DPI, size[1]/DEFAULT_DPI) if size else None)
+                                                       legend=self.getShowLegend(),
+                                                       figsize=(size[0]/DEFAULT_DPI, size[1]/DEFAULT_DPI) if size else None,
+                                                       y=self.getY())
 
             title = self.getTitle()
             if title:

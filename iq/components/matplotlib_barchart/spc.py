@@ -29,7 +29,9 @@ MATPLOTLIBBARCHART_SPC = {
     'x_label': None,
     'y_label': None,
     'legend': None,
+    'show_legend': True,
     'grid': False,
+    'y': None,
 
     '__package__': u'Special',
     '__icon__': 'fatcow/chart_bar',
@@ -45,7 +47,9 @@ MATPLOTLIBBARCHART_SPC = {
         'x_label': property_editor_id.STRING_EDITOR,
         'y_label': property_editor_id.STRING_EDITOR,
         'legend': property_editor_id.STRINGLIST_EDITOR,
+        'show_legend': property_editor_id.CHECKBOX_EDITOR,
         'grid': property_editor_id.CHECKBOX_EDITOR,
+        'y': property_editor_id.STRING_EDITOR,
     },
     '__help__': {
         'kind': u'The kind of plot to produce',
@@ -53,7 +57,9 @@ MATPLOTLIBBARCHART_SPC = {
         'x_label': u'X axis label',
         'y_label': u'Y axis label',
         'legend': u'Bar chart legend',
+        'show_legend': u'Show legend?',
         'grid': u'Show grid?',
+        'y': u'Data column name for pie chart',
     },
 }
 
