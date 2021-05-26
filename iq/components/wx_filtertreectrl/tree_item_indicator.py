@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Tree element indicator support class.
+Class to support the indicator of tree elements.
 
 The indicator is a description
-post processing a filtered recordset
-for the purpose of changing the picture / text color / background color
+post processing filtered recordset
+in order to change the picture / text color / background color
 form indication controls.
 Indicator description is a list of indicator states,
 each of which consists of a condition check expression and
@@ -15,47 +15,49 @@ descriptions of the picture / text color / background color.
 Filter indicator description format:
 [
     {
-        'name': State name,
-        'image': Image filename,
-        'text_color': Text colour tuple (R, G, B),
-        'background_color':  Background colour tuple (R, G, B),
-        'expression': Status check expression code block text,
+        'name': The name of the state,
+        'image': Image file,
+        'text_color': A tuple (R, G, B) of the text color,
+        'background_color': A tuple (R, G, B) of the background color,
+        'expression': The text of the status check expression code block,
     },
     ...
 ]
 
 
-The expression must return True/False.
-True - the indicator is in its current state and no further verification is needed.
+The expression must return True / False.
+True - the indicator is in the current state and no further verification is needed.
 False - the indicator is not in the current state,
-        further checking of other states occurs.
-
-This shows that the most critical conditions must be checked first.
+further checking of other states occurs.
+From this it is clear that the most critical conditions must be checked first.
 Those. they should be in the first place in the list of state descriptions,
 and then less critical.
 
 When an expression is executed, a RECORDS object is present in its environment.
-RECORDS - list of dictionaries of records filtered by the current filter.
+RECORDS - a list of dictionaries of records filtered by the current filter.
 """
 
 import os.path
 import wx
 
-from iq.util import log_func
-from iq.engine.wx import wxbitmap_func
-from iq.engine.wx import wxcolour_func
+from ...util import log_func
+from ...util import lang_func
+
+from ...engine.wx import wxbitmap_func
+from ...engine.wx import wxcolour_func
 
 from . import indicator_constructor_dlg
 
 __version__ = (0, 0, 0, 1)
 
-UNKNOWN_STATE_NAME = u'State name not defined'
+_ = lang_func.getTranslation().gettext
+
+UNKNOWN_STATE_NAME = _('State name not defined')
 
 
-# Indicator description management functions
 def createIndicator():
     """
-    Create indicator list.
+    Creating an indicator list.
 
     :return: Empty indicator list.
     """
@@ -72,9 +74,9 @@ def newIndicatorState(indicator=None,
     :param indicator: Indicator list.
     :param name: State name.
     :param img_filename: Image filename.
-    :param text_color: Text colour tuple (R, G, B).
-    :param background_color: Background colour tuple (R, G, B).
-    :param expression: Status check expression code block text.
+    :param text_color: Text color as (R, G, B).
+    :param background_color: Background color as (R, G, B).
+    :param expression: The code block text of the status check expression.
     :return: Modified indicator list.
     """
     if text_color is None:
@@ -97,7 +99,7 @@ def findIndicatorState(indicator, name):
 
     :param indicator: Indicator list.
     :param name: State name.
-    :return: State data structure or None if there is no state with that name.
+    :return: A state data structure, or None if there is no state with that name.
     """
     names = [state.get('name', None) for state in indicator]
     find_state = indicator[names.index(name)] if name in names else None
@@ -112,7 +114,7 @@ class iqTreeItemIndicator(object):
         """
         Constructor.
 
-        :param indicator: Data of the current indicator.
+        :param indicator: Current indicator.
         """
         self._indicator = indicator
 
@@ -121,7 +123,7 @@ class iqTreeItemIndicator(object):
         Edit filter indicator.
 
         :param parent: Parent window.
-        :param indicator: Data of the current indicator.
+        :param indicator: Current indicator.
             If not specified, then the description of the internal indicator is taken.
         :return: Edited filter indicator.
         """
@@ -138,17 +140,17 @@ class iqTreeItemIndicator(object):
 
     def getIndicator(self):
         """
-        Get current indicator data.
+        Set current filter indicator.
         """
         return self._indicator
 
     def getLabelIndicator(self, indicator=None):
         """
-        Presentation of the indicator list as a label string.
+        Get indicator label.
 
-        :param indicator: Data of the current indicator.
+        :param indicator: Current indicator.
             If not specified, then the description of the internal indicator is taken.
-        :return: Indicator label line.
+        :return: Label filter indicator.
         """
         if indicator is None:
             indicator = self._indicator
@@ -158,20 +160,20 @@ class iqTreeItemIndicator(object):
 
     def getStateIndicator(self, records=None, indicator=None):
         """
-        Determine the state of an indicator by a set of records.
+        Determine the state of the indicator by a set of records.
 
-        :param records: Record set.
+        :param records: Record list.
             It is a list of dictionaries of entries.
-        :param indicator: Data of the current indicator.
+        :param indicator: Current indicator.
             If not specified, then the description of the internal indicator is taken.
-        :return: State description dictionary:
+        :return: State dictionary:
             {
             'name': State name,
             'image': Image filename,
-            'text_color': Text colour tuple (R, G, B),
-            'background_color': Background colour tuple (R, G, B).,
+            'text_color': Text color as (R, G, B),
+            'background_color': Background color as (R, G, B),
             }
-        If the recordset does not match any of the states, then None is returned.
+            If the recordset does not match any of the states, then None is returned.
         """
         if indicator is None:
             indicator = self._indicator
@@ -189,10 +191,10 @@ class iqTreeItemIndicator(object):
                 try:
                     exp_result = eval(expression, globals(), locals())
                 except:
-                    log_func.warning(u'Expression execution error:')
+                    log_func.error(u'Error execute expression:')
                     log_func.fatal(expression)
             else:
-                log_func.warning(u'Indicator state expression is undefined <%s>' % state_name)
+                log_func.warning(u'Indicator state expression not defined <%s>' % state_name)
 
             if exp_result:
                 # The condition matches, return a description of the state
@@ -202,30 +204,29 @@ class iqTreeItemIndicator(object):
 
     def getStateIndicatorObjects(self, records=None, indicator=None):
         """
-        Determine indicator state objects by a set of records.
+        Define indicator state objects by a set of records.
 
-        :param records: Record set.
+        :param records: Record list.
             It is a list of dictionaries of entries.
-        :param indicator: Data of the current indicator.
+        :param indicator: Current indicator.
             If not specified, then the description of the internal indicator is taken.
         :return: A tuple of state objects:
             (
                 State name,
-                wx.Bitmap state image,
-                wx.Colour text colour,
-                wx.Colour background colour
+                Image state as wx.Bitmap object,
+                Text color as wx.Colour object,
+                Background color as wx.Colour object
             )
-            If the recordset does not match any of the states,
-            then it returns (None, None, None, None).
+            If the recordset does not match any of the states, then it returns (None, None, None, None).
         """
         state_indicator = self.getStateIndicator(records=records, indicator=indicator)
         if state_indicator is None:
             return None, None, None, None
 
-        # State name
+        # Name
         name = state_indicator.get('name', UNKNOWN_STATE_NAME)
 
-        # State image
+        # Image
         image = None
         img_filename = state_indicator.get('image', None)
         if img_filename:
@@ -236,13 +237,13 @@ class iqTreeItemIndicator(object):
                 # Image file specified as the name of the library file
                 image = wxbitmap_func.createIconBitmap(img_filename)
             else:
-                log_func.warning(u'Incorrect image file name <%s>' % img_filename)
+                log_func.warning(u'Incorrect image filename <%s>' % img_filename)
 
-        # Text colour
+        # Text color
         rgb = state_indicator.get('text_color', None)
         text_colour = wx.Colour(tuple(rgb)) if rgb else None
 
-        # Background colour
+        # Background color
         rgb = state_indicator.get('background_color', None)
         background_colour = wx.Colour(tuple(rgb)) if rgb else None
 

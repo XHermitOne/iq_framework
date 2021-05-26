@@ -72,11 +72,11 @@ class iqWxFilterTreeCtrl(filter_tree_ctrl.iqFilterTreeCtrlProto,
         # you can load the filters
         self.acceptFilters()
 
-        # self.refreshIndicators(bVisibleItems=False)
+        # self.refreshIndicators(visible_items=False)
 
         # To update the list of objects
         self._cur_item_filter = self.buildItemFilter(self.GetRootItem())
-        # self.OnChange(None)
+        # self.onChange(None)
 
         # The flag of the end of the complete initialization of the control
         self._init_flag = True

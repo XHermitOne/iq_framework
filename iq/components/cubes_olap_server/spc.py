@@ -19,9 +19,9 @@ DB_SOURCE_TYPES = (data_engine.COMPONENT_TYPE,
                    )
 
 
-def validSourcePsp(psp, *args, **kwargs):
+def validDBPsp(psp, *args, **kwargs):
     """
-    Validate source passport.
+    Validate database passport.
 
     :param psp: Passport.
     :param args:
@@ -64,7 +64,7 @@ CUBESOLAPSERVER_SPC = {
     '__edit__': {
         'db': {
             'editor': property_editor_id.PASSPORT_EDITOR,
-            'valid': validSourcePsp,
+            'valid': validDBPsp,
         },
         'ini_filename': property_editor_id.STRING_EDITOR,
         'model_filename': property_editor_id.STRING_EDITOR,

@@ -109,6 +109,8 @@ class iqSelectComponentMenu(wx.Menu, iqSelectComponentMenuManager):
                 menuitem = wx.MenuItem(package_menu, menuitem_id, component_type)
                 if icon:
                     bmp = wxbitmap_func.createIconBitmap(icon)
+                    if bmp is None:
+                        bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
                     menuitem.SetBitmap(bmp)
 
                 package_menu.Append(menuitem)
