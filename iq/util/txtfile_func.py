@@ -11,6 +11,7 @@ import os.path
 from . import log_func
 from . import global_func
 from . import str_func
+from . import file_func
 
 __version__ = (0, 0, 3, 1)
 
@@ -41,6 +42,11 @@ def saveTextFile(txt_filename, txt='', rewrite=True):
         if not rewrite and os.path.exists(txt_filename):
             log_func.warning(u'File <%s> not saved' % txt_filename)
             return False
+
+        # Check path
+        txt_dirname = os.path.dirname(txt_filename)
+        if not os.path.exists(txt_dirname):
+            file_func.createDir(txt_dirname)
 
         file_obj = open(txt_filename, 'wt')
         file_obj.write(txt)
@@ -101,6 +107,11 @@ def appendTextFile(txt_filename, txt, cr=None):
 
     file_obj = None
     try:
+        # Check path
+        txt_dirname = os.path.dirname(txt_filename)
+        if not os.path.exists(txt_dirname):
+            file_func.createDir(txt_dirname)
+
         file_obj = open(txt_filename, 'at')
         file_obj.write(cr)
         file_obj.write(txt)
@@ -233,6 +244,11 @@ def appendTextFileLine(line, txt_filename=None, add_linesep=True):
     """
     file_obj = None
     try:
+        # Check path
+        txt_dirname = os.path.dirname(txt_filename)
+        if not os.path.exists(txt_dirname):
+            file_func.createDir(txt_dirname)
+
         file_obj = open(txt_filename, 'at+')
         file_obj.write(str(line))
         if add_linesep:
