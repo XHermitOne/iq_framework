@@ -5,6 +5,8 @@
 Cubes OLAP Framework Server specification module.
 """
 
+import os.path
+
 from ...object import object_spc
 from ...editor import property_editor_id
 from ... import passport
@@ -59,7 +61,7 @@ CUBESOLAPSERVER_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fatcow/server_components',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': {'linux': 'open %s' % os.path.join(os.path.dirname(__file__), 'cubes-readthedocs-io-en-latest.pdf')},
     '__content__': ('iqCube', ),
     '__edit__': {
         'db': {

@@ -9,6 +9,15 @@ https://github.com/DataBrewery/cubes
 Official:
 http://cubes.databrewery.org/
 
+Install:
+pip3 install cubes
+pip3 install cubes[all]
+
+Run OLAP server:
+slicer serve slicer.ini
+or
+~/.local/bin/slicer serve slicer.ini
+
 Master data and analytic functions are available through the following queries :
 - /cube/<name>/aggregate – aggregation of measures, provide summary, generate drilldown, slices and cubes, ...
 - /cube/<name>/members/<dim> – list dimension items
@@ -42,16 +51,14 @@ import os.path
 from . import olap_server_interface
 from . import pivot_dataframe_manager
 
-# from ic.components import icwidget
-
 from ...util import file_func
 from ...util import log_func
 from ...util import ini_func
 from ...util import sys_func
 from ...util import str_func
+from ...util import json_func
 
-# from STD.json import json_manager
-# from STD.spreadsheet import spreadsheet_manager
+from ..virtual_spreadsheet import v_spreadsheet
 
 __version__ = (0, 0, 0, 1)
 
@@ -72,7 +79,6 @@ OLAP_SERVER_SUBURL_FMT = 'cube/%s/%s'
 
 
 class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
-                             # json_manager.icJSONManager,
                              pivot_dataframe_manager.iqPivotDataFrameManager):
     """
     Cubes OLAP Framework server prototype class.
@@ -237,7 +243,7 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         """
         url = self._getRequestURL(request_url) if not request_url.startswith(FULL_URL_PREFIX) else request_url
         log_func.debug(u'Specified JSON by URL <%s>' % url)
-        return self.get_json_as_dict_by_url(url)
+        return json_func.getJSONAsDictByURL(url)
 
     def getName(self):
         """
@@ -409,7 +415,7 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
                 dimension_content = self._getModelDimension(dimension)
                 json_content['dimensions'].append(dimension_content)
 
-        return self.save_dict_as_json(model_filename, json_content, rewrite)
+        return json_func.saveDictAsJSON(model_filename, json_content, rewrite)
 
     def _getModelCube(self, cube):
         """
@@ -627,7 +633,7 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         # Create styles
         styles = workbook.createStyles()
         # Append styles
-        for default_style_attr in spreadsheet_manager.DEFAULT_STYLES:
+        for default_style_attr in v_spreadsheet.DEFAULT_STYLES:
             style = styles.createStyle()
             style_id = default_style_attr.get('ID', None)
             if style_id:
@@ -678,11 +684,11 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         data_frame = None
         try:
             # Create table
-            data_frame = self.create_dataframe(rows, column_names=col_names)
+            data_frame = self.createDataFrame(rows, column_names=col_names)
             # Setting dimension indices
-            data_frame = self.set_pivot_dimensions(row_dimension=row_dimension, col_dimension=col_dimension)
+            data_frame = self.setPivotDimensions(row_dimension=row_dimension, col_dimension=col_dimension)
             # Replace NaN with 0
-            data_frame = self.fillna_value(0)
+            data_frame = self.fillNaNValue(0)
             # data_frame = self.aggregate_dimensions('sum')
         except:
             log_func.error(u'Pivot table filling error: ')
@@ -769,14 +775,14 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
             dataframe = self.getPivotDataFrame()
 
         # SpreadSheet structure control object
-        spreadsheet_mngr = spreadsheet_manager.icSpreadSheetManager()
-        self._prepareSpreadsheet(spreadsheet_mngr)
-        worksheet = spreadsheet_mngr.getWorkbook().getWorksheetIdx()
+        spreadsheet_manager = v_spreadsheet.iqVSpreadsheet()
+        self._prepareSpreadsheet(spreadsheet_manager)
+        worksheet = spreadsheet_manager.getWorkbook().getWorksheetIdx()
 
         # Create table
-        row_count, col_count = self.get_pivot_tab_size(dataframe)
+        row_count, col_count = self.getPivotTableSize(dataframe)
         log_func.debug(u'Pivot table size [%d x %d]' % (row_count, col_count))
-        table = self._createSpreadsheetTable(spreadsheet_mngr, worksheet, row_count, col_count)
+        table = self._createSpreadsheetTable(spreadsheet_manager, worksheet, row_count, col_count)
 
         # Filling the header
         self._createPivotSpreadsheetHeader(table, json_dict, cube, dataframe=dataframe)
@@ -785,7 +791,7 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         # Filling the footer
         self._createPivotSpreadsheetFooter(table, json_dict, dataframe=dataframe)
 
-        return spreadsheet_mngr.getData()
+        return spreadsheet_manager.getData()
 
     def _createPivotSpreadsheetHeader(self, table, json_dict, cube, dataframe=None):
         """

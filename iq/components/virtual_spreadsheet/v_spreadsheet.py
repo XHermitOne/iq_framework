@@ -15,6 +15,61 @@ from ...util import log_func
 
 __version__ = (0, 0, 0, 1)
 
+# Default colors
+HEADER_CELL_BACKGROUND_COLOR = (128, 128, 128)
+FOOTER_CELL_BACKGROUND_COLOR = (164, 164, 164)
+GROUP_CELL_BACKGROUND_COLOR = (192, 192, 192)
+CELL_BACKGROUND_COLOR = (224, 224, 224)
+
+TEXT_COLOR = (0, 0, 0)
+
+# Default styles
+DEFAULT_STYLE_COLUMN = {'ID': 'COL',
+                        'name': 'Style',
+                        }
+DEFAULT_STYLE_ROW = {'ID': 'ROW',
+                     'name': 'Style',
+                     }
+DEFAULT_STYLE_CELL = {'ID': 'CELL',
+                      'name': 'Style',
+                      'children': [{'name': 'Font', 'Color': TEXT_COLOR},
+                                   {'name': 'Interior', 'Color': CELL_BACKGROUND_COLOR},
+                                   ]
+                      }
+DEFAULT_STYLE_HEADER = {'ID': 'HEADER',
+                        'name': 'Style',
+                        'children': [{'name': 'Font', 'Bold': '1', 'Color': TEXT_COLOR},
+                                     {'name': 'Interior', 'Color': HEADER_CELL_BACKGROUND_COLOR},
+                                     ]
+                        }
+DEFAULT_STYLE_FOOTER = {'ID': 'FOOTER',
+                        'name': 'Style',
+                        'children': [{'name': 'Font', 'Bold': '1', 'Color': TEXT_COLOR},
+                                     {'name': 'Interior', 'Color': FOOTER_CELL_BACKGROUND_COLOR},
+                                     ]
+                        }
+DEFAULT_STYLE_GROUP = {'ID': 'GROUP',
+                       'name': 'Style',
+                       'children': [{'name': 'Font', 'Bold': '1', 'Color': TEXT_COLOR},
+                                    {'name': 'Interior', 'Color': GROUP_CELL_BACKGROUND_COLOR},
+                                    ]
+                       }
+DEFAULT_STYLE_GROUP_HEADER = {'ID': 'GRP_HEADER',
+                              'name': 'Style',
+                              }
+DEFAULT_STYLE_GROUP_FOOTER = {'ID': 'GRP_FOOTER',
+                              'name': 'Style',
+                              }
+
+DEFAULT_STYLES = (DEFAULT_STYLE_COLUMN,
+                  DEFAULT_STYLE_ROW,
+                  DEFAULT_STYLE_CELL,
+                  DEFAULT_STYLE_HEADER,
+                  DEFAULT_STYLE_FOOTER,
+                  DEFAULT_STYLE_GROUP,
+                  DEFAULT_STYLE_GROUP_HEADER,
+                  DEFAULT_STYLE_GROUP_FOOTER)
+
 
 class iqVSpreadsheet(v_prototype.iqVPrototype):
     """
@@ -895,3 +950,65 @@ class iqVSpreadsheet(v_prototype.iqVPrototype):
                     raise
         if auto_save:
             self.save()
+
+    def setSpreadSheetData(self, spreadsheet_data):
+        """
+        Set spreadsheet data.
+
+        :param spreadsheet_data: SpreadSheet structure data.
+        """
+        self._data = spreadsheet_data
+
+    def createDefaultColumn(self, table):
+        """
+        Create default column.
+
+        :param table: Table.
+        :return: True/False
+        """
+        if table is None:
+            log_func.warning(u'Table not define to create default column')
+            return False
+
+        column = table.createColumn()
+        col_attrs = dict(StyleID='COL')
+        column.set_attributes(col_attrs)
+        return True
+
+    def createDefaultColumns(self, table, count=1):
+        """
+        Create default columns.
+
+        :param table: Table.
+        :param count: Number of columns to create.
+        :return: True/False
+        """
+        results = [self.createDefaultColumn(table) for i in range(count)]
+        return all(results)
+
+    def createDefaultRow(self, table):
+        """
+        Create default row.
+
+        :param table: Table.
+        :return: True/False
+        """
+        if table is None:
+            log_func.warning(u'Table not define to create default row')
+            return False
+
+        row = table.createRow()
+        row_attrs = dict(StyleID='ROW')
+        row.set_attributes(row_attrs)
+        return True
+
+    def createDefaultRows(self, table, count=1):
+        """
+        Create default rows.
+
+        :param table: Table.
+        :param count: Number of rows to create.
+        :return: True/False
+        """
+        results = [self.createDefaultRow(table) for i in range(count)]
+        return all(results)

@@ -537,12 +537,23 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         item_resource = self.getSelectedResource()
 
-        doc_filename = item_resource.get(spc_func.DOC_ATTR_NAME, None)
-        if doc_filename:
-            doc_filename = os.path.join(file_func.getFrameworkPath(), doc_filename)
-            exec_func.openHtmlBrowser(doc_filename)
+        doc = item_resource.get(spc_func.DOC_ATTR_NAME, None)
+        if isinstance(doc, str):
+            # Document as HTML file
+            doc_filename = os.path.join(file_func.getFrameworkPath(), doc)
+            if os.path.exists(doc_filename):
+                exec_func.openHtmlBrowser(doc_filename)
+            else:
+                log_func.warning(u'Document filename <%s> not found' % doc_filename)
+        elif isinstance(doc, dict):
+            # Document as open command
+            open_doc_command = doc.get(sys.platform, None)
+            if open_doc_command:
+                exec_func.execSystemCommand(open_doc_command)
+            else:
+                log_func.warning(u'Not define DOC open command for platform <%s> in' % sys.platform)
         else:
-            log_func.warning(u'Not define DOC filename for <%s>' % item_resource.get('type', None))
+            log_func.warning(u'Not define DOC for <%s>' % item_resource.get('type', None))
 
         event.Skip()
 
