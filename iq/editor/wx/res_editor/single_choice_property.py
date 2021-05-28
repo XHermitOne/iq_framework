@@ -37,7 +37,7 @@ class iqSingleChoiceDialogAdapter(wx.propgrid.PGEditorDialogAdapter):
         cur_value = property.GetValue()
         try:
             value_idx = self.choices.index(cur_value)
-        except IndexError:
+        except ValueError:
             value_idx = 0
 
         single_choice_value = wx.GetSingleChoice(message=_('Message'),
@@ -47,6 +47,9 @@ class iqSingleChoiceDialogAdapter(wx.propgrid.PGEditorDialogAdapter):
 
         if single_choice_value:
             self.SetValue(single_choice_value)
+            return True
+        else:
+            self.SetValue(None)
             return True
 
         return False

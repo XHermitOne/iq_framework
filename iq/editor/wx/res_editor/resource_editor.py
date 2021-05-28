@@ -203,7 +203,8 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             if root_tem and root_tem.IsOk():
                 self.resource_treeListCtrl.Expand(root_tem)
                 resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(root_tem)
-                self.buildPropertyEditors(property_editor=self.object_propertyGridManager, resource=resource)
+                self.buildPropertyEditors(property_editor=self.object_propertyGridManager,
+                                          resource=resource, parent_resource=None)
             return result
         except:
             log_func.fatal(u'Error load resource in editor')
@@ -232,7 +233,10 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         try:
             item = event.GetItem()
             resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
-            self.buildPropertyEditors(property_editor=self.object_propertyGridManager, resource=resource)
+            parent_item = self.resource_treeListCtrl.GetMainWindow().GetItemParent(item)
+            parent_resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(parent_item) if parent_item and parent_item.IsOk() else None
+            self.buildPropertyEditors(property_editor=self.object_propertyGridManager,
+                                      resource=resource, parent_resource=parent_resource)
         except:
             log_func.fatal(u'Error resource tree list control item selection changes handler')
         event.Skip()

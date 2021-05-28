@@ -106,7 +106,23 @@ class iqPropertyEditorManager(object):
             return self._specification
         return None
 
-    def createPropertyEditor(self, name, value, property_type=None, spc=None):
+    def setParentSpecification(self, spc=None):
+        """
+        Set parent component specification.
+
+        :param spc: Component specification.
+        """
+        self._parent_specification = spc
+
+    def getParentSpecification(self):
+        """
+        Get parent component specification.
+        """
+        if hasattr(self, '_parent_specification'):
+            return self._parent_specification
+        return None
+
+    def createPropertyEditor(self, name, value, property_type=None, spc=None, parent_spc=None):
         """
         Create wx property.
 
@@ -114,6 +130,7 @@ class iqPropertyEditorManager(object):
         :param value: Attribute value.
         :param property_type: Property type.
         :param spc: Component specification.
+        :param parent_spc: Parent component specification.
         :return: wx.Property object.
         """
         wx_property = None
@@ -145,7 +162,7 @@ class iqPropertyEditorManager(object):
             if isinstance(choices, (list, tuple)):
                 choices = [str(item) for item in choices]
             elif callable(choices):
-                choices = choices(resource=spc)
+                choices = choices(resource=spc, parent_resource=parent_spc)
             else:
                 log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
                 choices = list()
@@ -160,12 +177,13 @@ class iqPropertyEditorManager(object):
             if isinstance(choices, (list, tuple)):
                 choices = [str(item) for item in choices]
             elif callable(choices):
-                choices = choices(resource=spc)
+                choices = choices(resource=spc, parent_resource=parent_spc)
             else:
                 log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
                 choices = list()
 
-            # idx = choices.index(value) if value in choices else 0
+            if not isinstance(value, str):
+                value = str(value)
             wx_property = single_choice_property.iqSingleChoiceProperty(label=name, name=name,
                                                                         choices=choices, value=value)
 
@@ -181,10 +199,12 @@ class iqPropertyEditorManager(object):
             if isinstance(choices, dict):
                 choices = list(choices.keys())
             elif callable(choices):
-                choices = choices()
+                choices = choices(resource=spc, parent_resource=parent_spc)
             else:
                 log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
                 choices = list()
+            if value is None:
+                value = list()
             values = [name for name in choices if name in value]
             wx_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=values)
 
@@ -328,12 +348,13 @@ class iqPropertyEditorManager(object):
         # log_func.debug(u'Editor type [%d]' % edt_type)
         return edt_type
 
-    def buildPropertyEditors(self, property_editor=None, resource=None):
+    def buildPropertyEditors(self, property_editor=None, resource=None, parent_resource=None):
         """
         Build all property editors.
 
         :param property_editor: Property grid manager.
         :param resource: Component resource.
+        :param parent_resource: Parent component resource.
         :return: True/False.
         """
         if property_editor is None:
@@ -349,6 +370,9 @@ class iqPropertyEditorManager(object):
         # Set current component specification
         self.setSpecification(resource)
 
+        # Set parent component specification
+        self.setParentSpecification(parent_resource)
+
         bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
         prop_page = property_editor.AddPage(_(u'Properties'), bmp)
         # ---------------------------------------
@@ -358,7 +382,8 @@ class iqPropertyEditorManager(object):
         attributes = spc_func.BASIC_ATTRIBUTES
         for attr_name in attributes:
             edt_type = self._getAttrEditorType(resource, attr_name)
-            wx_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type, spc=resource)
+            wx_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type,
+                                                    spc=resource, parent_spc=parent_resource)
             if wx_property is not None:
                 prop_page.Append(wx_property)
 
@@ -372,7 +397,8 @@ class iqPropertyEditorManager(object):
         for attr_name in attributes:
             # log_func.debug(u'Attribute editor <%s> ...' % attr_name)
             edt_type = self._getAttrEditorType(resource, attr_name)
-            wx_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type, spc=resource)
+            wx_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type,
+                                                    spc=resource, parent_spc=parent_resource)
             if wx_property is not None:
                 add_property = prop_page.Append(wx_property)
                 # Advanced customization of property editors
@@ -398,7 +424,8 @@ class iqPropertyEditorManager(object):
         methods = self.getResourceMethods(resource)
         for method_name in methods:
             edt_type = self._getAttrEditorType(resource, method_name)
-            wx_property = self.createPropertyEditor(method_name, resource.get(method_name, None), edt_type, spc=resource)
+            wx_property = self.createPropertyEditor(method_name, resource.get(method_name, None), edt_type,
+                                                    spc=resource, parent_spc=parent_resource)
             if wx_property is not None:
                 methods_page.Append(wx_property)
                 property_editor.SetPropertyEditor(method_name, script_property_editor.iqScriptPropertyEditor.__name__)
@@ -411,7 +438,8 @@ class iqPropertyEditorManager(object):
         events = self.getResourceEvents(resource)
         for event_name in events:
             edt_type = self._getAttrEditorType(resource, event_name)
-            wx_property = self.createPropertyEditor(event_name, resource.get(event_name, None), edt_type, spc=resource)
+            wx_property = self.createPropertyEditor(event_name, resource.get(event_name, None), edt_type,
+                                                    spc=resource, parent_spc=parent_resource)
             if wx_property is not None:
                 events_page.Append(wx_property)
                 property_editor.SetPropertyEditor(event_name, script_property_editor.iqScriptPropertyEditor.__name__)

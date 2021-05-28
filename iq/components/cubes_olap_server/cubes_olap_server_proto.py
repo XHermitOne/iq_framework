@@ -63,13 +63,15 @@ from ..virtual_spreadsheet import v_spreadsheet
 __version__ = (0, 0, 0, 1)
 
 DEFAULT_SLICER_EXEC = 'slicer'
-ALTER_SLICER_EXEC = os.path.join(file_func.getHomePath(), '.local', 'bin', 'slicer')
+ALTER_SLICER_EXEC = file_func.getRelativePath(os.path.join(file_func.getHomePath(),
+                                                           '.local', 'bin', 'slicer'))
 
 DEFAULT_INI_FILENAME = 'slicer.ini'
 DEFAULT_MODEL_FILENAME = 'model.json'
 START_COMMAND_FMT = '%s serve %s &'
 
-DEFAULT_OLAP_SERVER_DIRNAME = file_func.getProjectProfilePath()
+DEFAULT_OLAP_SERVER_DIRNAME = file_func.getRelativePath(os.path.join(file_func.getProjectProfilePath(),
+                                                                     'OLAP'))
 
 LOG_LEVELS = ('info', 'debug', 'warn', 'error')
 

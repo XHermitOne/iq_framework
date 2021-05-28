@@ -11,6 +11,22 @@ from ...editor import property_editor_id
 __version__ = (0, 0, 0, 1)
 
 
+def getAttributeChoices(resource=None, parent_resource=None, *args, **kwargs):
+    """
+    Get attribute choices.
+
+    :param resource: Object resource.
+    :param parent_resource: Parent object resource.
+    :return:
+    """
+    attributes = resource.get('attributes', list())
+    if isinstance(attributes, str):
+        attributes = [attributes]
+    elif isinstance(attributes, tuple):
+        attributes = list(attributes)
+    return [''] + attributes if attributes else list()
+
+
 COMPONENT_TYPE = 'iqCubeDimensionLevel'
 
 CUBEDIMENSIONLEVEL_SPC = {
@@ -36,10 +52,12 @@ CUBEDIMENSIONLEVEL_SPC = {
     '__edit__': {
         'attributes': property_editor_id.STRINGLIST_EDITOR,
         'key': {
-            'editor': property_editor_id.CHOICE_EDITOR,
+            'editor': property_editor_id.SINGLE_CHOICE_EDITOR,
+            'choices': getAttributeChoices,
         },
         'label_attribute': {
-            'editor': property_editor_id.CHOICE_EDITOR,
+            'editor': property_editor_id.SINGLE_CHOICE_EDITOR,
+            'choices': getAttributeChoices,
         },
         'label': property_editor_id.STRING_EDITOR,
         'mapping': property_editor_id.STRING_EDITOR,

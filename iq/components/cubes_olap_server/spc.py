@@ -55,13 +55,13 @@ CUBESOLAPSERVER_SPC = {
     'host': 'localhost',
     'port': 5000,
     'reload': True,
-    'prettyprint': True,
+    'prettyprint': False,
     'allow_cors_origin': '*',
 
     '__package__': u'OLAP',
     '__icon__': 'fatcow/server_components',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': {'linux': 'open %s' % os.path.join(os.path.dirname(__file__), 'cubes-readthedocs-io-en-latest.pdf')},
+    '__doc__': {'linux': 'evince %s' % os.path.join(os.path.dirname(__file__), 'cubes-readthedocs-io-en-latest.pdf')},
     '__content__': ('iqCube', ),
     '__edit__': {
         'db': {

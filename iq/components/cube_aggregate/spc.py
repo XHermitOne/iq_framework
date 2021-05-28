@@ -11,18 +11,21 @@ from ...editor import property_editor_id
 
 from . import cube_aggregate_proto
 
+from .. import cube_measure
+
 __version__ = (0, 0, 0, 1)
 
 
-def getMeasures(resource=None, *args, **kwargs):
+def getMeasures(resource=None, parent_resource=None, *args, **kwargs):
     """
     Get measure names.
 
     :param resource: Object resource.
+    :param parent_resource: Parent object resource.
     :return:
     """
-    # resource.get('_children_')
-    return list()
+    measure_names = [child['name'] for child in parent_resource.get('_children_', list()) if child['type'] == cube_measure.COMPONENT_TYPE]
+    return tuple([''] + measure_names)
 
 
 COMPONENT_TYPE = 'iqCubeAggregate'
