@@ -41,10 +41,13 @@ def playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
     app = wx.GetApp()
     if app is not None:
         SOUND = wx.adv.Sound(wav_filename)
-        return SOUND.Play(play_mode)
+        if SOUND.IsOk():
+            return SOUND.Play(play_mode)
+        else:
+            log_func.warning(u'Incorrect sound object')
     else:
         SOUND = None
-        log_func.warning(u'WX application not created. Sound files cannot be played')
+        log_func.warning(u'WX application not created. Sound files cannot be played', is_force_print=True)
     return False
 
 
@@ -58,10 +61,10 @@ def stopSound():
 
     app = wx.GetApp()
     if app is None:
-        log_func.warning(u'WX application not created. It is not possible to stop playing audio files')
+        log_func.warning(u'WX application not created. It is not possible to stop playing audio files', is_force_print=True)
         return False
 
-    if SOUND:
+    if SOUND and SOUND.IsOk():
         result = SOUND.Stop()
         SOUND = None
         return result
