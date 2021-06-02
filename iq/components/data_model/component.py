@@ -64,21 +64,5 @@ class iqDataModel(model.iqModelManager, object.iqObject):
             log_func.fatal(u'Error get model in <%s>' % self.getName())
         return None
 
-    def getDataset(self, *args, **kwargs):
-        """
-        Get dataset.
-
-        :return: Record dictionary list.
-        """
-        try:
-            model = self.getModel()
-            if model:
-                records = model.query.all()
-                dataset = [dict(record) for record in records]
-                return dataset
-        except:
-            log_func.fatal(u'Error get dataset in <%s>' % self.getName())
-        return list()
-
 
 COMPONENT = iqDataModel

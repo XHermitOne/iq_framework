@@ -165,6 +165,19 @@ class iqModelNavigatorManager(data_object.iqDataObject):
             return self.updateDataset()
         return self.__dataset__
 
+    def setDataset(self, dataset=None, clear=True, *args, **kwargs):
+        """
+        Set dataset in model.
+
+        :param dataset: Dataset as list of record dictionaries.
+        :param clear: Clear data object/model?
+        :return: True/False.
+        """
+        result = data_object.iqDataObject.setDataset(self, dataset=dataset, clear=clear, *args, **kwargs)
+        if result:
+            self.updateDataset()
+        return result
+
     def updateDataset(self, *filter_args, **filter_kwargs):
         """
         Update dataset by filter.
