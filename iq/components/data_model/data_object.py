@@ -26,6 +26,26 @@ class iqDataObjectProto(object):
         log_func.warning(u'Not define method <getDataset> in <%s>' % self.__class__.__name__)
         return list()
 
+    def setDataset(self, dataset=None, clear=True, *args, **kwargs):
+        """
+        Set dataset in model.
+
+        :param dataset: Dataset as list of record dictionaries.
+        :param clear: Clear data object/model?
+        :return: True/False.
+        """
+        log_func.warning(u'Not define method <setDataset> in <%s>' % self.__class__.__name__)
+        return False
+
+    def clear(self):
+        """
+        Clear data object/model.
+
+        :return: True/False.
+        """
+        log_func.warning(u'Not define method <clear> in <%s>' % self.__class__.__name__)
+        return False
+
 
 class iqDataObject(iqDataObjectProto):
     """
