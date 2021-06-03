@@ -73,8 +73,18 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
             log_func.warning(u'Data source not defined in control <%s>' % self.getName())
         return False
 
+    def clearCode(self):
+        """
+        Clear selected code.
+
+        :return: True/False.
+        """
+        return self.setCode(None)
+
+    # Dear method names
     getValue = getCode
     setValue = setCode
+    clearValue = clearCode
 
     def setTableDataSource(self, tab_data_src, **kwargs):
         """

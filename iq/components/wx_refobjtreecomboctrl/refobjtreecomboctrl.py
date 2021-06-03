@@ -785,7 +785,9 @@ class iqRefObjTreeComboCtrlProto(wx.ComboCtrl):
         :param alt_cod_field: Altered cod field.
         """
         self._oldCode = cod
+
         value, pref = self._combo_popup.setSelectedCod(self._data_source, cod, alt_cod_field)
+        # log_func.debug(u'Value <%s> Pref <%s>' % (value, pref))
         if value or pref:
             str_value = value if isinstance(value, str) else u''
             return self.SetValue(str_value)
