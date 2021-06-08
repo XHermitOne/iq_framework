@@ -196,7 +196,7 @@
                                             <property name="center_pane">0</property>
                                             <property name="class"></property>
                                             <property name="close_button">1</property>
-                                            <property name="construction">self.request_panel = cubes_olap_srv_request_panel.icCubesOLAPSrvRequestPanel(parent=self.request_splitter_panel)</property>
+                                            <property name="construction">self.request_panel = cubes_olap_srv_request_panel.iqCubesOLAPSrvRequestPanel(parent=self.request_splitter_panel)</property>
                                             <property name="context_help"></property>
                                             <property name="context_menu">1</property>
                                             <property name="declaration"></property>
@@ -366,8 +366,8 @@
                                                 <property name="label">tool</property>
                                                 <property name="name">refresh_tool</property>
                                                 <property name="permission">protected</property>
-                                                <property name="statusbar">Обновить результат</property>
-                                                <property name="tooltip">Обновить результат</property>
+                                                <property name="statusbar">Refresh</property>
+                                                <property name="tooltip">Refresh</property>
                                                 <event name="OnToolClicked">onRefreshToolClicked</event>
                                             </object>
                                         </object>
@@ -522,7 +522,7 @@
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
                                                                 <property name="id">wxID_ANY</property>
-                                                                <property name="label">Результат:</property>
+                                                                <property name="label">Result:</property>
                                                                 <property name="markup">0</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
@@ -705,7 +705,7 @@
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
                                                                 <property name="id">wxID_ANY</property>
-                                                                <property name="label">Результат в табличной форме:</property>
+                                                                <property name="label">Result as table:</property>
                                                                 <property name="markup">0</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
@@ -836,7 +836,7 @@
                     <property name="border">5</property>
                     <property name="flag">wxALIGN_RIGHT</property>
                     <property name="proportion">0</property>
-                    <object class="wxBoxSizer" expanded="0">
+                    <object class="wxBoxSizer" expanded="1">
                         <property name="minimum_size"></property>
                         <property name="name">bSizer3</property>
                         <property name="orient">wxHORIZONTAL</property>
@@ -878,7 +878,7 @@
                                 <property name="gripper">0</property>
                                 <property name="hidden">0</property>
                                 <property name="id">wxID_ANY</property>
-                                <property name="label">Закрыть</property>
+                                <property name="label">Close</property>
                                 <property name="margins"></property>
                                 <property name="markup">0</property>
                                 <property name="max_size"></property>

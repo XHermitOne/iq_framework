@@ -2,55 +2,53 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль формы <icCubesOLAPSrvRequestPanelProto>. 
-Сгенерирован проектом DEFIS по модулю формы-прототипа wxFormBuider.
+Cubes OLAP server request panel.
 """
 
 import wx
-from . import cubes_olap_srv_request_form_proto
+from . import cubes_olap_srv_request_panel_proto
 
-import ic
-from ic.log import log
-from ic.utils import wxfunc
+from ...util import log_func
 
-# Для управления взаимодействия с контролами wxPython
-# используется менеджер форм <form_manager.icFormManager>
-from ic.engine import form_manager
+from ...engine.wx import panel_manager
+from ...engine.wx.dlg import info_window
 
-__version__ = (0, 1, 1, 1)
+
+__version__ = (0, 0, 0, 1)
 
 OLAP_METHODS = ('aggregate', 'members', 'facts', 'fact', 'cell', 'report')
 
-CUT_PARAMETER_HELP = u'cut - спецификация ячейки среза, например: cut=date:2004,1|category:2|entity:12345'
-DRILLDOWN_PARAMETER_HELP = u'''drilldown - измерение, который нужно "сверлить". Например drilldown=date даст строки для каждого значения
-следующий уровень даты измерения. Вы можете явно указать уровень для детализации в форме: dimension:level,
-таких как: drilldown=date:month. Чтобы указать иерархию используйте dimension@hierarchy как в
-drilldown=date@ywd для неявного уровня или drilldown=date@ywd:week явно указать уровень.'''
-AGGREGATES_PARAMETER_HELP = u'''aggregates – список агрегатов для расчета, разделяется с помошью |,
-например: aggergates=amount_sum|discount_avg|count'''
-MEASURES_PARAMETER_HELP = u'''measures – список мер, для которых будут рассчитаны их соответствующие агрегаты.
-Разделяется с помощью |, например: aggergates=proce|discount'''
-PAGE_PARAMETER_HELP = u'page - номер страницы для нумерации страниц'
-PAGESIZE_PARAMETER_HELP = u'pagesize - размер страницы для разбивки на страницы'
-ORDER_PARAMETER_HELP = u'order - список атрибутов для сортировки'
-SPLIT_PARAMETER_HELP = u'''split – разделенная ячейка, тот же синтаксис, что и у вырезки, определяет виртуальное двоичное (флаговое) измерение, которое указывает, является ли ячейка
-принадлежит разделенному разрезу (true) или нет (false). Атрибут измерения называется __within_split__.
-Обратитесь к бэкэнду, который вы используете для получения дополнительной информации, поддерживается ли эта функция или нет.'''
+CUT_PARAMETER_HELP = u'cut - cut cell specification, For example: cut=date:2004,1|category:2|entity:12345'
+DRILLDOWN_PARAMETER_HELP = u'''drilldown - dimension, which one needs "drilldown". For example drilldown=date will give rows for each value 
+next level of measurement date. You can explicitly specify the level for granularity in the form: dimension:level,
+such as: drilldown=date:month. To specify the hierarchy use dimension@hierarchy how in
+drilldown=date@ywd for implicit level or drilldown=date@ywd:week explicitly state the level.'''
+AGGREGATES_PARAMETER_HELP = u'''aggregates – list of aggregates for calculation, shared with |,
+For example: aggergates=amount_sum|discount_avg|count'''
+MEASURES_PARAMETER_HELP = u'''measures – a list of measures for which their respective aggregates will be calculated.
+Shared with |, For example: aggergates=proce|discount'''
+PAGE_PARAMETER_HELP = u'page - page number for pagination'
+PAGESIZE_PARAMETER_HELP = u'pagesize - page size for pagination'
+ORDER_PARAMETER_HELP = u'order - list of attributes to sort'
+SPLIT_PARAMETER_HELP = u'''split – split cell, the same syntax as slice, defines a virtual binary (flag) dimension that indicates whether a cell is 
+belongs to the split cut (true) or no (false). The dimension attribute is called __within_split__.
+Refer to the backend you are using for more information if this feature is supported or not.'''
 
 OLAP_SERVER_URL_FMT = 'cube/%s/%s'
 
 
-class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSrvRequestPanelProto, form_manager.icFormManager):
+class iqCubesOLAPSrvRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesOLAPSrvRequestPanelProto,
+                                 panel_manager.iqPanelManager):
     """
-    Форма .
+    Cubes OLAP server request panel.
     """
     def __init__(self, *args, **kwargs):
         """
-        Конструктор.
+        Constructor.
         """
-        cubes_olap_srv_request_form_proto.icCubesOLAPSrvRequestPanelProto.__init__(self, *args, **kwargs)
+        cubes_olap_srv_request_panel_proto.iqCubesOLAPSrvRequestPanelProto.__init__(self, *args, **kwargs)
 
-        # Тестируемый OLAP сервер
+        # OLAP server
         self._OLAP_server = None
 
         self._help_popup_win = None
@@ -58,13 +56,13 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def setOLAPServer(self, olap_server):
         """
-        Установить тестируемый OLAP сервер.
-        :param olap_server: OLAP сервер
+        Set OLAP server.
+
+        :param olap_server: OLAP server.
         """
         self._OLAP_server = olap_server
 
         if self._OLAP_server:
-            # Настраиваем контрол выбора кубов
             choices = [cube.description if cube.description else cube.name for cube in self._OLAP_server.getCubes()]
             self.cube_choice.Clear()
             self.cube_choice.AppendItems(choices)
@@ -75,7 +73,7 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def refreshDimensionChoice(self, i_cube):
         """
-        Обновить список измерений в зависимости от выбранного куба.
+        Refresh the list of dimensions based on the selected cube.
         """
         cube = self._OLAP_server.getCubes()[i_cube] if i_cube >= 0 else None
         if cube:
@@ -88,24 +86,24 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def init(self):
         """
-        Инициализация панели.
+        Init panel.
         """
-        self.init_img()
-        self.init_ctrl()
+        self.initImages()
+        self.initControls()
         
-    def init_img(self):
+    def initImages(self):
         """
-        Инициализация изображений.
+        Init control images.
         """
         pass
         
-    def init_ctrl(self):
+    def initControls(self):
         """
-        Инициализация контролов.
+        Init controls.
         """
         self.method_choice.AppendItems(OLAP_METHODS)
 
-        # Выключить все параметры
+        # Enable all options
         self.cut_textCtrl.Enable(False)
         self.drilldown_textCtrl.Enable(False)
         self.aggregates_textCtrl.Enable(False)
@@ -117,7 +115,7 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     # def onCubeChoice(self, event):
     #     """
-    #     Обработчик выбора куба.
+    #     Select cube handler.
     #     """
     #     i_cube = event.GetSelection()
     #     self.refreshDimensionChoice(i_cube)
@@ -126,38 +124,39 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onAggregatesCheckBox(self, event):
         """
-        Обработчик включения параметра aggregate.
+        Aggregate parameter enable handler.
         """
         enable = event.IsChecked()
         self.aggregates_textCtrl.Enable(enable)
         event.Skip()
 
-    def show_help_popup_win(self, button, info_text):
+    def showHelpPopupWin(self, button, info_text):
         """
-        Отобразить/скрыть всплывающее окно помощи.
-        :param button: Кнопка вызова окна помощи.
-        :param info_text: Текст помощи.
+        Show / hide help popup.
+
+        :param button: Help window button.
+        :param info_text: Help text.
         :return:
         """
         if self._help_popup_win:
             self._help_popup_win.close()
             self._help_popup_win = None
         else:
-            self._help_popup_win = wxfunc.showInfoWindow(parent=self,
-                                                         ctrl=button,
-                                                         info_text=info_text)
+            self._help_popup_win = info_window.showInfoWindow(parent=self,
+                                                              ctrl=button,
+                                                              info_text=info_text)
 
     def onAggregatesHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.aggregates_hlp_bpButton,
-                                 info_text=AGGREGATES_PARAMETER_HELP)
+        self.showHelpPopupWin(self.aggregates_hlp_bpButton,
+                              info_text=AGGREGATES_PARAMETER_HELP)
         event.Skip()
 
     def onCutCheckBox(self, event):
         """
-        Обработчик включения параметра cut.
+        Cut parameter enable handler.
         """
         enable = event.IsChecked()
         self.cut_textCtrl.Enable(enable)
@@ -165,15 +164,15 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onCutHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.cut_hlp_bpButton,
-                                 info_text=CUT_PARAMETER_HELP)
+        self.showHelpPopupWin(self.cut_hlp_bpButton,
+                              info_text=CUT_PARAMETER_HELP)
         event.Skip()
 
     def onDrilldownCheckBox(self, event):
         """
-        Обработчик включения параметра drilldown.
+        Drilldown parameter enable handler.
         """
         enable = event.IsChecked()
         self.drilldown_textCtrl.Enable(enable)
@@ -181,15 +180,15 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onDrilldownHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.drilldown_hlp_bpButton,
-                                 info_text=DRILLDOWN_PARAMETER_HELP)
+        self.showHelpPopupWin(self.drilldown_hlp_bpButton,
+                              info_text=DRILLDOWN_PARAMETER_HELP)
         event.Skip()
 
     def onMeasuresCheckBox(self, event):
         """
-        Обработчик включения параметра measures.
+        Measures parameter enable handler.
         """
         enable = event.IsChecked()
         self.measures_textCtrl.Enable(enable)
@@ -197,15 +196,15 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onMeasuresHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.measures_hlp_bpButton,
-                                 info_text=MEASURES_PARAMETER_HELP)
+        self.showHelpPopupWin(self.measures_hlp_bpButton,
+                              info_text=MEASURES_PARAMETER_HELP)
         event.Skip()
 
     def onOrderCheckBox(self, event):
         """
-        Обработчик включения параметра order.
+        Order parameter enable handler.
         """
         enable = event.IsChecked()
         self.order_textCtrl.Enable(enable)
@@ -213,15 +212,15 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onOrderHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.order_hlp_bpButton,
-                                 info_text=ORDER_PARAMETER_HELP)
+        self.showHelpPopupWin(self.order_hlp_bpButton,
+                              info_text=ORDER_PARAMETER_HELP)
         event.Skip()
 
     def onPageCheckBox(self, event):
         """
-        Обработчик включения параметра page.
+        Page parameter enable handler.
         """
         enable = event.IsChecked()
         self.page_textCtrl.Enable(enable)
@@ -229,15 +228,15 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onPageHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.page_hlp_bpButton,
-                                 info_text=PAGE_PARAMETER_HELP)
+        self.showHelpPopupWin(self.page_hlp_bpButton,
+                              info_text=PAGE_PARAMETER_HELP)
         event.Skip()
 
     def onPagesizeCheckBox(self, event):
         """
-        Обработчик включения параметра pagesize.
+        Pagesize parameter enable handler.
         """
         enable = event.IsChecked()
         self.pagesize_textCtrl.Enable(enable)
@@ -245,15 +244,15 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onPagesizeHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.pagesize_hlp_bpButton,
-                                 info_text=PAGESIZE_PARAMETER_HELP)
+        self.showHelpPopupWin(self.pagesize_hlp_bpButton,
+                              info_text=PAGESIZE_PARAMETER_HELP)
         event.Skip()
 
     def onSplitCheckBox(self, event):
         """
-        Обработчик включения параметра split.
+        Split parameter enable handler.
         """
         enable = event.IsChecked()
         self.split_textCtrl.Enable(enable)
@@ -261,16 +260,17 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def onSplitHelpButtonClick(self, event):
         """
-        Подсказка по параметру.
+        Parameter hint.
         """
-        self.show_help_popup_win(self.split_hlp_bpButton,
-                                 info_text=SPLIT_PARAMETER_HELP)
+        self.showHelpPopupWin(self.split_hlp_bpButton,
+                              info_text=SPLIT_PARAMETER_HELP)
         event.Skip()
 
     def setRequest(self, request):
         """
-        Установить запрос к серверу OLAP в структурном виде.
-        :param request: Словарь параметров запроса к OLAP серверу.
+        Set request to OLAP server as struct.
+
+        :param request: Request dictionary.
         :return: True/False.
         """
         if request is None:
@@ -289,14 +289,14 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
                 cube = cubes[i_cube]
                 self.cube_choice.setSelection(i_cube)
             except ValueError:
-                log.error(u'Куб с именем <%s> не найден среди %s' % (cube_name, str(cube_names)))
+                log_func.error(u'Cube <%s> not found in %s' % (cube_name, str(cube_names)))
 
         method_name = request.get('method', None)
         if method_name:
             try:
                 i_method = OLAP_METHODS.index(method_name)
             except ValueError:
-                log.error(u'Метод <%s> не найден среди %s' % (method_name, str(OLAP_METHODS)))
+                log_func.error(u'Method <%s> not found in %s' % (method_name, str(OLAP_METHODS)))
                 i_method = 0
             self.method_choice.setSelection(i_method)
 
@@ -307,7 +307,7 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
             try:
                 i_dimension = dimension_names.index(dimension_name) + 1
             except ValueError:
-                log.error(u'Измерение <%s> не найденj среди %s' % (dimension_name, str(dimension_names)))
+                log_func.error(u'Dimension <%s> not found in %s' % (dimension_name, str(dimension_names)))
                 i_dimension = 0
             self.dimension_choice.setSelection(i_dimension)
 
@@ -347,10 +347,9 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def getRequest(self):
         """
-        Получить запрос к серверу OLAP в структурном виде.
-        :return: Словарь параметров запроса к OLAP серверу.
-            Словарь заполняется в соответствии с выбранными
-            параметрами контролов панели.
+        Get request to OLAP server as struct.
+
+        :return: Request struct as dictionary.
         """
         request = dict()
         i_cube = self.cube_choice.GetSelection()
@@ -365,12 +364,11 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
             request['method'] = method_name
 
         i_dimension = self.dimension_choice.GetSelection() - 1
-        # log.debug(u'Выбранное измерение %d' % i_dimension)
         dimension = (cube.getDimensions()[i_dimension] if cube else None) if i_dimension >= 0 else None
         if dimension:
             request['dimension'] = dimension.getName()
 
-        # Наполнить параметрами
+        # Set parameters
         if self.cut_checkBox.GetValue():
             param = self.cut_textCtrl.GetValue().strip()
             if param:
@@ -407,9 +405,9 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
 
     def getRequestURL(self, request=None):
         """
-        Получить URL запроса к серверу OLAP по его структурному описанию.
-        :return: Словарь параметров запроса к OLAP серверу.
-            Если не определен, то берется из контролов.
+        Get request URL to OLAP server.
+
+        :return: Request struct as dictionary.
         """
         if request is None:
             request = self.getRequest()
@@ -418,21 +416,25 @@ class icCubesOLAPSrvRequestPanel(cubes_olap_srv_request_form_proto.icCubesOLAPSr
             full_request_url = self._OLAP_server.getRequestURL(request)
             return full_request_url
         except:
-            log.fatal(u'Ошибка получения полного запроса URL к OLAP серверу')
+            log_func.fatal(u'Error get request URL to OLAP server')
 
         return u''
 
 
-def show_cubes_olap_srv_request_panel(title=u''):
+def showCubesOLAPServerRequestPanel(parent=None, title=u''):
     """
-    :param title: Заголовок страницы нотебука главного окна.
+    Open Cubes OLAP server request panel page.
+
+    :param parent: Parent window.
+    :param title: Title.
     """
     try:
-        main_win = ic.getMainWin()
-        
-        panel = icCubesOLAPSrvRequestPanel(main_win)
-        # panel.init()
-        main_win.addPage(panel, title)
-    except:
-        log.fatal(u'Ошибка')    
+        if parent is None:
+            app = wx.GetApp()
+            parent = app.GetTopWindow()
 
+        panel = iqCubesOLAPSrvRequestPanel(parent=parent)
+        # panel.init()
+        parent.addPage(panel, title)
+    except:
+        log_func.fatal(u'Error open Cubes OLAP server request panel page')

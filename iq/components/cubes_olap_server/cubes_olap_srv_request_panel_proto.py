@@ -8,10 +8,12 @@
 ###########################################################################
 
 import wx
-import wx.xrc
+import wx.adv
+import wx.lib.gizmos
+import wx.aui
 
-import gettext
-_ = gettext.gettext
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqCubesOLAPSrvRequestPanelProto
@@ -26,7 +28,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer121 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText6 = wx.StaticText( self, wx.ID_ANY, _(u"Запрос:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText6 = wx.StaticText( self, wx.ID_ANY, _(u"Request:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText6.Wrap( -1 )
 
 		self.m_staticText6.SetFont( wx.Font( 11, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Sans" ) )
@@ -41,7 +43,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer2 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText1 = wx.StaticText( self, wx.ID_ANY, _(u"Куб:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText1 = wx.StaticText( self, wx.ID_ANY, _(u"Cube:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText1.Wrap( -1 )
 
 		bSizer2.Add( self.m_staticText1, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -51,7 +53,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 		self.cube_choice.SetSelection( 0 )
 		bSizer2.Add( self.cube_choice, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, _(u"Метод:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, _(u"Method:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 
 		bSizer2.Add( self.m_staticText2, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -61,7 +63,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 		self.method_choice.SetSelection( 0 )
 		bSizer2.Add( self.method_choice, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, _(u"Измерение:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText3 = wx.StaticText( self, wx.ID_ANY, _(u"Dimension:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText3.Wrap( -1 )
 
 		bSizer2.Add( self.m_staticText3, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -76,14 +78,14 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer12 = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, _(u"Параметры:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText7 = wx.StaticText( self, wx.ID_ANY, _(u"Parameters:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText7.Wrap( -1 )
 
 		bSizer12.Add( self.m_staticText7, 0, wx.ALL, 5 )
 
 		bSizer9 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.cut_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Срез (cut)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.cut_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Cut"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer9.Add( self.cut_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.cut_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -99,7 +101,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer101 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.drilldown_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Измерения групп (drilldown)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.drilldown_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Drill down"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer101.Add( self.drilldown_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.drilldown_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -115,7 +117,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer11 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.aggregates_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Агрегации (aggregates)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.aggregates_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Aggregates"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer11.Add( self.aggregates_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.aggregates_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -131,7 +133,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer111 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.measures_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Меры для расчета (measures)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.measures_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Measures"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer111.Add( self.measures_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.measures_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -147,7 +149,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer1111 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.page_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Номер страницы (page)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.page_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Page"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer1111.Add( self.page_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.page_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -163,7 +165,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer11111 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.pagesize_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Размер страницы (pagesize)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.pagesize_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Page size"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer11111.Add( self.pagesize_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.pagesize_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -179,7 +181,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer11112 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.order_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Порядок сортировки (order)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.order_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Order"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer11112.Add( self.order_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.order_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -195,7 +197,7 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 		bSizer11113 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.split_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Разделенная ячейка (split)"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.split_checkBox = wx.CheckBox( self, wx.ID_ANY, _(u"Split"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer11113.Add( self.split_checkBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.split_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -240,63 +242,63 @@ class iqCubesOLAPSrvRequestPanelProto ( wx.Panel ):
 
 
 	# Virtual event handlers, overide them in your derived class
-	def onCubeChoice( self, event ):
+	def onCubeChoice(self, event):
 		event.Skip()
 
-	def onCutCheckBox( self, event ):
+	def onCutCheckBox(self, event):
 		event.Skip()
 
-	def onCutHelpButtonClick( self, event ):
+	def onCutHelpButtonClick(self, event):
 		event.Skip()
 
-	def onDrilldownCheckBox( self, event ):
+	def onDrilldownCheckBox(self, event):
 		event.Skip()
 
-	def onDrilldownHelpButtonClick( self, event ):
+	def onDrilldownHelpButtonClick(self, event):
 		event.Skip()
 
-	def onAggregatesCheckBox( self, event ):
+	def onAggregatesCheckBox(self, event):
 		event.Skip()
 
-	def onAggregatesHelpButtonClick( self, event ):
+	def onAggregatesHelpButtonClick(self, event):
 		event.Skip()
 
-	def onMeasuresCheckBox( self, event ):
+	def onMeasuresCheckBox(self, event):
 		event.Skip()
 
-	def onMeasuresHelpButtonClick( self, event ):
+	def onMeasuresHelpButtonClick(self, event):
 		event.Skip()
 
-	def onPageCheckBox( self, event ):
+	def onPageCheckBox(self, event):
 		event.Skip()
 
-	def onPageHelpButtonClick( self, event ):
+	def onPageHelpButtonClick(self, event):
 		event.Skip()
 
-	def onPagesizeCheckBox( self, event ):
+	def onPagesizeCheckBox(self, event):
 		event.Skip()
 
-	def onPagesizeHelpButtonClick( self, event ):
+	def onPagesizeHelpButtonClick(self, event):
 		event.Skip()
 
-	def onOrderCheckBox( self, event ):
+	def onOrderCheckBox(self, event):
 		event.Skip()
 
-	def onOrderHelpButtonClick( self, event ):
+	def onOrderHelpButtonClick(self, event):
 		event.Skip()
 
-	def onSplitCheckBox( self, event ):
+	def onSplitCheckBox(self, event):
 		event.Skip()
 
-	def onSplitHelpButtonClick( self, event ):
+	def onSplitHelpButtonClick(self, event):
 		event.Skip()
 
 
 ###########################################################################
-## Class icCubesPivotTabRequestPanelProto
+## Class iqCubesPivotTabRequestPanelProto
 ###########################################################################
 
-class icCubesPivotTabRequestPanelProto ( wx.Panel ):
+class iqCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 	def __init__( self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.Size( 861,721 ), style = wx.TAB_TRAVERSAL, name = wx.EmptyString ):
 		wx.Panel.__init__ ( self, parent, id = id, pos = pos, size = size, style = style, name = name )
@@ -305,7 +307,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer14 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText6 = wx.StaticText( self, wx.ID_ANY, _(u"Куб:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText6 = wx.StaticText( self, wx.ID_ANY, _(u"Cube:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText6.Wrap( -1 )
 
 		bSizer14.Add( self.m_staticText6, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -318,11 +320,11 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer13.Add( bSizer14, 0, wx.EXPAND, 5 )
 
-		sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Сводная таблица:") ), wx.VERTICAL )
+		sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Pivot table:") ), wx.VERTICAL )
 
 		bSizer16 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText7 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Строки"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText7 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Rows"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText7.Wrap( -1 )
 
 		bSizer16.Add( self.m_staticText7, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -330,7 +332,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer16.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
-		self.m_staticText8 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Измерение:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText8 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Dimension:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText8.Wrap( -1 )
 
 		bSizer16.Add( self.m_staticText8, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -340,7 +342,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 		self.row_dimension_choice.SetSelection( 0 )
 		bSizer16.Add( self.row_dimension_choice, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.m_staticText9 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"до Уровня:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText9 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"to level:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText9.Wrap( -1 )
 
 		bSizer16.Add( self.m_staticText9, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -355,7 +357,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer161 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText71 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Колонки"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText71 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Columns"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText71.Wrap( -1 )
 
 		bSizer161.Add( self.m_staticText71, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -363,7 +365,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer161.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
-		self.m_staticText81 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Измерение:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText81 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"Dimension:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText81.Wrap( -1 )
 
 		bSizer161.Add( self.m_staticText81, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -373,7 +375,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 		self.col_dimension_choice.SetSelection( 0 )
 		bSizer161.Add( self.col_dimension_choice, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.m_staticText91 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"до Уровня:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText91 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, _(u"to level:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText91.Wrap( -1 )
 
 		bSizer161.Add( self.m_staticText91, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -389,7 +391,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer13.Add( sbSizer1, 0, wx.EXPAND, 5 )
 
-		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Вычисления:") ), wx.VERTICAL )
+		sbSizer2 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, _(u"Calculations:") ), wx.VERTICAL )
 
 		aggregate_checkListChoices = []
 		self.aggregate_checkList = wx.CheckListBox( sbSizer2.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, aggregate_checkListChoices, 0 )
@@ -402,7 +404,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer20 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText16 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, _(u"Срез"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText16 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, _(u"Cut"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText16.Wrap( -1 )
 
 		bSizer20.Add( self.m_staticText16, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -410,7 +412,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 		bSizer20.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
-		self.m_staticText17 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, _(u"Измерение:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText17 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, _(u"Dimension:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText17.Wrap( -1 )
 
 		bSizer20.Add( self.m_staticText17, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -420,7 +422,7 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 		self.cut_dimension_choice.SetSelection( 0 )
 		bSizer20.Add( self.cut_dimension_choice, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.m_staticText18 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, _(u"Значения:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText18 = wx.StaticText( sbSizer3.GetStaticBox(), wx.ID_ANY, _(u"Values:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText18.Wrap( -1 )
 
 		bSizer20.Add( self.m_staticText18, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
@@ -439,9 +441,9 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 		bSizer21 = wx.BoxSizer( wx.VERTICAL )
 
 		self.cut_toolBar = wx.ToolBar( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL )
-		self.add_cut_tool = self.cut_toolBar.AddLabelTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_ADD_BOOKMARK, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, wx.EmptyString, wx.EmptyString, None )
+		self.add_cut_tool = self.cut_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_ADD_BOOKMARK, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, wx.EmptyString, wx.EmptyString, None )
 
-		self.del_cut_tool = self.cut_toolBar.AddLabelTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_DEL_BOOKMARK, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, wx.EmptyString, wx.EmptyString, None )
+		self.del_cut_tool = self.cut_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_DEL_BOOKMARK, wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, wx.EmptyString, wx.EmptyString, None )
 
 		self.cut_toolBar.Realize()
 
@@ -472,19 +474,19 @@ class icCubesPivotTabRequestPanelProto ( wx.Panel ):
 
 
 	# Virtual event handlers, overide them in your derived class
-	def onRowDimensionChoice( self, event ):
+	def onRowDimensionChoice(self, event):
 		event.Skip()
 
-	def onColDimensionChoice( self, event ):
+	def onColDimensionChoice(self, event):
 		event.Skip()
 
-	def onHelpCutButtonClick( self, event ):
+	def onHelpCutButtonClick(self, event):
 		event.Skip()
 
-	def onAddCutToolClicked( self, event ):
+	def onAddCutToolClicked(self, event):
 		event.Skip()
 
-	def onDelCutToolClicked( self, event ):
+	def onDelCutToolClicked(self, event):
 		event.Skip()
 
 

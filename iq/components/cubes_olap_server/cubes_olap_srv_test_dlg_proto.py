@@ -8,13 +8,15 @@
 ###########################################################################
 
 import wx
-import wx.xrc
+import wx.adv
+import wx.lib.gizmos
+import wx.aui
 from . import cubes_olap_srv_request_panel
 import wx.stc
 import wx.grid
 
-import gettext
-_ = gettext.gettext
+from iq.util import lang_func
+_ = lang_func.getTranslation().gettext
 
 ###########################################################################
 ## Class iqCubesOLAPSrvTestDialogProto
@@ -35,7 +37,7 @@ class iqCubesOLAPSrvTestDialogProto ( wx.Dialog ):
 		self.request_splitter_panel = wx.Panel( self.panel_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer17 = wx.BoxSizer( wx.VERTICAL )
 
-		self.request_panel = cubes_olap_srv_request_panel.icCubesOLAPSrvRequestPanel(parent=self.request_splitter_panel)
+		self.request_panel = cubes_olap_srv_request_panel.iqCubesOLAPSrvRequestPanel(parent=self.request_splitter_panel)
 		bSizer17.Add( self.request_panel, 1, wx.ALL|wx.EXPAND, 5 )
 
 
@@ -46,7 +48,7 @@ class iqCubesOLAPSrvTestDialogProto ( wx.Dialog ):
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
 
 		self.ctrl_toolBar = wx.ToolBar( self.response_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL )
-		self.refresh_tool = self.ctrl_toolBar.AddLabelTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( u"gtk-refresh", wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Обновить результат"), _(u"Обновить результат"), None )
+		self.refresh_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( u"gtk-refresh", wx.ART_TOOLBAR ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Refresh"), _(u"Refresh"), None )
 
 		self.ctrl_toolBar.Realize()
 
@@ -58,7 +60,7 @@ class iqCubesOLAPSrvTestDialogProto ( wx.Dialog ):
 		self.json_panel = wx.Panel( self.response_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer7 = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_staticText4 = wx.StaticText( self.json_panel, wx.ID_ANY, _(u"Результат:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText4 = wx.StaticText( self.json_panel, wx.ID_ANY, _(u"Result:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText4.Wrap( -1 )
 
 		self.m_staticText4.SetFont( wx.Font( 11, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Sans" ) )
@@ -75,7 +77,7 @@ class iqCubesOLAPSrvTestDialogProto ( wx.Dialog ):
 		self.spreadsheet_panel = wx.Panel( self.response_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer8 = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_staticText5 = wx.StaticText( self.spreadsheet_panel, wx.ID_ANY, _(u"Результат в табличной форме:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText5 = wx.StaticText( self.spreadsheet_panel, wx.ID_ANY, _(u"Result as table:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText5.Wrap( -1 )
 
 		self.m_staticText5.SetFont( wx.Font( 11, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Sans" ) )
@@ -124,7 +126,7 @@ class iqCubesOLAPSrvTestDialogProto ( wx.Dialog ):
 
 		bSizer3 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.close_button = wx.Button( self, wx.ID_ANY, _(u"Закрыть"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.close_button = wx.Button( self, wx.ID_ANY, _(u"Close"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer3.Add( self.close_button, 0, wx.ALL, 5 )
 
 
@@ -145,17 +147,17 @@ class iqCubesOLAPSrvTestDialogProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, overide them in your derived class
-	def onRefreshToolClicked( self, event ):
+	def onRefreshToolClicked(self, event):
 		event.Skip()
 
-	def onCloseButtonClick( self, event ):
+	def onCloseButtonClick(self, event):
 		event.Skip()
 
-	def panel_splitterOnIdle( self, event ):
+	def panel_splitterOnIdle(self, event):
 		self.panel_splitter.SetSashPosition( 500 )
 		self.panel_splitter.Unbind( wx.EVT_IDLE )
 
-	def response_splitterOnIdle( self, event ):
+	def response_splitterOnIdle(self, event):
 		self.response_splitter.SetSashPosition( 250 )
 		self.response_splitter.Unbind( wx.EVT_IDLE )
 
