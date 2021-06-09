@@ -12,6 +12,7 @@ from . import cube_proto
 
 from ..cube_aggregate import cube_aggregate_proto
 from ..cube_measure import cube_measure_proto
+from ..cube_dimension import cube_dimension_proto
 
 __version__ = (0, 0, 0, 1)
 

@@ -34,6 +34,18 @@ def validDBPsp(psp, *args, **kwargs):
     return psp_obj.getType() in DB_SOURCE_TYPES
 
 
+def testComponent(spc, *args, **kwargs):
+    """
+    Test component.
+
+    :param spc: Component specification.
+    :return: True/False.
+    """
+    from . import component
+    obj = component.iqCubesOLAPServer(parent=None, resource=spc, context=dict())
+    return obj.test()
+
+
 COMPONENT_TYPE = 'iqCubesOLAPServer'
 
 CUBESOLAPSERVER_SPC = {
@@ -63,6 +75,7 @@ CUBESOLAPSERVER_SPC = {
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': {'linux': 'evince %s' % os.path.join(os.path.dirname(__file__), 'cubes-readthedocs-io-en-latest.pdf')},
     '__content__': ('iqCube', ),
+    '__test__': testComponent,
     '__edit__': {
         'db': {
             'editor': property_editor_id.PASSPORT_EDITOR,

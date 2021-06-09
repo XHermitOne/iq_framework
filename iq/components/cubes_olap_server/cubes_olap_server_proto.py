@@ -63,15 +63,15 @@ from ..virtual_spreadsheet import v_spreadsheet
 __version__ = (0, 0, 0, 1)
 
 DEFAULT_SLICER_EXEC = 'slicer'
-ALTER_SLICER_EXEC = file_func.getRelativePath(os.path.join(file_func.getHomePath(),
-                                                           '.local', 'bin', 'slicer'))
+ALTER_SLICER_EXEC = file_func.getNormalPath(os.path.join(file_func.getHomePath(),
+                                                         '.local', 'bin', 'slicer'))
 
 DEFAULT_INI_FILENAME = 'slicer.ini'
 DEFAULT_MODEL_FILENAME = 'model.json'
 START_COMMAND_FMT = '%s serve %s &'
 
-DEFAULT_OLAP_SERVER_DIRNAME = file_func.getRelativePath(os.path.join(file_func.getProjectProfilePath(),
-                                                                     'OLAP'))
+DEFAULT_OLAP_SERVER_DIRNAME = file_func.getNormalPath(os.path.join(file_func.getProjectProfilePath(),
+                                                                   'OLAP'))
 
 LOG_LEVELS = ('info', 'debug', 'warn', 'error')
 
@@ -134,11 +134,11 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         run_command = self.getRunCommand()
 
         try:
+            log_func.info(u'Run OLAP server command <%s>' % run_command)
             os.system(run_command)
-            log_func.info(u'Exec command <%s>' % run_command)
             return True
         except:
-            log_func.fatal(u'Error exec command <%s>' % run_command)
+            log_func.fatal(u'Error run OLAP server command <%s>' % run_command)
         return False
 
     def stop(self):
@@ -330,6 +330,10 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         """
         if ini_filename is None:
             ini_filename = self.getINIFileName()
+
+        ini_dirname = os.path.dirname(ini_filename)
+        if not os.path.exists(ini_dirname):
+            file_func.createDir(ini_dirname)
 
         ini_content = dict(workspace=dict(),
                            server=dict(),
@@ -528,7 +532,7 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         label = dimension.getLabel()
         if label:
             dimension_content['label'] = label
-        dimension_attributes = dimension.getAttributes()
+        dimension_attributes = dimension.getAdditionalAttributes()
         if dimension_attributes:
             dimension_content['attributes'] = dimension_attributes
         dimension_levels = dimension.getLevels()
@@ -549,7 +553,7 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         :return: A dictionary of the contents of the model corresponding to the dimension level.
         """
         level_content = dict(name=level.getName())
-        level_attributes = level.getAttributes()
+        level_attributes = level.getAdditionalAttributes()
         if level_attributes:
             level_content['attributes'] = level_attributes
         key = level.getKey()

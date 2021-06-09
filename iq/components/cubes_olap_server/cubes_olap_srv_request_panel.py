@@ -63,12 +63,12 @@ class iqCubesOLAPSrvRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesOLAPS
         self._OLAP_server = olap_server
 
         if self._OLAP_server:
-            choices = [cube.description if cube.description else cube.name for cube in self._OLAP_server.getCubes()]
+            choices = [cube.getDescription() if cube.getDescription() else cube.getName() for cube in self._OLAP_server.getCubes()]
             self.cube_choice.Clear()
             self.cube_choice.AppendItems(choices)
             if choices:
-                self.cube_choice.setSelection(0)
-                self.method_choice.setSelection(0)
+                self.cube_choice.SetSelection(0)
+                self.method_choice.SetSelection(0)
                 self.refreshDimensionChoice(0)
 
     def refreshDimensionChoice(self, i_cube):
@@ -82,7 +82,7 @@ class iqCubesOLAPSrvRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesOLAPS
             self.dimension_choice.Clear()
             self.dimension_choice.AppendItems(choices)
             if choices:
-                self.dimension_choice.setSelection(0)
+                self.dimension_choice.SetSelection(0)
 
     def init(self):
         """

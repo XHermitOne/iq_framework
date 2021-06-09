@@ -138,7 +138,7 @@ class iqCubesOLAPSrvTestDialog(cubes_olap_srv_test_dlg_proto.iqCubesOLAPSrvTestD
             request_url = self.request_panel.getRequestURL()
             self.request_panel.request_textCtrl.SetValue(request_url)
 
-            result = self._OLAP_server.get_response(request_url)
+            result = self._OLAP_server.getResponse(request_url)
 
             # self.json_scintilla.SetText(str(result))
             self.json_scintilla.ClearAll()

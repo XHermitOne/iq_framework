@@ -16,6 +16,8 @@ from . import cubes_olap_server_proto
 from ...util import log_func
 from ...util import file_func
 
+from . import cubes_olap_srv_test_dialog
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -37,6 +39,14 @@ class iqCubesOLAPServer(cubes_olap_server_proto.iqCubesOLAPServerProto, object.i
         cubes_olap_server_proto.iqCubesOLAPServerProto.__init__(self)
 
         self.createChildren()
+
+    def test(self):
+        """
+        Object test function.
+
+        :return: True/False.
+        """
+        return cubes_olap_srv_test_dialog.showCubesOLAPServerTestDlg(parent=None, olap_srv=self)
 
     def getDBPsp(self):
         """
@@ -61,7 +71,8 @@ class iqCubesOLAPServer(cubes_olap_server_proto.iqCubesOLAPServerProto, object.i
         """
         The folder where the OLAP server settings files are located.
         """
-        srv_path = self.getAttribute('srv_path')
+        relative_srv_path = self.getAttribute('srv_path')
+        srv_path = file_func.getNormalPath(relative_srv_path)
         if not srv_path:
             srv_path = os.path.join(cubes_olap_server_proto.DEFAULT_OLAP_SERVER_DIRNAME, self.getName())
         if srv_path and not os.path.exists(srv_path):
@@ -79,6 +90,7 @@ class iqCubesOLAPServer(cubes_olap_server_proto.iqCubesOLAPServerProto, object.i
             self._ini_filename = os.path.join(srv_path if srv_path else os.path.join(cubes_olap_server_proto.DEFAULT_OLAP_SERVER_DIRNAME,
                                                                                      self.getName()),
                                               ini_base_filename if ini_base_filename else cubes_olap_server_proto.DEFAULT_INI_FILENAME)
+            log_func.debug(u'INI filename <%s>' % self._ini_filename)
         return self._ini_filename
 
     def getModelFileName(self):
@@ -139,7 +151,8 @@ class iqCubesOLAPServer(cubes_olap_server_proto.iqCubesOLAPServerProto, object.i
         """
         OLAP server startup file.
         """
-        return self.getAttribute('exec')
+        relative_exec_path = self.getAttribute('exec')
+        return file_func.getNormalPath(relative_exec_path)
 
     def getCubes(self):
         """
