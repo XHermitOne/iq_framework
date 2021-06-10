@@ -15,7 +15,7 @@ from ...engine.wx import panel_manager
 from ...engine.wx import toolbar_manager
 from ...engine.wx import treectrl_manager
 
-# from STD.spreadsheet import spreadsheet_view_manager
+from ..virtual_spreadsheet import spreadsheet_view_manager
 
 __version__ = (0, 0, 0, 1)
 
@@ -34,7 +34,7 @@ class iqOLAPQueryBrowserProto(olap_query_browse_panel_proto.iqOLAPQueryBrowsePan
         olap_query_browse_panel_proto.iqOLAPQueryBrowsePanelProto.__init__(self, *args, **kwargs)
 
         # SpreadSheet structure output control manager
-        self._spreadsheet_mngr = spreadsheet_view_manager.icSpreadSheetViewManager(grid=self.spreadsheet_grid)
+        self._spreadsheet_mngr = spreadsheet_view_manager.iqSpreadSheetViewManager(grid=self.spreadsheet_grid)
 
         # Current pivot table as pandas.DataFrame object
         self._pivot_dataframe = None

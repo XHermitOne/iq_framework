@@ -15,6 +15,7 @@ from . import spc
 from ...util import log_func
 from ...util import lang_func
 from ...util import exec_func
+from ...util import file_func
 
 from . import olap_query_tree_ctrl
 # from ..wx_filterchoicectrl import filter_choicectrl
@@ -54,6 +55,9 @@ class iqWxOLAPQueryTreeCtrl(olap_query_tree_ctrl.iqOLAPQueryTreeCtrlProto,
                                                                name=self.getName())
 
         self._save_filename = self.getSaveFilename()
+        log_func.debug(u'Set save filename <%s> in <%s : %s>' % (self._save_filename,
+                                                                 self.getName(),
+                                                                 self.getType()))
 
         # After defining the environment and the name of the filter storage file,
         # you can load the filters
@@ -66,7 +70,10 @@ class iqWxOLAPQueryTreeCtrl(olap_query_tree_ctrl.iqOLAPQueryTreeCtrlProto,
         """
         The name of the storage file for the contents of the query tree.
         """
-        return self.getAttribute('save_filename')
+        save_filename = self.getAttribute('save_filename')
+        if save_filename:
+            save_filename = file_func.getNormalPath(save_filename)
+        return save_filename
 
     def getOLAPServerPsp(self):
         """

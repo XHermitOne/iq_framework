@@ -59,8 +59,12 @@ def getFileNames(path):
     :param path: Path.
     :return: Directory name list.
     """
-    return [dirname for dirname in os.listdir(path) if os.path.isfile(os.path.join(path,
-                                                                                   dirname)) and dirname not in HIDDEN_DIRNAMES]
+    try:
+        return [dirname for dirname in os.listdir(path) if os.path.isfile(os.path.join(path,
+                                                                                       dirname)) and dirname not in HIDDEN_DIRNAMES]
+    except:
+        log_func.fatal(u'Error get filenames in <%s>' % path)
+    return list()
 
 
 def getFilePaths(path):

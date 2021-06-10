@@ -100,18 +100,6 @@ class iqOLAPQueryTreeCtrlProto(wx.TreeCtrl,
         self.saveRequests()
         event.Skip()
 
-    # def getUUID(self):
-    #     if not self._uuid:
-    #         self._uuid = self._genUUID()
-    #     return self._uuid
-
-    # def _genUUID(self):
-    #     """
-    #     Генерация UUID.
-    #     :return: UUID.
-    #     """
-    #     return str(uuid.uuid4())
-
     def getCurItemRequest(self):
         """
         Get current query.
@@ -547,6 +535,7 @@ class iqOLAPQueryTreeCtrlProto(wx.TreeCtrl,
             save_filename = os.path.normpath(save_filename)
         else:
             widget_guid = self.getGUID()
+            print(widget_guid, type(widget_guid))
             save_filename = os.path.join(file_func.getProjectProfilePath(),
                                          widget_guid + '.dat')
 

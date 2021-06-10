@@ -192,7 +192,7 @@
                                             <property name="center_pane">0</property>
                                             <property name="class"></property>
                                             <property name="close_button">1</property>
-                                            <property name="construction">self.query_treectrl = wx_olap_query_treectrl.COMPONENT(parent=self.tree_panel, id=wx.NewId(), component={&apos;save_filename&apos;: &apos;~/.iq/tree_olap_request.save&apos;, &apos;on_change&apos;: &apos;self.GetParent().GetParent().GetParent().refreshPivotTable()&apos;})</property>
+                                            <property name="construction">self.query_treectrl = wx_olap_query_treectrl.COMPONENT(parent=self.tree_panel, id=wx.NewId(), resource={&apos;save_filename&apos;: &apos;~/.iq/tree_olap_request.save&apos;, &apos;on_change&apos;: &apos;self.GetParent().GetParent().GetParent().refreshPivotTable()&apos;})</property>
                                             <property name="context_help"></property>
                                             <property name="context_menu">1</property>
                                             <property name="declaration"></property>

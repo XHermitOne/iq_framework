@@ -5,7 +5,8 @@
 Data model navigator manager.
 """
 
-import copy
+import sqlalchemy.sql.functions
+
 from ...util import log_func
 
 from ..data_model import data_object
@@ -722,3 +723,47 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         else:
             log_func.warning(u'Not define model object for model navigator <%s>' % self.getName())
         return env
+
+    def getMinColumnValue(self, column_name):
+        """
+        Get minimum column value.
+
+        :param column_name: Column name.
+        :return: Minimum value. If table is empty return None.
+        """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        try:
+            min_value = transaction.query(sqlalchemy.sql.functions.min(getattr(model, column_name))).scalar()
+            if transaction:
+                transaction.commit()
+            self.stopTransaction(transaction)
+            return min_value
+        except:
+            if transaction:
+                transaction.rollback()
+            log_func.fatal(u'Error get minimum column <%s> value ' % column_name)
+        self.stopTransaction(transaction)
+        return None
+
+    def getMaxColumnValue(self, column_name):
+        """
+        Get maximum column value.
+
+        :param column_name: Column name.
+        :return: Minimum value. If table is empty return None.
+        """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        try:
+            max_value = transaction.query(sqlalchemy.sql.functions.max(getattr(model, column_name))).scalar()
+            if transaction:
+                transaction.commit()
+            self.stopTransaction(transaction)
+            return max_value
+        except:
+            if transaction:
+                transaction.rollback()
+            log_func.fatal(u'Error get maximum column <%s> value ' % column_name)
+        self.stopTransaction(transaction)
+        return None
