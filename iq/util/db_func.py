@@ -226,7 +226,8 @@ def validDBConnectSQLAlchemy(connection_str=None):
         return False
 
     try:
-        engine = sqlalchemy.create_engine(connection_str, echo=False)
+        engine = sqlalchemy.create_engine(connection_str, echo=False,
+                                          connect_args={'application_name': 'Valid DB connect'})
     except:
         return False
 
@@ -235,14 +236,16 @@ def validDBConnectSQLAlchemy(connection_str=None):
         connection = None
         try:
             connection = engine.connect()
-            result = connection.execute('SELECT 1').fetchall()
+            result = connection.execute('SELECT 1').scalar()
             if result:
                 is_connect = True
-            connection.close()
         except:
-            if connection:
-                connection.close()
             is_connect = False
+
+        if connection:
+            connection.close()
+
+    engine.dispose()
     return is_connect
 
 
@@ -257,7 +260,8 @@ def getNotValidDBConnectSQLAlchemyErrTxt(connection_str=None):
         return u'Not define connection string'
 
     try:
-        engine = sqlalchemy.create_engine(connection_str, echo=False)
+        engine = sqlalchemy.create_engine(connection_str, echo=False,
+                                          connect_args={'application_name': 'Valid DB connect'})
     except:
         return u'Error connect with database server\nDatabase <%s>\n%s' % (connection_str, traceback.format_exc())
 
@@ -267,16 +271,16 @@ def getNotValidDBConnectSQLAlchemyErrTxt(connection_str=None):
         try:
             connection = engine.connect()
 
-            result = connection.execute('SELECT 1').fetchall()
+            result = connection.execute('SELECT 1').scalar()
             if not result:
                 error_txt = u'Not valid test query result\nDatabase <%s>' % connection_str
-            connection.close()
         except:
-            if connection:
-                connection.close()
             error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (connection_str, traceback.format_exc())
-        connection.close()
+
+        if connection is not None:
+            connection.close()
     else:
         error_txt = u'Not define connection object\nDatabase <%s>' % connection_str
 
+    engine.dispose()
     return error_txt
