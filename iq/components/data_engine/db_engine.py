@@ -8,6 +8,7 @@ Data engine manager.
 import decimal
 import sqlalchemy
 import sqlalchemy.engine.url
+import sqlalchemy.dialects.postgresql.base
 
 from ...util import log_func
 
@@ -28,6 +29,8 @@ class iqDBEngineManager(object):
         Constructor.
         """
         self._db_url = None
+
+        self._engine = None
 
     def getDialect(self):
         """
@@ -146,14 +149,61 @@ class iqDBEngineManager(object):
 
         :param db_url: Database URL.
             If None then generate.
-        :param args:
-        :param kwargs:
         :return:
         """
         if db_url is None:
             db_url = self.getDBUrl()
 
-        return sqlalchemy.create_engine(db_url, *args, **kwargs)
+        # Set DB engine application name for PostgreSQL
+        try:
+            dialect = self.getDialect()
+            if dialect == sqlalchemy.dialects.postgresql.base.PGDialect.name:
+                db_application_name = self.getName()
+                connect_args_dict = dict(connect_args={'application_name': db_application_name})
+                if 'connect_args' not in kwargs:
+                    kwargs.update(connect_args_dict)
+        except:
+            log_func.fatal(u'Error set DB engine application name in <%s>' % self.__class__.__name__)
+
+        engine = sqlalchemy.create_engine(db_url, *args, **kwargs)
+        log_func.info(u'Create sqlalchemy DB engine <%s>' % db_url)
+        return engine
+
+    def getEngine(self, *args, **kwargs):
+        """
+        Get sqlalchemy DB engine object.
+        """
+        if self._engine is None:
+            self._engine = self.create(*args, **kwargs)
+        return self._engine
+
+    def close(self, engine=None):
+        """
+        Close sqlalchemy DB engine object.
+
+        :param engine: Sqlalchemy DB engine object.
+        :return: True/False.
+        """
+        if engine is None:
+            try:
+                if self._engine:
+                    self._engine.dispose()
+                    log_func.info(u'Close sqlalchemy DB engine <%s>' % self._engine.url)
+                    self._engine = None
+                    return True
+            except:
+                log_func.fatal(u'Error close sqlalchemy DB engine <%s>' % self._engine.url)
+            return False
+
+        try:
+            if engine:
+                engine.dispose()
+                log_func.info(u'Close sqlalchemy DB engine <%s>' % engine.url)
+                engine = None
+                return True
+        except:
+            log_func.fatal(u'Error close sqlalchemy DB engine <%s>' % engine.url)
+        return False
 
     def checkConnection(self):
         """
@@ -168,15 +218,16 @@ class iqDBEngineManager(object):
             connection = None
             try:
                 connection = engine.connect()
-                result = connection.execute('SELECT 1').fetchall()
+                result = connection.execute('SELECT 1').scalar()
                 if result:
                     is_connect = True
-                connection.close()
             except:
                 log_func.fatal(u'Error check connection <%s>' % self.getDBUrl())
-                if connection:
-                    connection.close()
                 is_connect = False
+
+            if connection:
+                connection.close()
+
         return is_connect
 
     def executeSQL(self, sql_query):

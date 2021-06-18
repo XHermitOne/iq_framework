@@ -128,7 +128,7 @@ class iqOLAPQueryBrowserProto(olap_query_browse_panel_proto.iqOLAPQueryBrowsePan
             item_data = self.getTreeCtrlSelectedItemData(treectrl=self.query_treectrl)
             request = item_data.get('__request__', dict())
         if request is None:
-            log_func.warning(u'OLAP server query not defined')
+            log_func.warning(u'Refresh pivot table. OLAP server request not defined')
             return False
 
         olap_server = self.query_treectrl.getOLAPServer()
@@ -140,7 +140,7 @@ class iqOLAPQueryBrowserProto(olap_query_browse_panel_proto.iqOLAPQueryBrowsePan
         if request_url:
             log_func.debug(u'OLAP server query. URL <%s>' % request_url)
         else:
-            log_func.warning(u'OLAP server query not defined')
+            log_func.warning(u'Refresh pivot table. OLAP server request URL not defined')
             return False
 
         if olap_server:

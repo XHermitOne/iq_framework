@@ -21,7 +21,7 @@ from ...engine.wx import treectrl_manager
 from ...engine import stored_ctrl_manager
 
 from ..wx_filtertreectrl import tree_item_indicator
-# from analitic.olap.cubes import edit_cubes_pivot_table_request_dlg
+from . import edit_cubes_pivot_table_request_dlg
 
 __version__ = (0, 0, 0, 1)
 
@@ -432,9 +432,9 @@ class iqOLAPQueryTreeCtrlProto(wx.TreeCtrl,
                 cur_item = self.GetSelection()
             item_data = self.getTreeCtrlItemData(treectrl=self, item=cur_item)
             cur_request = item_data.get('__request__', None)
-            cur_request = edit_cubes_pivot_table_request_dlg.edit_cubes_pivot_tab_request_dlg(parent=self,
-                                                                                              olap_srv=self.getOLAPServer(),
-                                                                                              olap_srv_request=cur_request)
+            cur_request = edit_cubes_pivot_table_request_dlg.editCubesPivotTableRequestDlg(parent=self,
+                                                                                           olap_srv=self.getOLAPServer(),
+                                                                                           olap_srv_request=cur_request)
             if cur_request:
                 item_data['__request__'] = cur_request
                 return True
