@@ -15,6 +15,8 @@ from . import cubes_olap_server_proto
 
 from .. import data_engine
 
+from ...util import file_func
+
 __version__ = (0, 0, 0, 1)
 
 DB_SOURCE_TYPES = (data_engine.COMPONENT_TYPE,
@@ -59,8 +61,8 @@ CUBESOLAPSERVER_SPC = {
     'db': None,
     'ini_filename': cubes_olap_server_proto.DEFAULT_INI_FILENAME,
     'model_filename': cubes_olap_server_proto.DEFAULT_MODEL_FILENAME,
-    'exec': cubes_olap_server_proto.ALTER_SLICER_EXEC,
-    'srv_path': cubes_olap_server_proto.DEFAULT_OLAP_SERVER_DIRNAME,
+    'exec': file_func.getRelativePath(cubes_olap_server_proto.ALTER_SLICER_EXEC),
+    'srv_path': file_func.getRelativePath(cubes_olap_server_proto.DEFAULT_OLAP_SERVER_DIRNAME),
 
     'log_filename': None,
     'log_level': cubes_olap_server_proto.LOG_LEVELS[0],
@@ -87,7 +89,10 @@ CUBESOLAPSERVER_SPC = {
         'srv_path': property_editor_id.DIR_EDITOR,
 
         'log_filename': property_editor_id.FILE_EDITOR,
-        'log_level': property_editor_id.STRINGLIST_EDITOR,
+        'log_level': {
+            'editor': property_editor_id.CHOICE_EDITOR,
+            'choices': cubes_olap_server_proto.LOG_LEVELS,
+        },
         'host': property_editor_id.STRING_EDITOR,
         'port': property_editor_id.INTEGER_EDITOR,
         'reload': property_editor_id.CHECKBOX_EDITOR,

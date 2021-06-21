@@ -47,6 +47,7 @@ Options:
 """
 
 import os.path
+import subprocess
 
 from . import olap_server_interface
 from . import pivot_dataframe_manager
@@ -57,6 +58,7 @@ from ...util import ini_func
 from ...util import sys_func
 from ...util import str_func
 from ...util import json_func
+from ...util import global_func
 
 from ..virtual_spreadsheet import v_spreadsheet
 
@@ -68,7 +70,7 @@ ALTER_SLICER_EXEC = file_func.getNormalPath(os.path.join(file_func.getHomePath()
 
 DEFAULT_INI_FILENAME = 'slicer.ini'
 DEFAULT_MODEL_FILENAME = 'model.json'
-START_COMMAND_FMT = '%s serve %s &'
+START_COMMAND_FMT = '%s serve %s'
 
 DEFAULT_OLAP_SERVER_DIRNAME = file_func.getNormalPath(os.path.join(file_func.getProjectProfilePath(),
                                                                    'OLAP'))
@@ -100,6 +102,9 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         # OLAP server cube definition JSON filename
         self._model_filename = None
 
+        # OLAP server run sub process object
+        self._server_subprocess = None
+
     def getExec(self):
         """
         OLAP server startup file.
@@ -112,6 +117,9 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         """
         exec_file = self.getExec()
         ini_filename = self.getINIFileName()
+
+        if global_func.isEditorMode():
+            exec_file = exec_file + ' --debug'
 
         command = START_COMMAND_FMT % (exec_file, ini_filename)
         return command
@@ -135,7 +143,11 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
 
         try:
             log_func.info(u'Run OLAP server command <%s>' % run_command)
-            os.system(run_command)
+
+            if self._server_subprocess is not None:
+                self.stop()
+
+            self._server_subprocess = subprocess.Popen(run_command, shell=True)
             return True
         except:
             log_func.fatal(u'Error run OLAP server command <%s>' % run_command)
@@ -147,7 +159,12 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
 
         :return: True/False.
         """
-        log_func.warning(u'Not define stop method OLAP server in <%s>' % self.__class__.__name__)
+        if self._server_subprocess is not None:
+            self._server_subprocess.terminate()
+            self._server_subprocess.kill()
+            log_func.info(u'Stop OLAP server <%s>' % self.getName())
+            self._server_subprocess = None
+            return True
         return False
 
     def isRunning(self):
@@ -246,12 +263,6 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         url = self._getRequestURL(request_url) if not request_url.startswith(FULL_URL_PREFIX) else request_url
         log_func.debug(u'Specified JSON by URL <%s>' % url)
         return json_func.getJSONAsDictByURL(url)
-
-    def getName(self):
-        """
-        Get object name.
-        """
-        return u''
 
     def getDBPsp(self):
         """

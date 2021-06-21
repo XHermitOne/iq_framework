@@ -87,13 +87,13 @@ class iqCubeDimension(object.iqObject, cube_dimension_proto.iqCubeDimensionProto
         """
         List of dimension level objects.
         """
-        return [child for child in self.getChildren() if isinstance(child, cube_dimension_level_proto.iqCubeDimensionLevelProto)]
+        return [child for child in self.getChildren() if isinstance(child, cube_dimension_level_proto.iqCubeDimensionLevelProto) and child.isActivate()]
 
     def getHierarchies(self):
         """
         List of hierarchies of dimension levels.
         """
-        return [child for child in self.getChildren() if isinstance(child, cube_dimension_hierarchy_proto.iqCubeDimensionHierarchyProto)]
+        return [child for child in self.getChildren() if isinstance(child, cube_dimension_hierarchy_proto.iqCubeDimensionHierarchyProto) and child.isActivate()]
 
 
 COMPONENT = iqCubeDimension

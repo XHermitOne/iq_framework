@@ -49,19 +49,19 @@ class iqCube(object.iqObject, cube_proto.iqCubeProto):
         """
         Get dimension object list.
         """
-        return [child for child in self.getChildren() if isinstance(child, cube_dimension_proto.iqCubeDimensionProto)]
+        return [child for child in self.getChildren() if isinstance(child, cube_dimension_proto.iqCubeDimensionProto) and child.isActivate()]
 
     def getMeasures(self):
         """
         Get measure/fact object list.
         """
-        return [child for child in self.getChildren() if isinstance(child, cube_measure_proto.iqCubeMeasureProto)]
+        return [child for child in self.getChildren() if isinstance(child, cube_measure_proto.iqCubeMeasureProto) and child.isActivate()]
 
     def getAggregates(self):
         """
         Get aggregate function object list.
         """
-        return [child for child in self.getChildren() if isinstance(child, cube_aggregate_proto.iqCubeAggregateProto)]
+        return [child for child in self.getChildren() if isinstance(child, cube_aggregate_proto.iqCubeAggregateProto) and child.isActivate()]
 
     def getLabel(self):
         """

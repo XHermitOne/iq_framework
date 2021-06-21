@@ -204,5 +204,8 @@ def showCubesOLAPServerTestDlg(parent=None, olap_srv=None):
 
         return True
     except:
+        # Stop OLAP server
+        olap_srv.stop()
+
         log_func.fatal(u'Error show Cubes OLAP server test dialog')
     return False

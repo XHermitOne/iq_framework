@@ -245,9 +245,20 @@ class iqDBEngineManager(object):
         connection = None
         try:
             connection = engine.connect()
-            result = connection.execute(sql_query)
-            records = result.fetchall()
-            recordset = [dict([(name, float(value) if isinstance(value, decimal.Decimal) else value) for name, value in dict(rec).items()]) for rec in records]
+
+            recordset = list()
+            transaction = connection.begin()
+            try:
+                result = connection.execute(sql_query)
+                if result and result.returns_rows:
+                    records = result.fetchall()
+                    recordset = [dict([(name, float(value) if isinstance(value, decimal.Decimal) else value) for name, value in dict(rec).items()]) for rec in records]
+                else:
+                    log_func.info(u'Query <%s> not return recordset' % sql_query)
+                transaction.commit()
+            except:
+                transaction.rollback()
+                log_func.fatal(u'Error execute SQL query <%s>' % sql_query)
             connection.close()
             return recordset
         except:
