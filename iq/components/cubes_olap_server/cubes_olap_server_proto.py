@@ -44,6 +44,44 @@ Options:
      The dimension attribute is named __within_split__.
      Refer to the backend you are using for more information,
      whether this feature is supported or not.
+
+Problems (version 1.1):
+
+*********************************************************************************************
+$ slicer model validate model.cubesmodel
+Reading model model.cubesmodel
+Validating model...
+Traceback (most recent call last):
+  File "/usr/local/bin/slicer", line 11, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python2.7/site-packages/cubes/slicer/commands.py", line 587, in main
+    cli(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 722, in __call__
+    return self.main(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 697, in main
+    rv = self.invoke(ctx)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 1066, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 1066, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 895, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/usr/local/lib/python2.7/site-packages/click/core.py", line 535, in invoke
+    return callback(*args, **kwargs)
+  File "/usr/local/lib/python2.7/site-packages/cubes/slicer/commands.py", line 166, in validate
+    result = cubes.providers.validate_model(model)
+AttributeError: 'module' object has no attribute 'validate_model'
+*********************************************************************************************
+
+You can test a simple fix by editing the file cubes/slicer/commands.py line 24 and 166:
+
+*********************************************************************************************
+- from ..metadata import read_model_metadata, write_model_metadata_bundle
++ from ..metadata import read_model_metadata, write_model_metadata_bundle, validate_model
+
+-      result = cubes.providers.validate_model(model)
++      result = validate_model(model)
+*********************************************************************************************
 """
 
 import os.path
@@ -71,6 +109,7 @@ ALTER_SLICER_EXEC = file_func.getNormalPath(os.path.join(file_func.getHomePath()
 DEFAULT_INI_FILENAME = 'slicer.ini'
 DEFAULT_MODEL_FILENAME = 'model.json'
 START_COMMAND_FMT = '%s serve %s'
+VALIDATE_COMMAND_FMT = '%s model validate %s'
 
 DEFAULT_OLAP_SERVER_DIRNAME = file_func.getNormalPath(os.path.join(file_func.getProjectProfilePath(),
                                                                    'OLAP'))
@@ -124,6 +163,37 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         command = START_COMMAND_FMT % (exec_file, ini_filename)
         return command
 
+    def validate(self):
+        """
+        Validates logical model for OLAP cubes.
+
+        :return: True/False.
+        """
+        exec_file = self.getExec()
+        json_filename = self.getModelFileName()
+
+        validate_command = VALIDATE_COMMAND_FMT % (exec_file, json_filename)
+        log_func.info(u'Validate logical model for OLAP cubes <%s>' % validate_command)
+        validate_subprocess = subprocess.Popen(validate_command, shell=True, stdout=subprocess.PIPE)
+        lines = [line.decode(global_func.getDefaultEncoding()).strip() for line in validate_subprocess.stdout]
+        result = 'model can be used' in lines[-1] if lines else True
+
+        if lines:
+            for line in lines:
+                if result:
+                    log_func.info(line)
+                else:
+                    log_func.warning(line)
+
+        validate_subprocess.terminate()
+        validate_subprocess.kill()
+
+        if result:
+            log_func.info(u'Validate result ... %s' % result)
+        else:
+            log_func.warning(u'Validate result ... %s' % result)
+        return result
+
     def run(self):
         """
         Run OLAP server.
@@ -142,6 +212,7 @@ class iqCubesOLAPServerProto(olap_server_interface.iqOLAPServerInterface,
         run_command = self.getRunCommand()
 
         try:
+            self.validate()
             log_func.info(u'Run OLAP server command <%s>' % run_command)
 
             if self._server_subprocess is not None:

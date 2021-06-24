@@ -36,7 +36,7 @@ class iqCubeDimensionHierarchy(object.iqObject,
         List of field names of additional attributes.
         """
         level_names = self.getAttribute('levels')
-        return level_names if level_names else list()
+        return [word.strip('"') for word in level_names.split('" "')] if level_names else list()
 
 
 COMPONENT = iqCubeDimensionHierarchy
