@@ -566,11 +566,11 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         """
         Set ticks of all list control items.
 
-        :param listctrl: wx.ListCtrl object.
+        :param listctrl: wx.ListCtrl/wx.CheckListBox object.
         :param check: On/Off.
         :return: True/False.
         """
-        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, (wx.ListCtrl, wx.CheckListBox)), u'ListCtrl/CheckListBox manager type error'
 
         return self.checkListCtrlItems(listctrl, check=check)
 
@@ -578,39 +578,50 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         """
         Set ticks of all list control items.
 
-        :param listctrl: wx.ListCtrl object.
+        :param listctrl: wx.ListCtrl/wx.CheckListBox object.
         :param check: On/Off.
         :param begin_idx: The index of the first item to be processed.
             If not defined, then the very first element is taken.
         :param end_idx: The index of the last item to be processed.
         :return: True/False.
         """
-        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, (wx.ListCtrl, wx.CheckListBox)), u'ListCtrl/CheckListBox manager type error'
 
         if begin_idx < 0:
             begin_idx = 0
         if end_idx < 0:
-            end_idx = listctrl.GetItemCount() - 1
+            if isinstance(listctrl, wx.ListCtrl):
+                end_idx = listctrl.GetItemCount() - 1
+            elif isinstance(listctrl, wx.CheckListBox):
+                end_idx = listctrl.GetCount() - 1
 
         for i in range(begin_idx, end_idx + 1):
-            listctrl.CheckItem(i, check=check)
+            if isinstance(listctrl, wx.ListCtrl):
+                listctrl.CheckItem(i, check=check)
+            elif isinstance(listctrl, wx.CheckListBox):
+                listctrl.Check(i, check=check)
+
         return True
 
     def checkListCtrlItem(self, listctrl, check=True, item=-1):
         """
         Set tick list control item.
 
-        :param listctrl: wx.ListCtrl object.
+        :param listctrl: wx.ListCtrl/wx.CheckListBox object.
         :param check: On/Off.
         :param item: Row index.
             If not defined, then the currently selected item is taken.
         :return: True/False.
         """
-        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, (wx.ListCtrl, wx.CheckListBox)), u'ListCtrl/CheckListBox manager type error'
 
         if item < 0:
             item = self.getListCtrlSelectedRowIdx(listctrl)
-        listctrl.CheckItem(item, check=check)
+        if isinstance(listctrl, wx.ListCtrl):
+            listctrl.CheckItem(item, check=check)
+        elif isinstance(listctrl, wx.CheckListBox):
+            listctrl.Check(item, check=check)
+
         return True
 
     def checkListCtrlItemsExpression(self, listctrl=None, rows=(),
@@ -650,16 +661,20 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         """
         Get the list of indices of the marked list control items.
 
-        :param listctrl: wx.ListCtrl object.
+        :param listctrl: wx.ListCtrl/wx.CheckListBox object.
         :param check_selected: Treat selected list item as marked?
             If yes, then the selected item is considered marked only when
             no other item is marked.
         :return: A list of indices of tagged list controls or None if error.
         """
-        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+        assert issubclass(listctrl.__class__, (wx.ListCtrl, wx.CheckListBox)), u'ListCtrl/CheckListBox manager type error'
 
         try:
-            indexes = [i for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
+            indexes = list()
+            if isinstance(listctrl, wx.ListCtrl):
+                indexes = [i for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
+            elif isinstance(listctrl, wx.CheckListBox):
+                indexes = [i for i in range(listctrl.GetCount()) if listctrl.IsChecked(i)]
 
             if not indexes and check_selected:
                 selected = self.getListCtrlSelectedRowIdx(listctrl)

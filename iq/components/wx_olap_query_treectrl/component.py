@@ -79,7 +79,9 @@ class iqWxOLAPQueryTreeCtrl(olap_query_tree_ctrl.iqOLAPQueryTreeCtrlProto,
         """
         OLAP server object passport.
         """
-        return self.getAttribute('olap_server')
+        psp = self.getAttribute('olap_server')
+        log_func.debug(u'%s. OLAP server passport: %s' % (self.__class__.__name__, psp))
+        return psp
 
     def getOLAPServer(self):
         """

@@ -40,7 +40,7 @@ class iqEditCubesPivotTabRequestDialog(edit_cubes_olap_srv_request_dlg_proto.iqE
         self._OLAP_server = olap_server
 
         if self._OLAP_server:
-            self.request_panel.setOLAPServer(self._OLAP_server)
+            self.request_panel.setOLAPServer(self._OLAP_server, refresh=True)
 
     def getRequest(self):
         """

@@ -9,6 +9,8 @@ from . import spc
 
 from .. import wx_panel
 
+from ...util import log_func
+
 from . import olap_query_browser
 
 __version__ = (0, 0, 0, 1)
@@ -30,6 +32,24 @@ class iqWxOLAPQueryBrowser(olap_query_browser.iqOLAPQueryBrowserProto, wx_panel.
         wx_panel.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         olap_query_browser.iqOLAPQueryBrowserProto.__init__(self, parent=parent, *args, **kwargs)
+
+    def getOLAPServerPsp(self):
+        """
+        OLAP server object passport.
+        """
+        psp = self.getAttribute('olap_server')
+        log_func.debug(u'%s. OLAP server passport: %s' % (self.__class__.__name__, psp))
+        return psp
+
+    def getOLAPServer(self):
+        """
+        Get OLAP server object.
+        """
+        if self._OLAP_server is None:
+            olap_srv_psp = self.getOLAPServerPsp()
+            kernel = self.getKernel()
+            self._OLAP_server = kernel.createByPsp(psp=olap_srv_psp)
+        return self._OLAP_server
 
 
 COMPONENT = iqWxOLAPQueryBrowser

@@ -290,6 +290,8 @@ class iqCubesOLAPSrvRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesOLAPS
                 self.cube_choice.setSelection(i_cube)
             except ValueError:
                 log_func.error(u'Cube <%s> not found in %s' % (cube_name, str(cube_names)))
+        else:
+            log_func.warning(u'%s. Not define cube name' % self.__class__.__name__)
 
         method_name = request.get('method', None)
         if method_name:
@@ -299,6 +301,8 @@ class iqCubesOLAPSrvRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesOLAPS
                 log_func.error(u'Method <%s> not found in %s' % (method_name, str(OLAP_METHODS)))
                 i_method = 0
             self.method_choice.setSelection(i_method)
+        else:
+            log_func.warning(u'%s. Not define method name' % self.__class__.__name__)
 
         dimension_name = request.get('dimension', None)
         if dimension_name and cube:
@@ -310,6 +314,8 @@ class iqCubesOLAPSrvRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesOLAPS
                 log_func.error(u'Dimension <%s> not found in %s' % (dimension_name, str(dimension_names)))
                 i_dimension = 0
             self.dimension_choice.setSelection(i_dimension)
+        else:
+            log_func.warning(u'%s. Not define dimension name' % self.__class__.__name__)
 
         self.cut_checkBox.SetValue('cut' in request)
         self.cut_textCtrl.Enable('cut' in request)

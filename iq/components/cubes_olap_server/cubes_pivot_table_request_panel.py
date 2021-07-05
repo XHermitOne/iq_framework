@@ -62,7 +62,7 @@ class iqCubesPivotTabRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesPivo
             self.cube_choice.Clear()
             self.cube_choice.AppendItems(choices)
             if choices:
-                self.cube_choice.setSelection(i_cube)
+                self.cube_choice.SetSelection(i_cube)
                 self.refreshDimensionChoice(i_cube)
                 self.refreshAggregateChoice(i_cube)
 
@@ -78,15 +78,15 @@ class iqCubesPivotTabRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesPivo
 
             self.row_dimension_choice.Clear()
             self.row_dimension_choice.AppendItems(choices[1:])
-            self.row_dimension_choice.setSelection(0)
+            self.row_dimension_choice.SetSelection(0)
 
             self.col_dimension_choice.Clear()
             self.col_dimension_choice.AppendItems(choices)
-            self.col_dimension_choice.setSelection(0)
+            self.col_dimension_choice.SetSelection(0)
 
             self.cut_dimension_choice.Clear()
             self.cut_dimension_choice.AppendItems(choices)
-            self.cut_dimension_choice.setSelection(0)
+            self.cut_dimension_choice.SetSelection(0)
 
     def refreshAggregateChoice(self, i_cube):
         """
@@ -231,41 +231,41 @@ class iqCubesPivotTabRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesPivo
 
         if row_drilldown_dimension:
             i_dimension = [dimension.getName() for dimension in cube.getDimensions()].index(row_drilldown_dimension)
-            self.row_dimension_choice.setSelection(i_dimension)
+            self.row_dimension_choice.SetSelection(i_dimension)
             if row_drilldown_level:
                 dimension = cube.getDimensions()[i_dimension]
                 choices = [level.getLabel() for level in dimension.getLevels()]
                 self.row_level_choice.SetItems([u''] + choices)
                 level_names = [level.getName() for level in dimension.getLevels()]
                 i_level = level_names.index(row_drilldown_level)
-                self.row_level_choice.setSelection(i_level + 1)
+                self.row_level_choice.SetSelection(i_level + 1)
             else:
-                self.row_dimension_choice.setSelection(0)
+                self.row_dimension_choice.SetSelection(0)
                 self.row_level_choice.SetItems([u''])
-                self.row_level_choice.setSelection(0)
+                self.row_level_choice.SetSelection(0)
         else:
-            self.row_dimension_choice.setSelection(0)
+            self.row_dimension_choice.SetSelection(0)
             self.row_level_choice.SetItems([u''])
-            self.row_level_choice.setSelection(0)
+            self.row_level_choice.SetSelection(0)
 
         if col_drilldown_dimension:
             i_dimension = [dimension.getName() for dimension in cube.getDimensions()].index(col_drilldown_dimension)
-            self.col_dimension_choice.setSelection(i_dimension + 1)
+            self.col_dimension_choice.SetSelection(i_dimension + 1)
             if col_drilldown_level:
                 dimension = cube.getDimensions()[i_dimension]
                 choices = [level.getLabel() for level in dimension.getLevels()]
                 self.col_level_choice.SetItems([u''] + choices)
                 level_names = [level.getName() for level in dimension.getLevels()]
                 i_level = level_names.index(col_drilldown_level)
-                self.col_level_choice.setSelection(i_level + 1)
+                self.col_level_choice.SetSelection(i_level + 1)
             else:
-                self.col_dimension_choice.setSelection(0)
+                self.col_dimension_choice.SetSelection(0)
                 self.col_level_choice.SetItems([u''])
-                self.col_level_choice.setSelection(0)
+                self.col_level_choice.SetSelection(0)
         else:
-            self.col_dimension_choice.setSelection(0)
+            self.col_dimension_choice.SetSelection(0)
             self.col_level_choice.SetItems([u''])
-            self.col_level_choice.setSelection(0)
+            self.col_level_choice.SetSelection(0)
 
         # Aggregates
         aggregates = request.get('aggregates', u'')
@@ -389,7 +389,7 @@ class iqCubesPivotTabRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesPivo
 
             self.row_level_choice.Clear()
             self.row_level_choice.AppendItems(choices)
-            self.row_level_choice.setSelection(0)
+            self.row_level_choice.SetSelection(0)
         else:
             self.row_level_choice.Clear()
 
@@ -408,7 +408,7 @@ class iqCubesPivotTabRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesPivo
 
             self.col_level_choice.Clear()
             self.col_level_choice.AppendItems(choices)
-            self.col_level_choice.setSelection(0)
+            self.col_level_choice.SetSelection(0)
         else:
             self.col_level_choice.Clear()
 
@@ -434,7 +434,7 @@ class iqCubesPivotTabRequestPanel(cubes_olap_srv_request_panel_proto.iqCubesPivo
                 self.appendListCtrlRow(listctrl=self.cut_listCtrl, row=row)
 
                 # After adding, clear the controls
-                self.cut_dimension_choice.setSelection(0)
+                self.cut_dimension_choice.SetSelection(0)
                 self.cut_value_textCtrl.SetValue(u'')
 
         event.Skip()

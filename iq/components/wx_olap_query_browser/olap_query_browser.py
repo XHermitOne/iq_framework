@@ -41,6 +41,26 @@ class iqOLAPQueryBrowserProto(olap_query_browse_panel_proto.iqOLAPQueryBrowsePan
         # Current OLAP server data
         self._json_response = None
 
+        # OLAP server
+        self._OLAP_server = None
+
+        self.init()
+
+    def getOLAPServer(self):
+        """
+        Get OLAP server object.
+        """
+        # log_func.warning(u'%s. Get OLAP server' % self.__class__.__name__)
+        return self._OLAP_server
+
+    def setOLAPServer(self, olap_server):
+        """
+        Set OLAP server.
+
+        :param olap_server: OLAP server object.
+        """
+        self._OLAP_server = olap_server
+
     def init(self):
         """
         Initialization.
@@ -61,7 +81,9 @@ class iqOLAPQueryBrowserProto(olap_query_browse_panel_proto.iqOLAPQueryBrowsePan
         """
         Init controls.
         """
-        pass
+        olap_server = self.getOLAPServer()
+        log_func.debug(u'OLAP server <%s>' % (olap_server.getPassport() if olap_server else olap_server))
+        self.query_treectrl.setOLAPServer(olap_server=olap_server)
 
     def onCollapseToolClicked(self, event):
         """
@@ -144,7 +166,7 @@ class iqOLAPQueryBrowserProto(olap_query_browse_panel_proto.iqOLAPQueryBrowsePan
             return False
 
         if olap_server:
-            self._json_response = olap_server.get_response(request_url)
+            self._json_response = olap_server.getResponse(request_url)
             if self._json_response:
                 if 'drilldown' in request and '|' in request['drilldown']:
                     row_dimension_url, col_dimension_url = request['drilldown'].split('|')
@@ -323,7 +345,6 @@ def showOLAPQueryBrowser(parent=None, title=u'Analytical reports', olap_server=N
         olap_server.run()
 
         browser_panel = iqOLAPQueryBrowserProto(parent=parent)
-        browser_panel.init()
         browser_panel.query_treectrl.setOLAPServer(olap_server)
 
         parent.addPage(browser_panel, title)
