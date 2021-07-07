@@ -95,8 +95,6 @@ def init(log_filename=None):
         global_func.setLogFilename(log_filename)
         
     # Create a log folder if it is missing
-    # log_dirname = os.path.dirname(log_filename)
-    print(log_filename, type(log_filename))
     log_dirname = os.path.normpath(os.path.dirname(log_filename))
     if not os.path.exists(log_dirname):
         try:
