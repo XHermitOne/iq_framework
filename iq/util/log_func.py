@@ -28,7 +28,7 @@ if sys.platform.startswith('win'):
 
 from . import global_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 # Shell text colors
 RED_COLOR_TEXT = 'red'
@@ -95,10 +95,15 @@ def init(log_filename=None):
         global_func.setLogFilename(log_filename)
         
     # Create a log folder if it is missing
+    # log_dirname = os.path.dirname(log_filename)
+    print(log_filename, type(log_filename))
     log_dirname = os.path.normpath(os.path.dirname(log_filename))
     if not os.path.exists(log_dirname):
-        os.makedirs(log_dirname)
-        
+        try:
+            os.makedirs(log_dirname)
+        except OSError:
+            printColourText(u'Error create log directory <%s>' % log_dirname, color=RED_COLOR_TEXT)
+
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s %(message)s',
                         datefmt=LOG_DATETIME_FMT,
