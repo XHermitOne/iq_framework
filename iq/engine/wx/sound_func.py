@@ -19,7 +19,7 @@ __version__ = (0, 0, 0, 1)
 SOUND = None
 
 
-def playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
+def _playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
     """
     Play WAV file.
 
@@ -56,7 +56,27 @@ def playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
     return False
 
 
-def stopSound():
+def playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
+    """
+    Play WAV file.
+
+    :param wav_filename: WAV filename.
+    :param play_mode: Play mode:
+        wx.adv.SOUND_ASYNC - Play without waiting for the end
+        wx.adv.SOUND_SYNC - Pending playback
+        wx.adv.SOUND_LOOP - Loop play
+        The mode can also be specified as a combination. For example:
+        wx.adv.SOUND_LOOP | wx.adv.SOUND_ASYNC
+    :return: True/False.
+    """
+    try:
+        return _playWAV(wav_filename=wav_filename, play_mode=play_mode)
+    except:
+        log_func.fatal(u'Error play WAV file <%s>' % wav_filename)
+    return False
+
+
+def _stopSound():
     """
     Stops sound playback.
 
@@ -75,4 +95,17 @@ def stopSound():
         return result
     else:
         log_func.warning(u'Sound object not detected when stopped')
+    return False
+
+
+def stopSound():
+    """
+    Stops sound playback.
+
+    :return: True/False
+    """
+    try:
+        return _stopSound()
+    except:
+        log_func.fatal(u'Error stop sound')
     return False
