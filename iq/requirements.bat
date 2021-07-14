@@ -43,6 +43,9 @@ REM sudo apt install --assume-yes python3-pypdf2
 REM sudo apt install --assume-yes python3-odf python-odf-doc
 REM sudo apt install --assume-yes libreoffice-java-common
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install odfpy==1.4.0
+C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install xlrd
+C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install xlwt
+C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install openpyxl
 
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install mtranslate
 

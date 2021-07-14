@@ -21,7 +21,7 @@ VIRTUALSPREADSHEET_SPC = {
     '_children_': [],
 
     '__package__': u'Special',
-    '__icon__': 'fatcow/table_excel',
+    '__icon__': 'fatcow/page_excel',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),

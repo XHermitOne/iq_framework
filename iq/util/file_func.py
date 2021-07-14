@@ -7,6 +7,7 @@ File functions module.
 
 import os
 import os.path
+import tempfile
 import platform
 import hashlib
 import shutil
@@ -16,7 +17,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -27,6 +28,8 @@ ALTER_PARENT_DIRNAME = '..'
 ALTER_HOME_DIRNAME_SEP = ALTER_HOME_DIRNAME + os.sep
 ALTER_CUR_DIRNAME_SEP = ALTER_CUR_DIRNAME + os.sep
 ALTER_PARENT_DIRNAME_SEP = ALTER_PARENT_DIRNAME + os.sep
+
+BACKUP_FILENAME_EXT = '.bak'
 
 
 def getDirectoryNames(path):
@@ -333,6 +336,19 @@ def copyFile(src_filename, dst_filename, rewrite=True):
         return False
 
 
+def renameFile(filename, new_filename):
+    """
+    Rename file.
+
+    :param filename: Source filename.
+    :param new_filename: New filename.
+    :return: True/False.
+    """
+    result = copyFile(src_filename=filename, dst_filename=new_filename, rewrite=True)
+    result = result and removeFile(filename)
+    return result
+
+
 def copyToDir(src_filename, dst_dirname, rewrite=True):
     """
     Make a copy of the file in destination directory.
@@ -373,6 +389,25 @@ def getFilesByMask(filename_mask):
     except:
         log_func.fatal(u'Error define file list by mask <%s>' % str(filename_mask))
     return list()
+
+
+def deleteFile(filename, make_backup=False):
+    """
+    Delete file.
+
+    :param filename: Filename.
+    :param make_backup: Make backup file?
+    :return: True/False.
+    """
+    try:
+        if make_backup:
+            bak_filename = setFilenameExt(filename, BACKUP_FILENAME_EXT)
+            return renameFile(filename, bak_filename)
+        else:
+            return removeFile(filename)
+    except:
+        log_func.fatal(u'Error delete file <%s>' % filename)
+    return False
 
 
 def delFilesByMask(delete_dir, *mask_filters):
@@ -543,3 +578,45 @@ def getRelativePath(path):
         log_func.fatal(u'Error relative path <%s>' % path)
     return path
 
+
+def getTempDirname(auto_create=False):
+    """
+    Get temp dirname.
+
+    :param auto_create: Auto create temp directory?
+    :return: Temp dirname or None if error.
+    """
+    tmp_dirname = None
+    try:
+        tmp_dirname = tempfile.mktemp()
+        if auto_create and not os.path.exists(tmp_dirname):
+            os.makedirs(tmp_dirname)
+        return tmp_dirname
+    except:
+        log_func.fatal(u'Error get temp dirname <%s>' % tmp_dirname)
+    return None
+
+
+def getTempFilename(to_path=None):
+    """
+    Get temp filename.
+
+    :param to_path: Locate temp file to path.
+    :return: Temp filename or None if error.
+    """
+    tmp_filename = None
+    try:
+        tmp_filename = tempfile.mktemp(dir=to_path) if to_path is not None else tempfile.mktemp()
+        return tmp_filename
+    except:
+        log_func.fatal(u'Error get temp filename <%s>' % tmp_filename)
+    return None
+
+
+def getPrjProfileTempFilename():
+    """
+    Get temp filename in project profile path.
+
+    :return: Temp filename or None if error.
+    """
+    return getTempFilename(to_path=getProjectProfilePath())

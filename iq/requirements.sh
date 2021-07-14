@@ -98,6 +98,9 @@ sudo apt install --assume-yes python3-reportlab
 sudo apt install --assume-yes python3-pypdf2
 sudo apt install --assume-yes python3-odf python-odf-doc
 sudo apt install --assume-yes libreoffice-java-common
+sudo apt install --assume-yes python3-xlrd
+sudo apt install --assume-yes python3-xlwt
+sudo apt install --assume-yes python3-openpyxl
 
 pip3 install mtranslate
 

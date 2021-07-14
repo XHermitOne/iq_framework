@@ -442,17 +442,6 @@ class iqVStyle(v_prototype.iqVPrototype):
         self._parent.max_style_id = new_id
         return new_id
 
-    def newID_depricated(self):
-        """
-        The generation of a new ID style.
-        """
-        styles_id = self._parent.getStylesID()
-        i = 1
-        while ('text'+str(i)) in styles_id:
-            i += 1
-        
-        return 'text'+str(i)
-
     def _delAttr(self, name):
         """
         Delete an attribute by name from the style content.
@@ -532,7 +521,52 @@ class iqVStyle(v_prototype.iqVPrototype):
             elif element['name'] == 'NumberFormat':
                 attrs['number_format'] = element
         return attrs
-        
+
+    def getAlignmentAttrs(self):
+        """
+        Get style alignment attributes.
+
+        :return: Dictionary of internal style alignment content.
+        """
+        attrs = self.getAttrs()
+        return attrs.get('alignment', dict())
+
+    def getBordersAttrs(self):
+        """
+        Get style borders attributes.
+
+        :return: Dictionary of internal style borders content.
+        """
+        attrs = self.getAttrs()
+        return attrs.get('borders', dict())
+
+    def getFontAttrs(self):
+        """
+        Get style font attributes.
+
+        :return: Dictionary of internal style font content.
+        """
+        attrs = self.getAttrs()
+        return attrs.get('font', dict())
+
+    def getInteriorAttrs(self):
+        """
+        Get style interior attributes.
+
+        :return: Dictionary of internal style interior content.
+        """
+        attrs = self.getAttrs()
+        return attrs.get('interior', dict())
+
+    def getNumberFormatAttrs(self):
+        """
+        Get style number format attributes.
+
+        :return: Dictionary of internal style number format content.
+        """
+        attrs = self.getAttrs()
+        return attrs.get('number_format', dict())
+
     def createAlignment(self):
         """
         Create alignment.

@@ -54,7 +54,7 @@ TRANSFORMDATASOURCE_SPC = {
     '_children_': [],
 
     'tab_datasource': None,
-    'transform': None,
+    'transform': 'return DATAFRAME',
 
     '__package__': u'Data',
     '__icon__': 'fatcow/table_lightning',

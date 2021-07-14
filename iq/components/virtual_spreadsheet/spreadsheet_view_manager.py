@@ -12,7 +12,7 @@ from ...util import log_func
 
 from . import v_spreadsheet
 
-# from ...engine.wx import panel_manager
+from ...engine.wx import grid_manager
 from ...engine.wx import wxobj_func
 from ...engine.wx import wxcolour_func
 
@@ -20,7 +20,8 @@ from ...engine.wx import wxcolour_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqSpreadSheetViewManager(v_spreadsheet.iqVSpreadsheet):
+class iqSpreadSheetViewManager(v_spreadsheet.iqVSpreadsheet,
+                               grid_manager.iqGridManager):
     """
     SpreadSheet struct view manager by wx.Grid control.
     """
@@ -161,42 +162,4 @@ class iqSpreadSheetViewManager(v_spreadsheet.iqVSpreadsheet):
             return True
         else:
             log_func.warning(u'Cell style <%d x %d> not defined' % (row, col))
-        return False
-
-    def reCreateGrid(self, grid=None, row_count=5, col_count=5):
-        """
-        Re create grid object with new rows and columns
-
-        :param grid: wx.Grid control object.
-        :param row_count: Number of row.
-        :param col_count: Number of columns.
-        :return: True/False.
-        """
-        if grid is None:
-            grid = self._spreadsheet_grid
-
-        if not isinstance(grid, wx.grid.Grid):
-            log_func.warning(u'Error grid control type <%s>' % grid.__class__.__name__)
-            return False
-        try:
-            prev_row_count = grid.GetNumberRows()
-            prev_col_count = grid.GetNumberCols()
-            delta_row_count = row_count - prev_row_count
-            delta_col_count = col_count - prev_col_count
-
-            # Clear all data
-            grid.ClearGrid()
-
-            if delta_col_count > 0:
-                grid.AppendCols(delta_col_count)
-            else:
-                grid.DeleteCols(prev_col_count + delta_col_count - 1, -delta_col_count)
-            if delta_row_count > 0:
-                grid.AppendRows(delta_row_count)
-            else:
-                grid.DeleteRows(prev_row_count + delta_row_count - 1, -delta_row_count)
-            # self.Layout()
-            return True
-        except:
-            log_func.fatal(u'Error recreate grid object')
         return False
