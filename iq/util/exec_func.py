@@ -16,7 +16,7 @@ from . import file_func
 from . import global_func
 from . import txtfile_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 0, 2)
 
 
 def execSystemCommand(cmd=''):
@@ -88,14 +88,10 @@ def execTxtFunction(function, context=None, show_debug=False):
     try:
         exec(function_txt, context)
         if show_debug:
-            log_func.debug(u'Execute function:')
-            log_func.debug(function_txt)
+            log_func.debug(u'Execute function:\n%s' % function_txt)
         return context['__result__']
     except:
-        if show_debug:
-            log_func.warning(u'Execute function:')
-            log_func.warning(function_txt)
-        log_func.fatal(u'Error execute function')
+        log_func.fatal(u'Error execute function:\n%s' % function_txt)
     return None
 
 

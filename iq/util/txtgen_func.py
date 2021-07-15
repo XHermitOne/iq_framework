@@ -5,13 +5,16 @@
 Text generate function by context.
 """
 
+import os
+import os.path
 import re
 import jinja2
 
 from ..util import log_func
 from ..util import global_func
+from ..util import file_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 REPLACE_NAME_START = u'{{'
 REPLACE_NAME_END = u'}}'
@@ -73,3 +76,52 @@ def getReplaceNames(txt):
         log_func.fatal(u'Error get replacement names from text\n<%s>' % txt)
     return list()
 
+
+def generateTextFile(template_filename, output_filename, context=None, encoding='utf-8'):
+    """
+    Generate text file by template file.
+
+    :param template_filename: Template text filename.
+    :param output_filename: Result filename.
+    :param context: Context dictionary.
+    :param encoding: Result file code page.
+    :return: True/False.
+    """
+    template_file = None
+    output_file = None
+
+    template_filename = os.path.abspath(template_filename)
+    if not os.path.exists(template_filename):
+        log_func.warning(u'Template file <%s> not found' % template_filename)
+        return False
+
+    # Read template
+    try:
+        template_file = open(template_filename, 'rt')
+        template_txt = template_file.read()
+        template_file.close()
+    except:
+        if template_file:
+            template_file.close()
+        log_func.fatal(u'Error read template file <%s>' % template_filename)
+        return False
+
+    # Generate text
+    gen_txt = generate(template_txt, context)
+
+    # Write output file
+    output_filename = os.path.abspath(output_filename)
+    try:
+        output_path = os.path.dirname(output_filename)
+        if not os.path.exists(output_path):
+            file_func.createDir(output_path)
+
+        output_file = open(output_filename, 'wt+', encoding=encoding)
+        output_file.write(gen_txt)
+        output_file.close()
+        return os.path.exists(output_filename)
+    except:
+        if output_file:
+            output_file.close()
+        log_func.fatal(u'Error generate file <%s> by template <%s>' % (output_filename, template_filename))
+    return False

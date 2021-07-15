@@ -12,7 +12,17 @@ try:
 except ImportError:
     pass
 
-__version__ = (0, 0, 0, 1)
+try:
+    import webbrowser
+except ImportError:
+    print(u'Error import webbrowser')
+
+from . import log_func
+from . import exec_func
+
+__version__ = (0, 0, 1, 1)
+
+DEFAULT_WEBBROWSER_CMD_FMT = '%s %s &'
 
 
 def validURL(url):
@@ -49,3 +59,39 @@ def getNotValidURLErrTxt(url):
     except:
         error_txt = u'Error availability check URL <%s>\n%s' % (url, traceback.format_exc())
     return error_txt
+
+
+def getDefaultWebBrowserName():
+    """
+    Get default WEB browser name.
+    """
+    try:
+        browser = webbrowser.get()
+        return browser.name
+    except:
+        log_func.fatal(u'Error get default web browser name')
+    return 'firefox'
+
+
+def getDefaultWebBrowserBaseName():
+    """
+    Get default WEB browser basename.
+    """
+    try:
+        browser = webbrowser.get()
+        return browser.basename
+    except:
+        log_func.fatal(u'Error get default web browser basename')
+    return 'firefox'
+
+
+def openWebBrowserURL(url):
+    """
+    Open URL in default web browser.
+
+    :param url: URL. For example http://localhost:8080
+    :return: True/False.
+    """
+    web_vrowser_basename = getDefaultWebBrowserBaseName()
+    cmd = DEFAULT_WEBBROWSER_CMD_FMT % (web_vrowser_basename, url)
+    return exec_func.execSystemCommand(cmd)
