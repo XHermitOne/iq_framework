@@ -72,6 +72,8 @@ def validJSONRPCServerConnection(url):
         return result
     except ConnectionRefusedError:
         log_func.warning(u'Check JSON RPC server <%s> connection [-]' % url)
+    except OSError:
+        log_func.fatal(u'Check JSON RPC server <%s> connection [-]' % url)
     return False
 
 
