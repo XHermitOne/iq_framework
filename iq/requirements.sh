@@ -38,13 +38,13 @@ sudo apt install --assume-yes build-essential libgtk-3-dev
 sudo apt install --assume-yes libwebkit2gtk-4.0-dev
 
 # For Ubuntu 16.04
-pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7.post2 Pillow==7.0.0 numpy==1.16.6
+# pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7.post2 Pillow==7.0.0 numpy==1.16.6
 
 # For Ubuntu 18.04
 # pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython==4.0.7.post2
 
 # For Ubuntu 20.04
-# pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython==4.0.7.post2
+pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython==4.1.1
 
 
 # Upgrade:
@@ -66,10 +66,10 @@ sudo apt install --assume-yes python3-matplotlib
 # sudo apt install --assume-yes python3-wxmpl
 
 # JSONRPC (Ubuntu 20.04)
-# sudo apt install python3-jsonrpclib-pelix
+sudo apt install python3-jsonrpclib-pelix
 
 # JSONRPC (Ubuntu 16.04)
-pip3 install jsonrpclib-pelix
+# pip3 install jsonrpclib-pelix
 
 # Database
 sudo apt install --assume-yes python3-psycopg2
@@ -77,7 +77,7 @@ sudo apt install --assume-yes python3-sqlalchemy
 sudo apt install --assume-yes unixodbc unixodbc-dev freetds-bin freetds-dev tdsodbc python3-pyodbc
 
 # For Ubuntu 16.04
-pip3 install JayDeBeApi
+# pip3 install JayDeBeApi
 # For Ubuntu 18.04
 # pip3 install JayDeBeApi3
 # For Ubuntu 20.04
