@@ -17,7 +17,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 3, 2)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -151,7 +151,10 @@ def getProjectProfilePath():
     Get project profile directory path.
     """
     prj_name = global_func.getProjectName()
-    return os.path.join(global_data.getGlobal('PROFILE_PATH'), prj_name if prj_name else '')
+    profile_path = os.path.join(global_data.getGlobal('PROFILE_PATH'), prj_name if prj_name else '')
+    if profile_path and not os.path.exists(profile_path):
+        createDir(profile_path)
+    return profile_path
 
 
 def getCurDirPrj(path=None):
