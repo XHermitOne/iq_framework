@@ -62,7 +62,8 @@ class iqWxMatplotlibBarChartPanel(matplotlib_barchartpanel_proto.iqMatplotlibBar
         """
         Get title.
         """
-        self._title = self.getAttribute('title')
+        if not self._title:
+            self._title = self.getAttribute('title')
         return self._title
 
     def getXLabel(self):
@@ -83,7 +84,8 @@ class iqWxMatplotlibBarChartPanel(matplotlib_barchartpanel_proto.iqMatplotlibBar
         """
         Get legend.
         """
-        self._legend = self.getAttribute('legend')
+        if not self._legend:
+            self._legend = self.getAttribute('legend')
         return self._legend
 
     def getShowLegend(self):
