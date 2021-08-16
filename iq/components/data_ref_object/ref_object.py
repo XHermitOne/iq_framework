@@ -20,7 +20,7 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -675,6 +675,16 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         recs = self.getLevelRecsByCod(cod)
         return bool(recs)
+
+    def getChildrenCodes(self, cod=None):
+        """
+        Get children codes.
+
+        :param cod: Ref object code.
+        :return: Get children codes list as tuple.
+        """
+        recs = self.getLevelRecsByCod(cod)
+        return [rec.get(self.getCodColumnName(), None) for rec in recs] if recs else tuple()
 
     def isParentLevelCod(self, cod):
         """

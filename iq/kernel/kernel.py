@@ -17,9 +17,11 @@ from .. import components
 from ..passport import passport
 from .. import project
 
-from . import objects_access, settings_access
+from . import objects_access
+from . import settings_access
+from . import locals_access
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 RUNTIME_MODE_STATE = 'runtime'
 EDITOR_MODE_STATE = 'editor'
@@ -282,6 +284,15 @@ class iqKernel(object):
         :return:
         """
         return settings_access.iqSettingsDotUse(default_settings=[global_func.getProjectName(), None, None])
+
+    @property
+    def locals(self):
+        """
+        Create an locals access object by point.
+
+        :return:
+        """
+        return locals_access.iqLocalsDotUse(default_locals=[global_func.getProjectName(), None, None])
 
 
 def createKernel():

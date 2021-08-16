@@ -190,7 +190,7 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
     :param choices: List of selection lines as tuple in format ((True/False, 'line text'),...).
-    :return: Selected chices as tuple ((True/False, 'line text'),...).
+    :return: Selected choices as tuple ((True/False, 'line text'),...).
     """
     if _dlg_func:
         return _dlg_func.getMultiChoiceDlg(parent=parent, title=title, prompt_text=prompt_text, choices=choices)
