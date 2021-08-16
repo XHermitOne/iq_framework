@@ -22,6 +22,7 @@ WXFB_PROJECT_FILE_EXT = '.fbp'
 ALTER_WXFORMBUILDER = 'flatpak run org.wxformbuilder.wxFormBuilder'
 
 WXFB_PY_MODULE_SIGNATURE = '## Python code generated with wxFormBuilder'
+WXFB_PY_MODULE_ADAPTED_SIGNATURE = '## Adapted Python code generated with wxFormBuilder'
 
 STARTSWITH_SIGNATURE = '..)'
 ENDSWITH_SIGNATURE = '(..'
@@ -30,6 +31,9 @@ CONTAIN_SIGNATURE = '(..)'
 COMMENT_COMMAND_SIGNATIRE = '#'
 
 ADAPTATION_REPLACES = (
+    # General signature
+    dict(compare=STARTSWITH_SIGNATURE, src=WXFB_PY_MODULE_SIGNATURE, dst=WXFB_PY_MODULE_ADAPTED_SIGNATURE),
+
     # Gettext
     dict(compare=STARTSWITH_SIGNATURE, src='import gettext', dst='from iq.util import lang_func'),
     dict(compare=STARTSWITH_SIGNATURE, src='_ = gettext.gettext', dst='_ = lang_func.getTranslation().gettext'),
@@ -145,6 +149,16 @@ def isWXFormBuilderFormPy(py_filename):
     :return: True/False.
     """
     return py_func.isPyFileSignature(py_filename, WXFB_PY_MODULE_SIGNATURE)
+
+
+def isAdaptedWXFormBuilderFormPy(py_filename):
+    """
+    Check if python file is a wxFormBuilder form file.
+
+    :param py_filename: Python file path.
+    :return: True/False.
+    """
+    return py_func.isPyFileSignature(py_filename, WXFB_PY_MODULE_ADAPTED_SIGNATURE)
 
 
 class iqWXFormBuilderManager(object):

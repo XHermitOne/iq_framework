@@ -52,8 +52,9 @@ class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto,
         self.initImages()
 
         is_wxfb_py = wxfb_manager.isWXFormBuilderFormPy(self.py_filename)
+        is_adapted_wxfb_py = wxfb_manager.isAdaptedWXFormBuilderFormPy(self.py_filename)
         self.wxfb_button.Enable(is_wxfb_py)
-        self.gen_button.Enable(is_wxfb_py)
+        self.gen_button.Enable(is_adapted_wxfb_py)
 
     def initImages(self):
         """
