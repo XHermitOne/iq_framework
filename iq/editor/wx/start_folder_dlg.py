@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version Oct 26 2018)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -22,7 +22,7 @@ _ = lang_func.getTranslation().gettext
 class iqStartFolderDialogProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Project folder/package"), pos = wx.DefaultPosition, size = wx.Size( 395,207 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Project folder/package"), pos = wx.DefaultPosition, size = wx.Size( 395,282 ), style = wx.DEFAULT_DIALOG_STYLE )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -49,6 +49,17 @@ class iqStartFolderDialogProto ( wx.Dialog ):
 
 
 		bSizer1.Add( bSizer21, 1, wx.EXPAND, 5 )
+
+		bSizer211 = wx.BoxSizer( wx.HORIZONTAL )
+
+		self.jasperreport_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer211.Add( self.jasperreport_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+		self.jasperreport_button = wx.Button( self, wx.ID_ANY, _(u"New JasperReport project"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer211.Add( self.jasperreport_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+
+		bSizer1.Add( bSizer211, 1, wx.EXPAND, 5 )
 
 		bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -85,6 +96,7 @@ class iqStartFolderDialogProto ( wx.Dialog ):
 		# Connect Events
 		self.res_button.Bind( wx.EVT_BUTTON, self.onResButtonClick )
 		self.wxfb_button.Bind( wx.EVT_BUTTON, self.onWXFBButtonClick )
+		self.jasperreport_button.Bind( wx.EVT_BUTTON, self.onJasperReportButtonClick )
 		self.run_button.Bind( wx.EVT_BUTTON, self.onRunButtonClick )
 		self.exit_button.Bind( wx.EVT_BUTTON, self.onExitButtonClick )
 
@@ -93,16 +105,19 @@ class iqStartFolderDialogProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, overide them in your derived class
-	def onResButtonClick( self, event ):
+	def onResButtonClick(self, event):
 		event.Skip()
 
-	def onWXFBButtonClick( self, event ):
+	def onWXFBButtonClick(self, event):
 		event.Skip()
 
-	def onRunButtonClick( self, event ):
+	def onJasperReportButtonClick(self, event):
 		event.Skip()
 
-	def onExitButtonClick( self, event ):
+	def onRunButtonClick(self, event):
+		event.Skip()
+
+	def onExitButtonClick(self, event):
 		event.Skip()
 
 

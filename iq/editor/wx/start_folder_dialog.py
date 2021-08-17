@@ -14,11 +14,16 @@ import iq
 from ...util import log_func
 from ...util import global_func
 from ...util import res_func
+from ...util import lang_func
 from ...engine.wx import wxbitmap_func
+
+from ...dialog import dlg_func
 
 from ...engine.wx import form_manager
 
 from . import wxfb_manager
+from ..jasper_report import jasperreport_manager
+
 from .res_editor import new_resource_dialog
 from .res_editor import resource_editor
 
@@ -27,6 +32,8 @@ from ...engine.wx import stored_wx_form_manager
 from ...project import prj
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
@@ -64,6 +71,9 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
 
         bmp = wxbitmap_func.createIconBitmap('fatcow/application_form_edit')
         self.wxfb_bitmap.SetBitmap(bmp)
+
+        bmp = wxbitmap_func.createIconBitmap('fatcow/report')
+        self.jasperreport_bitmap.SetBitmap(bmp)
 
         bmp = wxbitmap_func.createIconBitmap('fatcow/resultset_next')
         self.run_bitmap.SetBitmap(bmp)
@@ -107,6 +117,26 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
         """
         wxfb_manager.runWXFormBuilder()
         self.EndModal(wx.ID_OK)
+        event.Skip()
+
+    def onJasperReportButtonClick(self, event):
+        """
+        Button click handler <New JasperReport project>.
+        """
+        new_basename = dlg_func.getTextEntryDlg(parent=self, title=_(u'NEW'),
+                                                prompt_text=_(u'New JasperReport filename'))
+        if new_basename:
+            new_prj_filename = os.path.join(self.folder_path,
+                                            new_basename + jasperreport_manager.JASPER_REPORT_PROJECT_FILE_EXT)
+            if jasperreport_manager.createJasperReportProjectFile(new_prj_filename):
+                dlg_func.openMsgBox(title=_(u'CREATE'),
+                                    prompt_text=_(u'Create JasperReport file <%s>' % new_prj_filename))
+                self.EndModal(wx.ID_OK)
+                jasperreport_manager.runJasperReportEditor(filename=new_prj_filename)
+            else:
+                dlg_func.openWarningBox(title=_(u'ERROR'),
+                                        prompt_text=_(u'Error create JasperReport file <%s>' % new_prj_filename))
+                self.EndModal(wx.ID_OK)
         event.Skip()
 
     def onRunButtonClick(self, event):
