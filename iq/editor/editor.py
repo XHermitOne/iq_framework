@@ -17,6 +17,7 @@ from ..kernel import kernel
 
 from ..dialog import dlg_func
 from ..editor.wx import wxfb_manager
+from ..editor.jasper_report import jasperreport_manager
 
 __version__ = (0, 0, 0, 1)
 
@@ -64,6 +65,11 @@ def _openResourceEditor(res_filename):
             log_func.info(u'Edit wxFormBuilder project <%s>' % res_filename)
             from .wx import start_wxfb
             return start_wxfb.startWXFormBuilderEditor(fbp_filename=res_filename)
+
+        elif jasperreport_manager.isJasperReportProjectFile(res_filename):
+            log_func.info(u'Edit JasperReport project <%s>' % res_filename)
+            from .wx import start_jasper_report
+            return start_jasper_report.startJasperReportEditor(jrxml_filename=res_filename)
 
         elif os.path.isdir(res_filename) and os.path.exists(os.path.join(res_filename, 'descript.ion')):
             log_func.info(u'Design reports <%s>' % res_filename)

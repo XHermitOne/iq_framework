@@ -11,7 +11,7 @@ import os.path
 
 try:
     from . import start_wxfb_dlg
-except:
+except ImportError:
     import start_wxfb_dlg
 
 from ...util import log_func
