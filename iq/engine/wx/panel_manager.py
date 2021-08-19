@@ -490,7 +490,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         :param resize_panel: Resizable panel index.
             0 - collapses / expands the first panel
             1 - collapses / expands the second panel
-        :param redraw: Redraw?
+        :param redraw: Redraw? If True, resizes the panes and redraws the sash and border.
         :return: True/False.
         """
         if not isinstance(splitter, wx.SplitterWindow):
@@ -533,7 +533,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         :param resize_panel: Resizable panel index.
             0 - collapses / expands the first panel
             1 - collapses / expands the second panel
-        :param redraw: Redraw?
+        :param redraw: Redraw? If True, resizes the panes and redraws the sash and border.
         :return: True/False.
         """
         if not isinstance(splitter, wx.SplitterWindow):
