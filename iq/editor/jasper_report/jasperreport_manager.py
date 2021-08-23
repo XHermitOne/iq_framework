@@ -104,7 +104,7 @@ class iqJasperReportManager(object):
         try:
             return runJasperReportEditor(prj_filename)
         except:
-            log_func.fatal(u'Error opening wxFormBuilder project file <%s>' % prj_filename)
+            log_func.fatal(u'Error opening JasperReport project file <%s>' % prj_filename)
         return False
 
     def createProject(self, default_prj_filename=None, new_prj_filename=None, auto_open=False):
@@ -128,7 +128,7 @@ class iqJasperReportManager(object):
                 return runJasperReportEditor(new_prj_filename)
             return result
         except:
-            log_func.fatal(u'Error creating wxFormBuilder project file <%s>' % default_prj_filename)
+            log_func.fatal(u'Error creating JasperReport project file <%s>' % default_prj_filename)
         return False
 
     def generate(self, prj_filename, command='process', fmt='view', **kwargs):

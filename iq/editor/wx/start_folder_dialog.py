@@ -23,6 +23,7 @@ from ...engine.wx import form_manager
 
 from . import wxfb_manager
 from ..jasper_report import jasperreport_manager
+from ..lime_report import limereport_manager
 
 from .res_editor import new_resource_dialog
 from .res_editor import resource_editor
@@ -66,15 +67,6 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
         """
         Init images method.
         """
-        bmp = wxbitmap_func.createIconBitmap('fatcow/plugin_add')
-        self.res_bitmap.SetBitmap(bmp)
-
-        bmp = wxbitmap_func.createIconBitmap('fatcow/application_form_edit')
-        self.wxfb_bitmap.SetBitmap(bmp)
-
-        bmp = wxbitmap_func.createIconBitmap('fatcow/report')
-        self.jasperreport_bitmap.SetBitmap(bmp)
-
         bmp = wxbitmap_func.createIconBitmap('fatcow/resultset_next')
         self.run_bitmap.SetBitmap(bmp)
 
@@ -95,9 +87,64 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
         self.EndModal(wx.ID_CANCEL)
         event.Skip()
 
-    def onResButtonClick(self, event):
+    def createNewMenu(self):
         """
-        Button click handler <New resource>.
+        Create New menu.
+
+        :return: Menu object.
+        """
+        new_menu = wx.Menu()
+
+        icon_bmp = wxbitmap_func.createIconBitmap('fatcow/plugin_add')
+        menuitem_label = _(u'New resource')
+        menuitem_id = wx.NewId()
+        menuitem = wx.MenuItem(new_menu, menuitem_id, menuitem_label)
+        menuitem.SetBitmap(icon_bmp)
+        new_menu.Append(menuitem)
+        self.Bind(wx.EVT_MENU, self.onNewResMenuItem, id=menuitem_id)
+        new_menu.AppendSeparator()
+
+        icon_bmp = wxbitmap_func.createIconBitmap('fatcow/application_form_edit')
+        menuitem_label = _(u'New wxFormBuilder project')
+        menuitem_id = wx.NewId()
+        menuitem = wx.MenuItem(new_menu, menuitem_id, menuitem_label)
+        menuitem.SetBitmap(icon_bmp)
+        new_menu.Append(menuitem)
+        self.Bind(wx.EVT_MENU, self.onNewWXFBMenuItem, id=menuitem_id)
+
+        icon_bmp = wxbitmap_func.createIconBitmap('fatcow/report')
+        menuitem_label = _(u'New JasperReport report')
+        menuitem_id = wx.NewId()
+        menuitem = wx.MenuItem(new_menu, menuitem_id, menuitem_label)
+        menuitem.SetBitmap(icon_bmp)
+        new_menu.Append(menuitem)
+        self.Bind(wx.EVT_MENU, self.onNewJasperReportMenuItem, id=menuitem_id)
+
+        icon_bmp = wxbitmap_func.createIconBitmap('fatcow/fruit_lime')
+        menuitem_label = _(u'New LimeReport report')
+        menuitem_id = wx.NewId()
+        menuitem = wx.MenuItem(new_menu, menuitem_id, menuitem_label)
+        menuitem.SetBitmap(icon_bmp)
+        new_menu.Append(menuitem)
+        self.Bind(wx.EVT_MENU, self.onNewLimeReportMenuItem, id=menuitem_id)
+
+        return new_menu
+
+    def onNewButtonClick(self, event):
+        """
+        Button click handler <New ...>.
+        """
+        try:
+            menu = self.createNewMenu()
+            self.PopupMenu(menu)
+            menu.Destroy()
+        except:
+            log_func.fatal(u'Error New menu popup')
+        event.Skip()
+
+    def onNewResMenuItem(self, event):
+        """
+        Menu item handler <New resource>.
         """
         new_res_filename = os.path.join(self.folder_path,
                                         'default%d%s' % (wx.NewId(),
@@ -111,17 +158,17 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
 
         event.Skip()
 
-    def onWXFBButtonClick(self, event):
+    def onNewWXFBMenuItem(self, event):
         """
-        Button click handler <New wxFormBuilder project>.
+        Menu item handler <New wxFormBuilder project>.
         """
         wxfb_manager.runWXFormBuilder()
         self.EndModal(wx.ID_OK)
         event.Skip()
 
-    def onJasperReportButtonClick(self, event):
+    def onNewJasperReportMenuItem(self, event):
         """
-        Button click handler <New JasperReport project>.
+        Menu item handler <New JasperReport project>.
         """
         new_basename = dlg_func.getTextEntryDlg(parent=self, title=_(u'NEW'),
                                                 prompt_text=_(u'New JasperReport filename'))
@@ -136,6 +183,26 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
             else:
                 dlg_func.openWarningBox(title=_(u'ERROR'),
                                         prompt_text=_(u'Error create JasperReport file <%s>' % new_prj_filename))
+                self.EndModal(wx.ID_OK)
+        event.Skip()
+
+    def onNewLimeReportMenuItem(self, event):
+        """
+        Menu item handler <New LimeReport project>.
+        """
+        new_basename = dlg_func.getTextEntryDlg(parent=self, title=_(u'NEW'),
+                                                prompt_text=_(u'New LimeReport filename'))
+        if new_basename:
+            new_prj_filename = os.path.join(self.folder_path,
+                                            new_basename + limereport_manager.LIME_REPORT_PROJECT_FILE_EXT)
+            if limereport_manager.createLimeReportProjectFile(new_prj_filename):
+                dlg_func.openMsgBox(title=_(u'CREATE'),
+                                    prompt_text=_(u'Create LimeReport file <%s>' % new_prj_filename))
+                self.EndModal(wx.ID_OK)
+                limereport_manager.runLimeReportEditor(filename=new_prj_filename)
+            else:
+                dlg_func.openWarningBox(title=_(u'ERROR'),
+                                        prompt_text=_(u'Error create LimeReport file <%s>' % new_prj_filename))
                 self.EndModal(wx.ID_OK)
         event.Skip()
 
