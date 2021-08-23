@@ -6,11 +6,14 @@ Wx SVGRenderImage component.
 """
 
 import os.path
+import wx
 
 from ... import object
 
 from . import spc
 from . import svgrenderimage
+
+from .. import wx_panel
 
 from ...util import log_func
 from ...util import file_func
@@ -18,7 +21,7 @@ from ...util import file_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxSVGRenderImage(svgrenderimage.iqSVGRenderImage, object.iqObject):
+class iqWxSVGRenderImage(svgrenderimage.iqSVGRenderImage, wx_panel.COMPONENT):
     """
     Wx SVGRenderImage component.
     """
@@ -31,10 +34,29 @@ class iqWxSVGRenderImage(svgrenderimage.iqSVGRenderImage, object.iqObject):
         :param context: Context dictionary.
         """
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
-        object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
+        wx_panel.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
         svgrenderimage.iqSVGRenderImage.__init__(self, parent=parent,
                                                  svg_filename=self.getSVGFilename())
+
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.onEraseBackground)
+        self.Bind(wx.EVT_SIZE, self.onPanelSize)
+
+    def onEraseBackground(self, event):
+        """
+        Adding a picture to the panel background through the device context.
+        """
+        self.drawDCBitmap(dc=event.GetDC(), bmp=self.getSVGBitmap())
+
+    def onPanelSize(self, event):
+        """
+        Overriding the mnemoscheme panel resize handler.
+        """
+        self.drawSVG()
+        # self.layoutAll(False)
+
+        self.Refresh()
+        event.Skip()
 
     def getSVGFilename(self):
         """

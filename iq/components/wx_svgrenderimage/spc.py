@@ -8,6 +8,8 @@ Wx SVGRenderImage specification module.
 from iq.object import object_spc
 from ...editor import property_editor_id
 
+from .. import wx_panel
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -39,7 +41,7 @@ WXSVGRENDERIMAGE_SPC = {
 
     '__package__': u'wxPython',
     '__icon__': 'fatcow/picture',
-    '__parent__': object_spc.OBJECT_SPC,
+    '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
     '__doc__': None,
     '__content__': (),
     '__design__': designComponent,
