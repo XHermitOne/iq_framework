@@ -263,6 +263,17 @@ class iqMainFormManager(base_manager.iqBaseManager):
         """
         return self.getMainNotebook().openPageByTitle(title=title)
 
+    def delPrjProfileTemporaryFiles(self, tmp_filename_ext='.*'):
+        """
+        Delete all temporary files from project profile folder.
+
+        :param tmp_filename_ext: Delete by tmp filename extension.
+            Default is <.*> (any extensions).
+        :return: True/False.
+        """
+        return file_func.delFilesByMask(file_func.getProjectProfilePath(),
+                                        'tmp*%s' % tmp_filename_ext)
+
 
 def showMainForm(main_form_class):
     """
