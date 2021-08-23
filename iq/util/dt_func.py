@@ -14,7 +14,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -253,6 +253,21 @@ def getPrevDayDT(day=None):
     :return: Prev day before current.
     """
     return date2datetime(getPrevDay(day))
+
+
+def getYearAgoDT(day=None):
+    """
+    Get date year ago.
+
+    :param day: Current day.
+         If None then get today.
+    :return: Day year ago.
+    """
+    if day is None:
+        day = getToday()
+
+    cur_year = day.year
+    return day.replace(year=cur_year - 1)
 
 
 def str2datetime(dt_str, fmt=DEFAULT_DATETIME_FMT):
