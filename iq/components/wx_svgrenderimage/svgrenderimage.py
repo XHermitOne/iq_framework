@@ -50,14 +50,16 @@ class iqSVGRenderImage(svg_file.iqSVGFile):
         :return: True/False.
         """
         try:
-            dst_svg_filename = os.path.join(file_func.getProjectProfilePath(),
-                                            '%s.svg' % self.getGUID())
-            if svg_filename and os.path.exists(svg_filename):
-                file_func.copyFile(svg_filename, dst_svg_filename, True)
+            # dst_svg_filename = os.path.join(file_func.getProjectProfilePath(),
+            #                                 '%s.svg' % self.getGUID())
+            # if svg_filename and os.path.exists(svg_filename):
+            #     file_func.copyFile(svg_filename, dst_svg_filename, True)
 
-            self.loadSVG(dst_svg_filename)
-            self._image = wx.svg.SVGimage.CreateFromFile(dst_svg_filename)
-            return True
+            if os.path.exists(svg_filename):
+                self.loadSVG(svg_filename)
+                self._image = wx.svg.SVGimage.CreateFromFile(svg_filename)
+                self._svg_filename = svg_filename
+                return self.drawSVG(auto_rewrite=True)
         except:
             log_func.fatal(u'Error set SVG File <%s>' % svg_filename)
         return False
@@ -78,16 +80,20 @@ class iqSVGRenderImage(svg_file.iqSVGFile):
         """
         return self.parent.getRenderer() if self.parent else None
 
-    def drawSVG(self, auto_rewrite=False):
+    def drawSVG(self, auto_rewrite=True):
         """
         Draw the background of the mnemonic on the device context.
         ATTENTION! To extract an image from an SVG file
         The external SVG -> PNG conversion utility is used.
         And PNG is already displayed on the device context.
 
-        :param auto_rewrite: Automatically overwrite the intermediate PNG file.         :return: True/False.
+        :param auto_rewrite: Automatically overwrite the intermediate PNG file.
         :return: True/False.
         """
+        if self._svg_filename is None:
+            log_func.warning(u'Not define SVG file in <%s : %s>' % (self.getName(), self.__class__.__name__))
+            return False
+
         try:
             # Mimic panel size
             width, height = self.GetSize()
@@ -99,7 +105,7 @@ class iqSVGRenderImage(svg_file.iqSVGFile):
             # Save SVG file to HOME folder
             # This is done so that you can replace the mnemonic diagram on
             # the fly
-            if not os.path.exists(svg_filename) or not file_func.isSameFile(svg_filename, self._svg_background):
+            if not os.path.exists(svg_filename) or not file_func.isSameFile(svg_filename, self._svg_filename):
                 # If the file has changed, then overwrite it in the HOME folder
                 file_func.copyFile(self._svg_filename, svg_filename)
                 # and delete all PNG files

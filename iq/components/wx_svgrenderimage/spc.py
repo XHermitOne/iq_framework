@@ -40,7 +40,7 @@ WXSVGRENDERIMAGE_SPC = {
     'svg_filename': None,
 
     '__package__': u'wxPython',
-    '__icon__': 'fatcow/picture',
+    '__icon__': 'fatcow/page_white_vector',
     '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
     '__doc__': None,
     '__content__': (),
