@@ -9,6 +9,7 @@ import decimal
 import sqlalchemy
 import sqlalchemy.engine.url
 import sqlalchemy.dialects.postgresql.base
+import sqlalchemy.dialects.sqlite
 
 from ...util import log_func
 
@@ -88,6 +89,14 @@ class iqDBEngineManager(object):
         """
         return None
 
+    def getDBFilename(self):
+        """
+        Get database filename (for SQLite).
+
+        :return:
+        """
+        return None
+
     def getDialectDriver(self):
         """
         Get dialect+driver.
@@ -98,34 +107,61 @@ class iqDBEngineManager(object):
         dialect_driver = tuple([item for item in (dialect, driver) if item])
         return '+'.join(dialect_driver)
 
+    def _getSQLiteDBUrl(self):
+        """
+        Get database url for SQLite database.
+
+        :return: Database URL string.
+        """
+        log_func.info(u'Create DB URL <%s>:' % self.getDialect())
+        log_func.info(u'\tDatabase filename: %s' % self.getDBFilename())
+
+        url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
+                                        database=self.getDBFilename())
+        db_url = str(url)
+        return db_url
+
+    def _getDBUrl(self):
+        """
+        Get database url for SQL database.
+
+        :return: Database URL string.
+        """
+        log_func.info(u'Create DB URL <%s>:' % self.getDialect())
+        log_func.info(u'\tDriver: %s' % self.getDialectDriver())
+        log_func.info(u'\tHost: %s' % self.getHost())
+        log_func.info(u'\tPort: %s' % self.getPort())
+        log_func.info(u'\tDB name: %s' % self.getDBName())
+        log_func.info(u'\tUsername: %s' % self.getUsername())
+
+        query = None
+        charset = self.getCharset()
+        if charset:
+            if query is None:
+                query = dict()
+            query['charset'] = charset
+            log_func.info(u'\tCharset: %s' % charset)
+
+        url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
+                                        username=self.getUsername(),
+                                        password=self.getPassword(),
+                                        host=self.getHost(),
+                                        port=self.getPort(),
+                                        database=self.getDBName(),
+                                        query=query)
+        db_url = str(url)
+        return db_url
+
     def getDBUrl(self):
         """
         Get database url.
         """
         if self._db_url is None:
-            log_func.info(u'Create DB URL:')
-            log_func.info(u'\tDriver: %s' % self.getDialectDriver())
-            log_func.info(u'\tHost: %s' % self.getHost())
-            log_func.info(u'\tPort: %s' % self.getPort())
-            log_func.info(u'\tDB name: %s' % self.getDBName())
-            log_func.info(u'\tUsername: %s' % self.getUsername())
-
-            query = None
-            charset = self.getCharset()
-            if charset:
-                if query is None:
-                    query = dict()
-                query['charset'] = charset
-                log_func.info(u'\tCharset: %s' % charset)
-
-            url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
-                                            username=self.getUsername(),
-                                            password=self.getPassword(),
-                                            host=self.getHost(),
-                                            port=self.getPort(),
-                                            database=self.getDBName(),
-                                            query=query)
-            self._db_url = str(url)
+            dialect = self.getDialect()
+            if dialect == sqlalchemy.dialects.sqlite.dialect.name:
+                self._db_url = self._getSQLiteDBUrl()
+            else:
+                self._db_url = self._getDBUrl()
         return self._db_url
 
     def isEcho(self):

@@ -12,6 +12,7 @@ from . import db_engine
 
 from ...dialog import dlg_func
 from ...util import lang_func
+from ...util import file_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -114,6 +115,15 @@ class iqDataEngine(db_engine.iqDBEngineManager, object.iqObject):
         """
         charset = self.getAttribute('charset')
         return db_engine.ENCODING2CHARSET.get(charset, charset)
+
+    def getDBFilename(self):
+        """
+        Get database filename (for SQLite).
+
+        :return:
+        """
+        db_filename = self.getAttribute('db_filename')
+        return file_func.getNormalPath(db_filename)
 
 
 COMPONENT = iqDataEngine
