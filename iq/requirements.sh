@@ -57,7 +57,9 @@ pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubunt
 # pip3 wheel -v wxPython-4.0.1.tar.gz  2>&1 | tee build.log
 # pip3 install wxPython-4.0.1-cp35-cp35m-linux_x86_64.whl
 
-pip3 install pysvg
+pip3 install pysvg-py3
+sudo apt install --assume-yes imagemagick
+sudo apt install --assume-yes inkscape
 
 # Additionally
 pip3 install objectlistview
@@ -75,6 +77,8 @@ sudo apt install python3-jsonrpclib-pelix
 sudo apt install --assume-yes python3-psycopg2
 sudo apt install --assume-yes python3-sqlalchemy
 sudo apt install --assume-yes unixodbc unixodbc-dev freetds-bin freetds-dev tdsodbc python3-pyodbc
+sudo apt install --assume-yes sqlite3
+sudo apt install --assume-yes sqlitebrowser
 
 # For Ubuntu 16.04
 # pip3 install JayDeBeApi
