@@ -5,6 +5,7 @@
 Standart dialog functions module.
 """
 
+import datetime
 import wx
 import wx.lib.calendar
 
@@ -26,6 +27,7 @@ from . import checkboxmaxi_dlg
 from iq.util import log_func
 from iq.util import dt_func
 from . import wxdlg_func
+from .. import wxdatetime_func
 
 
 __version__ = (0, 0, 0, 1)
@@ -210,13 +212,16 @@ def getMonthRangeDlg(parent=None):
     return selected_range
 
 
-def getDateRangeDlg(parent=None, is_concrete_date=False):
+def getDateRangeDlg(parent=None, is_concrete_date=False,
+                    default_start_date=None, default_stop_date=None):
     """
     Select date range in dialog.
 
     :param parent: Parent window.
         If None then get wx.GetApp().GetTopWindow()
     :param is_concrete_date: Select concrete date?
+    :param default_start_date: Default begin range date.
+    :param default_stop_date: Default end range date.
     :return: Date range tuple (as datetime) or None if press <Cancel>.
     """
     selected_range = None
@@ -226,6 +231,20 @@ def getDateRangeDlg(parent=None, is_concrete_date=False):
 
     dlg = daterange_dlg.iqDateRangeDialog(parent)
     dlg.setConcreteDateCheck(is_concrete_date)
+    if default_start_date:
+        if isinstance(default_start_date, wx.DateTime):
+            wx_date = default_start_date
+        else:
+            wx_date = wxdatetime_func.date2wxDateTime(default_start_date)
+        if wx_date:
+            dlg.firstDatePicker.SetValue(wx_date)
+    if default_stop_date:
+        if isinstance(default_stop_date, wx.DateTime):
+            wx_date = default_stop_date
+        else:
+            wx_date = wxdatetime_func.date2wxDateTime(default_stop_date)
+        if wx_date:
+            dlg.lastDatePicker.SetValue(wx_date)
 
     dlg.Centre()
 

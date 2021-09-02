@@ -124,18 +124,23 @@ def getMonthRangeDlg(parent=None):
     return None
 
 
-def getDateRangeDlg(parent=None, is_concrete_date=False):
+def getDateRangeDlg(parent=None, is_concrete_date=False,
+                    default_start_date=None, default_stop_date=None):
     """
     Select date range in dialog.
 
     :param parent: Parent window.
         If None then get wx.GetApp().GetTopWindow()
     :param is_concrete_date: Select concrete date?
+    :param default_start_date: Default begin range date.
+    :param default_stop_date: Default end range date.
     :return: Date range tuple (as datetime) or None if press <Cancel>.
     """
     if _std_dlg:
         return _std_dlg.getDateRangeDlg(parent=parent,
-                                        is_concrete_date=is_concrete_date)
+                                        is_concrete_date=is_concrete_date,
+                                        default_start_date=default_start_date,
+                                        default_stop_date=default_stop_date)
     return None
 
 
