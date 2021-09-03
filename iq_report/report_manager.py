@@ -18,7 +18,7 @@ from iq.util import str_func
 from .report.dlg import report_action_dlg
 from .report import do_report
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 DEFAULT_REPORT_DIRNAME = 'reports'
 

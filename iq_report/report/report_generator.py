@@ -38,7 +38,7 @@ from iq.util import log_func
 from iq.util import str_func
 from iq.util import exec_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 # Report cell tags:
 # query table field values
@@ -78,19 +78,20 @@ ALL_PATTERNS = (REP_FIELD_PATT,
 REPORT_TEMPLATE = {
     'name': '',             # Report name
     'description': '',      # Description
-    'variables': {},        # Report variables
+    'variables': dict(),    # Report variables
     'generator': None,      # Generator
     'data_source': None,    # Data source / BD
     'query': None,          # Report query
     'style_lib': None,      # Style library
-    'header': {},           # Header band (coordinates and sizes)
-    'footer': {},           # Footer band (coordinates and sizes)
-    'detail': {},           # Data area band (coordinates and sizes)
-    'groups': [],           # Group band list (coordinates and sizes)
-    'upper': {},            # Upper band (coordinates and sizes)
-    'under': {},            # Under band (coordinates and sizes)
-    'sheet': [],            # Report cells
-    'args': {},             # Extended arguments
+    'template': None,       # Template modification
+    'header': dict(),       # Header band (coordinates and sizes)
+    'footer': dict(),       # Footer band (coordinates and sizes)
+    'detail': dict(),       # Data area band (coordinates and sizes)
+    'groups': list(),       # Group band list (coordinates and sizes)
+    'upper': dict(),        # Upper band (coordinates and sizes)
+    'under': dict(),        # Under band (coordinates and sizes)
+    'sheet': list(),        # Report cells
+    'args': dict(),         # Extended arguments
     'page_setup': None,     # Page setup
     }
 
@@ -286,6 +287,9 @@ class iqReportGenerator(object):
 
             # I. Define all bands in the template and amount cells
             if isinstance(rep_template, dict):
+                # Template modify
+                if 'template' in rep_template:
+                    rep_template = self._modifyTemplate(rep_template, rep_template['template'])
                 self._Template = rep_template
             else:
                 log_func.warning(u'Error report template type <%s>.' % type(rep_template))
@@ -312,7 +316,7 @@ class iqReportGenerator(object):
             self._StyleLib = None
             if 'style_lib' in self._Template:
                 self._StyleLib = self._Template['style_lib']
-            
+
             self._TemplateSheet = self._Template['sheet']
             self._TemplateSheet = self._initSumCells(self._TemplateSheet)
 
@@ -1227,3 +1231,29 @@ class iqReportGenerator(object):
         Execute function.
         """
         return exec_func.execTxtFunction(function)
+
+    def _modifyTemplate(self, template, modify_expression):
+        """
+        Modify template before generating.
+
+        :param template: Template structure.
+        :param modify_expression: Modify expression.
+        :return: Modified template structure or None if error.
+        """
+        try:
+            from . import report_template
+
+            if modify_expression.startswith(report_template.PY_SIGNATURE):
+                modify_expression = modify_expression.replace(report_template.PY_SIGNATURE, u'').strip()
+            elif modify_expression.startswith(report_template.CODE_SIGNATURE):
+                modify_expression = modify_expression.replace(report_template.CODE_SIGNATURE, u'').strip()
+
+            TEMPLATE = report_template.iqReportTemplate()
+            TEMPLATE.setTemplate(template)
+
+            template = exec_func.execTxtFunction(function=modify_expression,
+                                                 context=locals())
+            return template
+        except:
+            log_func.fatal(u'Error modify template by expression:\n%s' % str(modify_expression))
+        return None

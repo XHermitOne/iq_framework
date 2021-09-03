@@ -20,7 +20,7 @@ from . import report_generator
 
 from iq.components.virtual_spreadsheet import v_spreadsheet
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 # Report template tags
 DESCRIPTION_TAG = '[description]'   # Description band
@@ -29,6 +29,7 @@ GENERATOR_TAG = '[generator]'       # Generator type band
 DATASRC_TAG = '[data_source]'       # Data source / DB band
 QUERY_TAG = '[query]'               # Query table band
 STYLELIB_TAG = '[style_lib]'        # Style labrary band
+TEMPLATE_TAG = '[template]'         # Template modification band
 
 HEADER_TAG = '[header]'             # Report header band
 FOOTER_TAG = '[footer]'             # Report footer band
@@ -39,11 +40,12 @@ UPPER_TAG = '[upper]'               # Report upper band
 UNDER_TAG = '[under]'               # Report under band
 
 ALL_TAGS = (DESCRIPTION_TAG, VAR_TAG, GENERATOR_TAG, DATASRC_TAG, QUERY_TAG, STYLELIB_TAG,
+            TEMPLATE_TAG,
             HEADER_TAG, FOOTER_TAG, DETAIL_TAG,
             HEADER_GROUP_TAG, FOOTER_GROUP_TAG, UPPER_TAG, UNDER_TAG)
     
 # Title tags
-TITLE_TAGS = (DESCRIPTION_TAG, VAR_TAG, GENERATOR_TAG, DATASRC_TAG, QUERY_TAG, STYLELIB_TAG)
+TITLE_TAGS = (DESCRIPTION_TAG, VAR_TAG, GENERATOR_TAG, DATASRC_TAG, QUERY_TAG, STYLELIB_TAG, TEMPLATE_TAG)
 
 # The coefficients for converting the width and height of
 # the columns and rows are obtained experimentally
@@ -79,6 +81,20 @@ class iqReportTemplate(object):
         # Full report template filename
         self.template_filename = None
 
+    def setTemplate(self, rep_template):
+        """
+        Set report template data.
+
+        :param rep_template: Report template data.
+        """
+        self._rep_template = rep_template
+
+    def getTemplate(self):
+        """
+        Get report template data.
+        """
+        return self._rep_template
+
     def setTemplateFilename(self, template_filename):
         """
         Set report template filename.
@@ -86,6 +102,122 @@ class iqReportTemplate(object):
         :param template_filename: Report template filename.
         """
         self.template_filename = template_filename
+
+    def copyColumns(self, src_col=0, cols=1, dst_col=None):
+        """
+        Copy template columns to col.
+
+        :param src_col: Source cell range column index.
+        :param cols: Number of columns.
+        :param dst_col: Destination column index.
+            If None then get next column.
+        :return: True/False.
+        """
+        try:
+            if dst_col is None:
+                dst_col = src_col + cols
+
+            # Insert columns
+            for i_row in range(len(self._rep_template['sheet'])):
+                for i_col in range(cols):
+                    copy_cell = copy.deepcopy(self._rep_template['sheet'][i_row][src_col + i_col])
+                    self._rep_template['sheet'][i_row].insert(dst_col + i_col, copy_cell)
+
+            # Expand bands
+            if self._rep_template['header']:
+                self._rep_template['header']['col_size'] += cols
+            if self._rep_template['footer']:
+                self._rep_template['footer']['col_size'] += cols
+            if self._rep_template['detail']:
+                self._rep_template['detail']['col_size'] += cols
+            if self._rep_template['upper']:
+                self._rep_template['upper']['col_size'] += cols
+            if self._rep_template['under']:
+                self._rep_template['under']['col_size'] += cols
+            if self._rep_template['groups']:
+                for i_group, group in enumerate(self._rep_template['groups']):
+                    if group:
+                        self._rep_template['groups'][i_group]['col_size'] += cols
+            return True
+        except:
+            log_func.fatal(u'Error copy template [%d] columns from <%d> to <%d>' % (cols, src_col, dst_col))
+        return False
+
+    def copyRows(self, src_row=0, rows=1, dst_row=None):
+        """
+        Copy template rows to row.
+
+        :param src_row: Source cell range row index.
+        :param rows: Number of rows.
+        :param dst_row: Destination row index.
+            If None then get next row.
+        :return: True/False.
+        """
+        try:
+            if dst_row is None:
+                dst_row = src_row + rows
+
+            # Insert rows
+            for i_row in range(rows):
+                copy_row = copy.deepcopy(self._rep_template['sheet'][src_row + i_row])
+                self._rep_template['sheet'].insert(dst_row + i_row, copy_row)
+
+                # Expand bands
+                if self._isInBand('header', dst_row, 0):
+                    self._rep_template['header']['row_size'] += 1
+                if self._isInBand('footer', dst_row, 0):
+                    self._rep_template['footer']['row_size'] += 1
+                if self._isInBand('detail', dst_row, 0):
+                    self._rep_template['detail']['row_size'] += 1
+                if self._isInBand('upper', dst_row, 0):
+                    self._rep_template['upper']['row_size'] += 1
+                if self._isInBand('under', dst_row, 0):
+                    self._rep_template['under']['row_size'] += 1
+                if self._rep_template['groups']:
+                    for i_group, group in enumerate(self._rep_template['groups']):
+                        if self._isInRange(range_row=group['row'], range_col=group['col'],
+                                           range_rows=group['row_size'], range_cols=group['row'],
+                                           row=dst_row, col=0):
+                            self._rep_template['groups'][i_group]['row_size'] += 1
+            return True
+        except:
+            log_func.fatal(u'Error copy template [%d] rows from <%d> to <%d>' % (rows, src_row, dst_row))
+        return False
+
+    def _isInRange(self, range_row=0, range_col=0, range_rows=1, range_cols=1, row=0, col=0):
+        """
+        Is in range cell with coordinates (row, col)?
+
+        :param range_row: Range row.
+        :param range_col: Range column.
+        :param range_rows: Range row size.
+        :param range_cols: Range column size.
+        :param row: Cell row.
+        :param col: Cell column.
+        :return: True/False.
+        """
+        return (range_row <= row <= (range_row + range_rows)) and (range_col <= col <= (range_col + range_cols))
+
+    def _isInBand(self, band_tag, row=0, col=0):
+        """
+        Check is in band cell  with coordinates (row, col)?
+
+        :param band_tag: Band tag.
+        :param row: Cell row.
+        :param col: Cell column.
+        :return: True/False.
+        """
+        if band_tag in self._rep_template:
+            band = self._rep_template[band_tag]
+            return self._isInRange(range_row=band['row'],
+                                   range_col=band['col'],
+                                   range_rows=band['row_size'],
+                                   range_cols=band['col_size'],
+                                   row=row,
+                                   col=col)
+        else:
+            log_func.warning(u'Band <%s> not define in report template' % band_tag)
+        return False
 
     def getTemplateFilename(self):
         """
@@ -1227,7 +1359,20 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         except:
             report['query'] = None
             log_func.warning(u'Not defined query')
-            
+
+    def _parseTemplateTag(self, report, parse_row):
+        """
+        Parse template modify tag.
+
+        :param report: Report template data.
+        :param parse_row: The parsed line of the report template as a list.
+        """
+        try:
+            report['template'] = parse_row[0]['_children_'][0]['value']
+        except:
+            report['template'] = None
+            log_func.warning(u'Not defined template modify')
+
     def _parseStyleLibTag(self, report, parse_row):
         """
         Parse style library tag.
@@ -1249,6 +1394,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                                 DATASRC_TAG: _parseDataSrcTag,
                                 QUERY_TAG: _parseQueryTag,
                                 STYLELIB_TAG: _parseStyleLibTag,
+                                TEMPLATE_TAG: _parseTemplateTag,
                                 }
 
 
