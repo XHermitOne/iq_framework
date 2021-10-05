@@ -14,9 +14,9 @@ __version__ = (0, 0, 0, 1)
 
 SHOW_PRESENTATION_LINUX_EXEC_FMT = 'libreoffice --impress --show %s &'
 
-SOFFICE_WINDOWS_EXEC = '"C:\Program Files\LibreOffice\program\soffice.exe"'
-ALTER_SOFFICE_WINDOWS_EXEC = '"C:\Program Files (x86)\LibreOffice\program\soffice.exe"'
-SHOW_PRESENTATION_WINDOWS_EXEC_FMT = '%s --impress --show %s &'
+SOFFICE_WINDOWS_EXEC = 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'
+ALTER_SOFFICE_WINDOWS_EXEC = 'C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe'
+SHOW_PRESENTATION_WINDOWS_EXEC_FMT = '"%s" --impress --show %s &'
 
 
 def showPresentationLibreOffice(presentation_filename=None):
