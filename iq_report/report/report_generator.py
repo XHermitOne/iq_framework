@@ -288,7 +288,7 @@ class iqReportGenerator(object):
             # I. Define all bands in the template and amount cells
             if isinstance(rep_template, dict):
                 # Template modify
-                if 'template' in rep_template:
+                if 'template' in rep_template and rep_template['template']:
                     rep_template = self._modifyTemplate(rep_template, rep_template['template'])
                 self._Template = rep_template
             else:
@@ -1232,7 +1232,7 @@ class iqReportGenerator(object):
         """
         return exec_func.execTxtFunction(function)
 
-    def _modifyTemplate(self, template, modify_expression):
+    def _modifyTemplate(self, template, modify_expression=None):
         """
         Modify template before generating.
 
@@ -1240,6 +1240,9 @@ class iqReportGenerator(object):
         :param modify_expression: Modify expression.
         :return: Modified template structure or None if error.
         """
+        if modify_expression is None:
+            log_func.warning(u'Not define modify template expression')
+            return None
         try:
             from . import report_template
 

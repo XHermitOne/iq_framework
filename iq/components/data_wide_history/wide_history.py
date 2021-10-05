@@ -88,7 +88,7 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
                 recordset = transaction.query(model).filter(dt_field.between(start_dt, stop_dt)).order_by(dt_field)
                 records = [vars(record) for record in recordset]
 
-                recordset =  self.filterFuncRecords(rec_filter, records) if rec_filter else records
+                recordset = self.filterFuncRecords(rec_filter, records) if rec_filter else records
             else:
                 log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
         except:
@@ -289,3 +289,73 @@ class iqWideHistoryManager(model_navigator.iqModelNavigatorManager):
         """
         first_record = self.getFirstRecord(rec_filter=rec_filter, rec_limit=rec_limit)
         return first_record.get(self.getDTColumnName(), None)
+
+    def getRecord(self, dt, rec_filter=None):
+        """
+        Get the record historical data by datetime.
+
+        :type dt: datetime.datetime.
+        :param dt: The date-time of the cache range.
+        :param rec_filter: Function of additional filter of records.
+            If the function is specified by a text block of code:
+            As an argument, the function takes the current entry as a dictionary.
+            There is a RECORD variable in the namespace that points to the current record.
+            The function returns True for the record that falls into the resulting list,
+            False - if missed.
+        :return: The last registered wide format entry in the form of a dictionary.
+             Or an empty dictionary in case of an error.
+        """
+        if rec_filter is None:
+            rec_filter = self.getFilter()
+
+        model = self.getModel()
+        transaction = self.startTransaction()
+        record = dict()
+        try:
+            if model:
+                dt_fieldname = self.getDTColumnName()
+                dt_field = getattr(model, dt_fieldname)
+                recordset = transaction.query(model).filter(dt_field == dt).all()
+                records = [vars(record) for record in recordset]
+
+                if rec_filter:
+                    records = self.filterFuncRecords(rec_filter, records)
+
+                if records:
+                    record = dict(records[0])
+                    if DEFAULT_DT_FIELDNAME not in record:
+                        # Set time using a standard key
+                        record[DEFAULT_DT_FIELDNAME] = record[dt_fieldname]
+                else:
+                    log_func.warning(u'No data in historical data table <%s>' % model.__name__)
+            else:
+                log_func.warning(u'The table of storage of historical data in the object is not defined <%s>' % self.getName())
+        except:
+            log_func.fatal(u'Error get the record historical data')
+        self.stopTransaction(transaction)
+        return record
+
+    def getValue(self, dt, col_name, rec_filter=None):
+        """
+        Get the record historical data for a specific column by datetime.
+
+        :type dt: datetime.datetime.
+        :param dt: The date-time of the cache range.
+        :param col_name: Column name.
+        :param rec_filter: Function of additional filter of records.
+            If the function is specified by a text block of code:
+            As an argument, the function takes the current entry as a dictionary.
+            There is a RECORD variable in the namespace that points to the current record.
+            The function returns True for the record that falls into the resulting list,
+            False - if missed.
+        :return: Dictionary {'dt': date-time of last registration,
+                            'data': value}.
+            Or an empty dictionary in case of an error.
+        """
+        record = self.getRecord(dt=dt, rec_filter=rec_filter)
+        if record:
+            dt_fieldname = self.getDTColumnName()
+            tag_data = dict(dt=record.get(dt_fieldname),
+                            data=record.get(col_name))
+            return tag_data
+        return dict()
