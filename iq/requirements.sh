@@ -118,7 +118,8 @@ sudo apt install --assume-yes poedit
 sudo apt install --assume-yes gnuplot
 
 # Data tables
-sudo apt install --assume-yes python3-pandas
+# sudo apt install --assume-yes python3-pandas
+pip3 install pandas
 
 # Maps
 pip3 install folium

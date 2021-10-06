@@ -129,6 +129,21 @@ def getStopMonthDT(now=None):
     return now.replace(day=day_month_range[1], hour=23, minute=59, second=59, microsecond=999999)
 
 
+def getLastMonthDay(month=1, year=None):
+    """
+    Get last day of month.
+
+    :param month: Month number (1-12).
+    :param year: Year.
+    :return: Last day number (1-31).
+    """
+    if year is None:
+        year = getNowYear()
+    if month == 0:
+        n_month = 1
+    return calendar.monthrange(year=year, month=month)[1]
+
+
 def getOperateYear():
     """
     Get operate year.
