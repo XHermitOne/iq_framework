@@ -75,11 +75,11 @@ class iqVWorksheet(v_prototype.iqVPrototype):
         """
         return self._attributes['Name']
 
-    def setName(self, Name_):
+    def setName(self, name):
         """
         Set worksheet name.
         """
-        self._attributes['Name'] = Name_
+        self._attributes['Name'] = name
 
     def createTable(self):
         """
