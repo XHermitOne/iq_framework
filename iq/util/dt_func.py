@@ -14,7 +14,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -38,9 +38,26 @@ def getMonths():
     :return:
     """
     cur_locale = locale.getlocale()
-    if cur_locale != 'ru_RU':
+    if isinstance(cur_locale, str) and cur_locale != 'ru_RU':
+        return tuple(calendar.month_name[1:])
+    elif isinstance(cur_locale, tuple) and cur_locale[0] != 'ru_RU':
         return tuple(calendar.month_name[1:])
     return RU_MONTHS
+
+
+def getMonthName(month):
+    """
+    Get month name by month number.
+
+    :param month: Month number.
+    :return: Month name.
+    """
+    if month < 1:
+        month = 1
+    elif month > 12:
+        month = 12
+    month_names = getMonths()
+    return month_names[month - 1]
 
 
 def date2datetime(d):
