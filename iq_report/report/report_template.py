@@ -302,6 +302,29 @@ class iqReportTemplate(object):
         """
         return self._rep_template
 
+    def setCell(self, row, column, **cell_attrs):
+        """
+        Set template cell attributes.
+
+        :param row: Cell row.
+        :param column: Cell column.
+        :param cell_attrs: Cell attributes.
+        :return: True/False.
+        """
+        if not cell_attrs:
+            log_func.warning(u'Empty template cell attributes')
+            return False
+        try:
+            cell = self._rep_template['sheet'][row][column]
+            if cell is None:
+                self._rep_template['sheet'][row][column] = cell_attrs
+            else:
+                self._rep_template['sheet'][row][column].update(cell_attrs)
+            return True
+        except:
+            log_func.fatal(u'Error template cell [%s x %s] attributes %s' % (row, column, cell_attrs))
+        return False
+
     _LINE_STYLE = {
         'Continuous': report_generator.REP_LINE_SOLID,
         'Dash': report_generator.REP_LINE_SHORT_DASH,

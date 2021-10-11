@@ -785,6 +785,15 @@ class iqReportGenerator(object):
             else:
                 parsed_fmt = self._cellFmt[cell_val]
 
+            # For use records in generate cell text
+            query_table = self._QueryTbl
+            records = [dict([(field_name,
+                              table_rec[i_field]) for i_field,
+                                                      field_name in enumerate(query_table.get('__fields__',
+                                                                                              list()))]) for table_rec in query_table.get('__data__',
+                                                                                                                                          list())]
+            i_record = self._CurRec['sys_num_rec_idx']
+
             func_str = list()   # Result value list
             i_sum = 0
 
@@ -829,7 +838,7 @@ class iqReportGenerator(object):
                         value = str(sys_num_rec + 1)
                     else:
                         log_func.warning(u'Unknown system function <%s> in <%s>' % (str_func.toUnicode(cur_func),
-                                                                                  self._RepName))
+                                                                                    self._RepName))
                         value = ''
                         
                 # Style
