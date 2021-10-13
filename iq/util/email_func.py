@@ -334,7 +334,7 @@ def sendMailByCurl(from_adr=None, to_adr=None,
                    subject=None, body=None, attache_files=None,
                    smtp_server=None, smtp_port=None,
                    login=None, password=None,
-                   encoding='utf-8'):
+                   encoding='utf-8', ssl=False):
     """
     Send mail by curl tools.
 
@@ -349,6 +349,7 @@ def sendMailByCurl(from_adr=None, to_adr=None,
     :param login: SMTP server user name.
     :param password: SMTP server password.
     :param encoding: Code page. Default UTF-8.
+    :param ssl: Is SSL/TLS
     :return: True/False.
     """
     try:
@@ -361,10 +362,8 @@ To: <%s>
 Subject: %s
 
 %s
-''' % (from_adr if from_adr else '',
-       to_adr if to_adr else '',
-       subject if subject else '',
-       body if body else '')
+''' % (from_adr if from_adr else '', to_adr if to_adr else '', subject if subject else '', body if body else '')
+            mail_file.write(mail_txt)
             mail_file.close()
         except:
             if mail_file:
@@ -373,12 +372,19 @@ Subject: %s
             log_func.fatal(u'Error save mail file <%s>' % mail_filename)
             return False
 
-        cmd = '''curl --url \'smtps://%s:%s\' --ssl-reqd \
+        cmd = '''curl --verbose --url \'smtp%s://%s:%s\' %s\
 --mail-from \'%s\' --mail-rcpt \'%s\' \
---upload-file %s --user \'%s%s:%s\'
-        ''' % (smtp_server, smtp_port, from_adr, to_adr, mail_filename,
-               login, '@' + from_adr.split('@')[1] if '@' in from_adr else '', password)
+--upload-file \'%s\'''' % ('s' if ssl else '',
+                           smtp_server, smtp_port,
+                           '--ssl-reqd' if ssl else '',
+                           from_adr, to_adr, mail_filename)
+        if login:
+            cmd += ' --user \'%s%s:%s\'' % (login if login else '',
+                                            '@' + from_adr.split('@')[1] if '@' in from_adr else '',
+                                            password if password else '')
+        log_func.debug(u'Run system command <%s>' % cmd, is_force_print=True)
         os.system(cmd)
+        os.remove(mail_filename)
         return True
     except:
         log_func.fatal(u'Error send email by curl')

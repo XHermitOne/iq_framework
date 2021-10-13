@@ -21,7 +21,7 @@ except ImportError:
 
 from . import log_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -145,7 +145,7 @@ def getOSVersion():
                 cmd = 'wmic os get Caption'
                 p = subprocess.Popen(cmd.split(' '), stdout=subprocess.PIPE)
             except FileNotFoundError:
-                log_func.error('WMIC.exe was not found... Make sure \'C:\Windows\System32\wbem\' is added to PATH')
+                log_func.error('WMIC.exe was not found. Make sure \'C:\Windows\System32\wbem\' is added to PATH')
                 return None
 
             stdout, stderror = p.communicate()
@@ -195,7 +195,8 @@ def getUptime():
                 days, hours = divmod(hours, 24)
 
                 def includeS(text: str, num: int):
-                    return f"{num} {text}{'' if num == 1 else 's'}"
+                    # return f'{num} {text}{"" if num == 1 else "s"}'
+                    return '%s %s%s' % (num, text, '' if num == 1 else 's')
 
                 d = includeS('day', days)
                 h = includeS('hour', hours)
