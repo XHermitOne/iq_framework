@@ -264,7 +264,7 @@ def getDesktopEnvironment():
     Get desktop environment.
     """
     try:
-        return os.environ.get('DESKTOP_SESSION')
+        return os.environ.get('DESKTOP_SESSION', '')
     except:
         log_func.fatal(u'Error get desktop environment')
     return None
@@ -285,7 +285,7 @@ LINUX_FETCH_FMT = '''
 \033[92m       a88888.       \033[0m   {hostname} 
 \033[92m      d888888b.      \033[0m   {hostname_sep}
 \033[92m      d888888b.      \033[0m\033[93m  OS: {os_version}
-\033[92m      8P"YP"Y88      \033[0m\033[93m  Kernel:{kernel}
+\033[92m      8P"YP"Y88      \033[0m\033[93m  Kernel: {kernel}
 \033[93m      8|o||o|88      \033[0m\033[93m  Cpu architecture: {cpu}
 \033[93m      8'    .88      \033[0m\033[93m  Shell: {shell}
 \033[93m      8'    .88      \033[0m\033[93m  DE(WM): {de}
@@ -308,7 +308,7 @@ WINDOWS_FETCH_FMT = '''
                                 ..,     {hostname}
                     ....,,:;+ccllll     {hostname_sep}
       ...,,+:;  cllllllllllllllllll     OS: {os_version}
-,cclllllllllll  lllllllllllllllllll     Kernel:{kernel}
+,cclllllllllll  lllllllllllllllllll     Kernel: {kernel}
 llllllllllllll  lllllllllllllllllll     Cpu architecture: {cpu}
 llllllllllllll  lllllllllllllllllll     Shell: {shell}
 llllllllllllll  lllllllllllllllllll     DE(WM): {de}
@@ -358,7 +358,15 @@ def printOSFetchInfo():
     """
     info_txt = getOSFetchInfo()
     if info_txt:
-        print(info_txt)
+        if isLinuxPlatform():
+            print(info_txt)
+        elif isWindowsPlatform():
+            import termcolor
+            lines = info_txt.splitlines()
+            for line in lines:
+                print(termcolor.colored(line[:40], 'cyan'), termcolor.colored(line[40:], 'yellow'))
+        else:
+            print(info_txt)
         return True
     else:
         return False
