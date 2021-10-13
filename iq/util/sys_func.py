@@ -186,8 +186,8 @@ def getUptime():
         if isLinuxPlatform():
             return subprocess.check_output(['uptime -p'], shell=True).decode('utf-8').strip()
         elif isWindowsPlatform():
-            import time
             try:
+                import time
                 import psutil
                 delta = round(time.time() - psutil.boot_time())
                 hours, remainder = divmod(int(delta), 3600)
@@ -216,7 +216,10 @@ def getUptime():
 
                 stdout, stderror = p.communicate()
 
-                output = stdout.decode('UTF-8', 'ignore')
+                try:
+                    output = stdout.decode('cp866')
+                except UnicodeDecodeError:
+                    output = stdout.decode('utf-8', 'ignore')
                 lines = output.split('\r\r')
                 lines = [line.replace('\n', '').replace('\r', '') for line in lines if len(line) > 2]
                 output = lines[-1]
