@@ -204,11 +204,12 @@ def getUptime():
                 s = includeS('second', seconds)
 
                 if days:
-                    output = f'{d}, {h}, {m} and {s}'
+                    # output = f'{d}, {h}, {m} and {s}'
+                    output = '%s, %s, %s and %s' % (d, h, m, s)
                 elif hours:
-                    output = f'{h}, {m} and {s}'
+                    output = '%s, %s and %s' % (h, m, s)
                 elif minutes:
-                    output = f'{m} and {s}'
+                    output = '%s and %s' % (m, s)
                 else:
                     output = s
             except ImportError:

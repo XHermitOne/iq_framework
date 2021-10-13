@@ -39,7 +39,7 @@ from iq.util import sys_func
 from iq import editor
 import iq
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 
 def main(*argv):
@@ -102,7 +102,8 @@ def main(*argv):
             log_func.warning(u'Not supported parameter <%s>' % option)
 
     start_time = time.time()
-    sys_func.printOSFetchInfo()
+    if global_func.isDebugMode():
+        sys_func.printOSFetchInfo()
     log_func.info(u'iqFramework <Engine: %s / Mode: %s / Path: %s>... START' % (engine, mode,
                                                                                 file_func.getFrameworkPath()))
 
