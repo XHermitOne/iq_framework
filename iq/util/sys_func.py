@@ -363,8 +363,11 @@ def printOSFetchInfo():
         elif isWindowsPlatform():
             import termcolor
             lines = info_txt.splitlines()
-            for line in lines:
-                print(termcolor.colored(line[:40], 'cyan'), termcolor.colored(line[40:], 'yellow'))
+            for i, line in enumerate(lines):
+                if i < 3:
+                    print(termcolor.colored(line[:40], 'cyan'), termcolor.colored(line[40:], 'white'))
+                else:
+                    print(termcolor.colored(line[:40], 'cyan'), termcolor.colored(line[40:], 'yellow'))
         else:
             print(info_txt)
         return True
