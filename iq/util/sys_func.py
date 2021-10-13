@@ -187,29 +187,39 @@ def getUptime():
             return subprocess.check_output(['uptime -p'], shell=True).decode('utf-8').strip()
         elif isWindowsPlatform():
             import time
-            import psutil
-            delta = round(time.time() - psutil.boot_time())
+            try:
+                import psutil
+                delta = round(time.time() - psutil.boot_time())
+                hours, remainder = divmod(int(delta), 3600)
+                minutes, seconds = divmod(remainder, 60)
+                days, hours = divmod(hours, 24)
 
-            hours, remainder = divmod(int(delta), 3600)
-            minutes, seconds = divmod(remainder, 60)
-            days, hours = divmod(hours, 24)
+                def includeS(text: str, num: int):
+                    return f"{num} {text}{'' if num == 1 else 's'}"
 
-            def includeS(text: str, num: int):
-                return f"{num} {text}{'' if num == 1 else 's'}"
+                d = includeS('day', days)
+                h = includeS('hour', hours)
+                m = includeS('minute', minutes)
+                s = includeS('second', seconds)
 
-            d = includeS('day', days)
-            h = includeS('hour', hours)
-            m = includeS('minute', minutes)
-            s = includeS('second', seconds)
+                if days:
+                    output = f'{d}, {h}, {m} and {s}'
+                elif hours:
+                    output = f'{h}, {m} and {s}'
+                elif minutes:
+                    output = f'{m} and {s}'
+                else:
+                    output = s
+            except ImportError:
+                p = subprocess.Popen(['powershell', '-command', '(gcim Win32_OperatingSystem).LastBootUpTime'],
+                                     stdout=subprocess.PIPE)
 
-            if days:
-                output = f'{d}, {h}, {m} and {s}'
-            elif hours:
-                output = f'{h}, {m} and {s}'
-            elif minutes:
-                output = f'{m} and {s}'
-            else:
-                output = s
+                stdout, stderror = p.communicate()
+
+                output = stdout.decode('UTF-8', 'ignore')
+                lines = output.split('\r\r')
+                lines = [line.replace('\n', '') for line in lines if len(line) > 2]
+                output = lines[-1]
             return output
     except:
         log_func.fatal(u'Error get uptime')
