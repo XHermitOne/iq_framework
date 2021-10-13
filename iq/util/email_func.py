@@ -10,6 +10,7 @@ import os.path
 import smtplib
 import email.message
 import mimetypes
+import tempfile
 
 from . import log_func
 
@@ -327,3 +328,58 @@ def sendMail(*args, **kwargs):
     mail_sender = iqEMailSender(*args, **kwargs)
     result = mail_sender.sendMail()
     return result
+
+
+def sendMailByCurl(from_adr=None, to_adr=None,
+                   subject=None, body=None, attache_files=None,
+                   smtp_server=None, smtp_port=None,
+                   login=None, password=None,
+                   encoding='utf-8'):
+    """
+    Send mail by curl tools.
+
+    :param from_adr: Sender address.
+    :param to_adr: Receiver address.
+        As list or as string with delimeter EMAIL_ADR_DELIMETER.
+    :param subject: Email subject.
+    :param body: Email text
+    :param attache_files: Attached file names.
+    :param smtp_server: SMTP server address.
+    :param smtp_port: SMTP server port. Default 25.
+    :param login: SMTP server user name.
+    :param password: SMTP server password.
+    :param encoding: Code page. Default UTF-8.
+    :return: True/False.
+    """
+    try:
+        mail_filename = tempfile.mktemp()
+        mail_file = None
+        try:
+            mail_file = open(mail_filename, 'wt')
+            mail_txt = '''From: <%s>
+To: <%s>
+Subject: %s
+
+%s
+''' % (from_adr if from_adr else '',
+       to_adr if to_adr else '',
+       subject if subject else '',
+       body if body else '')
+            mail_file.close()
+        except:
+            if mail_file:
+                mail_file.close()
+                os.remove(mail_filename)
+            log_func.fatal(u'Error save mail file <%s>' % mail_filename)
+            return False
+
+        cmd = '''curl --url \'smtps://%s:%s\' --ssl-reqd \
+--mail-from \'%s\' --mail-rcpt \'%s\' \
+--upload-file %s --user \'%s%s:%s\'
+        ''' % (smtp_server, smtp_port, from_adr, to_adr, mail_filename,
+               login, '@' + from_adr.split('@')[1] if '@' in from_adr else '', password)
+        os.system(cmd)
+        return True
+    except:
+        log_func.fatal(u'Error send email by curl')
+    return False

@@ -9,6 +9,9 @@ import sys
 import socket
 import platform
 import os
+import subprocess
+import distro
+import getpass
 
 try:
     # For Python 2
@@ -115,3 +118,195 @@ def isSystemRoot():
     :return: True - root/ False - not root.
     """
     return getSystemUsername() == 'root'
+
+
+def getLocalIP():
+    """
+    Get local IP address.
+    """
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        return s.getsockname()[0]
+    except:
+        log_func.fatal(u'Error get local IP')
+    return None
+
+
+def getOSVersion():
+    """
+    Get OS version.
+    """
+    try:
+        return distro.linux_distribution()
+    except:
+        log_func.fatal(u'Error get OS version')
+    return None
+
+
+def getScreenSize():
+    """
+    Get screen size.
+    """
+    try:
+        if isLinuxPlatform():
+            import tkinter
+            root = tkinter.Tk()
+            return '%s x %s' % (root.winfo_screenwidth(), root.winfo_screenheight())
+        elif isWindowsPlatform():
+            import ctypes
+            user32 = ctypes.windll.user32
+            user32.SetProcessDPIAware()
+            return '%s x %s' % (user32.GetSystemMetrics(0), user32.GetSystemMetrics(1))
+    except:
+        log_func.fatal(u'Error get screen size')
+    return None
+
+
+def getUptime():
+    """
+    Get uptime.
+    """
+    try:
+        return subprocess.check_output(['uptime -p'], shell=True).decode('utf-8').strip()
+    except:
+        log_func.fatal(u'Error get uptime')
+    return None
+
+
+def getShell():
+    """
+    Get shell.
+    """
+    try:
+        return os.environ.get('SHELL', '')
+    except:
+        log_func.fatal(u'Error get shell')
+    return None
+
+
+def getPlatformKernel():
+    """
+    Get kernel.
+    """
+    try:
+        return platform.release()
+    except:
+        log_func.fatal(u'Error get platform kernel')
+    return None
+
+
+def getCPUSpec():
+    """
+    Get CPU specification.
+    """
+    try:
+        return platform.processor()
+    except:
+        log_func.fatal(u'Error get CPU specification')
+    return None
+
+
+def getDesktopEnvironment():
+    """
+    Get desktop environment.
+    """
+    try:
+        return os.environ.get('DESKTOP_SESSION')
+    except:
+        log_func.fatal(u'Error get desktop environment')
+    return None
+
+
+def getOSUsername():
+    """
+    Get OS username.
+    """
+    try:
+        return getpass.getuser()
+    except:
+        log_func.fatal(u'Error get OS username')
+    return None
+
+
+LINUX_FETCH_FMT = '''
+\033[92m       a88888.       \033[0m   {hostname} 
+\033[92m      d888888b.      \033[0m   {hostname_sep}
+\033[92m      d888888b.      \033[0m\033[93m  OS: {os_version}
+\033[92m      8P"YP"Y88      \033[0m\033[93m  Kernel:{kernel}
+\033[93m      8|o||o|88      \033[0m\033[93m  Cpu architecture: {cpu}
+\033[93m      8'    .88      \033[0m\033[93m  Shell: {shell}
+\033[93m      8'    .88      \033[0m\033[93m  DE(WM): {de}
+\033[93m      8`._.' Y8      \033[0m\033[93m  Uptime: {uptime}
+\033[91m     d/      `8b.    \033[0m\033[93m  Resolution: {size}
+\033[91m   .dP   .     Y8b   \033[0m\033[93m  Local IP: {local_ip}
+\033[91m   d8:'   "   `::88b.\033[0m\033[93m  User: {os_username}
+\033[95m  d8"           `Y88b
+\033[95m :8P     '       :888
+\033[95m  8a.    :      _a88
+\033[94m  ._/"Yaa_ :    .| 88P|
+\033[94m   \    YP"      `| 8P  `.
+\033[94m  /     \._____.d|    .'
+\033[94m  `--..__)888888P`._.'
+
+\033[30m███\033[0m\033[91m███\033[0m\033[92m███\033[0m\033[93m███\033[0m\033[94m███\033[0m\033[95m███\033[0m\033[96m███\0
+'''
+
+WINDOWS_FETCH_FMT = '''
+                                ..,     {hostname}
+                    ....,,:;+ccllll     {hostname_sep}
+      ...,,+:;  cllllllllllllllllll     OS: {os_version}
+,cclllllllllll  lllllllllllllllllll     Kernel:{kernel}
+llllllllllllll  lllllllllllllllllll     Cpu architecture: {cpu}
+llllllllllllll  lllllllllllllllllll     Shell: {shell}
+llllllllllllll  lllllllllllllllllll     DE(WM): {de}
+llllllllllllll  lllllllllllllllllll     Uptime: {uptime}
+llllllllllllll  lllllllllllllllllll     Resolution: {size}
+                                        Local IP: {local_ip}
+llllllllllllll  lllllllllllllllllll     User: {os_username}
+llllllllllllll  lllllllllllllllllll
+llllllllllllll  lllllllllllllllllll
+llllllllllllll  lllllllllllllllllll
+llllllllllllll  lllllllllllllllllll
+llllllllllllll  lllllllllllllllllll
+`'ccllllllllll  lllllllllllllllllll
+      `' \\*::  :ccllllllllllllllll
+                       ````''*::cll
+                                 ``
+'''
+
+
+def getOSFetchInfo():
+    """
+    Get OS fetch info.
+    """
+    try:
+        computer_name = getComputerName()
+        fetch_fmt = LINUX_FETCH_FMT if isLinuxPlatform() else WINDOWS_FETCH_FMT
+        info_txt = fetch_fmt.format(hostname=computer_name,
+                                    hostname_sep='-' * len(computer_name),
+                                    os_version=getOSVersion(),
+                                    kernel=getPlatformKernel(),
+                                    cpu=getCPUSpec(),
+                                    shell=getShell(),
+                                    de=getDesktopEnvironment(),
+                                    uptime=getUptime(),
+                                    size=getScreenSize(),
+                                    local_ip=getLocalIP(),
+                                    os_username=getOSUsername())
+        return info_txt
+    except:
+        log_func.fatal(u'Error get OS fetch info', is_force_print=True)
+    return None
+
+
+def printOSFetchInfo():
+    """
+    Print OS fetch info.
+    """
+    info_txt = getOSFetchInfo()
+    if info_txt:
+        print(info_txt)
+        return True
+    else:
+        return False

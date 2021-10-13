@@ -35,6 +35,7 @@ from iq import global_data
 from iq.util import log_func
 from iq.util import global_func
 from iq.util import file_func
+from iq.util import sys_func
 from iq import editor
 import iq
 
@@ -101,6 +102,7 @@ def main(*argv):
             log_func.warning(u'Not supported parameter <%s>' % option)
 
     start_time = time.time()
+    sys_func.printOSFetchInfo()
     log_func.info(u'iqFramework <Engine: %s / Mode: %s / Path: %s>... START' % (engine, mode,
                                                                                 file_func.getFrameworkPath()))
 
