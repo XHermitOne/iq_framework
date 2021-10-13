@@ -218,7 +218,7 @@ def getUptime():
 
                 output = stdout.decode('UTF-8', 'ignore')
                 lines = output.split('\r\r')
-                lines = [line.replace('\n', '') for line in lines if len(line) > 2]
+                lines = [line.replace('\n', '').replace('\r', '') for line in lines if len(line) > 2]
                 output = lines[-1]
             return output
     except:
