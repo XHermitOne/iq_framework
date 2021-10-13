@@ -11,10 +11,6 @@ import platform
 import os
 import subprocess
 import getpass
-try:
-    import distro
-except:
-    pass
 
 try:
     # For Python 2
@@ -142,6 +138,7 @@ def getOSVersion():
     """
     try:
         if isLinuxPlatform():
+            import distro
             return distro.linux_distribution()
         elif isWindowsPlatform():
             try:
@@ -186,7 +183,34 @@ def getUptime():
     Get uptime.
     """
     try:
-        return subprocess.check_output(['uptime -p'], shell=True).decode('utf-8').strip()
+        if isLinuxPlatform():
+            return subprocess.check_output(['uptime -p'], shell=True).decode('utf-8').strip()
+        elif isWindowsPlatform():
+            import time
+            import psutil
+            delta = round(time.time() - psutil.boot_time())
+
+            hours, remainder = divmod(int(delta), 3600)
+            minutes, seconds = divmod(remainder, 60)
+            days, hours = divmod(hours, 24)
+
+            def includeS(text: str, num: int):
+                return f"{num} {text}{'' if num == 1 else 's'}"
+
+            d = includeS('day', days)
+            h = includeS('hour', hours)
+            m = includeS('minute', minutes)
+            s = includeS('second', seconds)
+
+            if days:
+                output = f'{d}, {h}, {m} and {s}'
+            elif hours:
+                output = f'{h}, {m} and {s}'
+            elif minutes:
+                output = f'{m} and {s}'
+            else:
+                output = s
+            return output
     except:
         log_func.fatal(u'Error get uptime')
     return None
