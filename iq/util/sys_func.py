@@ -10,8 +10,11 @@ import socket
 import platform
 import os
 import subprocess
-import distro
 import getpass
+try:
+    import distro
+except:
+    pass
 
 try:
     # For Python 2
@@ -138,7 +141,22 @@ def getOSVersion():
     Get OS version.
     """
     try:
-        return distro.linux_distribution()
+        if isLinuxPlatform():
+            return distro.linux_distribution()
+        elif isWindowsPlatform():
+            try:
+                cmd = 'wmic os get Caption'
+                p = subprocess.Popen(cmd.split(' '), stdout=subprocess.PIPE)
+            except FileNotFoundError:
+                log_func.error('WMIC.exe was not found... Make sure \'C:\Windows\System32\wbem\' is added to PATH')
+                return None
+
+            stdout, stderror = p.communicate()
+
+            output = stdout.decode('UTF-8', 'ignore')
+            lines = output.split('\r\r')
+            lines = [line.replace('\n', '').replace('  ', '') for line in lines if len(line) > 2]
+            return lines[-1]
     except:
         log_func.fatal(u'Error get OS version')
     return None
