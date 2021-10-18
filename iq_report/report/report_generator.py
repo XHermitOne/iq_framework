@@ -235,7 +235,7 @@ class iqReportGenerator(object):
         self._cur_top = 0
 
         # Report name space
-        self._NameSpace = dict()
+        self._variables = dict()
 
         # Cell attributes by default. If None, then attributes are not set
         self.AttrDefault = None
@@ -303,14 +303,14 @@ class iqReportGenerator(object):
                 self._RepName = self._Template['name']
             
             # Init name space
-            self._NameSpace = name_space
-            if self._NameSpace is None:
-                self._NameSpace = dict()
-            self._NameSpace.update(self._Template['variables'])
+            self._variables = name_space
+            if self._variables is None:
+                self._variables = dict()
+            self._variables.update(self._Template['variables'])
             if query_table and '__variables__' in query_table:
-                self._NameSpace.update(query_table['__variables__'])
-            if self._NameSpace:
-                log_func.debug(u'Report variables: %s' % str(list(self._NameSpace.keys())))
+                self._variables.update(query_table['__variables__'])
+            if self._variables:
+                log_func.debug(u'Report variables: %s' % str(list(self._variables.keys())))
 
             # Style library
             self._StyleLib = None
@@ -792,6 +792,8 @@ class iqReportGenerator(object):
                                                       field_name in enumerate(query_table.get('__fields__',
                                                                                               list()))]) for table_rec in query_table.get('__data__',
                                                                                                                                           list())]
+            variables = self._variables
+
             i_record = self._CurRec['sys_num_rec_idx']
 
             func_str = list()   # Result value list
@@ -971,11 +973,11 @@ class iqReportGenerator(object):
         :return: The variable value as a string or an empty string in case of an error.
         """
         var_name = cur_func[2:-2]
-        if var_name in self._NameSpace:
+        if var_name in self._variables:
             log_func.debug(u'Get variable <%s>' % var_name)
         else:
             log_func.warning(u'Variable <%s> not found in report name space' % var_name)
-        value = str(self._NameSpace.setdefault(var_name, u''))
+        value = str(self._variables.setdefault(var_name, u''))
         return value
 
     def _setStyle(self, cur_func, locals, globals):
