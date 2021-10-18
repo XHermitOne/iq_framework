@@ -23,7 +23,7 @@ from iq.engine import img_func
 
 from . import report_gen_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -39,7 +39,7 @@ REPORT_VIEWER_MODE = 0
 REPORT_EDITOR_MODE = 1
 
 # Positions and sizes of control buttons
-REP_BROWSER_BUTTONS_POS_X = 780
+REP_BROWSER_BUTTONS_POS_X = 980
 REP_BROWSER_BUTTONS_WIDTH = 200
 REP_BROWSER_BUTTONS_HEIGHT = 30
 
@@ -47,7 +47,7 @@ REP_BROWSER_BUTTONS_HEIGHT = 30
 NOT_WORK_DIRNAMES = ('__pycache__',)
 
 # Dialog box size
-REP_BROWSER_DLG_WIDTH = 1000
+REP_BROWSER_DLG_WIDTH = 1200
 REP_BROWSER_DLG_HEIGHT = 460
 
 # Dialog title
@@ -167,7 +167,8 @@ class iqReportBrowserDialog(wx.Dialog):
         ver = '.'.join([str(ident) for ident in __version__])
         wx.Dialog.__init__(self, parent, wx.NewId(),
                            title=u'%s. Report management system. v. %s' % (TITLE, ver),
-                           pos=wx.DefaultPosition, size=wx.Size(REP_BROWSER_DLG_WIDTH, REP_BROWSER_DLG_HEIGHT),
+                           pos=wx.DefaultPosition,
+                           size=wx.Size(REP_BROWSER_DLG_WIDTH, REP_BROWSER_DLG_HEIGHT),
                            style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION)
 
         self._report_dirname = report_dir
@@ -196,7 +197,7 @@ class iqReportBrowserDialog(wx.Dialog):
         self.dir_txt.SetLabel(self._report_dirname)
 
         self.rep_tree = wx.TreeCtrl(self, wx.NewId(),
-                                    pos=wx.Point(10, 30), size=wx.Size(750, 390), style=wx.TR_HAS_BUTTONS,
+                                    pos=wx.Point(10, 30), size=wx.Size(950, 390), style=wx.TR_HAS_BUTTONS,
                                     validator=wx.DefaultValidator, name='ReportTree')
 
         self.img_list = wx.ImageList(16, 16)
@@ -554,7 +555,8 @@ class iqReportBrowserDialog(wx.Dialog):
             log_func.warning(u'An empty list of report descriptions when building a report tree')
 
         for item_data in items:
-            item = self.rep_tree.AppendItem(parent_id, item_data[REP_DESCRIPTION_IDX], -1, -1, data=None)
+            label = '%s / %s' % (item_data[REP_DESCRIPTION_IDX], os.path.basename(item_data[REP_FILE_IDX]))
+            item = self.rep_tree.AppendItem(parent_id, label, -1, -1, data=None)
 
             if item_data[REP_ITEMS_IDX] is not None:
                 self._appendItemsReportTree(item, item_data[REP_ITEMS_IDX])
