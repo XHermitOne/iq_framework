@@ -10,10 +10,12 @@ import locale
 
 from . import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 TEXT_DOMAIN = 'iq'
 DEFAULT_LOCALE_DIR = 'locale'
+
+RUSSIAN_LOCALE = 'ru_RU'
 
 TRANSLATIONS = dict()
 

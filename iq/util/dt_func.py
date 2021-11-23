@@ -8,13 +8,14 @@ Date-time functions module.
 import calendar
 import datetime
 import locale
+import string
 
 from . import log_func
 
 from .. import global_data
 
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -383,3 +384,71 @@ def parseDTStr(dt_str, dt_formats=DT_FORMATS):
         if dt is not None:
             break
     return dt
+
+
+def hours2timedelta(hours):
+    """
+    Convert hours to timedelta format.
+
+    :param hours: Hours. For example 4.5.
+    :return: TimeDelta. For example 04:30:00.
+    """
+    minutes_seconds = hours % 1
+    hours = int(hours)
+    days = 0
+    if hours > 24:
+        days = int(int(hours) / 24.0)
+        hours = hours % 24
+
+    minutes = minutes_seconds * 60.0
+    seconds = (minutes % 1) * 60.0
+    minutes = int(minutes)
+    seconds = int(seconds)
+
+    return datetime.timedelta(days=days,
+                              hours=hours,
+                              minutes=minutes,
+                              seconds=seconds)
+
+
+class TimeDeltaTemplate(string.Template):
+    """
+    Time delta template class.
+    """
+    delimiter = '%'
+
+
+DEFAULT_TIMEDELTA_FMT = '%D days %H:%M:%S'
+DEFAULT_SHORT_TIMEDELTA_FMT = '%H:%M:%S'
+DEFAULT_TIMEDELTA_FMT_RU = u'%D дней %H:%M:%S'
+
+
+def strfdelta(timedelta, fmt=None):
+    """
+    Timedelta to string.
+
+    :param timedelta: Timedelta.
+    :param fmt: Format string.
+    :return: Timedelta string.
+    """
+    assert isinstance(timedelta, datetime.timedelta), u'Type error timedelta'
+
+    if fmt is None:
+        fmt = DEFAULT_SHORT_TIMEDELTA_FMT
+        if timedelta.days:
+            import locale
+            from . import lang_func
+            language = locale.getlocale()[0]
+            if language == lang_func.RUSSIAN_LOCALE:
+                fmt = DEFAULT_TIMEDELTA_FMT_RU
+            else:
+                fmt = DEFAULT_TIMEDELTA_FMT
+
+    d = {'D': timedelta.days}
+    hours, rem = divmod(timedelta.seconds, 3600)
+    minutes, seconds = divmod(rem, 60)
+    d['H'] = '{:02d}'.format(hours)
+    d['M'] = '{:02d}'.format(minutes)
+    d['S'] = '{:02d}'.format(seconds)
+    t = TimeDeltaTemplate(fmt)
+    return t.substitute(**d)

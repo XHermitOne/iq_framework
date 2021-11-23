@@ -31,14 +31,16 @@ For example:
 """
 
 import time
+import datetime
 import re
 import copy
 
 from iq.util import log_func
 from iq.util import str_func
 from iq.util import exec_func
+from iq.util import dt_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 3)
 
 # Report cell tags:
 # query table field values
@@ -150,7 +152,7 @@ REP_CELL = {
 # At each iteration, the current value of the sum is calculated
 # as value=value+eval(formul)
 REP_SUM = {
-    'value': 0,     # Current sum value
+    'value': 0.0,   # Current sum value
     'formul': '0',  # Formula for calculating the amount
     }
 
@@ -785,7 +787,7 @@ class iqReportGenerator(object):
             else:
                 parsed_fmt = self._cellFmt[cell_val]
 
-            # For use records in generate cell text
+            # vvv For use records in generate cell text vvv
             query_table = self._QueryTbl
             records = [dict([(field_name,
                               table_rec[i_field]) for i_field,
@@ -795,6 +797,7 @@ class iqReportGenerator(object):
             variables = self._variables
 
             i_record = self._CurRec['sys_num_rec_idx']
+            # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
             func_str = list()   # Result value list
             i_sum = 0
@@ -825,7 +828,10 @@ class iqReportGenerator(object):
                 elif re.search(REP_SYS_PATT, cur_func):
                     # Sum function
                     if cur_func[2:6].lower() == 'sum(':
-                        value = str(cell['sum'][i_sum]['value'])
+                        if isinstance(cell['sum'][i_sum]['value'], datetime.timedelta):
+                            value = dt_func.strfdelta(cell['sum'][i_sum]['value'])
+                        else:
+                            value = str(cell['sum'][i_sum]['value'])
                         i_sum += 1  # Next sum
                     # Average calculation function
                     elif cur_func[2:6].lower() == 'avg(':
@@ -1137,6 +1143,16 @@ class iqReportGenerator(object):
         try:
             new_sheet = sheet
 
+            # vvv For use records in generate cell text vvv
+            query_table = self._QueryTbl
+            records = [dict([(field_name,
+                              table_rec[i_field]) for i_field,
+                                                      field_name in enumerate(query_table.get('__fields__',
+                                                                                              list()))]) for table_rec in query_table.get('__data__',
+                                                                                                                                          list())]
+            variables = self._variables
+            # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
             for row in range(len(new_sheet)):
                 for col in range(len(new_sheet[row])):
 
@@ -1146,16 +1162,19 @@ class iqReportGenerator(object):
                                 try:
                                     value = eval(cur_sum['formul'], globals(), locals())
                                 except:
-                                    log_func.warning(u'Error sum by formula <%s>.' % cur_sum)
+                                    log_func.fatal(u'Error SUM by formula <%s>.' % cur_sum)
                                     value = 0.0
                                 try:
                                     if value is None:
                                         value = 0.0
-                                    else:
+                                    elif isinstance(value, str):
                                         value = float(value)
-                                    cur_sum['value'] += value
+                                    if isinstance(cur_sum['value'], value.__class__):
+                                        cur_sum['value'] += value
+                                    else:
+                                        cur_sum['value'] = value
                                 except:
-                                    log_func.warning(u'Ошибка итерации сумм <%s>+<%s>' % (cur_sum['value'], value))
+                                    log_func.fatal(u'Error SUM iteration: <%s> + <%s>' % (cur_sum['value'], value))
 
             return new_sheet
         except:
