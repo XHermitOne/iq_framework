@@ -17,6 +17,7 @@ from iq.util import res_func
 from iq.util import log_func
 from iq.util import global_func
 from iq.util import lang_func
+from iq.util import sys_func
 
 from iq.dialog import dlg_func
 from iq.engine import img_func
@@ -569,6 +570,11 @@ def openReportBrowser(parent_form=None, report_dir='', mode=REPORT_EDITOR_MODE):
     :param report_dir: Directory where reports are stored.
     :return: True/False.
     """
+    find_report_dir_process = sys_func.getActiveProcessCount(report_dir)
+    if sys_func.isActiveProcess('iq_report --edit') or sys_func.isActiveProcess('iq_report --view') or (find_report_dir_process > 2):
+        log_func.warning(u'Report browser already open [%d]' % find_report_dir_process)
+        return False
+
     app = wx.GetApp()
     if app is None:
         app = wx.App()
