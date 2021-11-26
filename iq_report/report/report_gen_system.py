@@ -33,7 +33,7 @@ from iq.dialog import dlg_func
 
 from . import report_template
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 DEFAULT_REP_TMPL_FILE = os.path.join(os.path.dirname(__file__), 'new_report_template.ods')
 
@@ -417,13 +417,13 @@ class iqReportGeneratorSystem(object):
             db_connection = sqlalchemy.create_engine(db_url)
             log_func.info(u'SQL <%s>' % str_func.toUnicode(sql, 'utf-8'))
             sql_result = db_connection.execute(sql)
-            rows = sql_result.fetchall()
-            cols = rows[0].keys() if rows else []
+            records = sql_result.fetchall()
+            cols = records[0].keys() if records else []
 
             db_connection.dispose()
             db_connection = None
 
-            result = {'__fields__': cols, '__data__': list(rows)}
+            result = {'__fields__': cols, '__data__': list([list(record) for record in records])}
             return result
         except:
             if db_connection:

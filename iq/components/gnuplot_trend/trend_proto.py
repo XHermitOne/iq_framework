@@ -9,9 +9,10 @@ The class organizes the interface that all trends must inherit.
 import datetime
 import wx
 
-# from ic.utils import datetimefunc
-# from ic.log import log
 from ...util import log_func
+from ...util import dt_func
+
+from ...engine.wx import wxdatetime_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -59,7 +60,7 @@ class iqTrendProto(object):
             new_dt = datetime.datetime.combine(dt,
                                                datetime.datetime.min.time())
         elif isinstance(dt, wx.DateTime):
-            new_dt = datetimefunc.wxdatetime2pydatetime(dt)
+            new_dt = wxdatetime_func.wxDateTime2datetime(dt)
         elif dt is None:
             new_dt = datetime.datetime.now()
         elif isinstance(dt, datetime.datetime):
@@ -86,7 +87,7 @@ class iqTrendProto(object):
         if isinstance(dt_value, datetime.datetime) or isinstance(dt_value, datetime.date):
             return dt_value.strftime(time_format)
         elif isinstance(dt_value, datetime.timedelta):
-            return datetimefunc.strfdelta(dt_value, fmt='{H:02}h {M:02}m {S:02}s')
+            return dt_func.strfdelta(dt_value, fmt=dt_func.DEFAULT_TIME_TIMEDELTA_FMT)
         else:
             log_func.warning(u'Unsupported time value type <%s>' % dt_value.__class__.__name__)
         return ''

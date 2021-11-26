@@ -15,7 +15,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 4, 2)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -419,8 +419,9 @@ class TimeDeltaTemplate(string.Template):
 
 
 DEFAULT_TIMEDELTA_FMT = '%D days %H:%M:%S'
-DEFAULT_SHORT_TIMEDELTA_FMT = '%H:%M:%S'
+DEFAULT_TIME_TIMEDELTA_FMT = '%H:%M:%S'
 DEFAULT_TIMEDELTA_FMT_RU = u'%D дней %H:%M:%S'
+DEFAULT_WITHOUT_DAYS_TIMEDELTA_FMT = '%L:%M:%S'
 
 
 def strfdelta(timedelta, fmt=None):
@@ -434,7 +435,7 @@ def strfdelta(timedelta, fmt=None):
     assert isinstance(timedelta, datetime.timedelta), u'Type error timedelta'
 
     if fmt is None:
-        fmt = DEFAULT_SHORT_TIMEDELTA_FMT
+        fmt = DEFAULT_TIME_TIMEDELTA_FMT
         if timedelta.days:
             import locale
             from . import lang_func
@@ -444,11 +445,13 @@ def strfdelta(timedelta, fmt=None):
             else:
                 fmt = DEFAULT_TIMEDELTA_FMT
 
-    d = {'D': timedelta.days}
+    fmt_dict = {'D': timedelta.days}
     hours, rem = divmod(timedelta.seconds, 3600)
     minutes, seconds = divmod(rem, 60)
-    d['H'] = '{:02d}'.format(hours)
-    d['M'] = '{:02d}'.format(minutes)
-    d['S'] = '{:02d}'.format(seconds)
+    sum_hours = timedelta.days * 24 + hours
+    fmt_dict['H'] = '{:02d}'.format(hours)
+    fmt_dict['M'] = '{:02d}'.format(minutes)
+    fmt_dict['S'] = '{:02d}'.format(seconds)
+    fmt_dict['L'] = '{:d}'.format(sum_hours)
     t = TimeDeltaTemplate(fmt)
-    return t.substitute(**d)
+    return t.substitute(**fmt_dict)

@@ -958,6 +958,7 @@ class iqReportGenerator(object):
         """
         value = u''
         exec_func = cur_func[2:-2].strip()
+
         try:
             exec(exec_func, globals, locals)
             # When the code block is executed, the value of the variable is located in the locals namespace.
@@ -966,7 +967,7 @@ class iqReportGenerator(object):
             value = locals.get('value', u'')
             log_func.debug(u'Execute code block <%s>. Value [%s]' % (exec_func, value))
         except:
-            log_func.fatal(u'Error code block execute <%s>' % str_func.toUnicode(exec_func))
+            log_func.fatal(u'Error code block execute <%s>' % exec_func)
         return str(value)
 
     def _getVariable(self, cur_func, locals, globals):
