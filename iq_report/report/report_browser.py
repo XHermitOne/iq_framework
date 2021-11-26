@@ -562,18 +562,21 @@ class iqReportBrowserDialog(wx.Dialog):
         return self._report_dirname
 
 
-def openReportBrowser(parent_form=None, report_dir='', mode=REPORT_EDITOR_MODE):
+def openReportBrowser(parent_form=None, report_dir='', mode=REPORT_EDITOR_MODE, lock_run_copy=False):
     """
     Launch report browser.
 
     :param parent_form: The parent form, if not specified, creates a new application.
     :param report_dir: Directory where reports are stored.
+    :param mode: Report browser mode.
+    :param lock_run_copy: Lock run copy browser.
     :return: True/False.
     """
-    find_report_dir_process = sys_func.getActiveProcessCount(report_dir)
-    if sys_func.isActiveProcess('iq_report --edit') or sys_func.isActiveProcess('iq_report --view') or (find_report_dir_process > 2):
-        log_func.warning(u'Report browser already open [%d]' % find_report_dir_process)
-        return False
+    if lock_run_copy:
+        find_report_dir_process = sys_func.getActiveProcessCount(report_dir)
+        if sys_func.isActiveProcess('iq_report --edit') or sys_func.isActiveProcess('iq_report --view') or (find_report_dir_process > 2):
+            log_func.warning(u'Report browser already open [%d]' % find_report_dir_process)
+            return False
 
     app = wx.GetApp()
     if app is None:

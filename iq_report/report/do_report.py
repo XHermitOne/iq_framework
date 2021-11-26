@@ -166,7 +166,9 @@ def openReportEditor(parent_form=None, report_dir=''):
     :param report_dir: Directory where reports are stored.
     :return: True/False.
     """
-    return report_browser.openReportBrowser(parent_form, report_dir, report_browser.REPORT_EDITOR_MODE)
+    return report_browser.openReportBrowser(parent_form, report_dir,
+                                            mode=report_browser.REPORT_EDITOR_MODE,
+                                            lock_run_copy=True)
 
 
 def openReportViewer(parent_form=None, report_dir=''):
@@ -177,7 +179,9 @@ def openReportViewer(parent_form=None, report_dir=''):
     :param report_dir: Directory where reports are stored.
     :return: True/False.
     """
-    return report_browser.openReportBrowser(parent_form, report_dir, report_browser.REPORT_VIEWER_MODE)
+    return report_browser.openReportBrowser(parent_form, report_dir,
+                                            mode=report_browser.REPORT_VIEWER_MODE,
+                                            lock_run_copy=True)
 
 
 def printReport(parent_form=None, report_filename='', report_dir='',
