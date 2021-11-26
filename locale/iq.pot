@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2021-11-26 13:24+0700\n"
+"POT-Creation-Date: 2021-11-26 15:26+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -520,7 +520,7 @@ msgstr ""
 #: ./iq/editor/wx/res_editor/new_resource_dlg.py:80
 #: ./iq/editor/wx/res_editor/select_passport_dlg.py:89
 #: ./iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:44
-#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:42
+#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:51
 #: ./iq/engine/wx/dlg/login_dialog_proto.py:60
 #: ./iq/engine/wx/dlg/py_script_edit_dlg_proto.py:32
 #: ./iq/engine/wx/dlg/wxdlg_func.py:600
@@ -1580,15 +1580,22 @@ msgid "Select items"
 msgstr ""
 
 #: ./iq/engine/wx/dlg/ext_dialogs_proto.py:31
-#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:133
-msgid "MyLabel"
+msgid "Select:"
 msgstr ""
 
-#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:45
+#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:37
+msgid "Clear"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:39
+msgid "Set all"
+msgstr ""
+
+#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:54
 msgid "Select without items"
 msgstr ""
 
-#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:48
+#: ./iq/engine/wx/dlg/ext_dialogs_proto.py:57
 msgid "Select"
 msgstr ""
 
@@ -2863,5 +2870,9 @@ msgstr ""
 
 #: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:128
 msgid "Вычесленная поправка (имп.):"
+msgstr ""
+
+#: ./telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:133
+msgid "MyLabel"
 msgstr ""
 
