@@ -14,7 +14,7 @@ from . import ods_report_generator
 # from . import reportman_generator
 from . import rtf_report_generator
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 REPORT_GEN_SYSTEM = None
 

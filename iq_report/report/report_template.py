@@ -20,7 +20,7 @@ from . import report_generator
 
 from iq.components.virtual_spreadsheet import v_spreadsheet
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 # Report template tags
 DESCRIPTION_TAG = '[description]'   # Description band
@@ -494,7 +494,7 @@ class iqReportTemplate(object):
 
         return align
 
-    def _getFmtStyle(self, style):
+    def _getNumberFormatStyle(self, style):
         """
         Get number format from style.
         """
@@ -779,7 +779,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                             log_func.fatal(u'Error parse function <%s>' % str_func.toUnicode(parse_func))
                         title_row += 1
                     else:
-                        rep = self._defBand(self.__cur_band, cur_row, col_count, title_row, rep)
+                        rep = self._defineBand(self.__cur_band, cur_row, col_count, title_row, rep)
                 else:
                     log_func.warning(u'Not valid tag <%s> of row [%d]' % (tag, cur_row))
 
@@ -861,7 +861,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             self._tag_band_col = tag_col
         return self._tag_band_col
         
-    def _band(self, band, row, col_size):
+    def _fillBand(self, band, row, col_size):
         """
         Fill band.
         """
@@ -900,7 +900,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                             log_func.fatal('Error normal detail')
         return report
         
-    def _defBand(self, band_tag, row, col_count, title_row, report):
+    def _defineBand(self, band_tag, row, col_count, title_row, report):
         """
         Define band data.
 
@@ -917,12 +917,12 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             
             log_func.debug(u'Define band. Band tag: <%s>' % band_tag)
             if band_tag.strip() == HEADER_TAG:
-                rep['header'] = self._band(rep['header'], row - title_row, col_count)
+                rep['header'] = self._fillBand(rep['header'], row - title_row, col_count)
             elif band_tag.strip() == DETAIL_TAG:
-                rep['detail'] = self._band(rep['detail'], row - title_row, col_count)
+                rep['detail'] = self._fillBand(rep['detail'], row - title_row, col_count)
                 self._normDetail(rep['detail'], rep)
             elif band_tag.strip() == FOOTER_TAG:
-                rep['footer'] = self._band(rep['footer'], row - title_row, col_count)
+                rep['footer'] = self._fillBand(rep['footer'], row - title_row, col_count)
             elif HEADER_GROUP_TAG in band_tag:
                 # Group field name
                 field_name = re.split(report_generator.REP_FIELD_PATT, band_tag)[1].strip()[2:-2]
@@ -934,7 +934,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                     rep['groups'][-1]['field'] = field_name
                 # Group title
                 grp_field = [grp for grp in rep['groups'] if grp['field'] == field_name][0]
-                grp_field['header'] = self._band(grp_field['header'], row - title_row, col_count)
+                grp_field['header'] = self._fillBand(grp_field['header'], row - title_row, col_count)
             elif FOOTER_GROUP_TAG in band_tag:
                 # Group field name
                 field_name = re.split(report_generator.REP_FIELD_PATT, band_tag)[1].strip()[2:-2]
@@ -944,24 +944,24 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                     rep['groups'].append(copy.deepcopy(report_generator.REP_GRP))
                     rep['groups'][-1]['field'] = field_name
                 grp_field = [grp for grp in rep['groups'] if grp['field'] == field_name][0]
-                grp_field['footer'] = self._band(grp_field['footer'], row - title_row, col_count)
+                grp_field['footer'] = self._fillBand(grp_field['footer'], row - title_row, col_count)
             elif band_tag.strip() == UPPER_TAG:
                 # Upper
-                rep['upper'] = self._band(rep['upper'], row - title_row, col_count)
+                rep['upper'] = self._fillBand(rep['upper'], row - title_row, col_count)
             elif band_tag.strip() == UNDER_TAG:
                 # Under
-                rep['under'] = self._band(rep['under'], row - title_row, col_count)
+                rep['under'] = self._fillBand(rep['under'], row - title_row, col_count)
             else:
                 log_func.warning(u'Unsupported band type <%s>' % band_tag)
-            rep['upper'] = self._bandUpper(rep['upper'], self._rep_worksheet)
-            rep['under'] = self._bandUnder(rep['under'], self._rep_worksheet)
+            rep['upper'] = self._defineUpper(rep['upper'], self._rep_worksheet)
+            rep['under'] = self._defineUnder(rep['under'], self._rep_worksheet)
             
             return rep
         except:
             log_func.fatal(u'Error define band <%s>' % band_tag)
         return report
         
-    def _bandUpper(self, band, worksheet_data):
+    def _defineUpper(self, band, worksheet_data):
         """
         Define upper band.
 
@@ -983,7 +983,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
                             rep_upper['height'] = header[0]['Margin']
         return rep_upper
         
-    def _bandUnder(self, band, worksheet_data):
+    def _defineUnder(self, band, worksheet_data):
         """
         Define under band.
 
@@ -1171,7 +1171,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             cell['align'] = self._getAlignStyle(cell_style)
     
             # Number format
-            cell['num_format'] = self._getFmtStyle(cell_style)
+            cell['num_format'] = self._getNumberFormatStyle(cell_style)
             # Cell text
             if template_cell:
                 cell['value'] = self._getCellValue(template_cell)
@@ -1318,7 +1318,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         except:
             log_func.fatal(u'Error parse description tag')
 
-    def _parseVarTag(self, report, parse_row):
+    def _parseVariableTag(self, report, parse_row):
         """
         Parse variable tag.
 
@@ -1357,7 +1357,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
         except:
             log_func.fatal(u'Error parse generator tag')
 
-    def _parseDataSrcTag(self, report, parse_row):
+    def _parseDataSourceTag(self, report, parse_row):
         """
         Parser data source tag.
 
@@ -1396,7 +1396,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             report['template'] = None
             log_func.warning(u'Not defined template modify')
 
-    def _parseStyleLibTag(self, report, parse_row):
+    def _parseStyleLibraryTag(self, report, parse_row):
         """
         Parse style library tag.
 
@@ -1412,11 +1412,11 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             
     # Dictionary of header tag parsing functions
     _TITLE_TAG_PARSE_METHODS = {DESCRIPTION_TAG: _parseDescriptionTag,
-                                VAR_TAG: _parseVarTag,
+                                VAR_TAG: _parseVariableTag,
                                 GENERATOR_TAG: _parseGeneratorTag,
-                                DATASRC_TAG: _parseDataSrcTag,
+                                DATASRC_TAG: _parseDataSourceTag,
                                 QUERY_TAG: _parseQueryTag,
-                                STYLELIB_TAG: _parseStyleLibTag,
+                                STYLELIB_TAG: _parseStyleLibraryTag,
                                 TEMPLATE_TAG: _parseTemplateTag,
                                 }
 
@@ -1447,7 +1447,6 @@ class iqXLSReportTemplate(iqODSReportTemplate):
     """
     Report template in Excel XLS format.
     """
-
     def __init__(self):
         """
         Конструктор класса.

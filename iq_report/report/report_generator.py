@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 2, 1)
 
 # Report cell tags:
 # query table field values
@@ -215,23 +215,21 @@ class iqReportGenerator(object):
         """
         Constructor.
         """
-        # Report name
-        self._RepName = None
-        # Query table
-        self._QueryTbl = None
+        self._report_name = None
+        self._query_table = None
         # Query table record number
-        self._QueryTblRecCount = -1
+        self._query_table_rec_count = -1
         # Current query table record
-        self._CurRec = dict()
+        self._current_record = dict()
         # Report template
-        self._Template = None
+        self._template = None
         # Report template sheet
-        self._TemplateSheet = None
+        self._template_sheet = None
         # Result report data
-        self._Rep = None
+        self._report = None
 
         # Group list
-        self._RepGrp = list()
+        self._report_groups = list()
 
         # Current Y coordinate for redistributing cell coordinates
         self._cur_top = 0
@@ -240,16 +238,15 @@ class iqReportGenerator(object):
         self._variables = dict()
 
         # Cell attributes by default. If None, then attributes are not set
-        self.AttrDefault = None
+        self.default_cell_attributes = None
 
-        # Style library
-        self._StyleLib = None
+        self._style_library = None
         
         # Coordinate replacement of cell values
-        self._CoordFill = None
+        self._coord_replacements = None
 
         # Cell format dictionary
-        self._cellFmt = dict()
+        self._cell_format = dict()
 
     def generate(self, rep_template, query_table, name_space=None, coord_fill=None):
         """
@@ -278,21 +275,21 @@ class iqReportGenerator(object):
         """
         try:
             # Coordinate filling in cell values
-            self._CoordFill = coord_fill
+            self._coord_replacements = coord_fill
             if query_table and '__coord_fill__' in query_table:
-                if self._CoordFill is None:
-                    self._CoordFill = dict()
-                self._CoordFill.update(query_table['__coord_fill__'])
+                if self._coord_replacements is None:
+                    self._coord_replacements = dict()
+                self._coord_replacements.update(query_table['__coord_fill__'])
 
             # Group list
-            self._RepGrp = list()
+            self._report_groups = list()
 
             # I. Define all bands in the template and amount cells
             if isinstance(rep_template, dict):
                 # Template modify
                 if 'template' in rep_template and rep_template['template']:
                     rep_template = self._modifyTemplate(rep_template, rep_template['template'])
-                self._Template = rep_template
+                self._template = rep_template
             else:
                 log_func.warning(u'Error report template type <%s>.' % type(rep_template))
                 return None
@@ -300,85 +297,85 @@ class iqReportGenerator(object):
             # Init report name
             if 'name' in query_table and query_table['name']:
                 # If the query table is named, then this is the name of the finished report
-                self._RepName = str(query_table['name'])
-            elif 'name' in self._Template:
-                self._RepName = self._Template['name']
+                self._report_name = str(query_table['name'])
+            elif 'name' in self._template:
+                self._report_name = self._template['name']
             
             # Init name space
             self._variables = name_space
             if self._variables is None:
                 self._variables = dict()
-            self._variables.update(self._Template['variables'])
+            self._variables.update(self._template['variables'])
             if query_table and '__variables__' in query_table:
                 self._variables.update(query_table['__variables__'])
             if self._variables:
                 log_func.debug(u'Report variables: %s' % str(list(self._variables.keys())))
 
             # Style library
-            self._StyleLib = None
-            if 'style_lib' in self._Template:
-                self._StyleLib = self._Template['style_lib']
+            self._style_library = None
+            if 'style_lib' in self._template:
+                self._style_library = self._template['style_lib']
 
-            self._TemplateSheet = self._Template['sheet']
-            self._TemplateSheet = self._initSumCells(self._TemplateSheet)
+            self._template_sheet = self._template['sheet']
+            self._template_sheet = self._initSumCells(self._template_sheet)
 
             # II. Init query table
-            self._QueryTbl = query_table
+            self._query_table = query_table
             # Determine the number of records in the query table
-            self._QueryTblRecCount = 0
-            if self._QueryTbl and '__data__' in self._QueryTbl:
-                self._QueryTblRecCount = len(self._QueryTbl['__data__'])
+            self._query_table_rec_count = 0
+            if self._query_table and '__data__' in self._query_table:
+                self._query_table_rec_count = len(self._query_table['__data__'])
 
             # Init group band
-            for grp in self._Template['groups']:
+            for grp in self._template['groups']:
                 grp['old_rec'] = None
 
             time_start = time.time()
-            log_func.info(u'Report <%s>. Generate start' % str_func.toUnicode(self._RepName))
+            log_func.info(u'Report <%s>. Generate start' % str_func.toUnicode(self._report_name))
 
             # III. Fill report
             # Create report
-            self._Rep = copy.deepcopy(REPORT_TEMPLATE)
-            self._Rep['name'] = self._RepName
+            self._report = copy.deepcopy(REPORT_TEMPLATE)
+            self._report['name'] = self._report_name
 
             # Init variables
             field_idx = dict()      # Field indexes
             i = 0
             i_rec = 0
             # Iterate through the fields of a query table
-            if self._QueryTbl and '__fields__' in self._QueryTbl:
-                for cur_field in self._QueryTbl['__fields__']:
+            if self._query_table and '__fields__' in self._query_table:
+                for cur_field in self._query_table['__fields__']:
                     field_idx[cur_field] = i
                     i += 1
 
-            if self._QueryTblRecCount:
+            if self._query_table_rec_count:
                 # Init current record
-                rec = self._QueryTbl['__data__'][i_rec]
+                rec = self._query_table['__data__'][i_rec]
                 for field_name in field_idx.keys():
                     val = rec[field_idx[field_name]]
-                    self._CurRec[field_name] = val
+                    self._current_record[field_name] = val
                 # Current record index
-                self._CurRec['sys_num_rec_idx'] = i_rec
+                self._current_record['sys_num_rec_idx'] = i_rec
 
             # Upper
-            if self._Template['upper']:
-                self._genUpper(self._Template['upper'])
+            if self._template['upper']:
+                self._genUpper(self._template['upper'])
             
             # Header
-            self._genHeader(self._Template['header'])
+            self._genHeader(self._template['header'])
 
             # Main loop
-            while i_rec < self._QueryTblRecCount:
+            while i_rec < self._query_table_rec_count:
                 # Group
                 # Check group change and find the index of the most common change group
                 i_grp_out = -1
                 # Start generate flag
                 start_gen = False
-                for i_grp in range(len(self._Template['groups'])):
-                    grp = self._Template['groups'][i_grp]
+                for i_grp in range(len(self._template['groups'])):
+                    grp = self._template['groups'][i_grp]
                     if grp['old_rec']:
                         # Check group note output condition
-                        if self._CurRec[grp['field']] != grp['old_rec'][grp['field']]:
+                        if self._current_record[grp['field']] != grp['old_rec'][grp['field']]:
                             i_grp_out = i_grp
                             break
                     else:
@@ -388,51 +385,51 @@ class iqReportGenerator(object):
                 if i_grp_out != -1:
                     # Display notes
                     if start_gen is False:
-                        for i_grp in range(len(self._Template['groups'])-1, i_grp_out-1, -1):
-                            grp = self._Template['groups'][i_grp]
-                            self._genGrpFooter(grp)
+                        for i_grp in range(len(self._template['groups']) - 1, i_grp_out - 1, -1):
+                            grp = self._template['groups'][i_grp]
+                            self._genGroupFooter(grp)
                     # Show headers
-                    for i_grp in range(i_grp_out, len(self._Template['groups'])):
-                        grp = self._Template['groups'][i_grp]
-                        grp['old_rec'] = copy.deepcopy(self._CurRec)
-                        self._genGrpHeader(grp)
+                    for i_grp in range(i_grp_out, len(self._template['groups'])):
+                        grp = self._template['groups'][i_grp]
+                        grp['old_rec'] = copy.deepcopy(self._current_record)
+                        self._genGroupHeader(grp)
                     
                 # Data area
-                self._genDetail(self._Template['detail'])
+                self._genDetail(self._template['detail'])
 
                 # Increase the sum of summing cells
-                self._sumIterate(self._TemplateSheet, self._CurRec)
+                self._sumIterate(self._template_sheet, self._current_record)
 
                 # Next record
                 i_rec += 1
                 # Set current record
-                if i_rec < self._QueryTblRecCount:
-                    rec = self._QueryTbl['__data__'][i_rec]
+                if i_rec < self._query_table_rec_count:
+                    rec = self._query_table['__data__'][i_rec]
                     for field_name in field_idx.keys():
                         val = rec[field_idx[field_name]]
-                        self._CurRec[field_name] = val
+                        self._current_record[field_name] = val
                     # Set current record index
-                    self._CurRec['sys_num_rec_idx'] = i_rec
+                    self._current_record['sys_num_rec_idx'] = i_rec
 
             # Footer
-            for i_grp in range(len(self._Template['groups'])-1, -1, -1):
-                grp = self._Template['groups'][i_grp]
+            for i_grp in range(len(self._template['groups']) - 1, -1, -1):
+                grp = self._template['groups'][i_grp]
                 if grp['old_rec']:
-                    self._genGrpFooter(grp)
+                    self._genGroupFooter(grp)
                 else:
                     break
-            self._genFooter(self._Template['footer'])
+            self._genFooter(self._template['footer'])
             # Under
-            if self._Template['under']:
-                self._genUnder(self._Template['under'])
+            if self._template['under']:
+                self._genUnder(self._template['under'])
 
             # Page setup
-            self._Rep['page_setup'] = self._Template['page_setup']
+            self._report['page_setup'] = self._template['page_setup']
 
-            log_func.info(u'Report <%s>. Generate end. Time: %d sec.' % (str_func.toUnicode(self._RepName),
+            log_func.info(u'Report <%s>. Generate end. Time: %d sec.' % (str_func.toUnicode(self._report_name),
                                                                          time.time()-time_start))
 
-            return self._Rep
+            return self._report
         except:
             log_func.fatal(u'Error report generate')
         return None
@@ -447,30 +444,30 @@ class iqReportGenerator(object):
         try:
             # log_func.debug(u'Generate header')
             # We will add to the end of the report, therefore, determine the maximum line
-            max_row = len(self._Rep['sheet'])
+            max_row = len(self._report['sheet'])
             i_row = 0
             cur_height = 0
 
             for row in range(header['row'], header['row'] + header['row_size']):
                 for col in range(header['col'], header['col'] + header['col_size']):
-                    if self._TemplateSheet[row][col]:
-                        self._genCell(self._TemplateSheet, row, col,
-                                      self._Rep, max_row+i_row, col, self._CurRec)
-                        cur_height = self._TemplateSheet[row][col]['height']
+                    if self._template_sheet[row][col]:
+                        self._genCell(self._template_sheet, row, col,
+                                      self._report, max_row + i_row, col, self._current_record)
+                        cur_height = self._template_sheet[row][col]['height']
                 i_row += 1
                 # Current coordinate Y
                 self._cur_top += cur_height
 
-            self._Rep['header'] = {'row': max_row,
+            self._report['header'] = {'row': max_row,
                                    'col': header['col'],
                                    'row_size': i_row,
                                    'col_size': header['col_size'],
-                                   }
+                                      }
             # Clear sums
-            self._TemplateSheet = self._clearSum(self._TemplateSheet, 0, len(self._TemplateSheet))
+            self._template_sheet = self._clearSum(self._template_sheet, 0, len(self._template_sheet))
             return True
         except:
-            log_func.fatal(u'Error report header generate <%s>.' % str_func.toUnicode(self._RepName))
+            log_func.fatal(u'Error report header generate <%s>.' % str_func.toUnicode(self._report_name))
         return False
             
     def _genFooter(self, footer):
@@ -485,28 +482,28 @@ class iqReportGenerator(object):
                 return True
 
             # We will add to the end of the report, therefore, determine the maximum line
-            max_row = len(self._Rep['sheet'])
+            max_row = len(self._report['sheet'])
             i_row = 0       # Row band count
             cur_height = 0
 
             for row in range(footer['row'], footer['row'] + footer['row_size']):
                 for col in range(footer['col'], footer['col'] + footer['col_size']):
-                    if self._TemplateSheet[row][col]:
-                        self._genCell(self._TemplateSheet, row, col,
-                                      self._Rep, max_row+i_row, col, self._CurRec)
-                        cur_height = self._TemplateSheet[row][col]['height']
+                    if self._template_sheet[row][col]:
+                        self._genCell(self._template_sheet, row, col,
+                                      self._report, max_row + i_row, col, self._current_record)
+                        cur_height = self._template_sheet[row][col]['height']
                 i_row += 1
                 # Current Y coordinate
                 self._cur_top += cur_height
 
-            self._Rep['footer'] = {'row': max_row,
+            self._report['footer'] = {'row': max_row,
                                    'col': footer['col'],
                                    'row_size': i_row,
                                    'col_size': footer['col_size'],
-                                   }
+                                      }
             return True
         except:
-            log_func.fatal(u'Error report footer generate <%s>.' % self._RepName)
+            log_func.fatal(u'Error report footer generate <%s>.' % self._report_name)
         return False
 
     def _genDetail(self, detail):
@@ -518,35 +515,35 @@ class iqReportGenerator(object):
         """
         try:
             # We will add to the end of the report, therefore, determine the maximum line
-            max_row = len(self._Rep['sheet'])
+            max_row = len(self._report['sheet'])
             i_row = 0
             cur_height = 0
 
             for row in range(detail['row'], detail['row'] + detail['row_size']):
                 for col in range(detail['col'], detail['col'] + detail['col_size']):
-                    if self._TemplateSheet[row][col]:
-                        self._genCell(self._TemplateSheet, row, col,
-                                      self._Rep, max_row+i_row, col, self._CurRec)
-                        cur_height = self._TemplateSheet[row][col]['height']
+                    if self._template_sheet[row][col]:
+                        self._genCell(self._template_sheet, row, col,
+                                      self._report, max_row + i_row, col, self._current_record)
+                        cur_height = self._template_sheet[row][col]['height']
                 i_row += 1
                 # Current Y coordinate
                 self._cur_top += cur_height
 
-            if self._Rep['detail'] == {}:
-                self._Rep['detail'] = {'row': max_row,
+            if self._report['detail'] == {}:
+                self._report['detail'] = {'row': max_row,
                                        'col': detail['col'],
                                        'row_size': i_row,
                                        'col_size': detail['col_size'],
-                                       }
+                                          }
             else:
-                self._Rep['detail']['row_size'] += i_row
+                self._report['detail']['row_size'] += i_row
 
             return True
         except:
-            log_func.fatal(u'Error report detail generate <%s>.' % self._RepName)
+            log_func.fatal(u'Error report detail generate <%s>.' % self._report_name)
         return False
 
-    def _genGrpHeader(self, rep_group):
+    def _genGroupHeader(self, rep_group):
         """
         Generate group header.
 
@@ -558,29 +555,29 @@ class iqReportGenerator(object):
             if not band:
                 return False
             # We will add to the end of the report, therefore, determine the maximum line
-            max_row = len(self._Rep['sheet'])
+            max_row = len(self._report['sheet'])
             i_row = 0
             cur_height = 0
 
             for row in range(band['row'], band['row']+band['row_size']):
                 for col in range(band['col'], band['col']+band['col_size']):
-                    if self._TemplateSheet[row][col]:
-                        self._genCell(self._TemplateSheet, row, col,
-                                      self._Rep, max_row+i_row, col, self._CurRec)
-                        cur_height = self._TemplateSheet[row][col]['height']
+                    if self._template_sheet[row][col]:
+                        self._genCell(self._template_sheet, row, col,
+                                      self._report, max_row + i_row, col, self._current_record)
+                        cur_height = self._template_sheet[row][col]['height']
                 i_row += 1
                 # Current Y coordinate
                 self._cur_top += cur_height
             # Clear sums. There are no summary cells in the headers
             band = rep_group['footer']
             if band:
-                self._TemplateSheet = self._clearSum(self._TemplateSheet, band['row'], band['row']+band['row_size'])
+                self._template_sheet = self._clearSum(self._template_sheet, band['row'], band['row'] + band['row_size'])
             return True
         except:
-            log_func.fatal(u'Error group header generate <%s> of report <%s>.' % (rep_group['field'], self._RepName))
+            log_func.fatal(u'Error group header generate <%s> of report <%s>.' % (rep_group['field'], self._report_name))
         return False
 
-    def _genGrpFooter(self, rep_group):
+    def _genGroupFooter(self, rep_group):
         """
         Generate group footer.
 
@@ -592,22 +589,22 @@ class iqReportGenerator(object):
             if not band:
                 return False
 
-            max_row = len(self._Rep['sheet'])
+            max_row = len(self._report['sheet'])
             i_row = 0
             cur_height = 0
 
             for row in range(band['row'], band['row']+band['row_size']):
                 for col in range(band['col'], band['col']+band['col_size']):
-                    if self._TemplateSheet[row][col]:
-                        self._genCell(self._TemplateSheet, row, col,
-                                      self._Rep, max_row + i_row, col, rep_group['old_rec'])
-                        cur_height = self._TemplateSheet[row][col]['height']
+                    if self._template_sheet[row][col]:
+                        self._genCell(self._template_sheet, row, col,
+                                      self._report, max_row + i_row, col, rep_group['old_rec'])
+                        cur_height = self._template_sheet[row][col]['height']
                 i_row += 1
                 # Current Y coordinate
                 self._cur_top += cur_height
             return True
         except:
-            log_func.fatal(u'Error group footer generate <%s> of report <%s>.' % (rep_group['field'], self._RepName))
+            log_func.fatal(u'Error group footer generate <%s> of report <%s>.' % (rep_group['field'], self._report_name))
         return False
 
     def _genUpper(self, upper):
@@ -620,30 +617,30 @@ class iqReportGenerator(object):
         try:
             if 'row' not in upper or 'col' not in upper or \
                'row_size' not in upper or 'col_size' not in upper:
-                self._Rep['upper'] = upper
+                self._report['upper'] = upper
                 return True
                 
-            max_row = len(self._Rep['sheet'])
+            max_row = len(self._report['sheet'])
             i_row = 0
             cur_height = 0
 
             for row in range(upper['row'], upper['row'] + upper['row_size']):
                 for col in range(upper['col'], upper['col'] + upper['col_size']):
-                    if self._TemplateSheet[row][col]:
-                        self._genCell(self._TemplateSheet, row, col,
-                                      self._Rep, max_row+i_row, col, self._CurRec)
-                        cur_height = self._TemplateSheet[row][col]['height']
+                    if self._template_sheet[row][col]:
+                        self._genCell(self._template_sheet, row, col,
+                                      self._report, max_row + i_row, col, self._current_record)
+                        cur_height = self._template_sheet[row][col]['height']
                 i_row += 1
 
                 self._cur_top += cur_height
 
-            self._Rep['upper'] = copy.deepcopy(upper)
-            self._Rep['upper']['row'] = max_row
-            self._Rep['upper']['row_size'] = i_row
+            self._report['upper'] = copy.deepcopy(upper)
+            self._report['upper']['row'] = max_row
+            self._report['upper']['row_size'] = i_row
             
             return True
         except:
-            log_func.fatal(u'Error report upper generate <%s>' % self._RepName)
+            log_func.fatal(u'Error report upper generate <%s>' % self._report_name)
         return False
 
     def _genUnder(self, under):
@@ -656,29 +653,29 @@ class iqReportGenerator(object):
         try:
             if 'row' not in under or 'col' not in under or \
                'row_size' not in under or 'col_size' not in under:
-                self._Rep['under'] = under
+                self._report['under'] = under
                 return True
                 
-            max_row = len(self._Rep['sheet'])
+            max_row = len(self._report['sheet'])
             i_row = 0
             cur_height = 0
 
             for row in range(under['row'], under['row'] + under['row_size']):
                 for col in range(under['col'], under['col'] + under['col_size']):
-                    if self._TemplateSheet[row][col]:
-                        self._genCell(self._TemplateSheet, row, col,
-                                      self._Rep, max_row+i_row, col, self._CurRec)
-                        cur_height = self._TemplateSheet[row][col]['height']
+                    if self._template_sheet[row][col]:
+                        self._genCell(self._template_sheet, row, col,
+                                      self._report, max_row + i_row, col, self._current_record)
+                        cur_height = self._template_sheet[row][col]['height']
                 i_row += 1
 
                 self._cur_top += cur_height
 
-            self._Rep['under'] = copy.deepcopy(under)
-            self._Rep['under']['row'] = max_row
-            self._Rep['under']['row_size'] = i_row
+            self._report['under'] = copy.deepcopy(under)
+            self._report['under']['row'] = max_row
+            self._report['under']['row_size'] = i_row
             return True
         except:
-            log_func.fatal(u'Error report under generate <%s>' % self._RepName)
+            log_func.fatal(u'Error report under generate <%s>' % self._report_name)
         return False
             
     def _genSubReport(self, sub_rep_name, row):
@@ -690,27 +687,27 @@ class iqReportGenerator(object):
         :return: True/False.
         """
         try:
-            if '__sub__' in self._QueryTbl and self._QueryTbl['__sub__']:
-                if sub_rep_name in self._QueryTbl['__sub__']:
+            if '__sub__' in self._query_table and self._query_table['__sub__']:
+                if sub_rep_name in self._query_table['__sub__']:
                     # If there is sub-report data, then start the generation
-                    report = self._QueryTbl['__sub__'][sub_rep_name]['report']
+                    report = self._query_table['__sub__'][sub_rep_name]['report']
                     if isinstance(report, str):
                         from . import report_template
                         template = report_template.iqlXMLSpreadSheetReportTemplate()
 
-                        self._QueryTbl['__sub__'][sub_rep_name]['report'] = template.read(report)
+                        self._query_table['__sub__'][sub_rep_name]['report'] = template.read(report)
 
                     # Generate sub report
                     rep_gen = iqReportGenerator()
-                    rep_result = rep_gen.generate(self._QueryTbl['__sub__'][sub_rep_name]['report'],
-                                                  self._QueryTbl['__sub__'][sub_rep_name],
-                                                  self._QueryTbl['__sub__'][sub_rep_name]['__variables__'],
-                                                  self._QueryTbl['__sub__'][sub_rep_name]['__coord_fill__'])
+                    rep_result = rep_gen.generate(self._query_table['__sub__'][sub_rep_name]['report'],
+                                                  self._query_table['__sub__'][sub_rep_name],
+                                                  self._query_table['__sub__'][sub_rep_name]['__variables__'],
+                                                  self._query_table['__sub__'][sub_rep_name]['__coord_fill__'])
 
-                    self._Rep['sheet'] = self._Rep['sheet'][:row]+rep_result['sheet']+self._Rep['sheet'][row:]
+                    self._report['sheet'] = self._report['sheet'][:row] + rep_result['sheet'] + self._report['sheet'][row:]
             return True
         except:
-            log_func.fatal(u'Error sub report generate <%s> of report <%s>.' % (sub_rep_name, self._RepName))
+            log_func.fatal(u'Error sub report generate <%s> of report <%s>.' % (sub_rep_name, self._report_name))
         return False
 
     def _genCell(self, from_sheet, from_row, from_col, to_report, to_row, to_col, record):
@@ -732,20 +729,20 @@ class iqReportGenerator(object):
             # Correct cell coordinate
             cell['top'] = self._cur_top
             # Generate cell value
-            if self._CoordFill and (to_row, to_col) in self._CoordFill:
+            if self._coord_replacements and (to_row, to_col) in self._coord_replacements:
                 # Coordinate replacements
-                fill_val = str(self._CoordFill[(to_row, to_col)])
-                cell['value'] = self._genTxt({'value': fill_val}, record, to_row, to_col)
+                fill_val = str(self._coord_replacements[(to_row, to_col)])
+                cell['value'] = self._genText({'value': fill_val}, record, to_row, to_col)
             else:
                 # Transfer all cells from the template to the output report
-                cell['value'] = self._genTxt(cell, record, to_row, to_col)
+                cell['value'] = self._genText(cell, record, to_row, to_col)
 
             # log_func.debug(u'Value <%s>' % text(new_cell['value']))
 
             # Set default cell atiributes
             # Filling some default cell attributes
-            if self.AttrDefault and isinstance(self.AttrDefault, dict):
-                cell.update(self.AttrDefault)
+            if self.default_cell_attributes and isinstance(self.default_cell_attributes, dict):
+                cell.update(self.default_cell_attributes)
                 
             # Set report cell description
             if len(to_report['sheet']) <= to_row:
@@ -761,10 +758,10 @@ class iqReportGenerator(object):
                 to_report['sheet'][to_row][to_col] = cell
             return True
         except:
-            log_func.fatal(u'Error report cell generate <%s>' % self._RepName)
+            log_func.fatal(u'Error report cell generate <%s>' % self._report_name)
         return False
         
-    def _genTxt(self, cell, record=None, cell_row=None, cell_col=None):
+    def _genText(self, cell, record=None, cell_row=None, cell_col=None):
         """
         Generate text.
 
@@ -781,14 +778,14 @@ class iqReportGenerator(object):
             cell_val = cell['value']
             if cell_val is not None and not isinstance(cell_val, str):
                 cell_val = str(cell_val)
-            if cell_val not in self._cellFmt:
-                parsed_fmt = self.parseFuncText(cell_val)
-                self._cellFmt[cell_val] = parsed_fmt
+            if cell_val not in self._cell_format:
+                parsed_fmt = self.parseFunctionText(cell_val)
+                self._cell_format[cell_val] = parsed_fmt
             else:
-                parsed_fmt = self._cellFmt[cell_val]
+                parsed_fmt = self._cell_format[cell_val]
 
             # vvv For use records in generate cell text vvv
-            query_table = self._QueryTbl
+            query_table = self._query_table
             records = [dict([(field_name,
                               table_rec[i_field]) for i_field,
                                                       field_name in enumerate(query_table.get('__fields__',
@@ -796,7 +793,7 @@ class iqReportGenerator(object):
                                                                                                                                           list())]
             variables = self._variables
 
-            i_record = self._CurRec['sys_num_rec_idx']
+            i_record = self._current_record['sys_num_rec_idx']
             # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
             func_str = list()   # Result value list
@@ -846,7 +843,7 @@ class iqReportGenerator(object):
                         value = str(sys_num_rec + 1)
                     else:
                         log_func.warning(u'Unknown system function <%s> in <%s>' % (str_func.toUnicode(cur_func),
-                                                                                    self._RepName))
+                                                                                    self._report_name))
                         value = ''
                         
                 # Style
@@ -865,13 +862,13 @@ class iqReportGenerator(object):
                     log_func.warning(u'Unsupported function <%s>' % str(cur_func))
 
                 # The cell value may also contain control codes
-                value = self._genTxt({'value': value}, record)
+                value = self._genText({'value': value}, record)
                 func_str.append(value)
 
-            return self._valueFormat(parsed_fmt['fmt'], func_str)
+            return self._setValueFormat(parsed_fmt['fmt'], func_str)
         except:
             log_func.fatal(u'Error cell text generate <%s> in <%s>.' % (str_func.toUnicode(cell['value']),
-                                                                        self._RepName))
+                                                                        self._report_name))
         return None
 
     def _execFunction(self, cur_func, locals, globals):
@@ -889,7 +886,7 @@ class iqReportGenerator(object):
         value = u''
         func_body = cur_func[2:-2]
         try:
-            value = str(self._execFuncGen(func_body, locals))
+            value = str(self._execTextFunction(func_body, locals))
         except:
             log_func.fatal(u'Error execute function <%s>' % func_body)
         return value
@@ -1035,7 +1032,7 @@ class iqReportGenerator(object):
         self._genSubReport(subreport_name, cell_row)
         return value
 
-    def _valueFormat(self, fmt, data_list):
+    def _setValueFormat(self, fmt, data_list):
         """
         Set value format.
 
@@ -1066,10 +1063,10 @@ class iqReportGenerator(object):
 
         :param style_name: Style name.
         """
-        if self._StyleLib and style_name in self._StyleLib:
-            self.AttrDefault = self._StyleLib[style_name]
+        if self._style_library and style_name in self._style_library:
+            self.default_cell_attributes = self._style_library[style_name]
         else:
-            self.AttrDefault = None
+            self.default_cell_attributes = None
         
     def _getSum(self, formula):
         """
@@ -1097,7 +1094,7 @@ class iqReportGenerator(object):
                         new_sheet[row][col] = self._initSumCell(new_sheet[row][col])
             return new_sheet
         except:
-            log_func.fatal(u'Error sum cells init <%s>.' % self._RepName)
+            log_func.fatal(u'Error sum cells init <%s>.' % self._report_name)
         return sheet
 
     def _initSumCell(self, cell):
@@ -1114,7 +1111,7 @@ class iqReportGenerator(object):
             cell_val = new_cell['value']
             if cell_val is not None and not isinstance(cell_val, str):
                 cell_val = str(cell_val)
-            parsed_fmt = self.parseFuncText(cell_val, [REP_SYS_PATT])
+            parsed_fmt = self.parseFunctionText(cell_val, [REP_SYS_PATT])
 
             for cur_func in parsed_fmt['func']:
                 # System function
@@ -1145,7 +1142,7 @@ class iqReportGenerator(object):
             new_sheet = sheet
 
             # vvv For use records in generate cell text vvv
-            query_table = self._QueryTbl
+            query_table = self._query_table
             records = [dict([(field_name,
                               table_rec[i_field]) for i_field,
                                                       field_name in enumerate(query_table.get('__fields__',
@@ -1179,7 +1176,7 @@ class iqReportGenerator(object):
 
             return new_sheet
         except:
-            log_func.fatal(u'Error step sum. Report <%s>' % self._RepName)
+            log_func.fatal(u'Error step sum. Report <%s>' % self._report_name)
         return sheet
 
     def _clearSum(self, sheet, start_row, stop_row):
@@ -1203,13 +1200,13 @@ class iqReportGenerator(object):
                                 cur_sum['value'] = 0
             return new_sheet
         except:
-            log_func.fatal(u'Error clear sum. Report <%s>.' % self._RepName)
+            log_func.fatal(u'Error clear sum. Report <%s>.' % self._report_name)
         return sheet
         
-    def getCurRec(self):
-        return self._CurRec
+    def getCurrentRecord(self):
+        return self._current_record
 
-    def parseFuncText(self, text, patterns=ALL_PATTERNS):
+    def parseFunctionText(self, text, patterns=ALL_PATTERNS):
         """
         Parse a text into format and executable code.
 
@@ -1254,10 +1251,10 @@ class iqReportGenerator(object):
                     ret['fmt'] += parsed_str[i_parse]
             return ret
         except:
-            log_func.fatal(u'Error text format <%s> in report <%s>.' % (text, self._RepName))
+            log_func.fatal(u'Error text format <%s> in report <%s>.' % (text, self._report_name))
         return None
 
-    def _execFuncGen(self, function, locals):
+    def _execTextFunction(self, function, locals):
         """
         Execute function.
         """

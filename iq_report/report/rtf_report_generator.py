@@ -17,7 +17,7 @@ from . import rtf_report
 from . import report_gen_system
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 RTF_VAR_PATTERN = r'(#.*?#)'
 # List of all patterns used in parsing cell values
@@ -39,23 +39,22 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Report template filename
-        self.RepTmplFileName = None
+        self._report_template_filename = None
         
         # Report folder
         self._report_dir = None
         if self._parent_window:
             self._report_dir = os.path.abspath(self._parent_window.getReportDir())
         
-    def reloadRepData(self, tmpl_filename=None):
+    def reloadReportData(self, tmpl_filename=None):
         """
         Reload report template data.
 
         :param tmpl_filename: Report template filename.
         """
         if tmpl_filename is None:
-            tmpl_filename = self.RepTmplFileName
-        report_gen_system.iqReportGeneratorSystem.reloadRepData(self, tmpl_filename)
+            tmpl_filename = self._report_template_filename
+        report_gen_system.iqReportGeneratorSystem.reloadReportData(self, tmpl_filename)
         
     def getReportDir(self):
         """
@@ -78,7 +77,7 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             template_file_name = os.path.abspath(data_rep['generator'])
             log_func.info(u'Save report <%s> to file <%s>' % (template_file_name, rep_file_name))
             
-            data = self._prevGenerateAllVar(data_rep['__data__'])
+            data = self._prevGenerateAllVariables(data_rep['__data__'])
             rtf_report.genRTFReport(data, rep_file_name, template_file_name)
             return rep_file_name
         return None
@@ -91,9 +90,9 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         rtf_rep_file_name = self._genRTFReport(report)
         if rtf_rep_file_name:
-            self.previewWord(rtf_rep_file_name)
+            self.previewOffice(rtf_rep_file_name)
             
-    def previewWord(self, rtf_filename):
+    def previewOffice(self, rtf_filename):
         """
         Open RTF report in word in preview mode.
 
@@ -123,9 +122,9 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         rtf_rep_file_name = self._genRTFReport(report)
         if rtf_rep_file_name:
-            self.printWord(rtf_rep_file_name)
+            self.printOffice(rtf_rep_file_name)
 
-    def printWord(self, rtf_filename):
+    def printOffice(self, rtf_filename):
         """
         Print RTF report by word.
 
@@ -162,7 +161,7 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         pass
 
-    def openWord(self, rtf_filename):
+    def openOffice(self, rtf_filename):
         """
         Open RTF file in Word.
 
@@ -207,7 +206,7 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
                 self._report_template = report
 
             # 1. Get query table
-            query_data = self.getQueryTbl(self._report_template)
+            query_data = self.getQueryTable(self._report_template)
             if not query_data:
                 dlg_func.openWarningBox(u'WARNING',
                                         u'Not report data\nQuery <%s>' % self._report_template['query'],
@@ -222,7 +221,7 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             log_func.fatal(u'Error generate report <%s>' % self._report_template['name'])
         return None
 
-    def _prevGenerateAllVar(self, data):
+    def _prevGenerateAllVariables(self, data):
         """
         Prepare all variables.
 
@@ -230,16 +229,16 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         if '__variables__' in data:
             # Prepare
-            data['__variables__'] = self._prevGenerateVar(data['__variables__'])
+            data['__variables__'] = self._prevGenerateVariable(data['__variables__'])
         if '__loop__' in data:
             for loop_name, loop_body in data['__loop__'].items():
                 if loop_body:
                     for i_loop in range(len(loop_body)):
-                        loop_body[i_loop] = self._prevGenerateAllVar(loop_body[i_loop])
+                        loop_body[i_loop] = self._prevGenerateAllVariables(loop_body[i_loop])
                     data['__loop__'][loop_name] = loop_body
         return data
 
-    def _prevGenerateVar(self, variables, value=None):
+    def _prevGenerateVariable(self, variables, value=None):
         """
         Prepare variable dictionary.
 
@@ -248,28 +247,28 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         if value is None:
             for name, value in variables.items():
-                variables[name] = self._prevGenerateVar(variables, str(value))
+                variables[name] = self._prevGenerateVariable(variables, str(value))
             return variables
         else:
             # Replace
             value = value.replace('\r\n', '\n').strip()
             # Parse
-            parsed = self._parseFuncText(value)
+            parsed = self._parseTextFunction(value)
             values = []
             for cur_var in parsed['func']:
                 if re.search(RTF_VAR_PATTERN, cur_var):
                     if cur_var[1:-1] in variables:
-                        values.append(self._prevGenerateVar(variables,
-                                                            variables[cur_var[1:-1]]))
+                        values.append(self._prevGenerateVariable(variables,
+                                                                 variables[cur_var[1:-1]]))
                     else:
                         values.append('')
                 else:
                     log_func.warning(u'Unsupported tag <%s>' % cur_var)
 
-            val_str = self._valueFormat(parsed['fmt'], values)
+            val_str = self._setValueFormat(parsed['fmt'], values)
             return val_str
 
-    def _parseFuncText(self, text, patterns=ALL_PATERNS):
+    def _parseTextFunction(self, text, patterns=ALL_PATERNS):
         """
         Parse the string into format and executable code.
 
@@ -314,7 +313,7 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             log_func.fatal(u'Error parse func text <%s>' % text)
         return None
 
-    def _valueFormat(self, fmt, data_list):
+    def _setValueFormat(self, fmt, data_list):
         """
         Set cell value format.
         

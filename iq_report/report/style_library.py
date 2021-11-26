@@ -13,7 +13,7 @@ from iq.util import xml2dict
 
 from . import report_template
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 # Style data structure
 REP_STYLE = {
@@ -76,10 +76,10 @@ class iqXMLReportStyleLibrary(iqReportStyleLibrary):
         :param xml_filename: XML report style library filename.
         """
         xml_data = self.open(xml_filename)
-        self._style_lib = self.covert_data(xml_data)
+        self._style_lib = self.covertData(xml_data)
         return self._style_lib
 
-    def covert_data(self, data):
+    def covertData(self, data):
         """
         Convert from XML file to report style library.
         """
@@ -154,5 +154,5 @@ class iqXMLReportStyleLibrary(iqReportStyleLibrary):
             style['color'] = self._getColorStyle(styles[style_id])
             # style['border']=self._getBordersStyle(styles[style_id])
             # style['align']=self._getAlignStyle(styles[style_id])
-            # style['num_format']=self._getFmtStyle(styles[style_id])
+            # style['num_format']=self._getNumberFormatStyle(styles[style_id])
         return style

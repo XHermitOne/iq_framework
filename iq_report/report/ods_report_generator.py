@@ -25,7 +25,7 @@ from . import report_generator
 from . import report_file
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 ODS_FILENAME_EXT = '.ods'
 PDF_FILENAME_EXT = '.pdf'
@@ -44,23 +44,22 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Report template filename
-        self.RepTmplFileName = None
+        self._report_template_filename = None
         
         # Report folder
         self._report_dir = None
         if self._parent_window:
             self._report_dir = os.path.abspath(self._parent_window.getReportDir())
         
-    def reloadRepData(self, tmpl_filename=None):
+    def reloadReportData(self, tmpl_filename=None):
         """
         Reload report template data.
 
         :param tmpl_filename: Report template filename.
         """
         if tmpl_filename is None:
-            tmpl_filename = self.RepTmplFileName
-        report_gen_system.iqReportGeneratorSystem.reloadRepData(self, tmpl_filename)
+            tmpl_filename = self._report_template_filename
+        report_gen_system.iqReportGeneratorSystem.reloadReportData(self, tmpl_filename)
         
     def getReportDir(self):
         """
@@ -301,15 +300,15 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             if variables:
                 kwargs.update(variables)
 
-            query_tbl = self.getQueryTbl(self._report_template, *args, **kwargs)
-            if self._isEmptyQueryTbl(query_tbl):
+            query_tbl = self.getQueryTable(self._report_template, *args, **kwargs)
+            if self._isEmptyQueryTable(query_tbl):
                 if not global_func.isCUIEngine():
                     if not dlg_func.openAskBox(u'WARNING',
                                                u'No report data\nQuery <%s>\nContinue report generation?' % self._report_template['query']):
                         return None
                 else:
                     log_func.warning(u'No report data. Continue generation')
-                query_tbl = self.createEmptyQueryTbl()
+                query_tbl = self.createEmptyQueryTable()
 
             # 2. Generate
             rep = report_generator.iqReportGenerator()
@@ -348,8 +347,8 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             # 1. Get query table
             _kwargs = copy.deepcopy(kwargs)
             _kwargs.update(dict(db_url=db_url, sql=sql, stylelib=stylelib, variables=vars))
-            query_tbl = self.getQueryTbl(self._report_template, **_kwargs)
-            if self._isEmptyQueryTbl(query_tbl):
+            query_tbl = self.getQueryTable(self._report_template, **_kwargs)
+            if self._isEmptyQueryTable(query_tbl):
                 dlg_func.openWarningBox(u'WARNING',
                                         u'No report data\nQuery <%s>' % self._report_template['query'],
                                         parent=self._parent_window)

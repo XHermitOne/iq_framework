@@ -19,7 +19,7 @@ from . import report_generator
 from . import report_file
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 XML_FILENAME_EXT = '.xml'
 
@@ -37,23 +37,22 @@ class iqXMLReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Report template filename
-        self.RepTmplFileName = None
+        self._report_template_filename = None
         
         # Report folder
         self._report_dir = None
         if self._parent_window:
             self._report_dir = os.path.abspath(self._parent_window.getReportDir())
         
-    def reloadRepData(self, tmpl_filename=None):
+    def reloadReportData(self, tmpl_filename=None):
         """
         Reload report template data.
 
         :param tmpl_filename: Report template filename.
         """
         if tmpl_filename is None:
-            tmpl_filename = self.RepTmplFileName
-        report_gen_system.iqReportGeneratorSystem.reloadRepData(self, tmpl_filename)
+            tmpl_filename = self._report_template_filename
+        report_gen_system.iqReportGeneratorSystem.reloadReportData(self, tmpl_filename)
         
     def getReportDir(self):
         """
@@ -128,9 +127,9 @@ class iqXMLReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         xml_rep_file_name = self._genXMLReport(report)
         if xml_rep_file_name:
-            self.printExcel(xml_rep_file_name)
+            self.printOffice(xml_rep_file_name)
 
-    def printExcel(self, xml_filename):
+    def printOffice(self, xml_filename):
         """
         Print report  by excel.
 
@@ -168,9 +167,9 @@ class iqXMLReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         xml_rep_file_name = self._genXMLReport(report)
         if xml_rep_file_name:
             # Excel
-            self.openExcel(xml_rep_file_name)
+            self.openOffice(xml_rep_file_name)
 
-    def openExcel(self, xml_filename):
+    def openOffice(self, xml_filename):
         """
         Open excel.
 
@@ -221,7 +220,7 @@ class iqXMLReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             if variables:
                 kwargs.update(variables)
 
-            query_tbl = self.getQueryTbl(self._report_template)
+            query_tbl = self.getQueryTable(self._report_template)
             if not query_tbl or not query_tbl['__data__']:
                 if not global_func.isCUIEngine():
                     if dlg_func.openAskBox(u'WARNING',
@@ -229,7 +228,7 @@ class iqXMLReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
                         return None
                 else:
                     log_func.warning(u'No report data. Continue generation.')
-                query_tbl = self.createEmptyQueryTbl()
+                query_tbl = self.createEmptyQueryTable()
 
             # 2. Run generation
             rep = report_generator.iqReportGenerator()

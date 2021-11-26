@@ -43,7 +43,7 @@ from iq.util import log_func
 
 from iq.util import xml2dict
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 # Report data structure
 REPORT_DATA = {
@@ -150,7 +150,7 @@ class iqXMLReportData(iqReportData):
             rep_data['fields'] = self._getFields(rep_data_cols)
             rep_data['data'] = self._getData(rep_data_rows)
             rep_data['__variables__'] = self._getVariables(variables[0]['_children_'])
-            rep_data['__coord_fill__'] = self._getCoordFill(coord_values[0]['_children_'])
+            rep_data['__coord_fill__'] = self._getCoordReplacement(coord_values[0]['_children_'])
             
             return rep_data
         except:
@@ -224,7 +224,7 @@ class iqXMLReportData(iqReportData):
             log_func.fatal(u'Error name space variables')
         return None
 
-    def _getCoordFill(self, coord_values):
+    def _getCoordReplacement(self, coord_values):
         """
         Coordinate replacements of cell values.
         """

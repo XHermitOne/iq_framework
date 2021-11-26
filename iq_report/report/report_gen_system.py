@@ -143,7 +143,7 @@ class iqReportGeneratorSystem(object):
         """
         return self._parent_window
         
-    def reloadRepData(self, tmpl_filename=None):
+    def reloadReportData(self, tmpl_filename=None):
         """
         Reload report data.
 
@@ -151,7 +151,7 @@ class iqReportGeneratorSystem(object):
         """
         self._report_template = res_func.loadResourcePickle(tmpl_filename)
         
-    def setRepData(self, report):
+    def setReportData(self, report):
         """
         Set report template data.
         """
@@ -357,7 +357,7 @@ class iqReportGeneratorSystem(object):
         """
         return None
 
-    def initRepTemplate(self, report, query_table=None):
+    def initReportTemplate(self, report, query_table=None):
         """
         Read report template data.
 
@@ -432,7 +432,7 @@ class iqReportGeneratorSystem(object):
             log_func.fatal(u'Error defining SQL query table <%s>.' % sql)
         return None
 
-    def _isQueryFunc(self, query):
+    def _isQueryFunction(self, query):
         """
         Determine the submitted request as a function?
 
@@ -441,7 +441,7 @@ class iqReportGeneratorSystem(object):
         """
         return query and isinstance(query, str) and query.startswith(PY_SIGNATURE)
 
-    def _execQueryFunc(self, query, vars=None):
+    def _execQueryFunction(self, query, vars=None):
         """
         Get a request from a function.
 
@@ -455,7 +455,7 @@ class iqReportGeneratorSystem(object):
         log_func.debug(u'Execute function: <%s>. External variables %s' % (func, var_names))
         return exec_func.execTxtFunction(func, context=vars, show_debug=True)
 
-    def _isEmptyQueryTbl(self, query_tbl):
+    def _isEmptyQueryTable(self, query_tbl):
         """
         Is empty query table?.
 
@@ -475,7 +475,7 @@ class iqReportGeneratorSystem(object):
             return False
         return True
 
-    def createEmptyQueryTbl(self):
+    def createEmptyQueryTable(self):
         """
         Create empty query table.
 
@@ -484,7 +484,7 @@ class iqReportGeneratorSystem(object):
         """
         return {'__fields__': (), '__data__': []}
 
-    def getQueryTbl(self, report, db_url=None, sql=None, *args, **kwargs):
+    def getQueryTable(self, report, db_url=None, sql=None, *args, **kwargs):
         """
         Get query table.
 
@@ -508,9 +508,9 @@ class iqReportGeneratorSystem(object):
                 # Case when a query function returns a table
                 if isinstance(report['query'], dict):
                     return report['query']
-                elif self._isQueryFunc(report['query']):
+                elif self._isQueryFunction(report['query']):
                     variables = kwargs.get('variables', None)
-                    query = self._execQueryFunc(report['query'], vars=variables)
+                    query = self._execQueryFunction(report['query'], vars=variables)
                     log_func.debug(u'Execute query func <%s>' % str(query))
 
                     if isinstance(query, dict):
@@ -571,59 +571,6 @@ class iqReportGeneratorSystem(object):
         except:
             log_func.fatal(u'Error query table <%s>.' % query)
         return None
-
-    # def RepSQLObj2SQLite(self, report, res_table):
-    #     """
-    #     Преобразование имен в шаблоне отчета в контексте SQLObject в имена в
-    #         контексте sqlite.
-    #
-    #     :param report: Щаблон отчета.
-    #     :param res_table: Ресурсное описание таблиц.
-    #     """
-    #     try:
-    #         rep = report
-    #         # Для корректной обработки имен полей и таблиц они д.б.
-    #         # отсортированны по убыванию длин имен классов данных
-    #         data_class_names = res_table.keys()
-    #         data_class_names.sort()
-    #         data_class_names.reverse()
-    #
-    #         # Обработка шаблона отчета
-    #         # 1. Верхний и нижний колонтитулы
-    #         # Перебор ячеек
-    #         for row in rep['upper']:
-    #             for cell in row:
-    #                 if cell:
-    #                     # Перебор классов
-    #                     for data_class_name in data_class_names:
-    #                         cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
-    #                                                                             res_table[data_class_name]['scheme'])
-    #         # Перебор ячеек
-    #         for row in rep['under']:
-    #             for cell in row:
-    #                 if cell:
-    #                     # Перебор классов
-    #                     for data_class_name in data_class_names:
-    #                         cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
-    #                                                                             res_table[data_class_name]['scheme'])
-    #         # 2. Лист шаблона
-    #         # Перебор ячеек
-    #         for row in rep['sheet']:
-    #             for cell in row:
-    #                 if cell:
-    #                     # Перебор классов
-    #                     for data_class_name in data_class_names:
-    #                         cell['value'] = ic.db.tabrestr.icNamesSQLObj2SQLite(cell['value'], data_class_name,
-    #                                                                             res_table[data_class_name]['scheme'])
-    #         # 3. Описание групп
-    #         for grp in rep['groups']:
-    #             for data_class_name in data_class_names:
-    #                 grp['field'] = ic.db.tabrestr.icNamesSQLObj2SQLite(grp['field'], data_class_name,
-    #                                                                    res_table[data_class_name]['scheme'])
-    #
-    #         return rep
-    #     except:
-    #         return report
 
     def previewResult(self, report_data=None):
         """

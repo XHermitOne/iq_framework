@@ -19,7 +19,7 @@ from iq.util import file_func
 
 from . import report_generator
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 SPC_IC_XML_STYLE = {'style_id': '',                                     # Style ID
                     'align': {'align_txt': (0, 0), 'wrap_txt': False},  # Alignment
@@ -117,7 +117,7 @@ class iqXMLSpreadSheetReportFile(iqReportFile):
             log_func.fatal(u'Error report write <%s>' % str_func.toUnicode(rep_filename))
         return None
 
-    def write_book(self, rep_filename, *rep_sheet_data):
+    def writeBook(self, rep_filename, *rep_sheet_data):
         """
         Save the list of sheets of the completed report in a file.
 
@@ -517,7 +517,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
             # Borders
             self.startElementLevel('Borders', {})
             for border_pos in range(4):
-                border = self._borderRep2XML(style['border'], border_pos)
+                border = self._borderReport2XML(style['border'], border_pos)
                 if border:
                     border_element = dict([('ss:'+stl_name, border[stl_name]) for stl_name in
                                           [stl_name for stl_name in border.keys() if border[stl_name] is not None]])
@@ -553,7 +553,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
             # Format
             fmt = dict()
             if style['num_format']:
-                fmt['ss:Format'] = self._getNumFmt(style['num_format'])
+                fmt['ss:Format'] = self._getNumberFormat(style['num_format'])
                 self.startElement('NumberFormat', fmt)
                 self.endElement('NumberFormat')
 
@@ -570,7 +570,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
         # If the color is specified in a non-RGB format, then leave it unchanged
         return color
 
-    def _getNumFmt(self, num_format):
+    def _getNumberFormat(self, num_format):
         """
         Number format.
         """
@@ -592,7 +592,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
                              report_generator.REP_VERT_ALIGN_BOTTOM: 'Bottom',
                              }
         
-    def _borderRep2XML(self, border, position):
+    def _borderReport2XML(self, border, position):
         """
         Convert framing to xml representation.
         """

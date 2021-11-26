@@ -9,14 +9,14 @@ import copy
 
 from iq.util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 
 def getSD(var, val):
     return {'__variables__': {var: val}}
 
 
-def findNextVar(rep, pos=0):
+def findNextVariable(rep, pos=0):
     """
     Find next variable.
     
@@ -75,7 +75,7 @@ def findNextVar(rep, pos=0):
     s = s.replace('\r', '').replace('\n', '')
 
     if ' ' in s:
-        p1, p2, s = findNextVar(rep, p1+1)
+        p1, p2, s = findNextVariable(rep, p1 + 1)
 
     return p1, p2, s
 
@@ -126,7 +126,7 @@ def getTableTemplate(rep, pos):
     p2 = pos
     
     while 1:
-        p1, p2, var = findNextVar(rep, p2+1)
+        p1, p2, var = findNextVariable(rep, p2 + 1)
     
         if not var:
             break
@@ -210,7 +210,7 @@ def parseRTF(data, rep, replace_dict=None, idx_loop=None, idx_key=None):
     
     # Parse template
     while 1:
-        p1, p2, var = findNextVar(rep, p2+1)
+        p1, p2, var = findNextVariable(rep, p2 + 1)
     
         if not var:
             break

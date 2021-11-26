@@ -22,7 +22,7 @@ from . import report_gen_system
 from . import reportman
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 DEFAULT_REP_FILE_NAME = os.path.join(tempfile.gettempdir(), 'new_report.rep')
 
@@ -40,8 +40,7 @@ class iqReportManagerGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        # Report template filename
-        self.RepTmplFileName = None
+        self._report_template_filename = None
         
         # Report folder
         self._report_dir = None
@@ -181,8 +180,8 @@ class iqReportManagerGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             # 1. Get query table
             query = report['query']
             if query is not None:
-                if self._isQueryFunc(query):
-                    query = self._execQueryFunc(query)
+                if self._isQueryFunction(query):
+                    query = self._execQueryFunction(query)
                 else:
                     query = exec_func.execTxtFunction(query)
                 
