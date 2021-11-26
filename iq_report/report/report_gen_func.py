@@ -45,14 +45,14 @@ def getReportGeneratorSystem(rep_filename, parent=None, refresh=True):
 
         if REPORT_GEN_SYSTEM is None:
             REPORT_GEN_SYSTEM = createReportGeneratorSystem(rep['generator'], rep, parent)
-            REPORT_GEN_SYSTEM.RepTmplFileName = rep_filename
+            REPORT_GEN_SYSTEM.setReportTemplateFileName(rep_filename)
         elif not REPORT_GEN_SYSTEM.sameGeneratorType(rep['generator']):
             REPORT_GEN_SYSTEM = createReportGeneratorSystem(rep['generator'], rep, parent)
-            REPORT_GEN_SYSTEM.RepTmplFileName = rep_filename
+            REPORT_GEN_SYSTEM.setReportTemplateFileName(rep_filename)
         else:
             if refresh:
-                REPORT_GEN_SYSTEM.setRepData(rep)
-                REPORT_GEN_SYSTEM.RepTmplFileName = rep_filename
+                REPORT_GEN_SYSTEM.setReportData(rep)
+                REPORT_GEN_SYSTEM.setReportTemplateFileName(rep_filename)
 
         if REPORT_GEN_SYSTEM and REPORT_GEN_SYSTEM.getParent() is None:
             REPORT_GEN_SYSTEM.setParent(parent)

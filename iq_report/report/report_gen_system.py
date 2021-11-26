@@ -73,6 +73,8 @@ class iqReportGeneratorSystem(object):
         :param report: Report template.
         :param parent: Parent window.
         """
+        self._report_template_filename = None
+
         # Report template
         self._report_template = report
         # Query table
@@ -83,6 +85,18 @@ class iqReportGeneratorSystem(object):
 
         # # Preview
         # self.PrintPreview = None
+
+    def getReportTemplateFileName(self):
+        """
+        Report template file name.
+        """
+        return self._report_template_filename
+
+    def setReportTemplateFileName(self, report_template_filename):
+        """
+        Set report template file name.
+        """
+        self._report_template_filename = report_template_filename
 
     def getReportDir(self):
         """

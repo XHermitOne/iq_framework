@@ -39,8 +39,6 @@ class iqRTFReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
         """
         report_gen_system.iqReportGeneratorSystem.__init__(self, report, parent)
 
-        self._report_template_filename = None
-        
         # Report folder
         self._report_dir = None
         if self._parent_window:
