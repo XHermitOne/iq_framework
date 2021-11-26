@@ -73,5 +73,21 @@ class iqMultiChoiceExtDialog(ext_dialogs_proto.MultiChoiceListBoxExtDialogProto)
         """
         return self._selected_items
 
+    def onClearToolClicked(self, event):
+        """
+        Clear tool click handler.
+        """
+        for i, item in enumerate(self.items_checkList.GetItems()):
+            self.items_checkList.Check(i, False)
+        event.Skip()
+
+    def onSetAllToolClicked(self, event):
+        """
+        Set all tool click handler.
+        """
+        for i, item in enumerate(self.items_checkList.GetItems()):
+            self.items_checkList.Check(i, True)
+        event.Skip()
+
     # Function alias
     getValue = getSelectedItems

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Adapted Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -33,7 +33,7 @@ class iqStartFolderDialogProto ( wx.Dialog ):
 		self.new_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_NORMAL_FILE, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.new_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.new_button = wx.Button( self, wx.ID_ANY, _(u"New ..."), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.new_button = wx.Button( self, wx.ID_ANY, _(u"New..."), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.new_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
@@ -80,7 +80,7 @@ class iqStartFolderDialogProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
+	# Virtual event handlers, override them in your derived class
 	def onNewButtonClick(self, event):
 		event.Skip()
 

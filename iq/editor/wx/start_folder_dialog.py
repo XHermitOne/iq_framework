@@ -177,12 +177,12 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
                                             new_basename + jasperreport_manager.JASPER_REPORT_PROJECT_FILE_EXT)
             if jasperreport_manager.createJasperReportProjectFile(new_prj_filename):
                 dlg_func.openMsgBox(title=_(u'CREATE'),
-                                    prompt_text=_(u'Create JasperReport file <%s>' % new_prj_filename))
+                                    prompt_text=_(u'Create JasperReport file') + ' <%s>' % new_prj_filename)
                 self.EndModal(wx.ID_OK)
                 jasperreport_manager.runJasperReportEditor(filename=new_prj_filename)
             else:
                 dlg_func.openWarningBox(title=_(u'ERROR'),
-                                        prompt_text=_(u'Error create JasperReport file <%s>' % new_prj_filename))
+                                        prompt_text=_(u'Error create JasperReport file') + ' <%s>' % new_prj_filename)
                 self.EndModal(wx.ID_OK)
         event.Skip()
 
@@ -197,12 +197,12 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
                                             new_basename + limereport_manager.LIME_REPORT_PROJECT_FILE_EXT)
             if limereport_manager.createLimeReportProjectFile(new_prj_filename):
                 dlg_func.openMsgBox(title=_(u'CREATE'),
-                                    prompt_text=_(u'Create LimeReport file <%s>' % new_prj_filename))
+                                    prompt_text=_(u'Create LimeReport file') + ' <%s>' % new_prj_filename)
                 self.EndModal(wx.ID_OK)
                 limereport_manager.runLimeReportEditor(filename=new_prj_filename)
             else:
                 dlg_func.openWarningBox(title=_(u'ERROR'),
-                                        prompt_text=_(u'Error create LimeReport file <%s>' % new_prj_filename))
+                                        prompt_text=_(u'Error create LimeReport file') + ' <%s>' % new_prj_filename)
                 self.EndModal(wx.ID_OK)
         event.Skip()
 

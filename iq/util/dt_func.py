@@ -5,6 +5,7 @@
 Date-time functions module.
 """
 
+import time
 import calendar
 import datetime
 import locale
@@ -15,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 4, 2)
+__version__ = (0, 0, 5, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -461,3 +462,55 @@ def strfdelta(timedelta, fmt=None):
     fmt_dict['L'] = '{:d}'.format(sum_hours)
     t = TimeDeltaTemplate(fmt)
     return t.substitute(**fmt_dict)
+
+
+def strDateTime2Tuple(dt_str='01.01.0001', fmt=DEFAULT_DATETIME_FMT):
+    """
+    Convert datetime as string to tuple.
+
+    :param dt_str: Datetime as string.
+    :param fmt: Datetime string format.
+    :return: Datetime as tuple.
+    """
+    try:
+        return time.strptime(dt_str, fmt)
+    except:
+        log_func.fatal(u'Error convert string datetime to tuple')
+    return None
+
+
+def strDateTime2Date(date_str, fmt=DEFAULT_DATETIME_FMT):
+    """
+    Convert the string representation of a date in the specified format to date format.
+
+    :return: Date or None if error.
+    """
+    try:
+        date_time_tuple = strDateTime2Tuple(date_str, fmt)
+        year = date_time_tuple[0]
+        month = date_time_tuple[1]
+        day = date_time_tuple[2]
+        return datetime.date(year, month, day)
+    except:
+        log_func.fatal(u'Error convert string datetime to date')
+    return None
+
+
+def strDateTime2DateTime(dt_str, fmt=DEFAULT_DATETIME_FMT):
+    """
+    Convert the string representation of a date in the specified format to date format.
+
+    :return: DateTime or None if error.
+    """
+    try:
+        date_time_tuple = strDateTime2Tuple(dt_str, fmt)
+        year = date_time_tuple[0]
+        month = date_time_tuple[1]
+        day = date_time_tuple[2]
+        hour = date_time_tuple[3]
+        minute = date_time_tuple[4]
+        second = date_time_tuple[5]
+        return datetime.datetime(year, month, day, hour, minute, second)
+    except:
+        log_func.fatal(u'Error convert string datetime to datetime')
+    return None

@@ -14,9 +14,11 @@ from ...util import log_func
 from ...util import lang_func
 from ...util import spc_func
 from ...util import global_func
+from ...util import dt_func
 
 from ...engine.wx.dlg import wxdlg_func
 from ...engine.wx import wxbitmap_func
+from ...engine.wx import wxdatetime_func
 from ...engine.wx import form_manager
 from ...engine.wx import treectrl_manager
 from ...engine.wx import listctrl_manager
@@ -28,7 +30,7 @@ from . import wx_editlinkproperty
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -120,11 +122,11 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
                     default_value = 0
             property = wx.propgrid.IntProperty(label=label, name=field.name, value=default_value)
         elif field.type.__class__ in column_types.SQLALCHEMY_DATE_TYPES:
-            py_date = datetimefunc.strDateFmt2DateTime(default_value)
-            wx_date = datetimefunc.pydate2wxdate(py_date)
+            py_date = dt_func.strDateTime2Date(default_value)
+            wx_date = wxdatetime_func.datetime2wxDateTime(py_date)
             property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
         elif field.type.__class__ in column_types.SQLALCHEMY_DATETIME_TYPES:
-            wx_date = datetimefunc.pydate2wxdate(default_value)
+            wx_date = wxdatetime_func.date2wxDateTime(default_value)
             property = wx.propgrid.DateProperty(label=label, name=field.name, value=wx_date)
         else:
             # If the type is not defined, then just look in text form
@@ -247,7 +249,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         elif property_type in column_types.SQLALCHEMY_DATE_TYPES:
             value = str_value
         elif property_type in column_types.SQLALCHEMY_DATETIME_TYPES:
-            value = datetimefunc.strDateTimeFmt2DateTime(str_value.strip())
+            value = dt_func.strDateTime2DateTime(str_value.strip())
         else:
             log_func.warning(u'Not supported property type <%s> ' % property_type)
             value = str_value
@@ -846,8 +848,9 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         if rec_idx != -1:
             record = self._list_ctrl_dataset[rec_idx]
             del_code = record['cod']
+            record_label = '<%s>. ' % record['name']
             if wxdlg_func.openAskBox(_(u'DELETE'),
-                                     _(u'Delete record <%s>. Are you sure?' % record['name'])):
+                                     _(u'Delete record') + record_label + _(u'Are you sure?')):
                 self.ref_obj.delRecByCod(cod=del_code)
                 self.delRefObjTreeItem(self.refobj_treeCtrl.GetSelection(),
                                        del_code)

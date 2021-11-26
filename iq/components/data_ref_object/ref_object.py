@@ -287,7 +287,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                 num_value = float(search_value)
                 query = transaction.query(model).filter(column == num_value)
             elif column_type.__class__ in column_types.SQLALCHEMY_DATETIME_TYPES or column_type in column_types.SQLALCHEMY_DATE_TYPES:
-                # dt_value = datetimefunc.strDateFmt2DateTime(search_value)
+                # dt_value = datetimefunc.strDateTime2Date(search_value)
                 query = transaction.query(model).filter(column == search_value)
             else:
                 log_func.warning(u'Find by column type <%s : %s> not supported' % (search_colname,
