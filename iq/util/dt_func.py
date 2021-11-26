@@ -430,6 +430,12 @@ def strfdelta(timedelta, fmt=None):
 
     :param timedelta: Timedelta.
     :param fmt: Format string.
+        Format:
+        D - days;
+        L - total hours;
+        H - hours;
+        M - minutes;
+        S - seconds.
     :return: Timedelta string.
     """
     assert isinstance(timedelta, datetime.timedelta), u'Type error timedelta'
