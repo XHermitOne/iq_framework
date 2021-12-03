@@ -26,9 +26,15 @@ from .. import global_data
 
 from . import spc
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
+
+RUN_SH_FMT = '''#!/bin/sh
+
+cd %s
+python3 ./framework.py --debug --os --mode=runtime --engine=%s --prj=%s
+'''
 
 
 class iqProjectManager(object):
@@ -274,11 +280,7 @@ class iqProjectManager(object):
         if name:
             self.setName(name)
 
-        cmd = '''#!/bin/sh
-
-cd %s
-python3 ./framework.py --debug --mode=runtime --engine=%s --prj=%s        
-''' % (file_func.getFrameworkPath(), global_func.getEngineType(), name)
+        cmd = RUN_SH_FMT % (file_func.getFrameworkPath(), global_func.getEngineType(), name)
         return exec_func.runTask(cmd, run_filename=name, rewrite=True)
 
     def debug(self, name=None):

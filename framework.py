@@ -15,6 +15,7 @@ Launch parameters:
         --version|-v        Print version of the program
         --debug|-d          Enable debug mode
         --log|-l            Enable logging mode
+        --os                Show OS information
 
     [Options]
         --mode=             Startup mode (runtime, editor)
@@ -51,7 +52,7 @@ def main(*argv):
     # Parse command line arguments
     try:
         options, args = getopt.getopt(argv, 'h?vdl',
-                                      ['help', 'version', 'debug', 'log',
+                                      ['help', 'version', 'debug', 'log', 'os',
                                        'mode=', 'engine=', 'prj=', 'username=', 'password=',
                                        'res_filename='])
     except getopt.error as msg:
@@ -83,6 +84,8 @@ def main(*argv):
         elif option in ('-l', '--log'):
             global_func.setLogMode()
             log_func.init()
+        elif option in ('--os',):
+            sys_func.printOSFetchInfo()
         elif option in ('--mode',):
             mode = arg.lower()
             runtime_mode = mode == iq.RUNTIME_MODE_STATE
@@ -102,8 +105,6 @@ def main(*argv):
             log_func.warning(u'Not supported parameter <%s>' % option)
 
     start_time = time.time()
-    if global_func.isDebugMode():
-        sys_func.printOSFetchInfo()
     log_func.info(u'iqFramework <Engine: %s / Mode: %s / Path: %s>... START' % (engine, mode,
                                                                                 file_func.getFrameworkPath()))
 
