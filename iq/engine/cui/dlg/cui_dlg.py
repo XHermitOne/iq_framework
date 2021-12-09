@@ -58,9 +58,9 @@ class iqCUIDialogProto(object):
         """
         Add buttons to dialog.
 
-        @param buttons: Button list:
+        :param buttons: Button list:
             [('Label', Button code), ...]
-        @param align: Button list alignment.
+        :param align: Button list alignment.
         """
         pass
 

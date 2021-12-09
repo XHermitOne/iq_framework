@@ -24,6 +24,7 @@ from ...engine.wx import form_manager
 from . import wxfb_manager
 from ..jasper_report import jasperreport_manager
 from ..lime_report import limereport_manager
+from ..gtk import glade_manager
 
 from .res_editor import new_resource_dialog
 from .res_editor import resource_editor
@@ -32,7 +33,7 @@ from ...engine.wx import stored_wx_form_manager
 
 from ...project import prj
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -104,13 +105,21 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
         self.Bind(wx.EVT_MENU, self.onNewResMenuItem, id=menuitem_id)
         new_menu.AppendSeparator()
 
-        icon_bmp = wxbitmap_func.createIconBitmap('fatcow/application_form_edit')
+        icon_bmp = wxbitmap_func.createIconBitmap('wxformbuilder')
         menuitem_label = _(u'New wxFormBuilder project')
         menuitem_id = wx.NewId()
         menuitem = wx.MenuItem(new_menu, menuitem_id, menuitem_label)
         menuitem.SetBitmap(icon_bmp)
         new_menu.Append(menuitem)
         self.Bind(wx.EVT_MENU, self.onNewWXFBMenuItem, id=menuitem_id)
+
+        icon_bmp = wxbitmap_func.createIconBitmap('glade')
+        menuitem_label = _(u'New Glade project')
+        menuitem_id = wx.NewId()
+        menuitem = wx.MenuItem(new_menu, menuitem_id, menuitem_label)
+        menuitem.SetBitmap(icon_bmp)
+        new_menu.Append(menuitem)
+        self.Bind(wx.EVT_MENU, self.onNewGladeMenuItem, id=menuitem_id)
 
         icon_bmp = wxbitmap_func.createIconBitmap('fatcow/report')
         menuitem_label = _(u'New JasperReport report')
@@ -163,6 +172,14 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
         Menu item handler <New wxFormBuilder project>.
         """
         wxfb_manager.runWXFormBuilder()
+        self.EndModal(wx.ID_OK)
+        event.Skip()
+
+    def onNewGladeMenuItem(self, event):
+        """
+        Menu item handler <New Glade project>.
+        """
+        glade_manager.runGlade()
         self.EndModal(wx.ID_OK)
         event.Skip()
 

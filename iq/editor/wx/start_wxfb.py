@@ -22,10 +22,10 @@ from . import wxfb_manager
 
 from ...engine.wx import stored_wx_form_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
-class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditorDielogProto,
+class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditorDialogProto,
                                        stored_wx_form_manager.iqStoredWxFormsManager):
     """
     Start wxFormBuilder project editor dialog.
@@ -34,7 +34,7 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
         """
         Constructor.
         """
-        start_wxfb_dlg.iqStartWXFormBuilderEditorDielogProto.__init__(self, *args, **kwargs)
+        start_wxfb_dlg.iqStartWXFormBuilderEditorDialogProto.__init__(self, *args, **kwargs)
         bmp = wxbitmap_func.createIconBitmap('wxformbuilder')
         if bmp:
             self.SetIcon(icon=wx.Icon(bmp))
@@ -108,6 +108,7 @@ def openStartWXFormBuilderEditorDlg(parent=None, fbp_filename=None):
     Open start wxFormBuilder project editor dialog.
 
     :param parent: Parent form.
+    :param fbp_filename: wxFormBuilder progect file name.
     :return: True/False
     """
     dlg = None

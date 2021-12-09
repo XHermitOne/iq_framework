@@ -16,13 +16,13 @@ from iq.util import lang_func
 _ = lang_func.getTranslation().gettext
 
 ###########################################################################
-## Class iqStartWXFormBuilderEditorDialogProto
+## Class iqStartGladeEditorDialogProto
 ###########################################################################
 
-class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
+class iqStartGladeEditorDialogProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"wxFormBuilder"), pos = wx.DefaultPosition, size = wx.Size( 483,214 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Glade"), pos = wx.DefaultPosition, size = wx.Size( 483,214 ), style = wx.DEFAULT_DIALOG_STYLE )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -33,7 +33,7 @@ class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 		self.new_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_NEW, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.new_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.new_button = wx.Button( self, wx.ID_ANY, _(u"New wxFormBuilder project"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.new_button = wx.Button( self, wx.ID_ANY, _(u"New Glade project"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.new_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
@@ -44,22 +44,11 @@ class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 		self.open_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_FILE_OPEN, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer21.Add( self.open_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.open_button = wx.Button( self, wx.ID_ANY, _(u"Open wxFormBuilder project"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.open_button = wx.Button( self, wx.ID_ANY, _(u"Open Glade project"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer21.Add( self.open_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
 		bSizer1.Add( bSizer21, 1, wx.EXPAND, 5 )
-
-		bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
-
-		self.migrate_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-convert", wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer22.Add( self.migrate_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
-
-		self.migrate_button = wx.Button( self, wx.ID_ANY, _(u"Migrate wxFormBuilder project"), wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer22.Add( self.migrate_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
-
-
-		bSizer1.Add( bSizer22, 1, wx.EXPAND, 5 )
 
 		bSizer221 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -83,7 +72,6 @@ class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 		# Connect Events
 		self.new_button.Bind( wx.EVT_BUTTON, self.onNewButtonClick )
 		self.open_button.Bind( wx.EVT_BUTTON, self.onOpenButtonClick )
-		self.migrate_button.Bind( wx.EVT_BUTTON, self.onMigrateButtonClick )
 		self.exit_button.Bind( wx.EVT_BUTTON, self.onExitButtonClick )
 
 	def __del__( self ):
@@ -95,9 +83,6 @@ class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 		event.Skip()
 
 	def onOpenButtonClick(self, event):
-		event.Skip()
-
-	def onMigrateButtonClick(self, event):
 		event.Skip()
 
 	def onExitButtonClick(self, event):

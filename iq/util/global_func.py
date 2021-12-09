@@ -134,6 +134,15 @@ def isQTEngine():
     return global_data.getGlobal('ENGINE_TYPE') == global_data.QT_ENGINE_TYPE
 
 
+def isGTKEngine():
+    """
+    Set engine as GTK.
+
+    :return: True/False.
+    """
+    return global_data.getGlobal('ENGINE_TYPE') == global_data.GTK_ENGINE_TYPE
+
+
 def isCUIEngine():
     """
     Set engine as CUI.
@@ -214,6 +223,13 @@ def createApplication():
             app = wx.App()
         elif isQTEngine():
             app = None
+        elif isGTKEngine():
+            app = None
+            try:
+                import gi.repository.Gtk
+                app = gi.repository.Gtk
+            except:
+                raise
         elif isCUIEngine():
             app = None
 
@@ -240,6 +256,8 @@ def getMainWin():
             app = getApplication()
             main_win = app.GetTopWindow() if app else None
         elif isQTEngine():
+            main_win = None
+        elif isGTKEngine():
             main_win = None
         elif isCUIEngine():
             main_win = None

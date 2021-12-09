@@ -10,7 +10,7 @@ import locale
 import os.path
 import datetime
 
-VERSION = (0, 0, 1, 2)
+VERSION = (0, 0, 2, 1)
 
 DEBUG_MODE = False
 LOG_MODE = False
@@ -50,6 +50,7 @@ USER = None
 # Engine type. wx, qt or cui
 WX_ENGINE_TYPE = 'WX'
 QT_ENGINE_TYPE = 'QT'
+GTK_ENGINE_TYPE = 'GTK'
 CUI_ENGINE_TYPE = 'CUI'
 
 # Set default engine type
@@ -60,7 +61,7 @@ except ImportError:
     DEFAULT_ENGINE_TYPE = CUI_ENGINE_TYPE
 
 ENGINE_TYPE = DEFAULT_ENGINE_TYPE
-ENGINE_TYPES = (WX_ENGINE_TYPE, QT_ENGINE_TYPE, CUI_ENGINE_TYPE)
+ENGINE_TYPES = (WX_ENGINE_TYPE, QT_ENGINE_TYPE, GTK_ENGINE_TYPE, CUI_ENGINE_TYPE)
 
 # Application object
 APPLICATION = None
