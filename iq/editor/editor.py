@@ -17,6 +17,7 @@ from ..kernel import kernel
 
 from ..dialog import dlg_func
 from ..editor.wx import wxfb_manager
+from ..editor.gtk import glade_manager
 from ..editor.jasper_report import jasperreport_manager
 from ..editor.lime_report import limereport_manager
 
@@ -66,6 +67,11 @@ def _openResourceEditor(res_filename):
             log_func.info(u'Edit wxFormBuilder project <%s>' % res_filename)
             from .wx import start_wxfb
             return start_wxfb.startWXFormBuilderEditor(fbp_filename=res_filename)
+
+        elif glade_manager.isGladeProjectFile(res_filename):
+            log_func.info(u'Edit Glade project <%s>' % res_filename)
+            from .gtk import start_glade
+            return start_glade.startGladeEditor(glade_filename=res_filename)
 
         elif jasperreport_manager.isJasperReportProjectFile(res_filename):
             log_func.info(u'Edit JasperReport project <%s>' % res_filename)
