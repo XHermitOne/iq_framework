@@ -50,6 +50,17 @@ class iqStartGladeEditorDialogProto ( wx.Dialog ):
 
 		bSizer1.Add( bSizer21, 1, wx.EXPAND, 5 )
 
+		bSizer211 = wx.BoxSizer( wx.HORIZONTAL )
+
+		self.gen_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_EXECUTABLE_FILE, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer211.Add( self.gen_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+		self.gen_button = wx.Button( self, wx.ID_ANY, _(u"Generate python module by Glade project"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer211.Add( self.gen_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+
+		bSizer1.Add( bSizer211, 1, wx.EXPAND, 5 )
+
 		bSizer221 = wx.BoxSizer( wx.HORIZONTAL )
 
 		self.exit_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_QUIT, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -72,6 +83,7 @@ class iqStartGladeEditorDialogProto ( wx.Dialog ):
 		# Connect Events
 		self.new_button.Bind( wx.EVT_BUTTON, self.onNewButtonClick )
 		self.open_button.Bind( wx.EVT_BUTTON, self.onOpenButtonClick )
+		self.gen_button.Bind( wx.EVT_BUTTON, self.onGenerateButtonClick )
 		self.exit_button.Bind( wx.EVT_BUTTON, self.onExitButtonClick )
 
 	def __del__( self ):
@@ -83,6 +95,9 @@ class iqStartGladeEditorDialogProto ( wx.Dialog ):
 		event.Skip()
 
 	def onOpenButtonClick(self, event):
+		event.Skip()
+
+	def onGenerateButtonClick(self, event):
 		event.Skip()
 
 	def onExitButtonClick(self, event):

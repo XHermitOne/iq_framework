@@ -19,6 +19,7 @@ from ...engine.wx import wxbitmap_func
 from ...dialog import dlg_func
 
 from . import glade_manager
+from .code_generator import gui_generator
 
 from ...engine.wx import stored_wx_form_manager
 
@@ -55,8 +56,6 @@ class iqStartGladeEditorDialog(start_glade_dlg.iqStartGladeEditorDialogProto,
         """
         Init images of controls on form.
         """
-        # bmp = wxbitmap_func.createIconBitmap('fatcow/script_go')
-        # self.migrate_bitmap.SetBitmap(bmp)
         pass
 
     def onExitButtonClick(self, event):
@@ -88,20 +87,21 @@ class iqStartGladeEditorDialog(start_glade_dlg.iqStartGladeEditorDialogProto,
             self.EndModal(wx.ID_CANCEL)
         event.Skip()
 
-    # def onMigrateButtonClick(self, event):
-    #     """
-    #     Button click handler <Migrate>.
-    #     """
-    #     result = wxfb_manager.migrateWXFormBuilderProject(self.glade_filename)
-    #     if result:
-    #         dlg_func.openMsgBox(title=u'EDITOR',
-    #                             prompt_text=u'Migration wxFormBuilder project file <%s> was successful' % self.glade_filename)
-    #         self.EndModal(wx.ID_OK)
-    #     else:
-    #         dlg_func.openWarningBox(title=u'EDITOR',
-    #                                 prompt_text=u'Migration wxFormBuilder project file <%s> ended unsuccessfully' % self.glade_filename)
-    #         self.EndModal(wx.ID_CANCEL)
-    #     event.Skip()
+    def onGenerateButtonClick(self, event):
+        """
+        Button click handler <Generate>.
+        """
+        result = gui_generator.gen(src_filename=self.glade_filename, parent=self)
+
+        if result:
+            msg = u'Python generate by <%s> was successful' % self.glade_filename
+            dlg_func.openMsgBox(title=u'EDITOR', prompt_text=msg)
+            self.EndModal(wx.ID_OK)
+        else:
+            msg = u'Python generate <%s> ended unsuccessfully' % self.glade_filename
+            dlg_func.openErrBox(title=u'EDITOR', prompt_text=msg)
+            self.EndModal(wx.ID_CANCEL)
+        event.Skip()
 
 
 def openStartGladeEditorDlg(parent=None, glade_filename=None):

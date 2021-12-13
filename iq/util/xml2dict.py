@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Модуль конвертора файлов Excel в xml формате в словарь.
+Convert XML -> python dictionary functions.
 """
 
 import os
