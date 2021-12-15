@@ -67,6 +67,13 @@ sudo apt install --assume-yes python3-six
 sudo apt install --assume-yes python3-matplotlib
 # sudo apt install --assume-yes python3-wxmpl
 
+# GTK+
+sudo apt install --assume-yes python3-gi
+sudo apt install --assume-yes python3-gi-cairo
+sudo apt install --assume-yes gir1.2-gtk-3.0
+sudo apt install --assume-yes glade
+sudo apt install --assume-yes gir1.2-appindicator3-0.1
+
 # JSONRPC (Ubuntu 20.04)
 sudo apt install python3-jsonrpclib-pelix
 

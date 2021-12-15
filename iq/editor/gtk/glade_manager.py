@@ -13,11 +13,12 @@ from ...util import exec_func
 from ...util import py_func
 from ...util import file_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 GLADE_PROJECT_FILE_EXT = '.glade'
 
 ALTER_GLADE_PATH = 'glade'
+ALTER_GLADE_PREVIEW_PATH = 'glade-previewer'
 
 
 def isGladeProjectFile(filename):
@@ -39,6 +40,18 @@ def getGladeExecutable():
     else:
         alter_glade_path = os.path.normpath(ALTER_GLADE_PATH)
         return alter_glade_path
+    return None
+
+
+def getGladePreviewExecutable():
+    """
+    The path to the main Glade preview program to run.
+    """
+    if os.path.exists('/bin/glade-previewer') or os.path.exists('/usr/bin/glade-previewer'):
+        return 'glade-previewer'
+    else:
+        alter_glade_preview_path = os.path.normpath(ALTER_GLADE_PREVIEW_PATH)
+        return alter_glade_preview_path
     return None
 
 
@@ -68,6 +81,30 @@ def runGlade(filename=None, asynchro=True):
     return exec_func.execSystemCommand(cmd)
 
 
+def previewGlade(filename=None, asynchro=True):
+    """
+    Preview Glade file.
+    For a more detailed description of the Glade startup options,
+    run: glade-preview --help.
+
+    :param filename: File opened in Glade.
+        If not specified, then nothing opens.
+    :param asynchro: Asynchronous start?
+    :return: True/False
+    """
+    cmd = ''
+    cmd_args = '--filename=%s' % filename
+
+    glade_preview_exec = getGladePreviewExecutable()
+    if glade_preview_exec:
+        async_symb = '&' if asynchro else ''
+        cmd = '%s %s%s' % (glade_preview_exec,
+                           cmd_args,
+                           async_symb) if cmd_args else '%s %s' % (glade_preview_exec, async_symb)
+
+    return exec_func.execSystemCommand(cmd)
+
+
 class iqGladeManager(object):
     """
     Glade form designer manager.
@@ -84,6 +121,20 @@ class iqGladeManager(object):
             return True
         except:
             log_func.fatal(u'Error opening Glade project file <%s>' % prj_filename)
+        return False
+
+    def previewProject(self, prj_filename):
+        """
+        Open preview project file.
+
+        :param prj_filename: The full name of the project file.
+        :return: True/False
+        """
+        try:
+            previewGlade(prj_filename)
+            return True
+        except:
+            log_func.fatal(u'Error preview Glade project file <%s>' % prj_filename)
         return False
 
     def createProject(self, default_prj_filename=None):

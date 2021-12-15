@@ -14,7 +14,7 @@ from ...util import spc_func
 
 from . import base_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 ITEM_DATA_ATTRIBUTE_NAME = '__gtktreeview_item_data_%s__'
 
@@ -33,6 +33,10 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         :return: True/False.
         """
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if item is None:
+            item = self.getGtkTreeViewRootItem(treeview=treeview)
+
         assert issubclass(item.__class__, gi.repository.Gtk.TreeIter), u'GtkTreeIter item type error'
 
         item_data_attribute_name = ITEM_DATA_ATTRIBUTE_NAME % treeview.get_name()
@@ -54,9 +58,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
 
         if item is None:
-            model = treeview.get_model()
-            row = model[0]
-            item = row.iter
+            item = self.getGtkTreeViewRootItem(treeview=treeview)
 
         assert issubclass(item.__class__, gi.repository.Gtk.TreeIter), u'GtkTreeIter item type error'
 
@@ -129,7 +131,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         if parent_item is None:
             if isinstance(node, (list, tuple)):
                 log_func.debug(u'Create UNKNOWN root item of GtkTreeView control')
-                parent_item = treeview.AddRoot(base_manager.UNKNOWN)
+                parent_item = self.addGtkTreeViewRootItem(treeview=treeview, label=base_manager.UNKNOWN)
                 result = self._appendGtkTreeViewBranch(treeview, parent_item=parent_item,
                                                        node={spc_func.CHILDREN_ATTR_NAME: node},
                                                        label=label, ext_func=ext_func)
@@ -181,11 +183,12 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         """
         Add root item.
 
-        :return:
+        :param treeview: GtkTreeView control.
+        :return: Root item.
         """
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
 
-        root_label = str(node.get(label, base_manager.UNKNOWN))
+        root_label = str(node.get(label, base_manager.UNKNOWN)) if isinstance(node, dict) else label
         model = treeview.get_model()
         parent_item = model.append(None, [root_label])
         log_func.debug(u'Add root item <%s>' % root_label)
@@ -199,6 +202,24 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                 log_func.fatal(u'Extended function <%s> error' % str(ext_func))
         return parent_item
 
+    def getGtkTreeViewRootItem(self, treeview=None):
+        """
+        Gte root item of tree.
+
+        :param treeview: GtkTreeView control.
+        :return: Root item or None if error.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        try:
+            model = treeview.get_model()
+            row = model[0]
+            root_item = row.iter
+            return root_item
+        except:
+            log_func.fatal(u'Error get root item in <%s>' % treeview.get_name())
+        return None
+
     def getGtkTreeViewSelectedItemData(self, treeview=None):
         """
         Get selected item data.
@@ -211,4 +232,81 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         model, selected_item = widget.get_selected()
         if selected_item:
             return self.getGtkTreeViewItemData(treeview=treeview, item=selected_item)
+        return None
+
+    def setGtkTreeViewSelectedItemData(self, treeview=None, data=None):
+        """
+        Set selected item data.
+
+        :param treeview: GtkTreeView control.
+        :param data: Item data.
+        :return: True/False.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        model, selected_item = widget.get_selected()
+        if selected_item:
+            return self.setGtkTreeViewItemData(treeview=treeview, item=selected_item, data=data)
+        return False
+
+    def clearGtkTreeView(self, treeview=None):
+        """
+        Delete all items from GtkTreeView control.
+
+        :param treeview: GtkTreeView control.
+        :return: True/False.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+        try:
+            model = treeview.get_model()
+            model.clear()
+
+            # Clear item data cache
+            item_data_attribute_name = ITEM_DATA_ATTRIBUTE_NAME % treeview.get_name()
+            if hasattr(self, item_data_attribute_name):
+                setattr(self, item_data_attribute_name, dict())
+
+            return True
+        except:
+            log_func.fatal(u'Error clear GtkTreeView control')
+        return False
+
+    def appendGtkTreeViewChildItem(self, treeview=None, parent_item=None,
+                                   label=u'', image=None, data=None, select=True):
+        """
+        Add a child item of the tree.
+
+        :param treeview: GtkTreeView control.
+        :param parent_item: Parent tree item.
+            If not specified, it is considered to be the root element.
+        :param label: New item label.
+        :param image: New item image.
+        :param data: Data automatically attached to the new item.
+        :param select: Automatically select a new item?
+        :return: New tree item or None on error.
+        """
+        if treeview is None:
+            log_func.warning(u'Not define GtkTreeView object')
+            return None
+
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if parent_item is None:
+            parent_item = self.getGtkTreeViewRootItem(treeview=treeview)
+
+        # img_idx = self.getTreeCtrlImageIndex(treectrl=treectrl, image=image, auto_add=True)
+
+        try:
+            model = treeview.get_model()
+            new_item = model.append(parent_item, [label])
+            # log_func.debug(u'Append item <%s>' % label)
+            if data is not None:
+                self.setGtkTreeViewItemData(treeview=treeview, item=new_item, item_data=data)
+
+            if select:
+                # treectrl.SelectItem(new_item)
+                pass
+            return new_item
+        except:
+            log_func.fatal(u'Error adding child item')
         return None

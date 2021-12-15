@@ -15,4 +15,3 @@ class iqBaseManager(object):
     Base manager.
     """
     pass
-

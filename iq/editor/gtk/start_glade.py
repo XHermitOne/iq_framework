@@ -23,7 +23,7 @@ from .code_generator import gui_generator
 
 from ...engine.wx import stored_wx_form_manager
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 
 class iqStartGladeEditorDialog(start_glade_dlg.iqStartGladeEditorDialogProto,
@@ -100,6 +100,19 @@ class iqStartGladeEditorDialog(start_glade_dlg.iqStartGladeEditorDialogProto,
         else:
             msg = u'Python generate <%s> ended unsuccessfully' % self.glade_filename
             dlg_func.openErrBox(title=u'EDITOR', prompt_text=msg)
+            self.EndModal(wx.ID_CANCEL)
+        event.Skip()
+
+    def onPreviewButtonClick(self, event):
+        """
+        Button click handler <Preview>.
+        """
+        if os.path.exists(self.glade_filename):
+            self.glade_manager.previewProject(prj_filename=self.glade_filename)
+            self.EndModal(wx.ID_OK)
+        else:
+            dlg_func.openWarningBox(title=u'WARNING',
+                                    prompt_text=u'Glade project file <%s> not found' % self.glade_filename)
             self.EndModal(wx.ID_CANCEL)
         event.Skip()
 

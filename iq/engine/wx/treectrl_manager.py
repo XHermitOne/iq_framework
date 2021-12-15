@@ -16,7 +16,7 @@ from .dlg import wxdlg_func
 from . import base_manager
 from . import wxbitmap_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 DEFAULT_ITEM_IMAGE_WIDTH = wxbitmap_func.DEFAULT_ICON_WIDTH
 DEFAULT_ITEM_IMAGE_HEIGHT = wxbitmap_func.DEFAULT_ICON_HEIGHT
@@ -146,7 +146,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         """
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
 
-        root_label = str(node.get(label, base_manager.UNKNOWN))
+        root_label = str(node.get(label, base_manager.UNKNOWN)) if isinstance(node, dict) else label
         parent_item = treectrl.AddRoot(root_label)
 
         treectrl.SetItemData(parent_item, node)
@@ -715,7 +715,7 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         """
         if treectrl is None:
             log_func.warning(u'Not define wx.TreeCtrl object')
-            return False
+            return None
 
         assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
 
