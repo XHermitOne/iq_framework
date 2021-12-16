@@ -44,6 +44,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             setattr(self, item_data_attribute_name, dict())
         item_data_attrubute = getattr(self, item_data_attribute_name)
         item.user_data3 = len(item_data_attrubute)
+        print('+>', item, item.user_data3)
         item_data_attrubute[item.user_data3] = item_data
         return True
 
@@ -232,6 +233,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         selection = treeview.get_selection()
         model, selected_item = selection.get_selected()
+        print(selected_item, selected_item.user_data, selected_item.user_data2, selected_item.user_data3)
         if selected_item:
             return self.getGtkTreeViewItemData(treeview=treeview, item=selected_item)
         return None
@@ -246,7 +248,8 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         """
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
 
-        model, selected_item = widget.get_selected()
+        selection = treeview.get_selection()
+        model, selected_item = selection.get_selected()
         if selected_item:
             return self.setGtkTreeViewItemData(treeview=treeview, item=selected_item, data=data)
         return False
