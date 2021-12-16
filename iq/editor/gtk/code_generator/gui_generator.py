@@ -104,6 +104,40 @@ GTK_TOP_WINDOW_TYPES = ('GtkWindow',
                         'GtkAssistent',
                         'GtkAppChooserDialog')
 
+GLADE_CSS_SIGNATURE = '<!-- interface-css-provider-path '
+
+
+def getGladeProjectCSSFilename(filename, do_realpath=True):
+    """
+    Get the CSS filename in glade project file.
+
+    :param filename: Glade project filename.
+    :param do_realpath: Return real path to css file?
+    :return: CSS filename or None if not found.
+    """
+    search_lines = txtfile_func.searchLinesInTextFile(filename, GLADE_CSS_SIGNATURE)
+    if search_lines:
+        search_line = search_lines[0].strip()
+        search_line_list = [item for item in search_line.split(' ') if '.css' in item or '.CSS' in item]
+        css_filename = search_line_list[0] if search_line_list else None
+        if do_realpath:
+            if not os.path.exists(css_filename):
+                # CSS file is relative path
+                css_filename = os.path.join(os.path.dirname(filename), css_filename)
+        return css_filename
+    return None
+
+
+def hasGladeProjectCSSFilename(filename):
+    """
+    Has glade project file the CSS filename.
+
+    :param filename: Glade project filename.
+    :return: True/False.
+    """
+    css_filename = getGladeProjectCSSFilename(filename, do_realpath=False)
+    return css_filename is not None
+
 
 def genPyModuleName(src_name):
     """

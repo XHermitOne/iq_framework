@@ -66,6 +66,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         if not hasattr(self, item_data_attribute_name):
             setattr(self, item_data_attribute_name, dict())
         item_data_attrubute = getattr(self, item_data_attribute_name)
+        log_func.debug(u'Find <%s> in %s' % (item.user_data3, item_data_attrubute[item.user_data3]))
         return item_data_attrubute.get(item.user_data3, None)
 
     def _setGtkTreeViewData(self, treeview=None, tree_data=None, label='name',
@@ -229,7 +230,8 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         """
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
 
-        model, selected_item = widget.get_selected()
+        selection = treeview.get_selection()
+        model, selected_item = selection.get_selected()
         if selected_item:
             return self.getGtkTreeViewItemData(treeview=treeview, item=selected_item)
         return None

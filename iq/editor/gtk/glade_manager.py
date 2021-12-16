@@ -12,6 +12,9 @@ from ...util import log_func
 from ...util import exec_func
 from ...util import py_func
 from ...util import file_func
+from ...util import txtfile_func
+
+from .code_generator import gui_generator
 
 __version__ = (0, 0, 1, 1)
 
@@ -94,6 +97,13 @@ def previewGlade(filename=None, asynchro=True):
     """
     cmd = ''
     cmd_args = '--filename=%s' % filename
+
+    css_filename = gui_generator.getGladeProjectCSSFilename(filename=filename)
+    if css_filename:
+        if os.path.exists(css_filename):
+            cmd_args += ' --css=%s' % css_filename
+        else:
+            log_func.warning(u'CSS file <%s> not found for preview glade project <%s>' % (css_filename, filename))
 
     glade_preview_exec = getGladePreviewExecutable()
     if glade_preview_exec:

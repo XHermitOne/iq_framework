@@ -13,7 +13,7 @@ from . import global_func
 from . import str_func
 from . import file_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 1)
 
 DEFAULT_ENCODING = global_func.getDefaultEncoding()
 DEFAULT_REPLACEMENTS = {u'"': u'\''}
@@ -192,6 +192,35 @@ def isInTextFile(txt_filename, find_text):
     else:
         log_func.warning('Text file <%s> not exists' % txt_filename)
     return False
+
+
+def searchLinesInTextFile(txt_filename, search_text):
+    """
+    Search lines in text file by text.
+    Is there text in a text file?
+
+    :param txt_filename: Text filename.
+    :param search_text: Search text.
+    :return: Lines list or None if error.
+    """
+    txt_filename = os.path.normpath(txt_filename)
+
+    if os.path.exists(txt_filename):
+        file_obj = None
+        try:
+            file_obj = open(txt_filename, 'rt')
+            lines = file_obj.readlines()
+            file_obj.close()
+            result = [line for line in lines if search_text in line]
+            file_obj = None
+            return result
+        except:
+            if file_obj:
+                file_obj.close()
+            log_func.fatal('Error search lines <%s> in text file <%s>' % (search_text, txt_filename))
+    else:
+        log_func.warning('Text file <%s> not exists' % txt_filename)
+    return None
 
 
 def readTextFileLines(txt_filename, auto_strip_line=True):

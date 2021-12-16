@@ -13,6 +13,8 @@ import gi.repository.Gtk
 
 from ...util import log_func
 
+from ...editor.gtk.code_generator import gui_generator
+
 __version__ = (0, 0, 0, 1)
 
 
@@ -49,11 +51,36 @@ class iqGtkHandler(object):
                     self.gtk_top_object = self.gtk_builder.get_object(top_object_name)
             self.gtk_builder.connect_signals(self)
 
+        # CSS file
+        self.gtk_css_provider = None
+        self.gtk_style_context = None
+        css_filename = gui_generator.getGladeProjectCSSFilename(glade_filename)
+        if css_filename:
+            if os.path.exists(css_filename):
+                self.gtk_css_provider = gi.repository.Gtk.CssProvider()
+                self.gtk_css_provider.load_from_path(css_filename)
+                self.gtk_style_context = gi.repository.Gtk.StyleContext()
+                self.gtk_style_context.add_provider_for_screen(gi.repository.Gdk.Screen.get_default(),
+                                                               self.gtk_css_provider,
+                                                               gi.repository.Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
     def getGtkBuilder(self):
         """
         Get Gtk builder.
         """
         return self.gtk_builder
+
+    def getGtkCSSProvider(self):
+        """
+        Get CSS provider.
+        """
+        return self.gtk_css_provider
+
+    def getGtkStyleContext(self):
+        """
+        Get Gtk style context.
+        """
+        return self.gtk_style_context
 
     def getGtkTopObject(self):
         """
