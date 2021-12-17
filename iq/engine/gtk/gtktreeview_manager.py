@@ -3,6 +3,11 @@
 
 """
 GtkTreeView manager.
+
+NOTE:
+To store the attached data of tree items,
+the first column in the model
+must be the item's GUID as gchararray.
 """
 
 import gi
@@ -11,12 +16,13 @@ import gi.repository.Gtk
 
 from ...util import log_func
 from ...util import spc_func
+from ...util import id_func
 
 from . import base_manager
 
 __version__ = (0, 0, 1, 1)
 
-ITEM_DATA_ATTRIBUTE_NAME = '__gtktreeview_item_data_%s__'
+ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT = '__gtktreeview_item_data_cache_%s__'
 
 
 class iqGtkTreeViewManager(base_manager.iqBaseManager):
@@ -39,13 +45,17 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         assert issubclass(item.__class__, gi.repository.Gtk.TreeIter), u'GtkTreeIter item type error'
 
-        item_data_attribute_name = ITEM_DATA_ATTRIBUTE_NAME % treeview.get_name()
-        if not hasattr(self, item_data_attribute_name):
-            setattr(self, item_data_attribute_name, dict())
-        item_data_attrubute = getattr(self, item_data_attribute_name)
-        item.user_data3 = len(item_data_attrubute)
-        print('+>', item, item.user_data3)
-        item_data_attrubute[item.user_data3] = item_data
+        item_data_cache_attribute_name = ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT % treeview.get_name()
+        if not hasattr(self, item_data_cache_attribute_name):
+            setattr(self, item_data_cache_attribute_name, dict())
+        item_data_cache_attribute = getattr(self, item_data_cache_attribute_name)
+
+        try:
+            item_id = treeview.get_model().get_value(item, 0)
+        except:
+            item_id = id_func.genGUID()
+            log_func.warning(u'New generate GUID <%s> for cache' % item_id)
+        item_data_cache_attribute[item_id] = item_data
         return True
 
     def getGtkTreeViewItemData(self, treeview=None, item=None):
@@ -63,12 +73,14 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         assert issubclass(item.__class__, gi.repository.Gtk.TreeIter), u'GtkTreeIter item type error'
 
-        item_data_attribute_name = ITEM_DATA_ATTRIBUTE_NAME % treeview.get_name()
-        if not hasattr(self, item_data_attribute_name):
-            setattr(self, item_data_attribute_name, dict())
-        item_data_attrubute = getattr(self, item_data_attribute_name)
-        log_func.debug(u'Find <%s> in %s' % (item.user_data3, item_data_attrubute[item.user_data3]))
-        return item_data_attrubute.get(item.user_data3, None)
+        item_data_cache_attribute_name = ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT % treeview.get_name()
+        if not hasattr(self, item_data_cache_attribute_name):
+            setattr(self, item_data_cache_attribute_name, dict())
+        item_data_cache_attribute = getattr(self, item_data_cache_attribute_name)
+
+        item_id = treeview.get_model().get_value(item, 0)
+        # log_func.debug(u'Find <%s> in %s' % (item_id, item_id in item_data_cache_attribute))
+        return item_data_cache_attribute.get(item_id, None)
 
     def _setGtkTreeViewData(self, treeview=None, tree_data=None, label='name',
                             ext_func=None, do_expand_all=False):
@@ -147,7 +159,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             item_label = str(node.get(label, u''))
             log_func.debug(u'Append tree item data <%s> %s' % (item_label, str(node.get(spc_func.CHILDREN_ATTR_NAME, None))))
             model = treeview.get_model()
-            item = model.append(parent_item, [item_label])
+            item = model.append(parent_item, [id_func.genGUID(), item_label])
 
             if ext_func:
                 try:
@@ -192,7 +204,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         root_label = str(node.get(label, base_manager.UNKNOWN)) if isinstance(node, dict) else label
         model = treeview.get_model()
-        parent_item = model.append(None, [root_label])
+        parent_item = model.append(None, [id_func.genGUID(), root_label])
         log_func.debug(u'Add root item <%s>' % root_label)
 
         self.setGtkTreeViewItemData(treeview=treeview, item=parent_item, item_data=node)
@@ -233,7 +245,6 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         selection = treeview.get_selection()
         model, selected_item = selection.get_selected()
-        print(selected_item, selected_item.user_data, selected_item.user_data2, selected_item.user_data3)
         if selected_item:
             return self.getGtkTreeViewItemData(treeview=treeview, item=selected_item)
         return None
@@ -267,7 +278,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             model.clear()
 
             # Clear item data cache
-            item_data_attribute_name = ITEM_DATA_ATTRIBUTE_NAME % treeview.get_name()
+            item_data_attribute_name = ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT % treeview.get_name()
             if hasattr(self, item_data_attribute_name):
                 setattr(self, item_data_attribute_name, dict())
 
@@ -303,7 +314,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         try:
             model = treeview.get_model()
-            new_item = model.append(parent_item, [label])
+            new_item = model.append(parent_item, [id_func.genGUID(), label])
             # log_func.debug(u'Append item <%s>' % label)
             if data is not None:
                 self.setGtkTreeViewItemData(treeview=treeview, item=new_item, item_data=data)
