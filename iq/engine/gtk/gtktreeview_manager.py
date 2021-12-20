@@ -83,7 +83,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         return item_data_cache_attribute.get(item_id, None)
 
     def _setGtkTreeViewData(self, treeview=None, tree_data=None, label='name',
-                            ext_func=None, do_expand_all=False):
+                            ext_func=None, do_expand_all=False, column_keys=()):
         """
         Set tree data of control GtkTreeView.
 
@@ -92,6 +92,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         :param label: Key as label.
         :param ext_func: Extended function.
         :param do_expand_all: Auto expand all items?
+        :param column_keys: Item data keys for fill columns.
         :return: True/False.
         """
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
@@ -102,14 +103,15 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         model = treeview.get_model()
         model.clear()
-        self.appendGtkTreeViewBranch(treeview=treeview, node=tree_data, label=label, ext_func=ext_func)
+        self.appendGtkTreeViewBranch(treeview=treeview, node=tree_data, label=label, ext_func=ext_func,
+                                     column_keys=column_keys)
 
-        if do_expand_all:
-            treeview.ExpandAll()
+        # if do_expand_all:
+        #     treeview.ExpandAll()
         return True
 
     def setGtkTreeViewData(self, treeview=None, tree_data=None, label='name',
-                           ext_func=None, do_expand_all=False):
+                           ext_func=None, do_expand_all=False, column_keys=()):
         """
         Set tree data of control GtkTreeView.
 
@@ -118,15 +120,73 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         :param label: Key as label.
         :param ext_func: Extended function.
         :param do_expand_all: Auto expand all items?
+        :param column_keys: Item data keys for fill columns.
         :return: True/False.
         """
         try:
-            return self._setGtkTreeViewData(treeview, tree_data, label, ext_func, do_expand_all)
+            return self._setGtkTreeViewData(treeview, tree_data, label, ext_func, do_expand_all,
+                                            column_keys=column_keys)
         except:
             log_func.fatal(u'Set tree data of Gtk.TreeView control')
         return False
 
-    def _appendGtkTreeViewBranch(self, treeview=None, parent_item=None, node=None, label='name', ext_func=None):
+    def _initGtkTreeViewRow(self, treeview=None, node=None, guid=None, label='name', column_keys=()):
+        """
+        Init row.
+
+        :param treeview: GtkTreeView control.
+        :param node: Item data.
+            If item data is dictionary then add node.
+            If item data is list then add nodes.
+        :param guid: Item GUID.
+        :param label: Key as label. For example 'name'.
+        :param column_keys: Item data keys for fill columns.
+        :return: GtkTreeview row tuple.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        item_label = str(node.get(label, label)) if isinstance(node, dict) else label
+        if guid is None:
+            guid = id_func.genGUID()
+
+        columns = treeview.get_columns()
+        row = [guid, item_label]
+        if columns:
+            column_keys_count = len(column_keys)
+            for i, column in enumerate(columns[1:]):
+                column_name = column.get_name()
+                column_type = treeview.get_model().get_column_type(i + 1).name
+                if i < column_keys_count:
+                    key = column_keys[i]
+                    if isinstance(node, dict) and key:
+                        value = node.get(key, u'')
+                    elif isinstance(node, dict) and column_name in node:
+                        value = node.get(column_name, u'')
+                    else:
+                        log_func.warning(u'Not valid column key <%s> in item data for column <%s>' % (key, column_name))
+                        value = u''
+                else:
+                    log_func.warning(u'Not define column key in item data for column <%s>' % column_name)
+                    value = u''
+                #
+                if column_type == 'gchararray':
+                    value = str(value)
+                elif column_type == 'gboolean':
+                    value = bool(value) if value else False
+                elif column_type in ('gint', 'guint', 'glong', 'gint64', 'guint64'):
+                    value = int(value) if value else 0
+                elif column_type in ('gfloat', 'gdouble'):
+                    value = float(value) if value else 0.0
+                else:
+                    log_func.warning(u'Not supported column <%s> type <%s> in <%s>' % (column_name,
+                                                                                       column_type,
+                                                                                       self.__class__.__name__))
+                row.append(value)
+        log_func.debug(u'GtkTreeView init row %s' % str(row))
+        return tuple(row)
+
+    def _appendGtkTreeViewBranch(self, treeview=None, parent_item=None, node=None, label='name',
+                                 ext_func=None, column_keys=()):
         """
         Add branch data to node of GtkTreeView control.
 
@@ -138,6 +198,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             If item data is list then add nodes.
         :param label: Key as label. For example 'name'.
         :param ext_func: Extended function.
+        :param column_keys: Item data keys for fill columns.
         :return: True/False.
         """
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
@@ -145,21 +206,24 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         if parent_item is None:
             if isinstance(node, (list, tuple)):
                 log_func.debug(u'Create UNKNOWN root item of GtkTreeView control')
-                parent_item = self.addGtkTreeViewRootItem(treeview=treeview, label=base_manager.UNKNOWN)
+                parent_item = self.addGtkTreeViewRootItem(treeview=treeview, node=node,
+                                                          label=base_manager.UNKNOWN, ext_func=ext_func,
+                                                          column_keys=column_keys)
                 result = self._appendGtkTreeViewBranch(treeview, parent_item=parent_item,
                                                        node={spc_func.CHILDREN_ATTR_NAME: node},
-                                                       label=label, ext_func=ext_func)
+                                                       label=label, ext_func=ext_func,
+                                                       column_keys=column_keys)
                 return result
             elif isinstance(node, dict):
-                item = self.addGtkTreeViewRootItem(treeview, node, label, ext_func)
+                item = self.addGtkTreeViewRootItem(treeview, node, label, ext_func,
+                                                   column_keys=column_keys)
             else:
                 log_func.warning(u'Node type <%s> not support in GtkTreeView manager' % str(type(node)))
                 return False
         else:
-            item_label = str(node.get(label, u''))
-            log_func.debug(u'Append tree item data <%s> %s' % (item_label, str(node.get(spc_func.CHILDREN_ATTR_NAME, None))))
             model = treeview.get_model()
-            item = model.append(parent_item, [id_func.genGUID(), item_label])
+            row = self._initGtkTreeViewRow(treeview=treeview, node=node, label=label, column_keys=column_keys)
+            item = model.append(parent_item, row)
 
             if ext_func:
                 try:
@@ -171,9 +235,11 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         # Create children items
         for child in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
-            self._appendGtkTreeViewBranch(treeview, item, child, label=label, ext_func=ext_func)
+            self._appendGtkTreeViewBranch(treeview, item, child, label=label, ext_func=ext_func,
+                                          column_keys=column_keys)
 
-    def appendGtkTreeViewBranch(self, treeview=None, parent_item=None, node=None, label='name', ext_func=None):
+    def appendGtkTreeViewBranch(self, treeview=None, parent_item=None, node=None, label='name',
+                                ext_func=None, column_keys=()):
         """
         Add branch data to node of GtkTreeView control.
 
@@ -185,27 +251,34 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             If item data is list then add nodes.
         :param label: Key as label.
         :param ext_func: Extended function.
+        :param column_keys: Item data keys for fill columns.
         :return: True/False.
         """
         try:
-            return self._appendGtkTreeViewBranch(treeview, parent_item, node, label, ext_func)
+            return self._appendGtkTreeViewBranch(treeview, parent_item, node, label, ext_func,
+                                                 column_keys=column_keys)
         except:
             log_func.fatal(u'Add branch to node of GtkTreeView control error')
         return False
 
-    def addGtkTreeViewRootItem(self, treeview=None, node=None, label='name', ext_func=None):
+    def addGtkTreeViewRootItem(self, treeview=None, node=None, label='name', ext_func=None, column_keys=()):
         """
         Add root item.
 
         :param treeview: GtkTreeView control.
+        :param node: Item data.
+            If item data is dictionary then add node.
+            If item data is list then add nodes.
+        :param label: Key as label.
+        :param ext_func: Extended function.
+        :param column_keys: Item data keys for fill columns.
         :return: Root item.
         """
         assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
 
-        root_label = str(node.get(label, base_manager.UNKNOWN)) if isinstance(node, dict) else label
         model = treeview.get_model()
-        parent_item = model.append(None, [id_func.genGUID(), root_label])
-        log_func.debug(u'Add root item <%s>' % root_label)
+        row = self._initGtkTreeViewRow(treeview=treeview, node=node, label=label, column_keys=column_keys)
+        parent_item = model.append(None, row)
 
         self.setGtkTreeViewItemData(treeview=treeview, item=parent_item, item_data=node)
 
@@ -288,7 +361,8 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         return False
 
     def appendGtkTreeViewChildItem(self, treeview=None, parent_item=None,
-                                   label=u'', image=None, data=None, select=True):
+                                   label='name', image=None, data=None, select=True,
+                                   column_keys=()):
         """
         Add a child item of the tree.
 
@@ -299,6 +373,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         :param image: New item image.
         :param data: Data automatically attached to the new item.
         :param select: Automatically select a new item?
+        :param column_keys: Item data keys for fill columns.
         :return: New tree item or None on error.
         """
         if treeview is None:
@@ -314,7 +389,8 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         try:
             model = treeview.get_model()
-            new_item = model.append(parent_item, [id_func.genGUID(), label])
+            row = self._initGtkTreeViewRow(treeview=treeview, node=data, label=label, column_keys=column_keys)
+            new_item = model.append(parent_item, row)
             # log_func.debug(u'Append item <%s>' % label)
             if data is not None:
                 self.setGtkTreeViewItemData(treeview=treeview, item=new_item, item_data=data)
