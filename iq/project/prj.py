@@ -26,7 +26,7 @@ from .. import global_data
 
 from . import spc
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -102,10 +102,11 @@ class iqProjectManager(object):
         if not prj_name:
             prj_name = os.path.splitext(os.path.basename(prj_path))[0]
 
+        choices = tuple([u'%s project' % engine_type for engine_type in global_data.ENGINE_TYPES])
         select_engine_idx = dlg_func.getSingleChoiceIdxDlg(parent=parent,
                                                            title=_(u'ENGINE TYPE'),
                                                            prompt_text=_(u'Select engine type of the project:'),
-                                                           choices=(u'WX project', u'QT project', u'CUI project'),
+                                                           choices=choices,
                                                            default_idx=0)
         if 0 <= select_engine_idx < len(global_data.ENGINE_TYPES):
             selected_engine = global_data.ENGINE_TYPES[select_engine_idx]
