@@ -13,7 +13,7 @@ import urllib.request
 from . import log_func
 from . import file_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 def dict2JSON(data_dict):
@@ -70,7 +70,7 @@ def saveDictAsJSON(json_filename, data_dict, rewrite=True):
     return False
 
 
-def getJSONAsDictByURL(url):
+def getJSONAsDictByURL(url, *args, **kwargs):
     """
     Get JSON data as python dictionary by URL.
 
@@ -82,7 +82,7 @@ def getJSONAsDictByURL(url):
         return None
 
     try:
-        response = urllib.request.urlopen(url)
+        response = urllib.request.urlopen(url, *args, **kwargs)
         json_content = response.read()
         json_dict = json.loads(json_content)
         return json_dict
