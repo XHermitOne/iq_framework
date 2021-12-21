@@ -26,7 +26,7 @@ from .. import global_data
 
 from . import spc
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 _ = lang_func.getTranslation().gettext
 
@@ -223,7 +223,7 @@ class iqProjectManager(object):
             user_resource['roles'] = [role.ADMINISTRATORS_ROLE_NAME]
             if default_engine:
                 user_resource['engine'] = default_engine
-            user_resource['do_main'] = '''from %s.main_forms import main_form\nreturn main_form.runMainForm()''' % prj_name
+            user_resource['do_main'] = '''from %s.main_forms import main_form\nreturn main_form.startMainForm()''' % prj_name
 
             role_resource = spc_func.clearResourceFromSpc(role.SPC)
             role_resource['name'] = role.ADMINISTRATORS_ROLE_NAME

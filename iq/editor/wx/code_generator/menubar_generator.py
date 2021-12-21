@@ -14,7 +14,7 @@ from ....util import py_func
 from ....util import str_func
 from ....util import txtfile_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 CREATE_MENUBAR_FUNC_BODY_FMT = u'''
@@ -69,6 +69,16 @@ class %s(%s.%s, menubar_manager.iqMenuBarManager):
         Init menubar.
         \"\"\"
         self.initImages()
+
+        # Enable/Disable menuitems control block
+        # user = global_func.getUser()
+        is_admin = global_func.isAdministratorUser()
+
+        menuitem_enable = {
+            # self.about_menuItem.GetId(): is_admin,
+
+        }
+        self.enableMenuBarMenuItems(menubar=self, menuitem_enable=menuitem_enable)
 
     def initImages(self):
         \"\"\"
