@@ -17,7 +17,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 3, 2)
+__version__ = (0, 0, 4, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -217,11 +217,7 @@ def setFilenameExt(filename, ext):
     :param ext: File name extension.
     :return: New filename with new extension or None if error.
     """
-    # try:
     return os.path.splitext(filename)[0] + ext
-    # except:
-    #     log_func.fatal(u'Error set filename <%s> extension <%s>' % (str(filename), str(ext)))
-    # return None
 
 
 def getHomePath():
@@ -350,6 +346,22 @@ def renameFile(filename, new_filename):
     result = copyFile(src_filename=filename, dst_filename=new_filename, rewrite=True)
     result = result and removeFile(filename)
     return result
+
+
+def changeFileExt(filename, new_ext, create_copy=False):
+    """
+    Change file extension.
+
+    :param filename: Full filename.
+    :param new_ext: New extension.
+    :param create_copy: Create copy file with new extension?
+    :return: True/False.
+    """
+    new_filename = setFilenameExt(filename, new_ext)
+    if create_copy:
+        return copyFile(filename, new_filename)
+    else:
+        return renameFile(filename, new_filename)
 
 
 def copyToDir(src_filename, dst_dirname, rewrite=True):

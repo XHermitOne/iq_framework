@@ -8,10 +8,20 @@ JSON convert functions.
 import json
 import os
 import os.path
-import urllib.request
 
 from . import log_func
 from . import file_func
+
+try:
+    import urllib.request
+except ImportError:
+    log_func.error(u'Import error urllib')
+
+try:
+    import urllib3
+except ImportError:
+    log_func.error(u'Import error urllib3')
+
 
 __version__ = (0, 0, 1, 2)
 
@@ -88,4 +98,27 @@ def getJSONAsDictByURL(url, *args, **kwargs):
         return json_dict
     except:
         log_func.fatal(u'Error get JSON data by URL <%s>' % url)
+    return None
+
+
+def getJSONAsDictByURL3(url, headers=None, *args, **kwargs):
+    """
+    Get JSON data as python dictionary by URL. urllib3 version.
+
+    :param url: URL.
+    :param headers: Request headers.
+    :return: JSON python dictionary or None if error.
+    """
+    if not url:
+        log_func.warning(u'Not define URL for get JSON data')
+        return None
+
+    try:
+        http = urllib3.PoolManager()
+        response = http.request('GET', url, headers=headers)
+        json_content = response.data.decode('utf-8')
+        json_dict = json.loads(json_content)
+        return json_dict
+    except:
+        log_func.fatal(u'Error get JSON data by URL <%s> by urllib3' % url)
     return None

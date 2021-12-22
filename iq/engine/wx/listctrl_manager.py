@@ -14,7 +14,7 @@ from . import wxcolour_func
 from . import base_manager
 from . import imglib_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 3)
 
 LISTCTRL_DATA_CACHE_ATTR_NAME = '__listctrl_data'
 
@@ -505,6 +505,18 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             return listctrl_or_event.GetFirstSelected()
         return -1
 
+    def getListCtrlSelectedRow(self, listctrl):
+        """
+        Get the row of the selected control.
+
+        :param listctrl: wx.ListCtrl object.
+        :return: Tuple row or None if error.
+            (value 1, value 2, ..., value N).
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+        selected_row_idx = self.getListCtrlSelectedRowIdx(listctrl_or_event=listctrl)
+        return self.getListCtrlRow(listctrl=listctrl, item=selected_row_idx)
+
     def getListCtrlSelectedItemData(self, listctrl):
         """
         Get the data of the selected item.
@@ -894,8 +906,9 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
 
             data_cache = getattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) if hasattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) else dict()
 
-            data_idx = listctrl.GetItemData(item=item_idx)
-            return data_cache.get(data_idx, None)
+            if item_idx >= 0:
+                data_idx = listctrl.GetItemData(item=item_idx)
+                return data_cache.get(data_idx, None)
         except:
             log_func.fatal(u'Error get ListCtrl item <%s> data' % str(item_idx))
         return None

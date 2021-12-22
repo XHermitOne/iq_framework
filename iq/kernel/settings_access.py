@@ -19,7 +19,7 @@ from iq.util import exec_func
 
 from iq.passport import passport
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 class iqSettingsDotUseProto(object):
@@ -153,6 +153,32 @@ class iqPrjDotUse(iqSettingsDotUseProto):
         else:
             log_func.warning(u'INI file <%s> not found' % ini_filename)
 
+    def find_section(self, section_name):
+        """
+        Find section in INI settings file by name.
+
+        :param section_name: Search section name.
+        :return: Section dictionary or None if it not found.
+        """
+        ini_filename = self._getINIFilename()
+        ini_dict = ini_func.INI2Dict(ini_filename)
+        return ini_dict.get(section_name, None)
+
+    def set_param(self, section_name, param_name, value):
+        """
+        Set parameter value.
+
+        :param section_name: Section name.
+        :param param_name: Prameter name.
+        :param value: Parameter value.
+        :return: True/False.
+        """
+        ini_filename = self._getINIFilename()
+        return ini_func.saveParamINI(ini_filename=ini_filename,
+                                     section_name=section_name,
+                                     param_name=param_name,
+                                     param_value=value)
+
 
 class iqSectionDotUse(iqSettingsDotUseProto):
     """
@@ -199,6 +225,19 @@ class iqSectionDotUse(iqSettingsDotUseProto):
             settings_dict = ini_func.INI2Dict(ini_filename)
             settings_dict[self._cur_settings_list[1]] = value
             return ini_func.Dict2INI(settings_dict, ini_filename, True)
+        return None
+
+    def find_param(self, param_name):
+        """
+        Find parameter in section by name.
+
+        :param param_name: Search parameter name.
+        :return: Parameter value or None if it not found.
+        """
+        ini_filename = self._getINIFilename()
+        settings_dict = ini_func.INI2Dict(ini_filename)
+        if self._cur_settings_list[1] in settings_dict:
+            return settings_dict[self._cur_settings_list[1]].get(param_name, None)
         return None
 
 
