@@ -20,7 +20,7 @@ from ...util import id_func
 
 from . import base_manager
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 3)
 
 ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT = '__gtktreeview_item_data_cache_%s__'
 
@@ -70,6 +70,10 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
 
         if item is None:
             item = self.getGtkTreeViewRootItem(treeview=treeview)
+        if isinstance(item, int):
+            # Get item as row
+            model = treeview.get_model()
+            item = model[item].iter
 
         assert issubclass(item.__class__, gi.repository.Gtk.TreeIter), u'GtkTreeIter item type error'
 
@@ -79,7 +83,9 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         item_data_cache_attribute = getattr(self, item_data_cache_attribute_name)
 
         item_id = treeview.get_model().get_value(item, 0)
-        # log_func.debug(u'Find <%s> in %s' % (item_id, item_id in item_data_cache_attribute))
+        if item_id not in item_data_cache_attribute:
+            log_func.warning(u'Item <%s> not found in cache' % item_id)
+        # log_func.debug(u'Find <%s> item' % item_id)
         return item_data_cache_attribute.get(item_id, None)
 
     def _setGtkTreeViewData(self, treeview=None, tree_data=None, columns=(),
@@ -154,9 +160,9 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                 if i <= columns_count:
                     key = columns[i - 1]
                     if isinstance(node, dict) and key:
-                        value = node.get(key, u'')
-                    # elif isinstance(node, dict) and column_name in node:
-                    #     value = node.get(column_name, u'')
+                        value = node.get(key, key)
+                    elif not isinstance(node, dict) and key:
+                        value = key
                     else:
                         log_func.warning(u'Not valid column key <%s> in item data for column <%d>' % (key, i))
                         value = u''
@@ -165,7 +171,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                     value = u''
                 #
                 if column_type == 'gchararray':
-                    value = str(value)
+                    value = str(value) if value is not None else u''
                 elif column_type == 'gboolean':
                     value = bool(value) if value else False
                 elif column_type in ('gint', 'guint', 'glong', 'gint64', 'guint64'):
@@ -176,7 +182,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                     log_func.warning(u'Not supported column <%d> type <%s> in <%s>' % (i, column_type,
                                                                                        self.__class__.__name__))
                 row.append(value)
-        log_func.debug(u'GtkTreeView init row %s' % str(row))
+        # log_func.debug(u'GtkTreeView init row %s' % str(row))
         return tuple(row)
 
     def _appendGtkTreeViewBranch(self, treeview=None, parent_item=None, node=None,
@@ -199,11 +205,13 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         if parent_item is None:
             if isinstance(node, (list, tuple)):
                 log_func.debug(u'Create UNKNOWN root item of GtkTreeView control')
-                parent_item = self.addGtkTreeViewRootItem(treeview=treeview, node=node,
-                                                          columns=columns, ext_func=ext_func)
-                result = self._appendGtkTreeViewBranch(treeview, parent_item=parent_item,
-                                                       node={spc_func.CHILDREN_ATTR_NAME: node},
-                                                       columns=columns, ext_func=ext_func)
+                # parent_item = self.addGtkTreeViewRootItem(treeview=treeview, node=node,
+                #                                           columns=columns, ext_func=ext_func)
+                for item in node:
+                    result = self._appendGtkTreeViewBranch(treeview, parent_item=parent_item,
+                                                           # node={spc_func.CHILDREN_ATTR_NAME: node},
+                                                           node=item,
+                                                           columns=columns, ext_func=ext_func)
                 return result
             elif isinstance(node, dict):
                 item = self.addGtkTreeViewRootItem(treeview, node, columns=columns, ext_func=ext_func)
@@ -224,9 +232,14 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             self.setGtkTreeViewItemData(treeview=treeview, item=item, item_data=node)
 
         # Create children items
-        for child in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
-            self._appendGtkTreeViewBranch(treeview, item, child,
-                                          columns=columns, ext_func=ext_func)
+        if isinstance(node, dict):
+            for child in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
+                self._appendGtkTreeViewBranch(treeview, item, child,
+                                              columns=columns, ext_func=ext_func)
+        elif isinstance(node, list):
+            for child in node:
+                self._appendGtkTreeViewBranch(treeview, item, child,
+                                              columns=columns, ext_func=ext_func)
 
     def appendGtkTreeViewBranch(self, treeview=None, parent_item=None, node=None,
                                 columns=(), ext_func=None):
@@ -388,3 +401,137 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         except:
             log_func.fatal(u'Error adding child item')
         return None
+
+    def getGtkTreeViewSelectedRow(self, treeview=None):
+        """
+        Get selected row index.
+
+        :param treeview: GtkTreeView control.
+        :return: Selected row index or -1 if not selected.
+        """
+        selection = treeview.get_selection()
+        model, selected_item = selection.get_selected()
+        if selected_item:
+            path = selected_item.get_selected_rows()[0]
+            row_index = path.get_indices()[0]
+            return row_index
+        return -1
+
+    def setGtkTreeViewRowColor(self, treeview=None, row=None, store_color_column=-1, color=None):
+        """
+        Set tree row text color.
+
+        :param treeview: GtkTreeView control.
+        :param row: Row index. If not defined then get selected row.
+        :param color: Color as text. For example 'green' or '#00ff00'.
+        :param store_color_column: Store model column index for color.
+        :return: True/False.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if row is None:
+            row = self.getGtkTreeViewSelectedRow(treeview=treeview)
+
+        if isinstance(row, int):
+            if row >= 0:
+                model = treeview.get_model()
+                row_obj = model[row]
+                model[row_obj.iter][store_color_column] = color
+                return True
+            else:
+                log_func.warning(u'Not valid row index <%s>' % row)
+        elif issubclass(row.__class__, gi.repository.Gtk.TreeIter):
+            model = treeview.get_model()
+            model[row][store_color_column] = color
+            return True
+        return False
+
+    def setGtkTreeViewRowForegroundColor(self, treeview=None, row=None, store_color_column=-1, color=None):
+        """
+        Set tree row text color.
+
+        :param treeview: GtkTreeView control.
+        :param row: Row index. If not defined then get selected row.
+        :param store_color_column: Store model column index for color.
+        :param color: Color as text. For example 'green' or '#00ff00'.
+        :return: True/False.
+        """
+        return self.setGtkTreeViewRowColor(treeview=treeview, row=row,
+                                           store_color_column=store_color_column, color=color)
+
+    def setGtkTreeViewRowBackgroundColor(self, treeview=None, row=None, store_color_column=-1, color=None):
+        """
+        Set tree row background color.
+
+        :param treeview: GtkTreeView control.
+        :param row: Row index. If not defined then get selected row.
+        :param store_color_column: Store model column index for color.
+        :param color: Color as text. For example 'green' or '#00ff00'.
+        :return: True/False.
+        """
+        return self.setGtkTreeViewRowColor(treeview=treeview, row=row,
+                                           store_color_column=store_color_column, color=color)
+
+    def setGtkTreeViewRowsColorExpression(self, treeview=None,
+                                          fg_color=None, bg_color=None,
+                                          fg_color_column=-1, bg_color_column=-1,
+                                          expression=None, item=None):
+        """
+        Set rows foreground/background color if expression return True.
+
+        :param treeview: GtkTreeView control.
+        :param fg_color: Foreground color, if expression return True.
+        :param bg_color: Background color, if expression return True.
+        :param fg_color_column: Store model column index for foreground color.
+        :param bg_color_column: Store model column index for background color.
+        :param expression: lambda expression:
+            lambda row: ...
+            return True/False.
+        :param item: Model item. If None then get root items.
+        :return: True/False.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if expression is None:
+            log_func.warning(u'GtkTreeView. Not define expression for set rows color')
+            return False
+
+        if fg_color is None and bg_color is None:
+            log_func.warning(u'Not define foreground/background color')
+            return False
+
+        model = treeview.get_model()
+        result = True
+        if item is None:
+            for row, model_row in enumerate(model):
+                item =model_row.iter
+                result = result and self.setGtkTreeViewRowsColorExpression(treeview=treeview,
+                                                                           fg_color=fg_color,
+                                                                           bg_color=bg_color,
+                                                                           fg_color_column=fg_color_column,
+                                                                           bg_color_column=bg_color_column,
+                                                                           expression=expression,
+                                                                           item=item)
+        else:
+            colorize = expression(item)
+            if fg_color and colorize:
+                self.setGtkTreeViewRowForegroundColor(treeview=treeview, row=item,
+                                                      store_color_column=fg_color_column,
+                                                      color=fg_color)
+            if bg_color and colorize:
+                self.setGtkTreeViewRowBackgroundColor(treeview=treeview, row=item,
+                                                      store_color_column=bg_color_column,
+                                                      color=bg_color)
+
+            if model.iter_has_child(item):
+                child = model.iter_children(item)
+                while child is not None:
+                    result = result and self.setGtkTreeViewRowsColorExpression(treeview=treeview,
+                                                                               fg_color=fg_color,
+                                                                               bg_color=bg_color,
+                                                                               fg_color_column=fg_color_column,
+                                                                               bg_color_column=bg_color_column,
+                                                                               expression=expression,
+                                                                               item=child)
+                    child = model.iter_next(child)
+        return result

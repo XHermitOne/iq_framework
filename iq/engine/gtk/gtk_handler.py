@@ -57,12 +57,15 @@ class iqGtkHandler(object):
         css_filename = gui_generator.getGladeProjectCSSFilename(glade_filename)
         if css_filename:
             if os.path.exists(css_filename):
+                log_func.info(u'GtkHandler. Load CSS file <%s>' % css_filename)
                 self.gtk_css_provider = gi.repository.Gtk.CssProvider()
                 self.gtk_css_provider.load_from_path(css_filename)
                 self.gtk_style_context = gi.repository.Gtk.StyleContext()
                 self.gtk_style_context.add_provider_for_screen(gi.repository.Gdk.Screen.get_default(),
                                                                self.gtk_css_provider,
                                                                gi.repository.Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            else:
+                log_func.warning(u'GtkHandler. CSS file <%s> not found' % css_filename)
 
     def getGtkBuilder(self):
         """
