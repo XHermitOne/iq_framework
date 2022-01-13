@@ -42,18 +42,18 @@ def XmlFile2Dict(xml_filename, encoding='utf-8'):
     """
     xml_file = None
     try:
-        xml_file = open(xml_filename, 'rt')
+        xml_file = open(xml_filename, 'r', encoding=encoding)
 
         input_source = xmlreader.InputSource()
-        input_source.setEncoding(encoding)
-        # input_source.setByteStream(xml_file)
+        # input_source.setEncoding(encoding)
+        input_source.setByteStream(xml_file)
         # input_source.setByteStream(StringIO(xml_file.read()))
 
-        xml_file_content = xml_file.read()
-        if not isinstance(xml_file_content, str):
-            xml_file_content = xml_file_content.decode(encoding)
-        stream = StringIO(xml_file_content)
-        input_source.setCharacterStream(stream)
+        # xml_file_content = xml_file.read()
+        # if not isinstance(xml_file_content, str):
+        #     xml_file_content = xml_file_content.decode(encoding)
+        # stream = StringIO(xml_file_content)
+        # input_source.setCharacterStream(stream)
         log_func.debug(u'Parse XML <%s>. Encoding <%s : %s>' % (xml_filename, encoding, input_source.getEncoding()))
 
         xml_reader = xml.sax.make_parser()
