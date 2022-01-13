@@ -11,20 +11,12 @@ import xmltodict
 from xml.sax import xmlreader
 import xml.sax.handler
 
-# try:  # pragma no cover
-#     from cStringIO import StringIO
-# except ImportError:  # pragma no cover
-#     try:
-#         from StringIO import StringIO
-#     except ImportError:
-#         from io import StringIO
-
 from . import log_func
 from . import str_func
 from . import txtfile_func
 from . import spc_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 DEFAULT_XML_TAG = 'Excel'
 
@@ -46,15 +38,7 @@ def XmlFile2Dict(xml_filename, encoding='utf-8'):
 
         input_source = xmlreader.InputSource()
         input_source.setEncoding(encoding)
-        # input_source.setByteStream(xml_file)
         input_source.setCharacterStream(xml_file)
-        # input_source.setByteStream(StringIO(xml_file.read()))
-
-        # xml_file_content = xml_file.read()
-        # if not isinstance(xml_file_content, str):
-        #     xml_file_content = xml_file_content.decode(encoding)
-        # stream = StringIO(xml_file_content)
-        # input_source.setCharacterStream(stream)
         log_func.debug(u'Parse XML <%s>. Encoding <%s : %s>' % (xml_filename, encoding, input_source.getEncoding()))
 
         xml_reader = xml.sax.make_parser()
