@@ -35,6 +35,7 @@ def XmlFile2Dict(xml_filename, encoding='utf-8'):
     xml_file = None
     try:
         xml_file = open(xml_filename, 'r')
+        log_func.debug(u'Parse XML <%s>. Encoding <%s>' % (xml_filename, encoding))
 
         input_source = xmlreader.InputSource()
         input_source.setEncoding(encoding)
