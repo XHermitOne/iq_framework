@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Adapted Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -126,7 +126,7 @@ class iqStartLimeReportEditorDialogProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
+	# Virtual event handlers, override them in your derived class
 	def onNewButtonClick(self, event):
 		event.Skip()
 

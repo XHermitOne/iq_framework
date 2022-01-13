@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -112,23 +112,23 @@ class iqStartEditorDialogProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onNewPrjButtonClick( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onNewPrjButtonClick(self, event):
 		event.Skip()
 
-	def onRunPrjButtonClick( self, event ):
+	def onRunPrjButtonClick(self, event):
 		event.Skip()
 
-	def onDbgPrjButtonClick( self, event ):
+	def onDbgPrjButtonClick(self, event):
 		event.Skip()
 
-	def onToolsButtonClick( self, event ):
+	def onToolsButtonClick(self, event):
 		event.Skip()
 
-	def onHelpButtonClick( self, event ):
+	def onHelpButtonClick(self, event):
 		event.Skip()
 
-	def onExitButtonClick( self, event ):
+	def onExitButtonClick(self, event):
 		event.Skip()
 
 

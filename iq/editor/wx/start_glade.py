@@ -10,18 +10,18 @@ import wx
 import os.path
 
 try:
-    from . import start_glade_dlg
+    from iq.editor.wx import start_glade_dlg
 except ImportError:
-    import start_glade_dlg
+    import iq.editor.wx.start_glade_dlg
 
-from ...util import log_func
-from ...engine.wx import wxbitmap_func
-from ...dialog import dlg_func
+from iq.util import log_func
+from iq.engine.wx import wxbitmap_func
+from iq.dialog import dlg_func
 
-from . import glade_manager
-from .code_generator import gui_generator
+from iq.editor.gtk import glade_manager
+from iq.editor.gtk.code_generator import gui_generator
 
-from ...engine.wx import stored_wx_form_manager
+from iq.engine.wx import stored_wx_form_manager
 
 __version__ = (0, 0, 2, 1)
 

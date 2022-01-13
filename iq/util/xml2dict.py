@@ -14,13 +14,14 @@ import xml.sax.handler
 from . import log_func
 from . import str_func
 from . import txtfile_func
+from . import spc_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 DEFAULT_XML_TAG = 'Excel'
 
 TAG_KEY = 'name'
-CHILDREN_KEY = '_children_'
+CHILDREN_KEY = spc_func.CHILDREN_ATTR_NAME
 VALUE_KEY = 'value'
 
 
@@ -29,14 +30,14 @@ def XmlFile2Dict(xml_filename, encoding='utf-8'):
     The function of converting Excel files in xml format to the Python dictionary.
 
     :param xml_filename: xml file name.
-    :return: The function returns a completed dictionary,
-        or None if error.
+    :return: The function returns a completed dictionary, or None if error.
     """
     xml_file = None
     try:
         xml_file = open(xml_filename, 'r')
 
         input_source = xmlreader.InputSource()
+        input_source.setEncoding(encoding)
         input_source.setByteStream(xml_file)
 
         xml_reader = xml.sax.make_parser()
