@@ -48,7 +48,8 @@ def XmlFile2Dict(xml_filename, encoding='utf-8'):
         input_source.setEncoding(encoding)
         # input_source.setByteStream(xml_file)
         # input_source.setByteStream(StringIO(xml_file.read()))
-        input_source.setCharacterStream(StringIO(xml_file.read().decode(encoding)))
+        stream = StringIO(xml_file.read())
+        input_source.setCharacterStream(stream)
         log_func.debug(u'Parse XML <%s>. Encoding <%s : %s>' % (xml_filename, encoding, input_source.getEncoding()))
 
         xml_reader = xml.sax.make_parser()
