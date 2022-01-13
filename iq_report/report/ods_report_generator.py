@@ -23,9 +23,9 @@ from iq.components.virtual_spreadsheet import v_spreadsheet
 from . import report_gen_system
 from . import report_generator
 from . import report_file
+from . import report_glob_data
 
-
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 ODS_FILENAME_EXT = '.ods'
 PDF_FILENAME_EXT = '.pdf'
@@ -388,7 +388,7 @@ class iqODSReportGeneratorSystem(report_gen_system.iqReportGeneratorSystem):
             if to_virtual_spreadsheet:
                 log_func.info(u'Convert report <%s> to file <%s>' % (str_func.toUnicode(xml_rep_file_name),
                                                                      str_func.toUnicode(rep_file_name)))
-                spreadsheet = v_spreadsheet.iqVSpreadsheet()
+                spreadsheet = v_spreadsheet.iqVSpreadsheet(encoding=report_glob_data.DEFAULT_REPORT_ENCODING)
                 spreadsheet.load(xml_rep_file_name)
                 spreadsheet.saveAs(rep_file_name)
             else:

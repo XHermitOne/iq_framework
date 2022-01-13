@@ -18,16 +18,17 @@ from iq.util import str_func
 from iq.util import file_func
 
 from . import report_generator
+from . import report_glob_data
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
-SPC_IC_XML_STYLE = {'style_id': '',                                     # Style ID
-                    'align': {'align_txt': (0, 0), 'wrap_txt': False},  # Alignment
-                    'font': None,                                       # Font
-                    'border': (0, 0, 0, 0),                             # Borders
-                    'num_format': None,                                     # Cell num_format
-                    'color': {},                                        # Colour
-                    }
+SPC_XML_STYLE = {'style_id': '',  # Style ID
+                 'align': {'align_txt': (0, 0), 'wrap_txt': False},  # Alignment
+                 'font': None,  # Font
+                 'border': (0, 0, 0, 0),  # Borders
+                 'num_format': None,  # Cell num_format
+                 'color': {},  # Colour
+                 }
 
 
 class iqReportFile(object):
@@ -80,7 +81,7 @@ class iqXMLSpreadSheetReportFile(iqReportFile):
             if not os.path.exists(rep_dirname):
                 file_func.createDir(rep_dirname)
 
-            xml_file = open(rep_filename, 'wt')
+            xml_file = open(rep_filename, 'wt', encoding=report_glob_data.DEFAULT_REPORT_ENCODING)
             xml_gen = iqXMLSSGenerator(xml_file)
             xml_gen.startDocument()
             xml_gen.startBook()
@@ -127,7 +128,7 @@ class iqXMLSpreadSheetReportFile(iqReportFile):
         """
         xml_file = None
         try:
-            xml_file = open(rep_filename, 'wt')
+            xml_file = open(rep_filename, 'wt', encoding=report_glob_data.DEFAULT_REPORT_ENCODING)
             xml_gen = iqXMLSSGenerator(xml_file)
             xml_gen.startDocument()
             xml_gen.startBook()
@@ -168,7 +169,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
     """
     Report converter generator class in xml representation.
     """
-    def __init__(self, out=None, encoding='utf-8'):
+    def __init__(self, out=None, encoding=report_glob_data.DEFAULT_REPORT_ENCODING):
         """
         Constructor.
         """
@@ -407,7 +408,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
         if cell_style_idx is None:
             # Create style
             new_idx = len(self._styles)
-            cell_style = copy.deepcopy(SPC_IC_XML_STYLE)
+            cell_style = copy.deepcopy(SPC_XML_STYLE)
             cell_style['align'] = cell['align']
             cell_style['font'] = cell['font']
             cell_style['border'] = cell['border']

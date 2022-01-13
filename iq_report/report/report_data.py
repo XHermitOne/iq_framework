@@ -43,7 +43,9 @@ from iq.util import log_func
 
 from iq.util import xml2dict
 
-__version__ = (0, 0, 2, 1)
+from . import report_glob_data
+
+__version__ = (0, 0, 2, 2)
 
 # Report data structure
 REPORT_DATA = {
@@ -103,7 +105,7 @@ class iqXMLReportData(iqReportData):
         :param xml_filename: Source xml filename.
         """
         xml_data = self.open(xml_filename)
-        self._rep_data = self.data_convert(xml_data)
+        self._rep_data = self.convertData(xml_data)
         return self._rep_data
     
     def open(self, xml_filename):
@@ -112,9 +114,9 @@ class iqXMLReportData(iqReportData):
 
         :param xml_filename: Report XML filename.
         """
-        return xml2dict.XmlFile2Dict(xml_filename)
+        return xml2dict.XmlFile2Dict(xml_filename, encoding=report_glob_data.DEFAULT_REPORT_ENCODING)
 
-    def data_convert(self, src_rep_data):
+    def convertData(self, src_rep_data):
         """
         Convert data from one view to another.
         """

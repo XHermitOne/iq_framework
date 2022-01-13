@@ -23,8 +23,9 @@ from iq.dialog import dlg_func
 from iq.engine import img_func
 
 from . import report_gen_func
+from . import report_glob_data
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -476,7 +477,7 @@ class iqReportBrowserDialog(wx.Dialog):
 
             rep_file = None
             try:
-                rep_file = open(new_rep_file_name, 'wt')
+                rep_file = open(new_rep_file_name, 'wt', encoding=report_glob_data.DEFAULT_REPORT_ENCODING)
                 rep_file.write(str(report))
                 rep_file.close()
             except:

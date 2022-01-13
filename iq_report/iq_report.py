@@ -52,7 +52,7 @@ try:
 except ModuleNotFoundError:
     from report import do_report
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 DEFAULT_REPORTS_PATH = os.path.join(file_func.getFrameworkPath(), 'reports')
 

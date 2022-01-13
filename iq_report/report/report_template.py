@@ -17,10 +17,11 @@ from iq.util import exec_func
 from iq.util import str_func
 
 from . import report_generator
+from . import report_glob_data
 
 from iq.components.virtual_spreadsheet import v_spreadsheet
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 # Report template tags
 DESCRIPTION_TAG = '[description]'   # Description band
@@ -1437,7 +1438,7 @@ class iqODSReportTemplate(iqlXMLSpreadSheetReportTemplate):
 
         :param tmpl_filename: Report template filename.
         """
-        spreadsheet = v_spreadsheet.iqVSpreadsheet()
+        spreadsheet = v_spreadsheet.iqVSpreadsheet(encoding=report_glob_data.DEFAULT_REPORT_ENCODING)
         result = spreadsheet.load(tmpl_filename)
         spreadsheet.saveAsXML(tmpl_filename.replace('.ods', '.xml'))
         return result
