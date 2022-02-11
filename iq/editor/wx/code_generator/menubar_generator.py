@@ -206,6 +206,7 @@ def genPythonMenuBar(src_module, src_class_name):
     src_class_methods = [getattr(src_class, var_name) for var_name in dir(src_class)]
     src_class_events = [method for method in src_class_methods if inspect.isfunction(method) and
                         method.__name__ != '__init__' and
+                        'OnIdle' not in method.__name__ and
                         'event' in method.__code__.co_varnames and
                         method.__code__.co_argcount == 2]
 

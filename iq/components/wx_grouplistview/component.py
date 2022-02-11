@@ -18,7 +18,7 @@ from ...util import exec_func
 from ...engine.wx import wxcolour_func
 from ... import passport
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqWxGroupListView(ObjectListView.GroupListView,
@@ -204,7 +204,7 @@ class iqWxGroupListView(ObjectListView.GroupListView,
             return convertColGroupKey
         return None
 
-    def geDataSourcetDataset(self, data_source=None, data_src_filter=None):
+    def getDataSourceDataset(self, data_source=None, data_src_filter=None):
         """
         Get dataset from data source object.
 
@@ -250,7 +250,7 @@ class iqWxGroupListView(ObjectListView.GroupListView,
                     dataset = exec_func.execTxtFunction(function=function_body,
                                                         context=self.getContext())
             else:
-                dataset = self.geDataSourcetDataset(data_src, data_src_filter)
+                dataset = self.getDataSourceDataset(data_src, data_src_filter)
 
         if dataset is None:
             data_src_name = self._data_src_obj.getName() if self._data_src_obj else u'Not defined'

@@ -14,7 +14,7 @@ from ...util import imp_func
 
 from . import scheme_module_generator
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 DEFAULT_MODULE_ATTR_NAME = '__module'
 DEFAULT_SESSION_CLASS_ATTR_NAME = '__session_class'

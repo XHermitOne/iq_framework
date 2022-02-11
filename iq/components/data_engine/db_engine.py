@@ -10,15 +10,21 @@ import sqlalchemy
 import sqlalchemy.engine.url
 import sqlalchemy.dialects.postgresql.base
 import sqlalchemy.dialects.sqlite
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
+
+Base = sqlalchemy.ext.declarative.declarative_base()
 
 ENCODING2CHARSET = {
     'utf_8': 'utf8',
     'utf-8': 'utf8'
 }
+
+DEFAULT_SESSION_CLASS_ATTR_NAME = '__session_class'
 
 
 class iqDBEngineManager(object):
@@ -303,3 +309,95 @@ class iqDBEngineManager(object):
             err_txt = u'Error execute SQL query <%s>' % str(sql_query)
             log_func.fatal(err_txt)
         return None
+
+    def getSessionClass(self, db_url=None, base=None, *args, **kwargs):
+        """
+        Get session class.
+
+        :param db_url: Database URL.
+            If is None then get from DB engine.
+        :param base: Base model class.
+        :return: Session class.
+        """
+        if not hasattr(self, DEFAULT_SESSION_CLASS_ATTR_NAME):
+            if db_url is None:
+                db_url = self.getDBUrl()
+
+            if base is None:
+                base = Base
+
+            if base is None:
+                log_func.warning(u'Not define base class in database engine <%s>' % self.getName())
+                return None
+
+            engine = self.create(db_url)
+            base.metadata.create_all(engine, checkfirst=True)
+
+            # creating a Session class configuration
+            session_class = sqlalchemy.orm.sessionmaker(bind=engine, *args, **kwargs)
+            log_func.info(u'Create database engine <%s> session' % self.getName())
+            setattr(self, DEFAULT_SESSION_CLASS_ATTR_NAME, session_class)
+
+        if hasattr(self, DEFAULT_SESSION_CLASS_ATTR_NAME):
+            return getattr(self, DEFAULT_SESSION_CLASS_ATTR_NAME)
+        else:
+            log_func.warning(u'Error create database engine <%s> session class' % self.getName())
+        return None
+
+    def openSession(self, db_url=None, base=None, *args, **kwargs):
+        """
+        Create session object.
+
+        :param db_url: Database URL.
+            If is None then get from DB engine.
+        :param base: Base model class.
+        :return: Session object or None if error.
+        """
+        session_class = self.getSessionClass(db_url=db_url, base=base, *args, **kwargs)
+
+        # create Session object
+        session = None
+        if session_class is not None:
+            session = session_class()
+        return session
+
+    def closeSession(self, session=None):
+        """
+        Close session.
+        Always close the session after use.
+        otherwise the DB server does not release the connection and happens
+        excess of the limit of open connections. After exceeding the limit
+        DB server denies service to clients.
+
+        :param session: Session object.
+        :return: True/False.
+        """
+        if session is None:
+            log_func.warning(u'Not define session for close')
+            return False
+
+        if session is not None:
+            # session.expunge_all()
+            session.close()
+            # log_func.info(u'Data scheme <%s> close session' % self.getName())
+            return True
+        else:
+            log_func.warning(u'Not define session object in database engine <%s>' % self.getName())
+        return False
+
+    def startTransaction(self, *args, **kwargs):
+        """
+        Start transaction.
+
+        :return: Session/transaction object.
+        """
+        return self.openSession(*args, **kwargs)
+
+    def stopTransaction(self, transaction):
+        """
+        Stop transaction.
+
+        :param transaction: Session/transaction object.
+        :return: True/False.
+        """
+        return self.closeSession(session=transaction)

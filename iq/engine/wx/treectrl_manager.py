@@ -16,7 +16,7 @@ from .dlg import wxdlg_func
 from . import base_manager
 from . import wxbitmap_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 DEFAULT_ITEM_IMAGE_WIDTH = wxbitmap_func.DEFAULT_ICON_WIDTH
 DEFAULT_ITEM_IMAGE_HEIGHT = wxbitmap_func.DEFAULT_ICON_HEIGHT
@@ -913,3 +913,61 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         except:
             log_func.fatal(u'Error get tree data <%s>' % str(treectrl))
         return None
+
+    def expandTreeCtrlItem(self, treectrl, item=None, all_children=False):
+        """
+        Expand tree control item.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param all_children: Expand all children items?
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.warning(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        try:
+            if all_children:
+                treectrl.ExpandAllChildren(item)
+            else:
+                treectrl.Expand(item)
+            return True
+        except:
+            log_func.fatal(u'Error get tree data <%s>' % str(treectrl))
+        return False
+
+    def collapseTreeCtrlItem(self, treectrl, item=None, all_children=False):
+        """
+        Collapse tree control item.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param all_children: Expand all children items?
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.warning(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        try:
+            if all_children:
+                treectrl.CollapseAllChildren(item)
+            else:
+                treectrl.Collapse(item)
+            return True
+        except:
+            log_func.fatal(u'Error get tree data <%s>' % str(treectrl))
+        return False

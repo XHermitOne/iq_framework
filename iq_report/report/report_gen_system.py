@@ -465,7 +465,7 @@ class iqReportGeneratorSystem(object):
         """
         # Clear signature
         func = query.replace(PY_SIGNATURE, '').strip()
-        var_names = vars.keys() if vars else None
+        var_names = list(vars.keys()) if vars else None
         log_func.debug(u'Execute function: <%s>. External variables %s' % (func, var_names))
         return exec_func.execTxtFunction(func, context=vars, show_debug=True)
 
