@@ -6,6 +6,7 @@ HTTP send get/post request functions.
 """
 
 import os
+import time
 
 from . import log_func
 from . import file_func
@@ -15,7 +16,7 @@ try:
 except ImportError:
     log_func.error(u'Import error urllib3')
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def getHTTP3(url, headers=None, **kwargs):
@@ -59,6 +60,9 @@ def getHTTPSaveFile3(url, dst_filename=None, as_text=False, headers=None, **kwar
         dst_filename = file_func.getTempFilename()
 
     try:
+        log_func.info(u'Get <%s> file by URL <%s>...' % (dst_filename, url))
+        start_time = time.time()
+
         http = urllib3.PoolManager()
         response = http.request('GET', url, headers=headers, **kwargs)
         response_content = response.data.decode('utf-8') if as_text else response.data
@@ -72,6 +76,9 @@ def getHTTPSaveFile3(url, dst_filename=None, as_text=False, headers=None, **kwar
             if file_obj is not None:
                 file_obj.close()
             log_func.fatal(u'Error save file <%s>' % dst_filename)
+
+        stop_time = time.time()
+        log_func.info(u'... Total time: %s seconds' % (stop_time - start_time))
 
         if os.path.exists(dst_filename):
             return dst_filename
