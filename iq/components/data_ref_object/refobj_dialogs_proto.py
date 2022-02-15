@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -87,23 +87,23 @@ class iqChoiceListDlgProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onReturnToolClick( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onReturnToolClick(self, event):
 		event.Skip()
 
-	def onSearchToolClick( self, event ):
+	def onSearchToolClick(self, event):
 		event.Skip()
 
-	def onRefObjListItemActive( self, event ):
+	def onRefObjListItemActive(self, event):
 		event.Skip()
 
-	def onRefObjListItemSelect( self, event ):
+	def onRefObjListItemSelect(self, event):
 		event.Skip()
 
-	def onCancelButtonClick( self, event ):
+	def onCancelButtonClick(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
 
@@ -150,13 +150,13 @@ class iqEditDlgProto ( wx.Dialog ):
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
 
 		self.ctrl_toolBar = wx.ToolBar( self.m_panel2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL )
-		self.add_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Добавить"), wx.ArtProvider.GetBitmap( wx.ART_ADD_BOOKMARK, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Add"), _(u"Add"), None )
+		self.add_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Добавить"), wx.ArtProvider.GetBitmap( wx.ART_PLUS, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Add"), _(u"Add"), None )
 
-		self.edit_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Редактировать"), wx.ArtProvider.GetBitmap( u"gtk-edit", wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Edit"), _(u"Edit"), None )
+		self.edit_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Редактировать"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Edit"), _(u"Edit"), None )
 
 		self.ctrl_toolBar.AddSeparator()
 
-		self.del_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Удалить"), wx.ArtProvider.GetBitmap( wx.ART_DEL_BOOKMARK, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Delete"), _(u"Delete"), None )
+		self.del_tool = self.ctrl_toolBar.AddTool( wx.ID_ANY, _(u"Удалить"), wx.ArtProvider.GetBitmap( wx.ART_MINUS, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Delete"), _(u"Delete"), None )
 
 		self.ctrl_toolBar.AddSeparator()
 
@@ -214,38 +214,38 @@ class iqEditDlgProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onSearchText( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onSearchText(self, event):
 		event.Skip()
 
-	def onSearchToolClicked( self, event ):
+	def onSearchToolClicked(self, event):
 		event.Skip()
 
-	def onRefObjTreeItemCollapsed( self, event ):
+	def onRefObjTreeItemCollapsed(self, event):
 		event.Skip()
 
-	def onRefObjTreeItemExpanded( self, event ):
+	def onRefObjTreeItemExpanded(self, event):
 		event.Skip()
 
-	def onRefObjTreeSelChanged( self, event ):
+	def onRefObjTreeSelChanged(self, event):
 		event.Skip()
 
-	def onAddToolClicked( self, event ):
+	def onAddToolClicked(self, event):
 		event.Skip()
 
-	def onEditToolClicked( self, event ):
+	def onEditToolClicked(self, event):
 		event.Skip()
 
-	def onDelToolClicked( self, event ):
+	def onDelToolClicked(self, event):
 		event.Skip()
 
-	def onFindToolClicked( self, event ):
+	def onFindToolClicked(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
-	def m_splitter1OnIdle( self, event ):
+	def m_splitter1OnIdle(self, event):
 		self.m_splitter1.SetSashPosition( 500 )
 		self.m_splitter1.Unbind( wx.EVT_IDLE )
 
@@ -304,14 +304,14 @@ class iqRecEditDlgProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onActivateCheckBox( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onActivateCheckBox(self, event):
 		event.Skip()
 
-	def onCancelButtonClick( self, event ):
+	def onCancelButtonClick(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
 
@@ -388,29 +388,29 @@ class iqChoiceTreeDlgProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onActivateDlg( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onActivateDlg(self, event):
 		event.Skip()
 
-	def onCloseDlg( self, event ):
+	def onCloseDlg(self, event):
 		event.Skip()
 
-	def onInitDlg( self, event ):
+	def onInitDlg(self, event):
 		event.Skip()
 
-	def onSearchText( self, event ):
+	def onSearchText(self, event):
 		event.Skip()
 
-	def onSearchToolClicked( self, event ):
+	def onSearchToolClicked(self, event):
 		event.Skip()
 
-	def onEditButtonClick( self, event ):
+	def onEditButtonClick(self, event):
 		event.Skip()
 
-	def onCancelButtonClick( self, event ):
+	def onCancelButtonClick(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
 
