@@ -395,8 +395,16 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         Dialog initialization function.
         """
         # self.initImages()
+        self.initToolImages()
         self.initCtrl()
         self.setRefObjTree()
+
+    def initToolImages(self):
+        """
+        Initialization of control images.
+        """
+        self.setToolBarLibImages(toolbar=self.ctrl_toolBar,
+                                 edit_tool='fatcow/pencil')
 
     def initImages(self):
         """
