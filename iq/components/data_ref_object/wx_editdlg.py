@@ -542,7 +542,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
             value = [line.strip() for line in value.split(u'\n')][0]
 
             if i == 0:
-                list_item = self.recs_listCtrl.InsertItem(sys.maxsize, value, i)
+                list_item = self.recs_listCtrl.InsertItem(self.recs_listCtrl.GetItemCount(), value, i)
                 self._list_ctrl_dataset.append(record)
             else:
                 self.recs_listCtrl.SetItem(list_item, i, value)
