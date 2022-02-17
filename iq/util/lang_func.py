@@ -9,15 +9,42 @@ import gettext
 import locale
 
 from . import log_func
+from . import sys_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 TEXT_DOMAIN = 'iq'
 DEFAULT_LOCALE_DIR = 'locale'
 
+DEFAULT_LOCALE = 'en_US'
 RUSSIAN_LOCALE = 'ru_RU'
 
 TRANSLATIONS = dict()
+
+WINDOWS2UNIX_LANGUAGE = {
+    'Russian_Russia': RUSSIAN_LOCALE,
+}
+
+
+def getDefaultLocaleLanguage():
+    """
+    Get default locale language.
+
+    :return: Locale language as string.
+        For Unix and Windows should be the same.
+    """
+    language = locale.getlocale()[0]
+    if sys_func.isWindowsPlatform():
+        if language in WINDOWS2UNIX_LANGUAGE:
+            language = WINDOWS2UNIX_LANGUAGE.get(language, DEFAULT_LOCALE)
+        else:
+            try:
+                item1, item2 = language.split('_')
+                language = '_'.join((item1[:2].lower(), item2[:2].upper()))
+            except:
+                log_func.fatal(u'Error get language')
+                language = DEFAULT_LOCALE
+    return language
 
 
 def getTranslation(language=None):
@@ -30,7 +57,7 @@ def getTranslation(language=None):
     global TRANSLATIONS
 
     if language is None:
-        language = locale.getlocale()[0]
+        language = getDefaultLocaleLanguage()
 
     if language in TRANSLATIONS:
         return TRANSLATIONS[language]
