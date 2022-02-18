@@ -19,7 +19,7 @@ from .. import wxbitmap_func
 
 from . import login_dialog_proto
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -519,6 +519,8 @@ def closeProgressDlg():
         if PROGRESS_DLG is not None:
             PROGRESS_DLG.updateDlg(PROGRESS_DLG.getMax())
             PROGRESS_DLG.closeDlg()
+            PROGRESS_DLG.Destroy()
+            PROGRESS_DLG = None
             return True
     except:
         log_func.fatal(u'Close progress bar dialog error')
