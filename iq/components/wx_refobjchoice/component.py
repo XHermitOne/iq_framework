@@ -70,17 +70,15 @@ class iqWxRefObjChoice(refobjchoice.iqRefObjChoiceProto, component.iqWxWidget):
         """
         Combobox change handler.
         """
-        #context = self.getContext()
-        # context['self'] = self
-        # context['event'] = event
-        # context['REF_OBJ'] = self.getRefObj()
-        #context['SELECTED_COD'] = self.getCode()
+        context = self.getContext()
+        context['self'] = self
+        context['event'] = event
+        context['REF_OBJ'] = self.getRefObj()
+        context['SELECTED_COD'] = self.getCode()
 
-        # function_body = self.getAttribute('on_select')
-        # if function_body:
-        #     exec_func.execTxtFunction(function=function_body, context=context, show_debug=True)
-
-        return refobjchoice.iqRefObjChoiceProto.onSelect(self, event)
+        function_body = self.getAttribute('on_select')
+        if function_body:
+            exec_func.execTxtFunction(function=function_body, context=context, show_debug=True)
 
 
 COMPONENT = iqWxRefObjChoice

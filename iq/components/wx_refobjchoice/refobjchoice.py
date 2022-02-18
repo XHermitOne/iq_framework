@@ -6,8 +6,6 @@ Control of the selection of a ref object item in a standard
 form through the selection window.
 """
 
-import wx
-
 from ...util import log_func
 from ...engine.wx import wxbitmap_func
 

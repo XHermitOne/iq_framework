@@ -3,10 +3,6 @@
 
 """
 Wx RefObjChoiceComboCtrl component.
-
-IMPORTANT:
-This component does not correctly handle the select button event for Windows OS.
-It is recommended to use it only for Linux OS.
 """
 
 import wx
@@ -20,7 +16,7 @@ from ...util import exec_func
 
 from . import refobjchoicecomboctrl
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlProto,
