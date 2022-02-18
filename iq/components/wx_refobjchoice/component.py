@@ -2,11 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Wx RefObjChoiceComboCtrl component.
-
-IMPORTANT:
-This component does not correctly handle the select button event for Windows OS.
-It is recommended to use it only for Linux OS.
+Wx RefObjChoice component.
 """
 
 import wx
@@ -18,15 +14,14 @@ from . import spc
 from ...util import log_func
 from ...util import exec_func
 
-from . import refobjchoicecomboctrl
+from . import refobjchoice
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlProto,
-                                component.iqWxWidget):
+class iqWxRefObjChoice(refobjchoice.iqRefObjChoiceProto, component.iqWxWidget):
     """
-    Wx RefObjChoiceComboCtrl component.
+    Wx RefObjChoice component.
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -39,11 +34,11 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         component.iqWxWidget.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
 
-        refobjchoicecomboctrl.iqRefObjChoiceComboCtrlProto.__init__(self, parent=parent,
-                                                                    id=wx.NewId(),
-                                                                    pos=self.getPosition(),
-                                                                    size=self.getSize(),
-                                                                    style=self.getStyle())
+        refobjchoice.iqRefObjChoiceProto.__init__(self, parent=parent,
+                                                  id=wx.NewId(),
+                                                  pos=self.getPosition(),
+                                                  size=self.getSize(),
+                                                  style=self.getStyle())
 
         # Set ref object
         ref_obj_psp = self.getRefObjPsp()
@@ -88,14 +83,5 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
         if event:
             event.Skip()
 
-    def OnButtonClick(self):
-        """
-        Overridden from ComboCtrl, called when the combo button is clicked.
-        """
-        prev_selected_code = self.getCode()
-        selected_code = self.choice()
-        if prev_selected_code != selected_code:
-            self.onSelect(event=None)
 
-
-COMPONENT = iqWxRefObjChoiceComboCtrl
+COMPONENT = iqWxRefObjChoice

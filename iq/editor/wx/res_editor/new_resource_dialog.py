@@ -36,6 +36,9 @@ class iqNewResourceDialog(new_resource_dlg.iqNewResourceDialogProto):
         """
         new_resource_dlg.iqNewResourceDialogProto.__init__(self, parent=parent)
 
+        bmp = wxbitmap_func.createIconBitmap('dots')
+        self.component_button.SetBitmap(bmp)
+
         self.res_filename = None
         self.resource = None
 

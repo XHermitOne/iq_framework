@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -41,10 +41,10 @@ class iqNewResourceDialogProto ( wx.Dialog ):
 		self.component_textCtrl = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_READONLY )
 		bSizer2.Add( self.component_textCtrl, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
-		self.component_button = wx.Button( self, wx.ID_ANY, _(u"..."), wx.DefaultPosition, wx.Size( 36,-1 ), 0 )
-		self.component_button.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+		self.component_button = wx.BitmapButton( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW|0 )
 
-		bSizer2.Add( self.component_button, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		self.component_button.SetBitmap( wx.ArtProvider.GetBitmap( wx.ART_QUESTION, wx.ART_MENU ) )
+		bSizer2.Add( self.component_button, 0, wx.ALL, 5 )
 
 
 		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )
@@ -106,23 +106,23 @@ class iqNewResourceDialogProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onComponentText( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onComponentText(self, event):
 		event.Skip()
 
-	def onComponentButtonClick( self, event ):
+	def onComponentButtonClick(self, event):
 		event.Skip()
 
-	def onNameText( self, event ):
+	def onNameText(self, event):
 		event.Skip()
 
-	def onPathDirChanged( self, event ):
+	def onPathDirChanged(self, event):
 		event.Skip()
 
-	def onCancelButtonClick( self, event ):
+	def onCancelButtonClick(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
 
