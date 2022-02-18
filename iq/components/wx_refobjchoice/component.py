@@ -80,5 +80,7 @@ class iqWxRefObjChoice(refobjchoice.iqRefObjChoiceProto, component.iqWxWidget):
         if function_body:
             exec_func.execTxtFunction(function=function_body, context=context, show_debug=True)
 
+        return refobjchoice.iqRefObjChoiceProto.onSelect(self, event)
+
 
 COMPONENT = iqWxRefObjChoice
