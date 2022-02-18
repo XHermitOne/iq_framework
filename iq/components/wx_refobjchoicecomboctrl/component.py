@@ -79,7 +79,9 @@ class iqWxRefObjChoiceComboCtrl(refobjchoicecomboctrl.iqRefObjChoiceComboCtrlPro
 
         function_body = self.getAttribute('on_select')
         if function_body:
+            print('1')
             exec_func.execTxtFunction(function=function_body, context=context, show_debug=True)
+            print('2')
 
         if event:
             event.Skip()
