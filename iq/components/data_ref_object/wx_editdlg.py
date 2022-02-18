@@ -643,8 +643,11 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         # Empty level filling
         if not self.refobj_treeCtrl.ItemHasChildren(item):
             record = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=item)
-            code = record['cod']
-            self.setRefObjLevelTree(item, code)
+            if record and 'cod' in record:
+                code = record['cod']
+                self.setRefObjLevelTree(item, code)
+            else:
+                log_func.warning(u'COD not found in record %s' % str(record))
         
     def refreshRefObjTreeItem(self, parent_item, code=None, record=None):
         """
