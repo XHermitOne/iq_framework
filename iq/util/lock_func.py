@@ -13,8 +13,12 @@ from . import log_func
 from . import file_func
 from . import sys_func
 from . import global_func
+from . import lang_func
+from ..dialog import dlg_func
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 LOCK_FILE_EXT = '.lck'
 
@@ -472,3 +476,20 @@ def getLockComputerObj(lock_name):
     """
     return getLockComputer(getLockFilename(lock_name=lock_name))
 
+
+def openStdWarningBoxIfLocked(lock_name, lock_msg=None):
+    """
+    Open standart warning box if resource is locked.
+
+    :param lock_name: Lock name.
+    :param lock_msg: Lock message.
+    :return: True - resource is locked/False - not locked.
+    """
+    if isLockObj(lock_name):
+        lock_computer = getLockComputerObj(lock_name)
+        lock_username = getLockUsernameObj(lock_name)
+        if lock_msg is None:
+            lock_msg = _('Editing locked by user ') + lock_username + _(' Computer ') + lock_computer
+        dlg_func.openWarningBox(_('ATTENTION'), lock_msg)
+        return True
+    return False

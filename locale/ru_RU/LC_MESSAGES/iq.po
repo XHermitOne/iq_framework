@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2021-11-26 15:26+0700\n"
-"PO-Revision-Date: 2021-11-26 15:27+0700\n"
+"PO-Revision-Date: 2022-02-21 16:09+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -502,11 +502,11 @@ msgstr ""
 
 #: iq/components/data_ref_object/ref_object.py:549
 msgid " Computer "
-msgstr " Компьютер"
+msgstr " Компьютер "
 
 #: iq/components/data_ref_object/ref_object.py:549
 msgid "Editing locked by user "
-msgstr "Редактирование заблокировано пользователем"
+msgstr "Редактирование заблокировано пользователем "
 
 #: iq/components/data_ref_object/ref_object.py:550
 msgid "ATTENTION"
@@ -1653,7 +1653,7 @@ msgstr ""
 #: iq/engine/wx/dlg/log_browser_proto.py:40
 #: iq/engine/wx/dlg/log_browser_proto.py:63
 msgid "On"
-msgstr "Вкл."
+msgstr "Вкл"
 
 #: iq/engine/wx/dlg/log_browser_proto.py:58
 msgid "-"
@@ -1934,7 +1934,7 @@ msgstr "листы"
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:381
 msgid "for scan. "
-msgstr "для сканирования"
+msgstr "для сканирования "
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:387
 msgid "Load sheets in the tray."
