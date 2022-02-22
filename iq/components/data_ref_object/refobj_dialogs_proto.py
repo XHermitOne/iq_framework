@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
+## Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
 ###########################################################################
 
 import wx
-import wx.adv
-import wx.lib.gizmos
-import wx.aui
+import wx.xrc
 import iq
 import wx.propgrid as pg
 import  wx.gizmos
 
-from iq.util import lang_func
-_ = lang_func.getTranslation().gettext
+import gettext
+_ = gettext.gettext
 
 ###########################################################################
 ## Class iqChoiceListDlgProto
@@ -88,22 +86,22 @@ class iqChoiceListDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
-	def onReturnToolClick(self, event):
+	def onReturnToolClick( self, event ):
 		event.Skip()
 
-	def onSearchToolClick(self, event):
+	def onSearchToolClick( self, event ):
 		event.Skip()
 
-	def onRefObjListItemActive(self, event):
+	def onRefObjListItemActive( self, event ):
 		event.Skip()
 
-	def onRefObjListItemSelect(self, event):
+	def onRefObjListItemSelect( self, event ):
 		event.Skip()
 
-	def onCancelButtonClick(self, event):
+	def onCancelButtonClick( self, event ):
 		event.Skip()
 
-	def onOkButtonClick(self, event):
+	def onOkButtonClick( self, event ):
 		event.Skip()
 
 
@@ -215,37 +213,37 @@ class iqEditDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
-	def onSearchText(self, event):
+	def onSearchText( self, event ):
 		event.Skip()
 
-	def onSearchToolClicked(self, event):
+	def onSearchToolClicked( self, event ):
 		event.Skip()
 
-	def onRefObjTreeItemCollapsed(self, event):
+	def onRefObjTreeItemCollapsed( self, event ):
 		event.Skip()
 
-	def onRefObjTreeItemExpanded(self, event):
+	def onRefObjTreeItemExpanded( self, event ):
 		event.Skip()
 
-	def onRefObjTreeSelChanged(self, event):
+	def onRefObjTreeSelChanged( self, event ):
 		event.Skip()
 
-	def onAddToolClicked(self, event):
+	def onAddToolClicked( self, event ):
 		event.Skip()
 
-	def onEditToolClicked(self, event):
+	def onEditToolClicked( self, event ):
 		event.Skip()
 
-	def onDelToolClicked(self, event):
+	def onDelToolClicked( self, event ):
 		event.Skip()
 
-	def onFindToolClicked(self, event):
+	def onFindToolClicked( self, event ):
 		event.Skip()
 
-	def onOkButtonClick(self, event):
+	def onOkButtonClick( self, event ):
 		event.Skip()
 
-	def m_splitter1OnIdle(self, event):
+	def m_splitter1OnIdle( self, event ):
 		self.m_splitter1.SetSashPosition( 500 )
 		self.m_splitter1.Unbind( wx.EVT_IDLE )
 
@@ -269,17 +267,8 @@ class iqRecEditDlgProto ( wx.Dialog ):
 		self.activate_checkBox.SetValue(True)
 		bSizer7.Add( self.activate_checkBox, 0, wx.ALL|wx.EXPAND, 5 )
 
-		self.cod_constructor_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		bSizer12 = wx.BoxSizer( wx.VERTICAL )
-
-		self.cod_constructor = iq.KERNEL.obj.iq.cod_constructor.create(parent=self.cod_constructor_panel)
-		bSizer12.Add( self.cod_constructor, 1, wx.ALL|wx.EXPAND, 5 )
-
-
-		self.cod_constructor_panel.SetSizer( bSizer12 )
-		self.cod_constructor_panel.Layout()
-		bSizer12.Fit( self.cod_constructor_panel )
-		bSizer7.Add( self.cod_constructor_panel, 1, wx.EXPAND |wx.ALL, 5 )
+		self.cod_constructor = iq.KERNEL.obj.iq.cod_constructor.create(parent=self)
+		bSizer7.Add( self.cod_constructor, 1, wx.ALL|wx.EXPAND, 5 )
 
 		self.record_propertyGrid = pg.PropertyGrid(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PG_DEFAULT_STYLE|wx.propgrid.PG_STATIC_SPLITTER)
 		bSizer7.Add( self.record_propertyGrid, 1, wx.ALL|wx.EXPAND, 5 )
@@ -314,13 +303,13 @@ class iqRecEditDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
-	def onActivateCheckBox(self, event):
+	def onActivateCheckBox( self, event ):
 		event.Skip()
 
-	def onCancelButtonClick(self, event):
+	def onCancelButtonClick( self, event ):
 		event.Skip()
 
-	def onOkButtonClick(self, event):
+	def onOkButtonClick( self, event ):
 		event.Skip()
 
 
@@ -398,28 +387,28 @@ class iqChoiceTreeDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
-	def onActivateDlg(self, event):
+	def onActivateDlg( self, event ):
 		event.Skip()
 
-	def onCloseDlg(self, event):
+	def onCloseDlg( self, event ):
 		event.Skip()
 
-	def onInitDlg(self, event):
+	def onInitDlg( self, event ):
 		event.Skip()
 
-	def onSearchText(self, event):
+	def onSearchText( self, event ):
 		event.Skip()
 
-	def onSearchToolClicked(self, event):
+	def onSearchToolClicked( self, event ):
 		event.Skip()
 
-	def onEditButtonClick(self, event):
+	def onEditButtonClick( self, event ):
 		event.Skip()
 
-	def onCancelButtonClick(self, event):
+	def onCancelButtonClick( self, event ):
 		event.Skip()
 
-	def onOkButtonClick(self, event):
+	def onOkButtonClick( self, event ):
 		event.Skip()
 
 

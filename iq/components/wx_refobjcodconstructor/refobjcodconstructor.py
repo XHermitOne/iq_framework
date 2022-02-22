@@ -39,8 +39,8 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         self.sizer.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_ALL)
 
         self.scrolled_win.SetSizer(self.sizer)
-        # self.scrolled_win.Layout()
-        # self.sizer.Fit(self.scrolled_win)
+        self.scrolled_win.Layout()
+        self.sizer.Fit(self.scrolled_win)
 
         self.box_sizer.Add(self.scrolled_win, 1, wx.EXPAND | wx.ALL, 5)
         self.SetSizer(self.box_sizer)
