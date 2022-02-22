@@ -269,8 +269,17 @@ class iqRecEditDlgProto ( wx.Dialog ):
 		self.activate_checkBox.SetValue(True)
 		bSizer7.Add( self.activate_checkBox, 0, wx.ALL|wx.EXPAND, 5 )
 
-		self.cod_constructor = iq.KERNEL.obj.iq.cod_constructor.create(parent=self)
-		bSizer7.Add( self.cod_constructor, 1, wx.ALL|wx.EXPAND, 5 )
+		self.cod_constructor_panel = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer12 = wx.BoxSizer( wx.VERTICAL )
+
+		self.cod_constructor = iq.KERNEL.obj.iq.cod_constructor.create(parent=self.cod_constructor_panel)
+		bSizer12.Add( self.cod_constructor, 1, wx.ALL|wx.EXPAND, 5 )
+
+
+		self.cod_constructor_panel.SetSizer( bSizer12 )
+		self.cod_constructor_panel.Layout()
+		bSizer12.Fit( self.cod_constructor_panel )
+		bSizer7.Add( self.cod_constructor_panel, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.record_propertyGrid = pg.PropertyGrid(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PG_DEFAULT_STYLE|wx.propgrid.PG_STATIC_SPLITTER)
 		bSizer7.Add( self.record_propertyGrid, 1, wx.ALL|wx.EXPAND, 5 )
