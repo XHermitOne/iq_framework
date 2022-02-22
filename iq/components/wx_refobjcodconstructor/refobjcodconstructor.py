@@ -17,7 +17,7 @@ _ = lang_func.getTranslation().gettext
 DEFAULT_COD_SIGN = '0'
 
 
-class iqRefObjCodConstructorProto(wx.StaticBox):
+class iqRefObjCodConstructorProto(wx.Panel):
     """
     Reference object cod constructor control.
     """
@@ -25,9 +25,10 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         """
         Constructor.
         """
-        wx.StaticBox.__init__(self, *args, **kwargs)
+        wx.Panel.__init__(self, *args, **kwargs)
 
         self.box_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.label = wx.StaticText(self,  wx.ID_ANY)
         self.scrolled_win = wx.ScrolledWindow(self,  wx.ID_ANY,
                                               wx.DefaultPosition, wx.DefaultSize,
                                               wx.HSCROLL | wx.VSCROLL)
@@ -39,9 +40,10 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
         self.sizer.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_ALL)
 
         self.scrolled_win.SetSizer(self.sizer)
-        self.scrolled_win.Layout()
-        self.sizer.Fit(self.scrolled_win)
+        # self.scrolled_win.Layout()
+        # self.sizer.Fit(self.scrolled_win)
 
+        self.box_sizer.Add(self.label, 0, wx.EXPAND, 5)
         self.box_sizer.Add(self.scrolled_win, 1, wx.EXPAND | wx.ALL, 5)
         self.SetSizer(self.box_sizer)
         # self.Layout()
@@ -76,7 +78,8 @@ class iqRefObjCodConstructorProto(wx.StaticBox):
             label = self._ref_obj.getDescription()
         current_cod = u''.join([sub_cod if sub_cod else '' for sub_cod in self._selected_code])
         title = u'%s (%s): %s' % (_('Cod'), label, current_cod)
-        self.SetLabel(title)
+        # self.SetLabel(title)
+        self.label.SetLabel(title)
 
     def setRefObj(self, ref_obj):
         """
