@@ -55,6 +55,8 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         refobj_dialogs_proto.iqRecEditDlgProto.__init__(self, *args, **kwargs)
         self.record_propertyGrid.Bind(wx.propgrid.EVT_PG_CHANGED, self.onRecordPropertyGridChanged)
 
+        self.activate_checkBox.SetLabel(_(self.activate_checkBox.GetLabel()))
+
         self.ref_obj = ref_obj
 
         # Initial record
