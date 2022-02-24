@@ -166,7 +166,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         self.activate_checkBox.SetValue(is_activate)
 
         cod = rec.get(self.ref_obj.getCodColumnName(), None)
-        # log_func.debug(u'Init cod <%s>' % cod)
+        log_func.debug(u'Edit Ref object. Init cod <%s>' % cod)
         self.cod_constructor.setCode(cod)
 
         for i, field in enumerate(fields):
@@ -336,6 +336,53 @@ class iqRefObjRecCreateDlg(iqRefObjRecEditDlg):
         Costructor.
         """
         iqRefObjRecEditDlg.__init__(self, *args, **kwargs)
+
+    def init(self):
+        """
+        Dialog initialization function.
+        """
+        user = global_func.getUser()
+        if user:
+            can_active = user.isPermission('active_ref_objects')
+            self.activate_checkBox.Enable(can_active)
+
+        # Init cod constructor
+        self.cod_constructor.setRefObj(self.ref_obj)
+
+        # Init property editors
+        model = self.ref_obj.getModel()
+        columns = [col for col_name, col in model.__table__.columns.items()]
+        fields = [col for col in columns if col.name != 'id' and col.name not in NOT_EDITABLE_FIELDS]
+
+        model_obj = self.ref_obj.getModelObj()
+
+        rec = self.getRecord()
+
+        is_activate = rec.get(self.ref_obj.getActiveColumnName(), True)
+        self.activate_checkBox.SetValue(is_activate)
+
+        cod = rec.get(self.ref_obj.getCodColumnName(), None)
+        log_func.debug(u'New Ref object. Init cod <%s>' % cod)
+        self.cod_constructor.newCode(cod)
+
+        for i, field in enumerate(fields):
+            field_name = field.name
+            column_obj = model_obj.findChild(field_name)
+
+            if column_obj and column_obj.isAttributeValue('link'):
+                property = wx_editlinkproperty.iqEditLinkProperty()
+                property.setPropertyEditManager(column_obj.getLinkDataObj())
+                property.SetValue(rec[field_name])
+            elif field is not None:
+                property = self._createProperty(field)
+                property.SetValue(rec[field_name])
+            else:
+                # Add as line editing
+                property = wx.propgrid.StringProperty(field_name, value=rec[field_name])
+            self.record_propertyGrid.Append(property)
+        # Moves splitter as left as possible,
+        # while still allowing all labels to be shown in full
+        self.record_propertyGrid.SetSplitterLeft()
 
     def validate(self, name, value):
         """
@@ -884,10 +931,15 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         parent_rec = self.getTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=self.refobj_treeCtrl.GetSelection())
         struct_parent_code = self.ref_obj.getCodAsTuple(parent_rec['cod']) if 'cod' in parent_rec else list()
         struct_parent_code = [sub_code for sub_code in struct_parent_code if sub_code]
-        level_idx = len(struct_parent_code)
-        struct_code = struct_parent_code
-        struct_code += ['0' * self.ref_obj.getCodLen()[level_idx]]
-        default_record['cod'] = ''.join(struct_code)
+        # log_func.debug(u'Struct parent cod %s' % str(struct_parent_code))
+        if struct_parent_code:
+            level_idx = len(struct_parent_code)
+            struct_code = struct_parent_code
+            struct_code += ['0' * self.ref_obj.getCodLen()[level_idx]]
+            default_record['cod'] = ''.join(struct_code)
+        else:
+            default_record['cod'] = ''
+        # log_func.debug(u'New cod %s : %s' % (str(struct_parent_code), str(default_record['cod'])))
 
         add_rec = createRefObjRecordDlg(parent=self, ref_obj=self.ref_obj,
                                         record=default_record)

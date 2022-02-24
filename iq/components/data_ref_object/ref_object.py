@@ -640,7 +640,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         if self.hasCod(cod):
-            # log_func.debug(u'Save. Update record. Code <%s>' % cod)
+            log_func.debug(u'Save. Update record. Code <%s>' % cod)
             cod_col_name = self.getCodColumnName()
             model = self.getModel()
             find_cod_param = [getattr(model, cod_col_name) == cod]
@@ -652,7 +652,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             else:
                 log_func.warning(u'Record not found fo cod <%s>' % cod)
         else:
-            # log_func.debug(u'Save. Add record. Code <%s>' % cod)
+            log_func.debug(u'Save. Add record. Code <%s>' % cod)
             new_record = copy.deepcopy(record)
             new_record[self.getCodColumnName()] = cod
             return self.addRec(record=new_record)

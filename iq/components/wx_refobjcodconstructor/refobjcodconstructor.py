@@ -187,7 +187,7 @@ class iqRefObjCodConstructorProto(wx.Panel):
                 return item
         return -1
 
-    def setCode(self, code=None):
+    def newCode(self, code=None):
         """
         Set ref object code as selected.
 
@@ -212,6 +212,36 @@ class iqRefObjCodConstructorProto(wx.Panel):
                 if item >= 0:
                     self.selectLevelChoice(i, item, auto_select=True)
             self.initCodTextCtrl()
+            # Title
+            self.refreshTitle()
+            return True
+        return False
+
+    def setCode(self, code=None):
+        """
+        Set ref object code as selected.
+
+        :param code: Ref object cod.
+        :return: True/False.
+        """
+        if code is None:
+            # If cod not defined then clear
+            result = self.clearSelect()
+            self.initCodTextCtrl(is_new=False)
+            # Title
+            self.refreshTitle()
+            return result
+
+        if self._ref_obj is not None:
+            # self._selected_code sets in selectLevelChoice method
+            # Do not need to initialize it
+            selected_code = self._ref_obj.getCodAsTuple(code)
+            log_func.debug(u'Selected code %s' % str(selected_code))
+            for i, subcode in enumerate(selected_code):
+                item = self.findItemIdxByCode(i, subcode)
+                if item >= 0:
+                    self.selectLevelChoice(i, item, auto_select=True)
+            self.initCodTextCtrl(is_new=False)
             # Title
             self.refreshTitle()
             return True
@@ -372,10 +402,11 @@ class iqRefObjCodConstructorProto(wx.Panel):
             log_func.fatal(u'Error select level')
         event.Skip()
 
-    def initCodTextCtrl(self):
+    def initCodTextCtrl(self, is_new=True):
         """
         Init text controls.
 
+        :param is_new: Init new code.
         :return: True/False.
         """
         try:
@@ -388,14 +419,15 @@ class iqRefObjCodConstructorProto(wx.Panel):
                     selected_cod = self.getChoiceSelectedCode(choice_ctrl=choice_ctrl)
                     txt_ctrl.SetValue(selected_cod if selected_cod else u'')
                     self._selected_code[i] = selected_cod
-                else:
+                elif not is_select and is_new:
                     # level_cod_len = self._ref_obj.getLevelCodLen(i)
                     # cod = (DEFAULT_COD_SIGN * level_cod_len) if level_cod_len > 0 else ''
                     cod = self.genAutoLevelCode(level=i, selected_code=self._selected_code)
                     log_func.debug(u'New level code <%s>' % cod)
                     txt_ctrl.SetValue(cod)
                     self._selected_code[i] = cod
-                txt_ctrl.Enable(not is_last and not is_select)
+                txt_ctrl.Enable(not is_last and not is_select and is_new)
+                txt_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
                 if is_last:
                     txt_ctrl.ChangeValue('')
                     self._selected_code[i] = None
@@ -458,13 +490,14 @@ class iqRefObjCodConstructorProto(wx.Panel):
             cur_text = txt_ctrl.GetValue().strip()
             new_sub_cod = DEFAULT_COD_SIGN * (level_cod_len - len(cur_text)) + cur_text[:level_cod_len]
             self._selected_code[level_idx] = new_sub_cod
-            log_func.debug(u'New sub cod <%s : %s>' % (cur_text, new_sub_cod))
+            # log_func.debug(u'New sub cod <%s : %s>' % (cur_text, new_sub_cod))
             if cur_text and len(cur_text) < level_cod_len:
                 txt_ctrl.ChangeValue(new_sub_cod)
             self.refreshTitle()
 
             if txt_ctrl.IsEnabled():
                 new_cod = self.getCode()
+                # log_func.debug(u'New cod %s' % new_cod)
                 if self._ref_obj.hasCod(new_cod):
                     txt_ctrl.SetBackgroundColour(wx.RED)
                 else:
@@ -487,11 +520,12 @@ class iqRefObjCodConstructorProto(wx.Panel):
             new_sub_cod = DEFAULT_COD_SIGN * (level_cod_len - len(cur_text)) + cur_text[:level_cod_len]
             if cur_text == new_sub_cod:
                 self._selected_code[level_idx] = new_sub_cod
-                log_func.debug(u'New sub cod <%s : %s>' % (cur_text, new_sub_cod))
+                # log_func.debug(u'New sub cod <%s : %s>' % (cur_text, new_sub_cod))
                 self.refreshTitle()
 
             if txt_ctrl.IsEnabled():
                 new_cod = self.getCode()
+                # log_func.debug(u'New cod %s' % new_cod)
                 if self._ref_obj.hasCod(new_cod):
                     txt_ctrl.SetBackgroundColour(wx.RED)
                 else:
