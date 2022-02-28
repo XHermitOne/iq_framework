@@ -14,7 +14,7 @@ from . import wxcolour_func
 from . import base_manager
 from . import imglib_manager
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 LISTCTRL_DATA_CACHE_ATTR_NAME = '__listctrl_data'
 
@@ -144,7 +144,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
                 col_format = wx.LIST_FORMAT_CENTER
             else:
                 col_format = wx.LIST_FORMAT_LEFT
-            listctrl.InsertColumn(i, label, width=width, format=col_format)
+            listctrl.InsertColumn(i, label, format=col_format, width=width)
             return True
         except:
             log_func.fatal(u'Append column in wx.ListCtrl object error')

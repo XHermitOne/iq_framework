@@ -5,6 +5,9 @@
 Transformation table data component.
 """
 
+import datetime
+import pandas
+
 from ... import object
 
 from . import spc
@@ -13,7 +16,7 @@ from . import transform_datasource_proto
 from ...util import log_func
 from ...util import exec_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 class iqTransformDataSource(transform_datasource_proto.iqTransformDataSourceProto,
@@ -75,15 +78,22 @@ class iqTransformDataSource(transform_datasource_proto.iqTransformDataSourceProt
             if self.isAttributeValue('transform'):
                 context = self.getContext()
                 context.update(kwargs)
+                context['pandas'] = pandas
+                context['pd'] = pandas
+                context['datetime'] = datetime
+                context['dt'] = datetime
                 context['DATAFRAME'] = dataframe
                 function_body = self.getAttribute('transform')
 
-                log_func.debug(u'Before transform DataFrame:')
-                log_func.debug(str(dataframe))
-                self._dataframe = exec_func.execTxtFunction(function=function_body,
-                                                            context=context)
-                log_func.debug(u'After transform DataFrame:')
-                log_func.debug(str(self._dataframe))
+                if not dataframe.empty:
+                    # log_func.debug(u'Before transform DataFrame:')
+                    # log_func.debug(str(dataframe.empty))
+                    self._dataframe = exec_func.execTxtFunction(function=function_body,
+                                                                context=context)
+                    # log_func.debug(u'After transform DataFrame:')
+                    # log_func.debug(str(self._dataframe))
+                else:
+                    log_func.warning(u'DataFrame for transform <%s> is empty' % self.getName())
 
                 return self._dataframe
             return dataframe

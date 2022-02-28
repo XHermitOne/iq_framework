@@ -22,7 +22,7 @@ from iq.engine.wx import toolbar_manager
 
 from .. import data_query
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 ERROR_FIELD = (u'Error', )
 ERROR_COL_WIDTH = 700
@@ -131,11 +131,14 @@ class iqViewTransformDataSourceDialog(view_transform_datasource_dlg_proto.iqView
         :param variables: Variables dictionary.
         :return: True/False
         """
+        result = False
         if variables is None:
             variables = self.variables
 
+        wx.BeginBusyCursor()
         try:
             dataframe = self.testing_component.transform(**variables)
+
             # log_func.debug(u'Transformed DataFrame:')
             # log_func.debug(str(dataframe))
             dataset = self.testing_component.exportData(dataframe)
@@ -143,9 +146,9 @@ class iqViewTransformDataSourceDialog(view_transform_datasource_dlg_proto.iqView
                 # Columns
                 fields = dataset[0].keys()
                 if fields == ERROR_FIELD:
-                    cols = [dict(label=field_name, width=ERROR_COL_WIDTH) for field_name in fields]
+                    cols = [dict(label='.'.join(field_name) if isinstance(field_name, (list, tuple)) else str(field_name), width=ERROR_COL_WIDTH) for field_name in fields]
                 else:
-                    cols = [dict(label=field_name, width=-1) for field_name in fields]
+                    cols = [dict(label='.'.join(field_name) if isinstance(field_name, (list, tuple)) else str(field_name), width=-1) for field_name in fields]
                 # Rows
                 row_count = len(dataset)
 
@@ -156,6 +159,7 @@ class iqViewTransformDataSourceDialog(view_transform_datasource_dlg_proto.iqView
                     dataset = dataset[:limit]
 
                 rows = [[rec.get(field, u'') for field in fields] for rec in dataset]
+                print(cols)
                 self.setListCtrlColumns(listctrl=self.records_listCtrl, cols=cols)
                 self.setListCtrlRows(listctrl=self.records_listCtrl, rows=rows)
                 if rows:
@@ -163,12 +167,14 @@ class iqViewTransformDataSourceDialog(view_transform_datasource_dlg_proto.iqView
                     self.setListCtrlColumnsAutoSize(listctrl=self.records_listCtrl)
 
                 self.count_textCtrl.SetValue(str(row_count))
-                return True
+                result = True
             else:
                 log_func.warning(u'Empty dataset')
         except:
             log_func.fatal(u'Error refresh transform datasource result list')
-        return False
+
+        wx.EndBusyCursor()
+        return result
 
     def onCollapseToolClicked(self, event):
         """
