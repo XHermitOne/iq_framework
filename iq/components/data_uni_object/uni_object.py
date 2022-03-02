@@ -14,7 +14,7 @@ from ...dialog import dlg_func
 
 from ..wx_filterchoicectrl import filter_convert
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -246,5 +246,5 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         can_delete = dlg_func.openAskBox(title=_('DELETE'),
                                          prompt_text=_(u'Confirm deletion')) if ask else True
         if can_delete:
-            return self.deleteRec(id=guid, id_field=DEFAULT_GUID_COL_NAME)
+            return self.deleteRec(id=guid, id_field=self.getGuidColumnName())
         return False
