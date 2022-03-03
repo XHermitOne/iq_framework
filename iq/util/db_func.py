@@ -24,22 +24,22 @@ except:
     pass
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 # --- Use ODBC ---
-def validDBConnectODBC(connection_str=None):
+def validDBConnectODBC(db_url=None):
     """
     Check connection with ODBC database.
 
-    :param connection_str: Connection string.
+    :param db_url: Connection string/Database URL.
     :return: True - connected. False - not connected.
     """
-    if connection_str is None:
+    if db_url is None:
         return False
 
     try:
-        connection = pyodbc.connect(connection_str)
+        connection = pyodbc.connect(db_url)
     except:
         return False
 
@@ -62,20 +62,20 @@ def validDBConnectODBC(connection_str=None):
     return is_connect
 
 
-def getNotValidDBConnectODBCErrTxt(connection_str=None):
+def getNotValidDBConnectODBCErrTxt(db_url=None):
     """
     Get connection error message if not connected with ODBC database.
 
-    :param connection_str: Connection string.
+    :param db_url: Connection string/Database URL.
     :return: Error message or empty string if not error .
     """
-    if connection_str is None:
+    if db_url is None:
         return u'Not define database connection string'
 
     try:
-        connection = pyodbc.connect(connection_str)
+        connection = pyodbc.connect(db_url)
     except:
-        return u'Error connection with database server\n<%s>\n%s' % (connection_str, traceback.format_exc())
+        return u'Error connection with database server\n<%s>\n%s' % (db_url, traceback.format_exc())
 
     error_txt = u''
     if connection:
@@ -85,15 +85,15 @@ def getNotValidDBConnectODBCErrTxt(connection_str=None):
 
             result = cursor.execute('SELECT 1').fetchall()
             if not result:
-                error_txt = u'Not valid test query result\nDatabase <%s>' % connection_str
+                error_txt = u'Not valid test query result\nDatabase <%s>' % db_url
             cursor.close()
         except:
             if cursor:
                 cursor.close()
-            error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (connection_str, traceback.format_exc())
+            error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
         connection.close()
     else:
-        error_txt = u'Not define connection object\nDatabase <%s>' % connection_str
+        error_txt = u'Not define connection object\nDatabase <%s>' % db_url
 
     return error_txt
 
@@ -113,11 +113,11 @@ JDBC_DRIVER_FILENAME = {'DBF': os.path.join(JDBC_DRIVER_DIR, 'DBF_JDBC40.jar'),
                         }
 
 
-def validDBConnectJDBC(connection_url=None, jdbc_type=None):
+def validDBConnectJDBC(db_url=None, jdbc_type=None):
     """
     Check connection with JDBC database.
 
-    :param connection_url: Connection string.
+    :param db_url: Connection string/Database URL.
     :param jdbc_type: JDBC driver type:
         DBF, MSSQL or POSTGRESQL.
     :return: True - connected. False - not connected.
@@ -135,11 +135,11 @@ def validDBConnectJDBC(connection_url=None, jdbc_type=None):
     if not jdbc_drivers or not all([os.path.exists(jdbc_driver) for jdbc_driver in jdbc_drivers]):
         return False
 
-    if connection_url is None:
+    if db_url is None:
         return False
 
     try:
-        connection = jaydebeapi.connect(java_driver_class, [connection_url], jdbc_drivers)
+        connection = jaydebeapi.connect(java_driver_class, [db_url], jdbc_drivers)
     except:
         return False
 
@@ -162,11 +162,11 @@ def validDBConnectJDBC(connection_url=None, jdbc_type=None):
     return is_connect
 
 
-def getNotValidDBConnectJDBCErrTxt(connection_url=None, jdbc_type=None):
+def getNotValidDBConnectJDBCErrTxt(db_url=None, jdbc_type=None):
     """
     Get connection error message if not connected with JDBC database.
 
-    :param connection_url: Connection string.
+    :param db_url: Connection string/Database URL.
     :param jdbc_type: JDBC driver type:
         DBF, MSSQL or POSTGRESQL.
     :return: Error message or empty string if not error .
@@ -184,13 +184,13 @@ def getNotValidDBConnectJDBCErrTxt(connection_url=None, jdbc_type=None):
     if not jdbc_drivers or not all([os.path.exists(jdbc_driver) for jdbc_driver in jdbc_drivers]):
         return u'Error JDBC drivers <%s>' % jdbc_drivers
 
-    if connection_url is None:
+    if db_url is None:
         return u'Not define connection string'
 
     try:
-        connection = jaydebeapi.connect(java_driver_class, [connection_url], jdbc_drivers)
+        connection = jaydebeapi.connect(java_driver_class, [db_url], jdbc_drivers)
     except:
-        return u'Error connect with database server\nDatabase <%s>\n%s' % (connection_url, traceback.format_exc())
+        return u'Error connect with database server\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
 
     error_txt = u''
     if connection:
@@ -201,32 +201,32 @@ def getNotValidDBConnectJDBCErrTxt(connection_url=None, jdbc_type=None):
             cursor.execute('SELECT 1')
             result = cursor.fetchall()
             if not result:
-                error_txt = u'Not valid test query result\nDatabase <%s>' % connection_url
+                error_txt = u'Not valid test query result\nDatabase <%s>' % db_url
             cursor.close()
         except:
             if cursor:
                 cursor.close()
-            error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (connection_url, traceback.format_exc())
+            error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
         connection.close()
     else:
-        error_txt = u'Not define connection object\nDatabase <%s>' % connection_url
+        error_txt = u'Not define connection object\nDatabase <%s>' % db_url
 
     return error_txt
 
 
 # --- Use SQLAlchemy ---
-def validDBConnectSQLAlchemy(connection_str=None):
+def validDBConnectSQLAlchemy(db_url=None):
     """
     Check connection with database by SQLAlchemy.
 
-    :param connection_str: Connection string.
+    :param db_url: Connection string/Database URL.
     :return: True - connected. False - not connected.
     """
-    if connection_str is None:
+    if db_url is None:
         return False
 
     try:
-        engine = sqlalchemy.create_engine(connection_str, echo=False,
+        engine = sqlalchemy.create_engine(db_url, echo=False,
                                           connect_args={'application_name': 'Valid DB connect'})
     except:
         return False
@@ -249,21 +249,21 @@ def validDBConnectSQLAlchemy(connection_str=None):
     return is_connect
 
 
-def getNotValidDBConnectSQLAlchemyErrTxt(connection_str=None):
+def getNotValidDBConnectSQLAlchemyErrTxt(db_url=None):
     """
     Get connection error message if not connected with database by SQLAlchemy.
 
-    :param connection_str: Connection string.
+    :param db_url: Connection string/Database URL.
     :return: Error message or empty string if not error .
     """
-    if connection_str is None:
+    if db_url is None:
         return u'Not define connection string'
 
     try:
-        engine = sqlalchemy.create_engine(connection_str, echo=False,
+        engine = sqlalchemy.create_engine(db_url, echo=False,
                                           connect_args={'application_name': 'Valid DB connect'})
     except:
-        return u'Error connect with database server\nDatabase <%s>\n%s' % (connection_str, traceback.format_exc())
+        return u'Error connect with database server\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
 
     error_txt = u''
     if engine:
@@ -273,14 +273,62 @@ def getNotValidDBConnectSQLAlchemyErrTxt(connection_str=None):
 
             result = connection.execute('SELECT 1').scalar()
             if not result:
-                error_txt = u'Not valid test query result\nDatabase <%s>' % connection_str
+                error_txt = u'Not valid test query result\nDatabase <%s>' % db_url
         except:
-            error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (connection_str, traceback.format_exc())
+            error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
 
         if connection is not None:
             connection.close()
     else:
-        error_txt = u'Not define connection object\nDatabase <%s>' % connection_str
+        error_txt = u'Not define connection object\nDatabase <%s>' % db_url
 
     engine.dispose()
     return error_txt
+
+
+def executeSQL(db_url=None, sql=None):
+    """
+    Open connection. Execute SQL. Close connection.
+
+    :param db_url: Connection string/Database URL for connection.
+    :param sql: SQL expression.
+    :return: Result SQL as list of dictionaries or None if error.
+    """
+    if not db_url:
+        print(u'Not define connection string')
+        return None
+
+    if not sql:
+        print(u'Not define SQL expression')
+        return None
+
+    try:
+        engine = sqlalchemy.create_engine(db_url, echo=False)
+    except:
+        err_msg = u'Error connect with database server\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
+        print(err_msg)
+        return None
+
+    result = None
+    if engine:
+        connection = None
+        try:
+            connection = engine.connect()
+
+            result = connection.execute(sql).fetchall()
+            if not result:
+                print(u'Empty query result\nDatabase <%s>' % db_url)
+        except:
+            print(u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc()))
+
+        if connection is not None:
+            connection.close()
+    else:
+        print(u'Not define connection object\nDatabase <%s>' % db_url)
+
+    engine.dispose()
+
+    records = None
+    if result is not None:
+        records = [dict(record) for record in result]
+    return records
