@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 5, 1)
+__version__ = (0, 0, 6, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -146,6 +146,38 @@ def getStopMonthDT(now=None):
         now = datetime.datetime.now()
     day_month_range = calendar.monthrange(year=now.year, month=now.month)
     return now.replace(day=day_month_range[1], hour=23, minute=59, second=59, microsecond=999999)
+
+
+def getStartDayDT(dt=None):
+    """
+    Get start day as datetime.
+
+    :param dt: Day. If None then get today.
+    :return: Day 00:00:00 as Datetime.
+    """
+    if dt is None:
+        dt = datetime.date.today()
+
+    if isinstance(dt, datetime.date):
+        dt = date2datetime(dt)
+
+    return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+
+
+def getStopDayDT(dt=None):
+    """
+    Get stop day as datetime.
+
+    :param dt: Day. If None then get today.
+    :return: Day 23:59:59 as Datetime.
+    """
+    if dt is None:
+        dt = datetime.date.today()
+
+    if isinstance(dt, datetime.date):
+        dt = date2datetime(dt)
+
+    return dt.replace(hour=23, minute=59, second=59, microsecond=999999)
 
 
 def getLastMonthDay(month=1, year=None):
