@@ -16,7 +16,7 @@ from . import global_func
 from . import lang_func
 from ..dialog import dlg_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -452,9 +452,14 @@ def isLockObj(lock_name):
     Is locked object?
 
     :param lock_name: Lock name.
-    :return:
+    :return: True/False.
     """
-    return isLockFile(getLockFilename(lock_name=lock_name))
+    is_lock_file = isLockFile(getLockFilename(lock_name=lock_name))
+    if is_lock_file:
+        username = global_func.getUsername()
+        computer = sys_func.getComputerName()
+        return (username != getLockUsernameObj(lock_name)) or (computer != getLockComputerObj(lock_name))
+    return is_lock_file
 
 
 def getLockUsernameObj(lock_name):
