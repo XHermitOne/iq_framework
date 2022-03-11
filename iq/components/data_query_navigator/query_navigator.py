@@ -19,6 +19,10 @@ from ..data_navigator import navigator_proto
 
 __version__ = (0, 0, 0, 1)
 
+DEFAULT_WHERE_VARIABLE_NAME = 'WHERE'
+DEFAULT_ORDER_BY_VARIABLE_NAME = 'ORDER_BY'
+DEFAULT_LIMIT_VARIABLE_NAME = 'LIMIT'
+
 
 class iqQueryNavigatorManager(navigator_proto.iqNavigatorManagerProto):
     """
@@ -62,19 +66,19 @@ class iqQueryNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         """
         Get records filter name in Query expression WHERE section.
         """
-        return 'WHERE'
+        return DEFAULT_WHERE_VARIABLE_NAME
 
     def getQueryOrderByName(self):
         """
         Sorting name in Query expression ORDER BY section.
         """
-        return 'ORDER_BY'
+        return DEFAULT_ORDER_BY_VARIABLE_NAME
 
     def getQueryLimitName(self):
         """
         Limiting name in Query expression LIMIT section.
         """
-        return 'LIMIT'
+        return DEFAULT_LIMIT_VARIABLE_NAME
 
     def getReadOnly(self):
         """

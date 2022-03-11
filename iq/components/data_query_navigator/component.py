@@ -49,5 +49,23 @@ class iqDataQueryNavigator(query_navigator.iqQueryNavigatorManager, object.iqObj
         else:
             log_func.warning(u'<%s> object. <%s> component. Not define query' % (self.getName(), self.__class__.__name__))
 
+    def getQueryWhereName(self):
+        """
+        Get records filter name in Query expression WHERE section.
+        """
+        return self.getAttribute('where_name')
+
+    def getQueryOrderByName(self):
+        """
+        Sorting name in Query expression ORDER BY section.
+        """
+        return self.getAttribute('order_by_name')
+
+    def getQueryLimitName(self):
+        """
+        Limiting name in Query expression LIMIT section.
+        """
+        return self.getAttribute('limit_name')
+
 
 COMPONENT = iqDataQueryNavigator

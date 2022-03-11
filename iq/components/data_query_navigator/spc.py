@@ -11,6 +11,8 @@ from ... import passport
 
 from ...editor import property_editor_id
 
+from . import query_navigator
+
 __version__ = (0, 0, 0, 1)
 
 COMPONENT_TYPE = 'iqDataQueryNavigator'
@@ -41,9 +43,9 @@ DATAQUERYNAVIGATOR_SPC = {
 
     'query': None,
 
-    'where_name': '',
-    'order_by_name': '',
-    'limit_name': '',
+    'where_name': query_navigator.DEFAULT_WHERE_VARIABLE_NAME,
+    'order_by_name': query_navigator.DEFAULT_ORDER_BY_VARIABLE_NAME,
+    'limit_name': query_navigator.DEFAULT_LIMIT_VARIABLE_NAME,
 
     '__package__': u'Data',
     '__icon__': 'fatcow/table_lightning',
