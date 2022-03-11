@@ -15,7 +15,7 @@ import sqlalchemy.orm
 
 from ...util import log_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -272,11 +272,12 @@ class iqDBEngineManager(object):
 
         return is_connect
 
-    def executeSQL(self, sql_query):
+    def executeSQL(self, sql_query, first_record=False):
         """
         Execute SQL expression.
 
         :param sql_query: SQL query text.
+        :param first_record: True - get only first record / False - get all records.
         :return: Dataset record list or None if error.
         """
         if not self.checkConnection():
@@ -293,7 +294,10 @@ class iqDBEngineManager(object):
             try:
                 result = connection.execute(sql_query)
                 if result and result.returns_rows:
-                    records = result.fetchall()
+                    if first_record:
+                        records = [result.fetchone()]
+                    else:
+                        records = result.fetchall()
                     recordset = [dict([(name, float(value) if isinstance(value, decimal.Decimal) else value) for name, value in dict(rec).items()]) for rec in records]
                 else:
                     log_func.info(u'Query <%s> not return recordset' % sql_query)

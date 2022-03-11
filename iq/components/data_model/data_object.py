@@ -8,7 +8,7 @@ Data object interface class.
 from ...util import log_func
 from ...util import global_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 DATA_NAME_DELIMETER = '.'
 
@@ -45,6 +45,22 @@ class iqDataObjectProto(object):
         """
         log_func.warning(u'Not define method <clear> in <%s>' % self.__class__.__name__)
         return False
+
+    def getScheme(self):
+        """
+        Get scheme object.
+
+        :return:
+        """
+        log_func.warning(u'Not define method <getScheme> in <%s>' % self.__class__.__name__)
+        return None
+
+    def getModel(self):
+        """
+        Get model.
+        """
+        log_func.warning(u'Not define method <getModel> in <%s>' % self.__class__.__name__)
+        return None
 
 
 class iqDataObject(iqDataObjectProto):
@@ -91,22 +107,6 @@ class iqDataObject(iqDataObjectProto):
         except:
             log_func.fatal(u'Error update dataset by link object data')
         return dataset
-
-    def getScheme(self):
-        """
-        Get scheme object.
-
-        :return:
-        """
-        log_func.warning(u'Not define method <getScheme> in <%s>' % self.__class__.__name__)
-        return None
-
-    def getModel(self):
-        """
-        Get model.
-        """
-        log_func.warning(u'Not define method <getModel> in <%s>' % self.__class__.__name__)
-        return None
 
     def getDataset(self, *args, **kwargs):
         """

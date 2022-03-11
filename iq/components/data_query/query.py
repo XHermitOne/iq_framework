@@ -9,7 +9,8 @@ from ...util import log_func
 from ...util import txtgen_func
 
 from ..data_model import data_object
-__version__ = (0, 0, 1, 1)
+
+__version__ = (0, 0, 2, 1)
 
 
 class iqDBQuery(data_object.iqDataObjectProto):
@@ -58,6 +59,28 @@ class iqDBQuery(data_object.iqDataObjectProto):
         try:
             if full_sql_txt:
                 return db.executeSQL(full_sql_txt)
+        except:
+            log_func.fatal(u'Error execute query <%s>' % full_sql_txt)
+        return None
+
+    def getFirstRecord(self, **variables):
+        """
+        Execute query.
+
+        :param variables: SQL query variables.
+        :return: Execute query result or None if error.
+        """
+        db = self.getDBEngine()
+        sql_txt = self.getSQLText()
+
+        if not db or not sql_txt:
+            return None
+
+        full_sql_txt = txtgen_func.generate(sql_txt, variables)
+        log_func.debug(u'Execute SQL:\n%s' % full_sql_txt)
+        try:
+            if full_sql_txt:
+                return db.executeSQL(full_sql_txt, first_record=True)
         except:
             log_func.fatal(u'Error execute query <%s>' % full_sql_txt)
         return None

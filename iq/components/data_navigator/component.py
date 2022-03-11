@@ -9,10 +9,11 @@ from ... import object
 
 from . import spc
 from . import model_navigator
+from ..data_scheme import scheme as scheme_module
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 
 class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
@@ -30,6 +31,8 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         object.iqObject.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         model_navigator.iqModelNavigatorManager.__init__(self, *args, **kwargs)
+
+        self.setReadOnly(readonly=self.getAttribute('readonly'))
 
     def getModelPsp(self):
         """
@@ -54,7 +57,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         psp.typename = None
         psp.name = None
         scheme = self.getKernel().getObject(psp=psp, register=True)
-        return scheme
+        return scheme if issubclass(scheme.__class__, scheme_module.iqSchemeManager) else None
 
     def createModel(self):
         """

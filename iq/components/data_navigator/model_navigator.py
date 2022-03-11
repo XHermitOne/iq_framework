@@ -5,18 +5,21 @@
 Data model navigator manager.
 """
 
+import sys
 import sqlalchemy.sql.functions
 
 from ...util import log_func
 
-from ..data_model import data_object
+# from ..data_model import data_object
 
 from ..wx_filterchoicectrl import filter_convert
 
-__version__ = (0, 0, 0, 1)
+from . import navigator_proto
+
+__version__ = (0, 0, 2, 1)
 
 
-class iqModelNavigatorManager(data_object.iqDataObject):
+class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
     """
     Data model navigator manager.
     """
@@ -39,6 +42,20 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         self.__rec_filter__ = None
         # Sorting
         self.__order_by__ = None
+        # Readonly
+        self.__readonly__ = False
+
+    def getReadOnly(self):
+        """
+        Get readonly option.
+        """
+        return self.__readonly__
+
+    def setReadOnly(self, readonly=True):
+        """
+        Set readonly option.
+        """
+        self.__readonly__ = readonly
 
     def getModel(self):
         """
@@ -97,7 +114,8 @@ class iqModelNavigatorManager(data_object.iqDataObject):
 
         :return: Session/transaction object.
         """
-        return self.getScheme().startTransaction(*args, **kwargs)
+        scheme = self.getScheme()
+        return scheme.startTransaction(*args, **kwargs) if scheme else None
 
     def stopTransaction(self, transaction, *args, **kwargs):
         """
@@ -106,7 +124,8 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param transaction: Session/transaction object.
         :return: True/False.
         """
-        return self.getScheme().stopTransaction(transaction, *args, **kwargs)
+        scheme = self.getScheme()
+        return scheme.stopTransaction(transaction, *args, **kwargs) if scheme else False
 
     def getLimit(self):
         """
@@ -174,7 +193,7 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param clear: Clear data object/model?
         :return: True/False.
         """
-        result = data_object.iqDataObject.setDataset(self, dataset=dataset, clear=clear, *args, **kwargs)
+        result = super().setDataset(self, dataset=dataset, clear=clear, *args, **kwargs)
         if result:
             self.updateDataset()
         return result
@@ -292,15 +311,20 @@ class iqModelNavigatorManager(data_object.iqDataObject):
                 self.stopTransaction(transaction)
             else:
                 table = self.getTable()
-                select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
-                                                                       table=table,
-                                                                       limit=limit if limit >= 0 else None,
-                                                                       order_by=order_by)
-                transaction = self.startTransaction()
-                result = transaction.execute(select)
-                records = [dict(record) for record in result.fetchall()]
-                self.stopTransaction(transaction)
-            return records
+                if table is not None:
+                    select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
+                                                                           table=table,
+                                                                           limit=limit if limit >= 0 else None,
+                                                                           order_by=order_by)
+                    transaction = self.startTransaction()
+                    result = transaction.execute(select)
+                    records = [dict(record) for record in result.fetchall()]
+                    self.stopTransaction(transaction)
+                    return records
+                else:
+                    log_func.error(u'<%s> method. <%s> object. <%s> class. Not define table object' % (sys._getframe().f_code.co_name,
+                                                                                                       self.getName(),
+                                                                                                       self.__class__.__name__))
         except:
             log_func.fatal(u'Error search records by %s %s' % (str(search_args), str(search_kwargs)))
         return list()
@@ -340,6 +364,12 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param record: Record dictionary.
         :return: New model object or None if error.
         """
+        if self.getReadOnly():
+            log_func.error(u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                            self.getName(),
+                                                                                            self.__class__.__name__))
+            return None
+
         try:
             if not isinstance(record, dict):
                 # log_func.debug(u'Record type <%s>' % record.__class__.__name__)
@@ -361,6 +391,12 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param auto_commit: Automatic commit?
         :return: True/False.
         """
+        if self.getReadOnly():
+            log_func.error(u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                            self.getName(),
+                                                                                            self.__class__.__name__))
+            return None
+
         scheme = self.getScheme()
         transaction = scheme.startTransaction()
         try:
@@ -386,6 +422,13 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param records: Record list.
         :return: True/False.
         """
+        if self.getReadOnly():
+            log_func.error(
+                u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                 self.getName(),
+                                                                                 self.__class__.__name__))
+            return None
+
         scheme = self.getScheme()
         transaction = scheme.startTransaction()
         try:
@@ -419,6 +462,13 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param id_field: Identifier field name.
         :return: True/False.
         """
+        if self.getReadOnly():
+            log_func.error(
+                u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                 self.getName(),
+                                                                                 self.__class__.__name__))
+            return False
+
         if id_field is None:
             id_field = 'id'
 
@@ -457,6 +507,13 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param id_field: Identifier field name.
         :return: True/False.
         """
+        if self.getReadOnly():
+            log_func.error(
+                u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                 self.getName(),
+                                                                                 self.__class__.__name__))
+            return False
+
         if id_field is None:
             id_field = 'id'
 
@@ -484,6 +541,13 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param where_kwargs: Where options.
         :return: True/False.
         """
+        if self.getReadOnly():
+            log_func.error(
+                u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                 self.getName(),
+                                                                                 self.__class__.__name__))
+            return False
+
         transaction = None
         try:
             rec_filter = self.getRecFilter()
@@ -498,13 +562,18 @@ class iqModelNavigatorManager(data_object.iqDataObject):
             else:
                 # log_func.debug(u'Delete by record filter %s' % str(rec_filter))
                 table = self.getTable()
-                select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
-                                                                       table=table)
-                transaction = self.startTransaction()
-                transaction.execute(select).delete(synchronize_session=False)
-                transaction.commit()
-                self.stopTransaction(transaction)
-            return True
+                if table is not None:
+                    select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
+                                                                           table=table)
+                    transaction = self.startTransaction()
+                    transaction.execute(select).delete(synchronize_session=False)
+                    transaction.commit()
+                    self.stopTransaction(transaction)
+                    return True
+                else:
+                    log_func.error(u'<%s> method. <%s> object. <%s> class. Not define table object' % (sys._getframe().f_code.co_name,
+                                                                                                       self.getName(),
+                                                                                                       self.__class__.__name__))
         except:
             if transaction:
                 transaction.rollback()
@@ -547,110 +616,19 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         """
         pass
 
-    def validRec(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def getValidErrors(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def linkTo(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def unlink(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def checkRec(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def uncheckRec(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def attachRec(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def detachRec(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def sumRecs(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def countRecs(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def copyRecTo(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def copyRecsTo(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def removeRecTo(self):
-        """
-
-        :return:
-        """
-        pass
-
-    def removeRecsTo(self):
-        """
-
-        :return:
-        """
-        pass
-
     def clear(self):
         """
         Clear reference data object tables.
 
         :return: True/False.
         """
+        if self.getReadOnly():
+            log_func.error(
+                u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                 self.getName(),
+                                                                                 self.__class__.__name__))
+            return False
+
         transaction = self.startTransaction()
         try:
             transaction.query(self.getModel()).delete(synchronize_session=False)
@@ -672,6 +650,13 @@ class iqModelNavigatorManager(data_object.iqDataObject):
         :param records: Record list as tuple of record dictionaries.
         :return: True/False.
         """
+        if self.getReadOnly():
+            log_func.error(
+                u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
+                                                                                 self.getName(),
+                                                                                 self.__class__.__name__))
+            return False
+
         if self.clear():
             return self.addRecs(records)
         return False
