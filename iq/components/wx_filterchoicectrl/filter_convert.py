@@ -6,11 +6,15 @@ Functions for converting filter results to different views.
 For example to SQL.
 """
 
+import datetime
 import sqlalchemy
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
+
+DEFAULT_SQL_DATE_FMT = '%Y-%m-%d'
+DEFAULT_SQL_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 
 
 def convertFilter2PgSQL(filter_data, table_name, fields=('*',), limit=None):
@@ -38,6 +42,18 @@ def convertFilter2PgSQL(filter_data, table_name, fields=('*',), limit=None):
     if limit:
         sql += 'LIMIT %d' % limit
     return sql
+
+
+def convertFilterWhereSection2PgSQLWhereSection(filter_data):
+    """
+    Convert WHERE section as filter to WHERE section in PostgreSQL dialect.
+
+    :param filter_data: Filter data.
+    :return: WHERE section text in PgSQL dialect.
+    """
+    converter = iqFilter2PostgreSQLConverter(filter_data)
+    where = converter.convert()
+    return where
 
 
 class iqFilter2PostgreSQLConverter(object):
@@ -86,7 +102,7 @@ class iqFilter2PostgreSQLConverter(object):
             sql_elements.append(sql_element)
             
         sql_group = (' ' + group_data['logic'] + ' ').join(sql_elements)
-        return sql_fmt % sql_group
+        return (sql_fmt % sql_group) if sql_group.strip() else ''
     
     def genRequisiteSQL(self, requisite):
         """
@@ -95,8 +111,91 @@ class iqFilter2PostgreSQLConverter(object):
         :param requisite: Requisite data.
         :return: Returns the row string of the WHERE SQL section corresponding to this group.
         """
-        return ' '.join(requisite['__sql__'])
-    
+        if '__sql__' in requisite:
+            return ' '.join(requisite['__sql__'])
+
+        try:
+            if 'get_args' in requisite and requisite['get_args']:
+                ext_dict = requisite['get_args']()
+                requisite.update(ext_dict)
+        except:
+            log_func.fatal(u'Error get arguments')
+
+        try:
+            if requisite['function'] == 'equal':
+                # <Equal> verify
+                return '%s = %s' % (requisite['requisite'], self._getArgumentSQL(requisite['arg_1']))
+            elif requisite['function'] == 'not_equal':
+                # <Not equal> verify
+                return '%s <> %s' % (requisite['requisite'], self._getArgumentSQL(requisite['arg_1']))
+            elif requisite['function'] == 'great':
+                # <Great>
+                return '%s > %s' % (requisite['requisite'], self._getArgumentSQL(requisite['arg_1']))
+            elif requisite['function'] == 'great_or_equal':
+                # <Great or equal>
+                return '%s >= %s' % (requisite['requisite'], self._getArgumentSQL(requisite['arg_1']))
+            elif requisite['function'] == 'lesser':
+                # <Lesser>
+                return '%s < %s' % (requisite['requisite'], self._getArgumentSQL(requisite['arg_1']))
+            elif requisite['function'] == 'lesser_or_equal':
+                # <Lesser or equal>
+                return '%s <= %s' % (requisite['requisite'], self._getArgumentSQL(requisite['arg_1']))
+            elif requisite['function'] == 'between':
+                # <Between>
+                return '%s BETWEEN %s AND %s' % (requisite['requisite'],
+                                                 self._getArgumentSQL(requisite['arg_1']),
+                                                 self._getArgumentSQL(requisite['arg_2']))
+            elif requisite['function'] == 'not_between':
+                # <Not between>
+                return 'NOT (%s BETWEEN %s AND %s)' % (requisite['requisite'],
+                                                       self._getArgumentSQL(requisite['arg_1']),
+                                                       self._getArgumentSQL(requisite['arg_2']))
+            elif requisite['function'] == 'contain':
+                return '%s LIKE(\'%%%%%s%%%%\')' % (requisite['requisite'], requisite['arg_1'])
+            elif requisite['function'] == 'not_contain':
+                return '%s NOT LIKE(\'%%%%%s%%%%\')' % (requisite['requisite'], requisite['arg_1'])
+            elif requisite['function'] == 'startswith':
+                return '%s LIKE(\'%s%%%%\')' % (requisite['requisite'], requisite['arg_1'])
+            elif requisite['function'] == 'endswith':
+                return '%s LIKE(\'%%%%%s\')' % (requisite['requisite'], requisite['arg_1'])
+            elif requisite['function'] == 'mask':
+                log_func.warning(u'Unsupported compare <mask>')
+                return None
+            elif requisite['function'] == 'not_mask':
+                log_func.warning(u'Unsupported compare <not mask>')
+                return None
+            elif requisite['function'] == 'is_null':
+                return '%s IS NULL' % requisite['requisite']
+            elif requisite['function'] == 'is_not_null':
+                return '%s IS NOT NULL' % requisite['requisite']
+            elif requisite['function'] == 'into':
+                return '%s IN %s' % (requisite['requisite'], requisite['arg_1'])
+            elif requisite['function'] == 'not_into':
+                return '%s NOT IN %s' % (requisite['requisite'], requisite['arg_1'])
+
+            log_func.warning(u'Not define function type <%s> filter requisite in convert' % requisite['function'])
+        except:
+            log_func.fatal(u'Error convert filter requisite <%s>' % requisite)
+
+        return None
+
+    def _getArgumentSQL(self, arg_value):
+        """
+        Get argument in SQL dialect.
+
+        :param arg_value: Argument value.
+        :return: Argument value as text in SQL dialect.
+        """
+        if arg_value is None:
+            return 'NULL'
+        elif isinstance(arg_value, str):
+            return '\'%s\'' % arg_value
+        elif isinstance(arg_value, datetime.date):
+            return '\'%s\'' % arg_value.strftime(DEFAULT_SQL_DATE_FMT)
+        elif isinstance(arg_value, datetime.datetime):
+            return '\'%s\'' % arg_value.strftime(DEFAULT_SQL_DATETIME_FMT)
+        return str(arg_value)
+
 
 # --- Converter to SQLAlchemy ---
 # Transfer logical operations

@@ -80,6 +80,24 @@ class iqQueryNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         """
         return DEFAULT_LIMIT_VARIABLE_NAME
 
+    def getQueryWhere(self):
+        """
+        Get WHERE section.
+        """
+        return None
+
+    def getQueryOrderBy(self):
+        """
+        Get ORDER BY section.
+        """
+        return None
+
+    def getQueryLimit(self):
+        """
+        Get LIMIT section.
+        """
+        return None
+
     def getReadOnly(self):
         """
         Get readonly option.
@@ -248,6 +266,33 @@ class iqQueryNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         records = self.searchRecs(*find_args, **find_kwargs)
         return records[0] if records else None
 
+    def _getQueryVariables(self):
+        """
+        Get query variable for getting SQL expression.
+        """
+        variables = dict()
+
+        where = self.getQueryWhere()
+        if where is None:
+            rec_filter = self.getRecFilter()
+            where = filter_convert.convertFilterWhereSection2PgSQLWhereSection(rec_filter)
+        variables[self.getQueryWhereName()] = where
+
+        order_by = self.getQueryOrderBy()
+        if order_by is None:
+            get_order_by = self.getOrderBy()
+            order_by = get_order_by if get_order_by else ''
+        variables[self.getQueryOrderByName()] = order_by
+
+        limit = self.getQueryLimit()
+        if limit is None:
+            get_limit = self.getLimit()
+            limit = get_limit if get_limit >= 0 else 'ALL'
+        variables[self.getQueryLimitName()] = limit
+
+        # log_func.debug('Filter %s Variables %s' % (str(rec_filter), str(variables)))
+        return variables
+
     def searchRecs(self, *search_args, **search_kwargs):
         """
         Search records in model.
@@ -257,15 +302,7 @@ class iqQueryNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         :return: Record dictionary list or None if records not found.
         """
         try:
-            rec_filter = self.getRecFilter()
-            limit = self.getLimit()
-            order_by = self.getOrderBy()
-
-            variables = dict()
-            variables[self.getQueryWhereName()] = rec_filter
-            variables[self.getQueryOrderByName()] = order_by
-            variables[self.getQueryLimitName()] = limit if limit >= 0 else ''
-
+            variables = self._getQueryVariables()
             query = self.getQuery()
             if query is not None:
                 return query.execute(**variables)
@@ -349,15 +386,7 @@ class iqQueryNavigatorManager(navigator_proto.iqNavigatorManagerProto):
 
         query = self.getQuery()
         if query:
-            rec_filter = self.getRecFilter()
-            limit = self.getLimit()
-            order_by = self.getOrderBy()
-
-            variables = dict()
-            variables[self.getQueryWhereName()] = rec_filter
-            variables[self.getQueryOrderByName()] = order_by
-            variables[self.getQueryLimitName()] = limit if limit >= 0 else ''
-
+            variables = self._getQueryVariables()
             first_records = query.getFirstRecord(**variables)
 
             if first_records:

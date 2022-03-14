@@ -13,6 +13,9 @@ from . import query_navigator
 
 from ...passport import passport
 from ...util import log_func
+from ...util import exec_func
+
+from ..wx_filterchoicectrl import filter_convert
 
 __version__ = (0, 0, 0, 1)
 
@@ -66,6 +69,48 @@ class iqDataQueryNavigator(query_navigator.iqQueryNavigatorManager, object.iqObj
         Limiting name in Query expression LIMIT section.
         """
         return self.getAttribute('limit_name')
+
+    def getQueryWhere(self):
+        """
+        Get WHERE section.
+        """
+        function_body = self.getAttribute('get_where')
+
+        if function_body:
+            context = self.getContext()
+            context['self'] = self
+            rec_filter = self.getRecFilter()
+            context['REC_FILTER'] = rec_filter
+            where = filter_convert.convertFilterWhereSection2PgSQLWhereSection(rec_filter)
+            context['WHERE'] = where
+            return exec_func.execTxtFunction(function=function_body, context=context, show_debug=True)
+        return None
+
+    def getQueryOrderBy(self):
+        """
+        Get ORDER BY section.
+        """
+        function_body = self.getAttribute('get_order_by')
+
+        if function_body:
+            context = self.getContext()
+            context['self'] = self
+            context['ORDER_BY'] = self.getOrderBy()
+            return exec_func.execTxtFunction(function=function_body, context=context, show_debug=True)
+        return None
+
+    def getQueryLimit(self):
+        """
+        Get LIMIT section.
+        """
+        function_body = self.getAttribute('get_limit')
+
+        if function_body:
+            context = self.getContext()
+            context['self'] = self
+            context['LIMIT'] = self.getLimit()
+            return exec_func.execTxtFunction(function=function_body, context=context, show_debug=True)
+        return None
 
 
 COMPONENT = iqDataQueryNavigator
