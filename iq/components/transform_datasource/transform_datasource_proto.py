@@ -30,6 +30,8 @@ class iqTransformDataSourceProto(object):
         """
         return self._dataframe
 
+    getDataset = getDataFrame
+
     def importData(self, data=None):
         """
         Import table data to DataFrame object.

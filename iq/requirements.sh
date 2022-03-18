@@ -127,6 +127,7 @@ sudo apt install --assume-yes gnuplot
 # Data tables
 # sudo apt install --assume-yes python3-pandas
 pip3 install pandas
+pip3 install plotly_express
 
 # Maps
 pip3 install folium

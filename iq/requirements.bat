@@ -56,6 +56,7 @@ REM sudo apt install --assume-yes gnuplot
 
 REM  Data tables
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install pandas
+C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install plotly_express
 
 REM Maps
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install folium
