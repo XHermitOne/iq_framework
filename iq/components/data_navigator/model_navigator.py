@@ -309,6 +309,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                     query = query.order_by(*order_by_columns)
                 records = [vars(record) for record in query]
                 self.stopTransaction(transaction)
+                return records
             else:
                 table = self.getTable()
                 if table is not None:
