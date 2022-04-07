@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 # Report cell tags:
 # query table field values
@@ -146,6 +146,7 @@ REP_CELL = {
     'align': None,          # Alignment text
     'sum': None,            # Sum list
     'visible': True,        # Cell visible
+    'exist': True,          # Exist cell?
     'num_format': None,     # Cell format
     }
 
@@ -754,7 +755,11 @@ class iqReportGenerator(object):
                 for i_col in range(len(to_report['sheet'][to_row]), to_col + 1):
                     to_report['sheet'][to_row].append(None)
 
-            if cell['visible']:
+            if not cell['visible']:
+                cell['width'] = 0
+                cell['height'] = 0
+
+            if cell.get('exist', True):
                 to_report['sheet'][to_row][to_col] = cell
             return True
         except:

@@ -20,7 +20,7 @@ from iq.util import file_func
 from . import report_generator
 from . import report_glob_data
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 3, 1)
 
 SPC_XML_STYLE = {'style_id': '',  # Style ID
                  'align': {'align_txt': (0, 0), 'wrap_txt': False},  # Alignment
@@ -663,14 +663,26 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
         """
         Get row height.
         """
-        return min([cell['height'] for cell in [cell_ for cell_ in row if type(cell_) == dict and 'height' in cell_]])
-            
+        cells = [cell for cell in row if isinstance(cell, dict) and 'height' in cell]
+        return min([cell['height'] for cell in cells]) if cells else 0
+
+    def getRowHidden(self, row):
+        """
+        Get row hidden.
+        """
+        cells = [cell for cell in row if isinstance(cell, dict) and 'visible' in cell]
+        return (not any([cell['visible'] for cell in cells])) if cells else True
+
     def startRow(self, row):
         """
         Start row.
         """
         height_row = self.getRowHeight(row)
-        self.startElementLevel('Row', {'ss:Height': str(height_row)})
+        hidden_row = self.getRowHidden(row)
+        row_dict = {'ss:Height': str(height_row)}
+        if hidden_row:
+            row_dict['ss:Hidden'] = str(hidden_row)
+        self.startElementLevel('Row', row_dict)
         self._idx_set = False       # Clear the index setting flag
         self.cell_idx = 1
             

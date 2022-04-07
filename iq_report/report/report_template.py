@@ -21,7 +21,7 @@ from . import report_glob_data
 
 from iq.components.virtual_spreadsheet import v_spreadsheet
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 3, 1)
 
 # Report template tags
 DESCRIPTION_TAG = '[description]'   # Description band
@@ -142,6 +142,26 @@ class iqReportTemplate(object):
             return True
         except:
             log_func.fatal(u'Error copy template [%d] columns from <%d> to <%d>' % (cols, src_col, dst_col))
+        return False
+
+    def hideRow(self, row=0):
+        """
+        Hide template row.
+
+        :param row: Row index.
+        :return: True/False.
+        """
+        try:
+            new_row = list()
+            # print('>>>', self._rep_template['sheet'][row])
+            for cell in self._rep_template['sheet'][row]:
+                new_cell = copy.deepcopy(cell)
+                new_cell['visible'] = False
+                new_row.append(new_cell)
+            self._rep_template['sheet'][row] = new_row
+            return True
+        except:
+            log_func.fatal(u'Error hide template row [%d]' % str(row))
         return False
 
     def copyRows(self, src_row=0, rows=1, dst_row=None):
@@ -1158,7 +1178,9 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             cell['height'] = cell_height
             # Visible
             cell['visible'] = True
-    
+            # Existing
+            cell['exist'] = True
+
             # Borders
             cell['border'] = self._getBordersStyle(cell_style)
             

@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 6, 1)
+__version__ = (0, 0, 7, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -121,6 +121,54 @@ def getStopYearDT(year=None):
     if year is None:
         year = getNowYear()
     return datetime.datetime(year=year, month=12, day=31, hour=23, minute=59, second=59, microsecond=999999)
+
+
+def getStartQuarterDT(quarter=None, year=None):
+    """
+    Get start quarter datetime.
+
+    :param quarter: Quarter number (1..4).
+    :param year: Year.
+    :return: Start quarter as datetime.
+    """
+    if quarter is None:
+        quarter = int(datetime.date.today().month / 3) + 1
+    if year is None:
+        year = datetime.date.today().year
+
+    if quarter == 1:
+        return datetime.datetime(year=year, month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+    elif quarter == 2:
+        return datetime.datetime(year=year, month=4, day=1, hour=0, minute=0, second=0, microsecond=0)
+    elif quarter == 3:
+        return datetime.datetime(year=year, month=7, day=1, hour=0, minute=0, second=0, microsecond=0)
+    elif quarter == 4:
+        return datetime.datetime(year=year, month=10, day=1, hour=0, minute=0, second=0, microsecond=0)
+    return None
+
+
+def getStopQuarterDT(quarter=None, year=None):
+    """
+    Get stop quarter datetime.
+
+    :param quarter: Quarter number (1..4).
+    :param year: Year.
+    :return: Stop quarter as datetime.
+    """
+    if quarter is None:
+        quarter = int(datetime.date.today().month / 3) + 1
+    if year is None:
+        year = datetime.date.today().year
+
+    if quarter == 1:
+        return datetime.datetime(year=year, month=3, day=31, hour=23, minute=59, second=59, microsecond=999999)
+    elif quarter == 2:
+        return datetime.datetime(year=year, month=6, day=30, hour=23, minute=59, second=59, microsecond=999999)
+    elif quarter == 3:
+        return datetime.datetime(year=year, month=9, day=30, hour=23, minute=59, second=59, microsecond=999999)
+    elif quarter == 4:
+        return datetime.datetime(year=year, month=12, day=31, hour=23, minute=59, second=59, microsecond=999999)
+    return None
 
 
 def getStartMonthDT(now=None):
