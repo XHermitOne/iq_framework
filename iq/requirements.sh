@@ -155,6 +155,9 @@ echo $IQ_PATH >> ~/.local/lib/python3.6/site-packages/iq.pth
 rm ~/.local/lib/python3.8/site-packages/iq.pth
 echo $IQ_PATH >> ~/.local/lib/python3.8/site-packages/iq.pth
 
+# Ubuntu 22.04
+rm ~/.local/lib/python3.10/site-packages/iq.pth
+echo $IQ_PATH >> ~/.local/lib/python3.10/site-packages/iq.pth
 
 echo
 echo " _     _____                                 _"
