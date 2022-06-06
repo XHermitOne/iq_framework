@@ -13,11 +13,13 @@ if global_func.isWXEngine():
 elif global_func.isQTEngine():
     _dlg_func = None
     log_func.warning(u'Dialog functions. Not support QT engine')
+elif global_func.isGTKEngine():
+    from ..engine.gtk.dlg import gtk_dlg_func as _dlg_func
 elif global_func.isCUIEngine():
     from ..engine.cui.dlg import cui_dlg_func as _dlg_func
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):

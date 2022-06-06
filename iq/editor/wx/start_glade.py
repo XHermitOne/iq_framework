@@ -151,9 +151,9 @@ def startGladeEditor(glade_filename, *args, **kwargs):
     """
     try:
         import gi
-        log_func.info(u'PyGObject version: %s' % str(gi.version_info))
+        log_func.info(u'GTK library version: %s' % gi.__version__)
     except ImportError:
-        log_func.warning(u'Not installed PyGObject library')
+        log_func.warning(u'Not installed GTK library')
         log_func.warning(u'For install: sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-appindicator3-0.1')
 
     app = wx.App()

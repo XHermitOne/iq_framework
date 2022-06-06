@@ -40,7 +40,7 @@ from iq.util import sys_func
 from iq import editor
 import iq
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 
 def main(*argv):
@@ -63,25 +63,30 @@ def main(*argv):
 
     mode = None
     runtime_mode = False
-    engine = global_data.DEFAULT_ENGINE_TYPE
+    engine = global_data.ENGINE_TYPE
     project = None
     username = None
     password = None
     res_filename = None
 
+    if any([arg in ('-h', '--help', '-?') for arg in args]):
+        log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
+        log_func.printColourText(__doc__, color=log_func.GREEN_COLOR_TEXT)
+        sys.exit(0)
+
+    if any([arg in ('-v', '--version') for arg in args]):
+        str_version = 'iqFramework %s' % '.'.join([str(sign) for sign in global_data.VERSION])
+        log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
+        log_func.printColourText(str_version, color=log_func.GREEN_COLOR_TEXT)
+        sys.exit(0)
+
+    log_func.printColourText('OPTIONS', color=log_func.CYAN_COLOR_TEXT)
     for option, arg in options:
-        if option in ('-h', '--help', '-?'):
-            log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
-            log_func.printColourText(__doc__, color=log_func.GREEN_COLOR_TEXT)
-            sys.exit(0)
-        elif option in ('-v', '--version'):
-            str_version = 'iqFramework %s' % '.'.join([str(sign) for sign in global_data.VERSION])
-            log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
-            log_func.printColourText(str_version, color=log_func.GREEN_COLOR_TEXT)
-            sys.exit(0)
-        elif option in ('-d', '--debug'):
+        if option in ('-d', '--debug'):
+            log_func.printColourText('\tDebug: ON', color=log_func.CYAN_COLOR_TEXT)
             global_func.setDebugMode()
         elif option in ('-l', '--log'):
+            log_func.printColourText('\tLog: ON', color=log_func.CYAN_COLOR_TEXT)
             global_func.setLogMode()
             log_func.init()
         elif option in ('--os',):
@@ -89,24 +94,30 @@ def main(*argv):
         elif option in ('--mode',):
             mode = arg.lower()
             runtime_mode = mode == iq.RUNTIME_MODE_STATE
+            log_func.printColourText('\tMode: %s' % mode, color=log_func.CYAN_COLOR_TEXT)
             global_func.setRuntimeMode(runtime_mode)
         elif option in ('--engine',):
             engine = arg
+            log_func.printColourText('\tEngine: %s' % engine, color=log_func.CYAN_COLOR_TEXT)
             global_func.setEngineType(engine)
         elif option in ('--prj',):
             project = arg
+            log_func.printColourText('\tProject: %s' % project, color=log_func.CYAN_COLOR_TEXT)
         elif option in ('--username',):
             username = arg
+            log_func.printColourText('\tUsername: %s' % username, color=log_func.CYAN_COLOR_TEXT)
         elif option in ('--password',):
             password = arg
         elif option in ('--res_filename',):
             res_filename = arg
+            log_func.printColourText('\tResource: %s' % res_filename, color=log_func.CYAN_COLOR_TEXT)
         else:
             log_func.warning(u'Not supported parameter <%s>' % option)
 
     start_time = time.time()
-    log_func.info(u'iqFramework <Engine: %s / Mode: %s / Path: %s>... START' % (engine, mode,
-                                                                                file_func.getFrameworkPath()))
+    log_func.info(u'iqFramework <Engine: %s / Mode: %s / Path: %s / IQ path: %s>... START' % (engine, mode,
+                                                                                              file_func.getFrameworkPath(),
+                                                                                              os.path.dirname(iq.__file__)))
 
     # Set system locale
     cur_locale = locale.getlocale()

@@ -20,7 +20,7 @@ from ..editor.gtk import glade_manager
 from ..editor.jasper_report import jasperreport_manager
 from ..editor.lime_report import limereport_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 
 def openFrameworkEditor():
@@ -31,8 +31,10 @@ def openFrameworkEditor():
     """
     if global_func.isWXEngine():
         from .wx import start_editor
-        start_editor.startEditor()
-        return True
+        return start_editor.startEditor()
+    elif global_func.isGTKEngine():
+        from .gtk import start_editor_window
+        return start_editor_window.startEditor()
     else:
         log_func.warning(u'Not supported engine as editor')
     return False
@@ -100,6 +102,71 @@ def _openResourceEditor(res_filename):
             res_filename = os.path.dirname(res_filename)
             if os.path.exists(res_filename):
                 return _openResourceEditor(res_filename)
+
+        else:
+            log_func.warning(u'Not support editing file <%s>' % res_filename)
+
+    elif global_func.isGTKEngine():
+        if os.path.isdir(res_filename) and res_filename == file_func.getFrameworkPath():
+            log_func.info(u'Main editor <%s>' % res_filename)
+            return openFrameworkEditor()
+
+        elif res_func.isResourceFile(res_filename):
+            log_func.info(u'Edit resource <%s>' % res_filename)
+            # from .wx.res_editor import resource_editor
+            # resource_editor.runResourceEditor(res_filename=res_filename)
+            return True
+
+        elif py_func.isPythonFile(res_filename):
+            log_func.info(u'Edit python file <%s>' % res_filename)
+            # from .wx import start_py
+            # return start_py.startPythonEditor(py_filename=res_filename)
+            return True
+
+        elif wxfb_manager.isWXFormBuilderProjectFile(res_filename):
+            log_func.info(u'Edit wxFormBuilder project <%s>' % res_filename)
+            # from .wx import start_wxfb
+            # return start_wxfb.startWXFormBuilderEditor(fbp_filename=res_filename)
+            return True
+
+        elif glade_manager.isGladeProjectFile(res_filename):
+            log_func.info(u'Edit Glade project <%s>' % res_filename)
+            from .gtk import start_glade_window
+            return start_glade_window.startGladeEditor(glade_filename=res_filename)
+
+        elif jasperreport_manager.isJasperReportProjectFile(res_filename):
+            log_func.info(u'Edit JasperReport project <%s>' % res_filename)
+            # from .wx import start_jasper_report
+            # return start_jasper_report.startJasperReportEditor(jrxml_filename=res_filename)
+            return True
+
+        elif limereport_manager.isLimeReportProjectFile(res_filename):
+            log_func.info(u'Edit LimeReport project <%s>' % res_filename)
+            # from .wx import start_lime_report
+            # return start_lime_report.startLimeReportEditor(lrxml_filename=res_filename)
+            return True
+
+        elif os.path.isdir(res_filename) and os.path.exists(os.path.join(res_filename, 'descript.ion')):
+            log_func.info(u'Design reports <%s>' % res_filename)
+            # # Report folder
+            # from iq_report import report_manager
+            # rep_manager = report_manager.getReportManager()
+            # rep_manager.setReportDir(report_dir=res_filename)
+            # return rep_manager.design()
+            return True
+
+        elif os.path.isdir(res_filename):
+            log_func.info(u'Edit folder <%s>' % res_filename)
+            # from .wx import start_folder_dialog
+            # return start_folder_dialog.startFolderEditor(folder_path=res_filename)
+            return True
+
+        elif not os.path.exists(res_filename):
+            # PyCharm
+            res_filename = os.path.dirname(res_filename)
+            if os.path.exists(res_filename):
+                return _openResourceEditor(res_filename)
+            return True
 
         else:
             log_func.warning(u'Not support editing file <%s>' % res_filename)

@@ -15,7 +15,7 @@ from ....util import xml2dict
 from ....util import txtfile_func
 from ....dialog import dlg_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 DEFAULT_SRC_CLASS_NAME = u'iqUnknown'
 
@@ -44,7 +44,7 @@ from iq.engine.gtk import gtk_handler
 __version__ = (0, 0, 0, 1)
 
 
-class %sHandler(gtk_handler.iqGtkHandler):
+class iq%s(gtk_handler.iqGtkHandler):
     """
     Unknown class.
     """
@@ -73,6 +73,7 @@ class %sHandler(gtk_handler.iqGtkHandler):
         """
         pass
 
+%s
 
 def open%s():
     """
@@ -82,7 +83,7 @@ def open%s():
     """
     handler = None
     try:
-        handler = %sHandler()
+        handler = iq%s()
         handler.init()
         handler.getGtkTopObject().show_all()
         return True
@@ -90,6 +91,14 @@ def open%s():
         log_func.fatal(u'Error open window <%s>')
     return False                    
 '''
+
+HANDLER_PY_MODULE_FMT = '''    def %s(self, widget):
+        """
+        """
+        pass
+'''
+
+DEFAULT_HANDLER_NAME = u'onUnknown'
 
 GTK_TOP_WINDOW_TYPES = ('GtkWindow',
                         'GtkOffscreenWindow',
@@ -156,6 +165,54 @@ def genPyModuleName(src_name):
     return dst_module_name
 
 
+def _getSignalHandler(signal_xml_content, sender_name='', sender_type=''):
+    """
+    Get signal handler.
+
+    :param signal_xml_content: Glade signal content.
+    :param sender_name: Sender object name.
+    :param sender_type: Sender class name.
+    """
+    if isinstance(signal_xml_content, (list, tuple)):
+        for i, signal in enumerate(signal_xml_content):
+            signal_xml_content[i]['sender_name'] = sender_name
+            signal_xml_content[i]['sender_type'] = sender_type
+        return signal_xml_content
+    elif isinstance(signal_xml_content, dict):
+        signal_xml_content['sender_name'] = sender_name
+        signal_xml_content['sender_type'] = sender_type
+        return [signal_xml_content]
+    else:
+        log_func.warning(u'Not parsed XML content object <%s>' % signal_xml_content)
+    return list()
+
+
+def _getSignalHandlers(object_xml_content):
+    """
+    Get signal handler list.
+
+    :param object_xml_content: Glade object tree.
+    """
+    signal_handlers = list()
+    if isinstance(object_xml_content, (list, tuple)):
+        for child in object_xml_content:
+            signal_handler = _getSignalHandlers(child)
+            signal_handlers += signal_handler
+    elif isinstance(object_xml_content, dict):
+        if 'signal' in object_xml_content:
+            signal_handler = _getSignalHandler(object_xml_content['signal'],
+                                               sender_name=object_xml_content.get('@id', ''),
+                                               sender_type=object_xml_content.get('@class', ''))
+            signal_handlers += signal_handler
+        if 'child' in object_xml_content:
+            for child in object_xml_content['child']:
+                signal_handler = _getSignalHandlers(child['object'] if 'object' in child else child)
+                signal_handlers += signal_handler
+    else:
+        log_func.warning(u'Not parsed XML content object <%s>' % object_xml_content)
+    return signal_handlers
+
+
 def gen(src_filename=None, dst_filename=None, src_name=None, parent=None, rewrite=False):
     """
     Generation of GUI frame python module by Glade project.
@@ -178,7 +235,19 @@ def gen(src_filename=None, dst_filename=None, src_name=None, parent=None, rewrit
 
         # Get Glade xml project file as dictionary
         glade_xml_content = xml2dict.convertXmlFile2Dict(src_filename)
-        glade_win = [dict(id=obj['@id'], classname=obj['@class']) for obj in glade_xml_content['interface']['object'] if obj.get('@class', None) in GTK_TOP_WINDOW_TYPES]
+        if isinstance(glade_xml_content['interface']['object'], (list, tuple)):
+            glade_win = [dict(id=obj['@id'], classname=obj['@class']) for obj in glade_xml_content['interface']['object'] if obj.get('@class', None) in GTK_TOP_WINDOW_TYPES]
+        elif isinstance(glade_xml_content['interface']['object'], dict):
+            obj = glade_xml_content['interface']['object']
+            glade_win = []
+            if obj.get('@class', None) in GTK_TOP_WINDOW_TYPES:
+                glade_win.append(dict(id=obj['@id'], classname=obj['@class']))
+        else:
+            log_func.warning(u'Not parsed XML content objects')
+            glade_win = []
+
+        signal_handlers = _getSignalHandlers(glade_xml_content['interface']['object'])
+        signal_handlers_txt = os.linesep.join([HANDLER_PY_MODULE_FMT % signal.get('@handler', DEFAULT_HANDLER_NAME) for signal in signal_handlers])
 
         if src_name is None:
             if len(glade_win) == 1:
@@ -208,13 +277,16 @@ def gen(src_filename=None, dst_filename=None, src_name=None, parent=None, rewrit
             log_func.info(u'Python file <%s> is deleted' % dst_filename)
 
         if not os.path.exists(dst_filename):
-            src_class_name = ''
+            src_class_name = str_func.replaceLower2Upper(src_name)
+            src_class_name = src_class_name[2:] if src_class_name.lower().startswith('iq') else src_class_name
+
             py_txt = EMPTY_PY_MODULE_FMT % (os.path.basename(dst_filename),
-                                            src_name,
+                                            src_class_name,
                                             os.path.basename(src_filename),
                                             src_name,
-                                            src_name[2:] if src_name.startswith('iq') else src_name,
-                                            src_name, src_name, src_name)
+                                            signal_handlers_txt,
+                                            src_class_name,
+                                            src_name, src_class_name, src_name)
             log_func.info(u'Save file <%s>' % dst_filename)
 
             result = txtfile_func.saveTextFile(dst_filename, txt=py_txt)

@@ -2,19 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """
-Manager for storing properties of wxPython forms.
+Manager for storing properties of GTK forms.
 """
 
-import wx
+import gi
+
+gi.require_version('Gtk', '3.0')
+import gi.repository.Gtk
 
 from .. import stored_ctrl_manager
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 1)
 
 
-class iqStoredWxFormsManager(stored_ctrl_manager.iqStoredCtrlManager):
+class iqStoredGtkFormsManager(stored_ctrl_manager.iqStoredCtrlManager):
     """
-    Manager for storing properties of wxPython forms.
+    Manager for storing properties of GTK forms.
     """
     def loadCustomProperties(self, save_filename=None):
         """
@@ -28,15 +31,14 @@ class iqStoredWxFormsManager(stored_ctrl_manager.iqStoredCtrlManager):
             width = var_data.get('width', -1)
             height = var_data.get('height', -1)
             if width > 0 and height > 0:
-                self.SetSize(wx.Size(width, height))
+                self.getGtkTopObject().resize(width, height)
 
             x = var_data.get('x', -1)
             y = var_data.get('y', -1)
             if x <= 0 and y <= 0:
-                if hasattr(self, 'Centre'):
-                    self.Centre()
+                self.getGtkTopObject().set_position(gi.repository.Gtk.WindowPosition.CENTER)
             else:
-                self.SetPosition(wx.Point(x, y))
+                self.move(x, y)
 
             return True
         return False
@@ -48,12 +50,11 @@ class iqStoredWxFormsManager(stored_ctrl_manager.iqStoredCtrlManager):
         :param save_filename: Stored file name.
         :return: True/False.
         """
-        size = self.GetSize()
-        width = size.GetWidth()
-        height = size.GetHeight()
-        pos = self.GetPosition()
+        size = self.getGtkTopObject().get_size()
+        width = size[0]
+        height = size[1]
+        pos = self.getGtkTopObject().get_position()
 
-        res = dict(width=width, height=height,
-                   x=pos.x, y=pos.y)
+        res = dict(width=width, height=height, x=pos[0], y=pos[1])
 
         return self.saveCustomData(save_filename=save_filename, save_data=res)
