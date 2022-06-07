@@ -146,7 +146,7 @@ class iqStartLimeReportEditorDialog(start_limereport_dlg.iqStartLimeReportEditor
                 self.EndModal(wx.ID_OK)
         else:
             dlg_func.openWarningBox(title=_(u'WARNING'),
-                                    prompt_text=u'JasperReport project file <%s> not found' % self.jrxml_filename)
+                                    prompt_text=u'LimeReport project file <%s> not found' % self.jrxml_filename)
         self.EndModal(wx.ID_CANCEL)
         event.Skip()
 
@@ -156,7 +156,7 @@ def openStartLimeReportEditorDialog(parent=None, lrxml_filename=None):
     Open dialog.
 
     :param parent: Parent window.
-    :param lrxml_filename: JRXML jasperReport project filename.
+    :param lrxml_filename: LRXML jasperReport project filename.
     :return: True/False.
     """
     dialog = None

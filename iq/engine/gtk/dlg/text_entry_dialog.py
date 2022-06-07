@@ -32,7 +32,7 @@ class iqTextEntryDialog(gtk_handler.iqGtkHandler):
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='text_entry_dialog',  
                                           *args, **kwargs)
-                                          
+
     def init(self):
         """
         Init form.
@@ -52,29 +52,57 @@ class iqTextEntryDialog(gtk_handler.iqGtkHandler):
         """
         pass
 
+    def setValue(self, text):
+        """
+        Set text value.
+
+        :param text: Text value.
+        """
+        self.getGtkTopObject().text_entry.set_value(text)
+
+    def getValue(self):
+        """
+        Get text value.
+
+        :return: Text value.
+        """
+        return self.getGtkTopObject().text_entry.get_value()
+
     def onCancelButtonClicked(self, widget):
         """
+        Cancel button click handler.
         """
-        pass
+        self.getGtkTopObject().close()
 
     def onOkButtonClicked(self, widget):
         """
+        OK button click handler.
         """
-        pass
+        self.getGtkTopObject().close()
 
 
-def openTextEntryDialog():
+def openTextEntryDialog(parent=None, title='', prompt_text='', default_value=''):
     """
     Open text_entry_dialog.
 
     :return: True/False.
     """
-    handler = None
+    result = None
+    dlg = None
     try:
-        handler = iqTextEntryDialog()
-        handler.init()
-        handler.getGtkTopObject().show_all()
-        return True
+        dlg = iqTextEntryDialog()
+        dlg.getGtkTopObject().set_title(title)
+        dlg.getGtkTopObject().prompt_text.set_label(prompt_text)
+        if default_value is None:
+            default_value = ''
+        dlg.setValue(str(default_value))
+        response = dlg.getGtkTopObject().run()
+
+        if response == gi.repository.Gtk.ResponseType.OK:
+            result = dlg.getValue()
     except:
         log_func.fatal(u'Error open window <text_entry_dialog>')
-    return False                    
+
+    if dlg and dlg.getGtkTopObject() is not None:
+        dlg.getGtkTopObject().destroy()
+    return result

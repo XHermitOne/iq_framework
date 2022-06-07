@@ -81,15 +81,19 @@ def open%s():
 
     :return: True/False.
     """
-    handler = None
+    result = False
+    obj = None
     try:
-        handler = iq%s()
-        handler.init()
-        handler.getGtkTopObject().show_all()
-        return True
+        obj = iq%s()
+        obj.init()
+        obj.getGtkTopObject().run()
+        result = True
     except:
         log_func.fatal(u'Error open window <%s>')
-    return False                    
+
+    if obj and obj.getGtkTopObject() is not None:
+        obj.getGtkTopObject().destroy()
+    return result                    
 '''
 
 HANDLER_PY_MODULE_FMT = '''    def %s(self, widget):
@@ -205,7 +209,8 @@ def _getSignalHandlers(object_xml_content):
                                                sender_type=object_xml_content.get('@class', ''))
             signal_handlers += signal_handler
         if 'child' in object_xml_content:
-            for child in object_xml_content['child']:
+            children = [object_xml_content['child']] if isinstance(object_xml_content['child'], dict) else object_xml_content['child']
+            for child in children:
                 signal_handler = _getSignalHandlers(child['object'] if 'object' in child else child)
                 signal_handlers += signal_handler
     else:

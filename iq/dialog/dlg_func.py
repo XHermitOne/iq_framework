@@ -8,18 +8,32 @@ Dialog functions module.
 from ..util import global_func
 from ..util import log_func
 
-if global_func.isWXEngine():
-    from ..engine.wx.dlg import wxdlg_func as _dlg_func
-elif global_func.isQTEngine():
+DIALOG_FUNCTION_MODULE = None
+
+__version__ = (0, 0, 2, 1)
+
+
+def _importDialogFunctions():
+    """
+    Check and import dialog function module.
+
+    :return: Dialog function module object or None if error.
+    """
     _dlg_func = None
-    log_func.warning(u'Dialog functions. Not support QT engine')
-elif global_func.isGTKEngine():
-    from ..engine.gtk.dlg import gtk_dlg_func as _dlg_func
-elif global_func.isCUIEngine():
-    from ..engine.cui.dlg import cui_dlg_func as _dlg_func
-
-
-__version__ = (0, 0, 1, 1)
+    if globals()['DIALOG_FUNCTION_MODULE'] is None:
+        if global_func.isWXEngine():
+            log_func.info(u'Dialog functions. Use WX engine')
+            from ..engine.wx.dlg import wxdlg_func as _dlg_func
+        elif global_func.isQTEngine():
+            log_func.warning(u'Dialog functions. Not support QT engine')
+        elif global_func.isGTKEngine():
+            log_func.info(u'Dialog functions. Use GTK engine')
+            from ..engine.gtk.dlg import gtk_dlg_func as _dlg_func
+        elif global_func.isCUIEngine():
+            log_func.info(u'Dialog functions. Use CUI engine')
+            from ..engine.cui.dlg import cui_dlg_func as _dlg_func
+        globals()['DIALOG_FUNCTION_MODULE'] = _dlg_func
+    return globals()['DIALOG_FUNCTION_MODULE']
 
 
 def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):
@@ -33,6 +47,8 @@ def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):
     :param default_path: Default path.
     :return: full name of the selected file or None в случае ошибки.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getFileDlg(parent=parent, title=title,
                                     wildcard_filter=wildcard_filter, default_path=default_path)
@@ -48,6 +64,8 @@ def getDirDlg(parent=None, title='', default_path=''):
     :param default_path: Default path.
     :return: Directory path or None if error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getDirDlg(parent=parent, title=title, default_path=default_path)
     return None
@@ -62,6 +80,8 @@ def getColorDlg(parent=None, title='', default_colour=None):
     :param default_colour: Default colour.
     :return: Selected colour or default_colour.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getColorDlg(parent=parent, title=title, default_colour=default_colour)
     return None
@@ -77,6 +97,8 @@ def getTextEntryDlg(parent=None, title='', prompt_text='', default_value=''):
     :param default_value: Default value.
     :return: Input text value or None if pressed cancel.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getTextEntryDlg(parent=parent, title=title,
                                          prompt_text=prompt_text, default_value=default_value)
@@ -91,6 +113,8 @@ def openAskBox(title='', prompt_text='', **kwargs):
     :param prompt_text: Dialog form prompt text.
     :return: True/False.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.openAskBox(title=title, prompt_text=prompt_text, **kwargs)
     return None
@@ -104,6 +128,8 @@ def openMsgBox(title='', prompt_text='', **kwargs):
     :param prompt_text: Dialog form prompt text.
     :return: Pressed button code wx.YES or wx.NO or None if error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.openMsgBox(title=title, prompt_text=prompt_text, **kwargs)
     return None
@@ -117,6 +143,8 @@ def openErrBox(title='', prompt_text='', **kwargs):
     :param prompt_text: Dialog form prompt text.
     :return: Pressed button code wx.YES or wx.NO or None if error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.openErrBox(title=title, prompt_text=prompt_text, **kwargs)
     return None
@@ -130,6 +158,8 @@ def openFatalBox(title='', prompt_text='', **kwargs):
     :param prompt_text: Dialog form prompt text.
     :return: Pressed button code wx.YES or wx.NO or None if error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.openFatalBox(title=title, prompt_text=prompt_text, **kwargs)
     return None
@@ -143,6 +173,8 @@ def openWarningBox(title='', prompt_text='', **kwargs):
     :param prompt_text: Dialog form prompt text.
     :return: Pressed button code wx.YES or wx.NO or None if error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.openWarningBox(title=title, prompt_text=prompt_text, **kwargs)
     return None
@@ -160,6 +192,8 @@ def getSingleChoiceDlg(parent=None, title='', prompt_text='', choices=(),
     :param default_idx: Default selected line index.
     :return: Selected text or None if pressed cancel.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getSingleChoiceDlg(parent=parent, title=title, prompt_text=prompt_text,
                                             choices=choices, default_idx=default_idx)
@@ -178,6 +212,8 @@ def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=(),
     :param default_idx: Default selected line index.
     :return: Selected line index or -1 if pressed cancel.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getSingleChoiceIdxDlg(parent=parent, title=title, prompt_text=prompt_text,
                                                choices=choices, default_idx=default_idx)
@@ -194,6 +230,8 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
     :param choices: List of selection lines as tuple in format ((True/False, 'line text'),...).
     :return: Selected choices as tuple ((True/False, 'line text'),...).
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getMultiChoiceDlg(parent=parent, title=title, prompt_text=prompt_text, choices=choices)
     return None
@@ -212,6 +250,8 @@ def openProgressDlg(parent=None, title='', prompt_text='',
     :param style: Dialog style.
     :return: Progress bar dialog object or None is error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.openProgressDlg(parent=parent, title=title, prompt_text=prompt_text,
                                          min_value=min_value, max_value=max_value, style=style)
@@ -226,6 +266,8 @@ def updateProgressDlg(value=-1, new_prompt_text=''):
     :param new_prompt_text: New dialog form prompt text.
     :return: True/False.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.updateProgressDlg(value=value, new_prompt_text=new_prompt_text)
     return None
@@ -239,6 +281,8 @@ def stepProgressDlg(step_value=1, new_prompt_text=u''):
     :param new_prompt_text: New dialog form prompt text.
     :return: True/False.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.stepProgressDlg(step_value=step_value, new_prompt_text=new_prompt_text)
     return None
@@ -248,6 +292,8 @@ def closeProgressDlg():
     """
     Close progress bar dialog.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.closeProgressDlg()
     return None
@@ -264,6 +310,8 @@ def getStrComboBoxDlg(parent=None, title='', prompt_text='', choices=None, defau
     :param default: Default string.
     :return: Selected or input string or None if error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getStrComboBoxDlg(parent=parent, title=title, prompt_text=prompt_text,
                                            choices=choices, default=default)
@@ -279,6 +327,8 @@ def openAboutDlg(parent=None, title='', prompt_text='', logo_bitmap=None):
     :param prompt_text: Dialog form prompt text.
     :param logo_bitmap: Logo as wx.Bitmap object.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.openAboutDlg(parent=parent, title=title, prompt_text=prompt_text, logo_bitmap=logo_bitmap)
     return None
@@ -295,6 +345,8 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None, user
     :param user_descriptions: User description list.
     :return: Tuple: (username, password, password hash) or None if error.
     """
+    _dlg_func = _importDialogFunctions()
+
     if _dlg_func:
         return _dlg_func.getLoginDlg(parent=parent, title=title,
                                      default_username=default_username,

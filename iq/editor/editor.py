@@ -125,9 +125,8 @@ def _openResourceEditor(res_filename):
 
         elif wxfb_manager.isWXFormBuilderProjectFile(res_filename):
             log_func.info(u'Edit wxFormBuilder project <%s>' % res_filename)
-            # from .wx import start_wxfb
-            # return start_wxfb.startWXFormBuilderEditor(fbp_filename=res_filename)
-            return True
+            from .gtk import start_wxfb_window
+            return start_wxfb_window.startWxFormBuilderEditor(fbp_filename=res_filename)
 
         elif glade_manager.isGladeProjectFile(res_filename):
             log_func.info(u'Edit Glade project <%s>' % res_filename)
@@ -157,9 +156,8 @@ def _openResourceEditor(res_filename):
 
         elif os.path.isdir(res_filename):
             log_func.info(u'Edit folder <%s>' % res_filename)
-            # from .wx import start_folder_dialog
-            # return start_folder_dialog.startFolderEditor(folder_path=res_filename)
-            return True
+            from .gtk import start_folder_window
+            return start_folder_window.startFolderEditor(folder_path=res_filename)
 
         elif not os.path.exists(res_filename):
             # PyCharm

@@ -20,6 +20,7 @@ from ....util import lang_func
 # from .. import wxbitmap_func
 
 # from . import login_dialog_proto
+from . import text_entry_dialog
 
 __version__ = (0, 0, 1, 1)
 
@@ -150,20 +151,8 @@ def getTextEntryDlg(parent=None, title='', prompt_text='', default_value=''):
     :param default_value: Default value.
     :return: Input text value or None if pressed cancel.
     """
-    dlg = None
-    try:
-        dlg = wx.TextEntryDialog(parent, prompt_text, title)
-        if default_value is None:
-            default_value = ''
-        dlg.SetValue(str(default_value))
-        if dlg.ShowModal() == wx.ID_OK:
-            txt = dlg.GetValue()
-            return txt
-    finally:
-        if dlg:
-            dlg.Destroy()
-
-    return None
+    return text_entry_dialog.openTextEntryDialog(parent=parent, title=title,
+                                                 prompt_text=prompt_text, default_value=default_value)
 
 
 def getAskDlg(title='', prompt_text='', style=None):
@@ -173,13 +162,25 @@ def getAskDlg(title='', prompt_text='', style=None):
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
     :param style: Dialog form style.
-    :return: wx.YES or wx.NO or None if error.
+    :return: YES or NO or None if error.
     """
+    result = None
+    dlg = None
     try:
-        return wx.MessageBox(prompt_text, title, style=style)
+        dlg = gi.repository.Gtk.MessageDialog(transient_for=None,
+                                              flags=0,
+                                              message_type=gi.repository.Gtk.MessageType.QUESTION,
+                                              buttons=gi.repository.Gtk.ButtonsType.YES_NO,
+                                              text=title)
+        dlg.format_secondary_text(prompt_text)
+        response = dlg.run()
+        result = response
     except:
         log_func.fatal(u'Error ask dialog')
-    return None
+
+    if dlg is not None:
+        dlg.destroy()
+    return result
 
 
 def openAskBox(*args, **kwargs):
@@ -188,7 +189,7 @@ def openAskBox(*args, **kwargs):
 
     :return: True/False.
     """
-    return getAskDlg(*args, **kwargs) == wx.YES
+    return getAskDlg(*args, **kwargs) == gi.repository.Gtk.ResponseType.YES
 
 
 def openMsgBox(title='', prompt_text='', **kwargs):
@@ -197,13 +198,26 @@ def openMsgBox(title='', prompt_text='', **kwargs):
 
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
-    :return: Pressed button code wx.YES or wx.NO or None if error.
+    :return: Pressed button code YES or NO or None if error.
     """
+    result = None
+    dlg = None
     try:
-        return wx.MessageBox(prompt_text, title, style=wx.OK, **kwargs)
+        dlg = gi.repository.Gtk.MessageDialog(transient_for=None,
+                                              flags=0,
+                                              message_type=gi.repository.Gtk.MessageType.INFO,
+                                              buttons=gi.repository.Gtk.ButtonsType.OK,
+                                              text=title,
+                                              **kwargs)
+        dlg.format_secondary_text(prompt_text)
+        response = dlg.run()
+        result = response == gi.repository.Gtk.ResponseType.OK
     except:
         log_func.fatal(u'Error open message box')
-    return None
+
+    if dlg is not None:
+        dlg.destroy()
+    return result
 
 
 def openErrBox(title='', prompt_text='', **kwargs):
@@ -212,13 +226,26 @@ def openErrBox(title='', prompt_text='', **kwargs):
 
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
-    :return: Pressed button code wx.YES or wx.NO or None if error.
+    :return: Pressed button code YES or NO or None if error.
     """
+    result = None
+    dlg = None
     try:
-        return wx.MessageBox(prompt_text, title, style=wx.OK | wx.ICON_ERROR, **kwargs)
+        dlg = gi.repository.Gtk.MessageDialog(transient_for=None,
+                                              flags=0,
+                                              message_type=gi.repository.Gtk.MessageType.ERROR,
+                                              buttons=gi.repository.Gtk.ButtonsType.OK,
+                                              text=title,
+                                              **kwargs)
+        dlg.format_secondary_text(prompt_text)
+        response = dlg.run()
+        result = response == gi.repository.Gtk.ResponseType.OK
     except:
         log_func.fatal(u'Open error message box')
-    return None
+
+    if dlg is not None:
+        dlg.destroy()
+    return result
 
 
 def openFatalBox(title='', prompt_text='', **kwargs):
@@ -227,7 +254,7 @@ def openFatalBox(title='', prompt_text='', **kwargs):
 
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
-    :return: Pressed button code wx.YES or wx.NO or None if error.
+    :return: Pressed button code YES or NO or None if error.
     """
     trace_txt = traceback.format_exc()
     txt = prompt_text + trace_txt
@@ -240,13 +267,26 @@ def openWarningBox(title='', prompt_text='', **kwargs):
 
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
-    :return: Pressed button code wx.YES or wx.NO or None if error.
+    :return: Pressed button code YES or NO or None if error.
     """
+    result = None
+    dlg = None
     try:
-        return wx.MessageBox(prompt_text, title, style=wx.OK | wx.ICON_WARNING, **kwargs)
+        dlg = gi.repository.Gtk.MessageDialog(transient_for=None,
+                                              flags=0,
+                                              message_type=gi.repository.Gtk.MessageType.WARNING,
+                                              buttons=gi.repository.Gtk.ButtonsType.OK,
+                                              text=title,
+                                              **kwargs)
+        dlg.format_secondary_text(prompt_text)
+        response = dlg.run()
+        result = response == gi.repository.Gtk.ResponseType.OK
     except:
         log_func.fatal(u'Error open warning message box')
-    return None
+
+    if dlg is not None:
+        dlg.destroy()
+    return result
 
 
 def getSingleChoiceDlg(parent=None, title='', prompt_text='', choices=(),

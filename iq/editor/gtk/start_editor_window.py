@@ -32,7 +32,7 @@ __version__ = (0, 0, 0, 1)
 class iqStartEditorWindow(gtk_handler.iqGtkHandler,
                           stored_gtk_form_manager.iqStoredGtkFormsManager):
     """
-    Unknown class.
+    Start edit project window class.
     """
     def __init__(self, *args, **kwargs):
         self.glade_filename = os.path.join(os.path.dirname(__file__), 'start_editor_win.glade')
@@ -135,15 +135,20 @@ def openStartEditorWindow():
 
     :return: True/False.
     """
-    handler = None
+    result = False
+    win = None
     try:
-        handler = iqStartEditorWindow()
-        handler.init()
-        handler.getGtkTopObject().show_all()
-        return True
+        win = iqStartEditorWindow()
+        win.init()
+        win.getGtkTopObject().run()
+        result = True
     except:
         log_func.fatal(u'Error open window <start_editor_window>')
-    return False                    
+
+    if win and win.getGtkTopObject() is not None:
+        win.getGtkTopObject().destroy()
+
+    return result
 
 
 def startEditor():
@@ -153,8 +158,21 @@ def startEditor():
     :return: True/False.
     """
     log_func.info(u'GTK library version: %s' % gi.__version__)
-    result = openStartEditorWindow()
+
+    result = False
+    win = None
+    try:
+        win = iqStartEditorWindow()
+        win.init()
+        win.getGtkTopObject().show_all()
+        result = True
+    except:
+        log_func.fatal(u'Error open window <start_editor_window>')
+
     gi.repository.Gtk.main()
+
+    if win and win.getGtkTopObject() is not None:
+        win.getGtkTopObject().destroy()
     return result
 
 

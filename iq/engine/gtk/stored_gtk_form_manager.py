@@ -38,7 +38,7 @@ class iqStoredGtkFormsManager(stored_ctrl_manager.iqStoredCtrlManager):
             if x <= 0 and y <= 0:
                 self.getGtkTopObject().set_position(gi.repository.Gtk.WindowPosition.CENTER)
             else:
-                self.move(x, y)
+                self.getGtkTopObject().move(x, y)
 
             return True
         return False
