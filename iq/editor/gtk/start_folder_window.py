@@ -50,6 +50,11 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='start_folder_window',  
                                           *args, **kwargs)
+
+        # eventbox = gi.repository.Gtk.EventBox()
+        # eventbox.connect('button-press-event', self.onNewButtonClicked())
+        # box.pack_start(eventbox, True, True, 0)
+
         self.folder_path = None
 
         self.loadCustomProperties()
@@ -71,7 +76,11 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
         """
         Init controls method.
         """
-        pass
+        if self.folder_path:
+            folder_basename = os.path.basename(self.folder_path)
+            prj_basename = folder_basename + res_func.RESOURCE_FILE_EXT
+            prj_filename = os.path.join(self.folder_path, prj_basename)
+            self.getGtkObject('run_project_button').set_sensitive(os.path.exists(prj_filename))
 
     def onDestroy(self, widget):
         """
@@ -88,58 +97,59 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
         selected_prj_name = os.path.basename(self.folder_path) if self.folder_path else None
         project_manager.run(selected_prj_name)
 
-        gi.repository.Gtk.main_quit()
+        self.getGtkTopObject().close()
 
-    def onNewButtonClicked(self, widget):
-        """
-        New button click handler.
-        """
-        try:
-            menu = self.createNewMenu()
-            menu.popup()
-            menu.destroy()
-        except:
-            log_func.fatal(u'Error New menu popup')
+    # def onNewButtonClicked(self, widget):
+    #     """
+    #     New button click handler.
+    #     """
+    #     try:
+    #         menu = self.createNewMenu()
+    #         menu.show_all()
+    #                    # gi.repository.Gtk.get_current_event_time())
+    #         menu.destroy()
+    #     except:
+    #         log_func.fatal(u'Error New menu popup')
+    #
+    #     # self.getGtkTopObject().close()
 
-        gi.repository.Gtk.main_quit()
+    # def createNewMenu(self):
+    #     """
+    #     Create New menu.
+    #
+    #     :return: Menu object.
+    #     """
+    #     new_menu = gi.repository.Gtk.Menu()
+    #
+    #     menuitem_label = _(u'New resource')
+    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
+    #     new_menu.append(menuitem)
+    #     menuitem.connect('select', self.onNewResMenuItem)
+    #     new_menu.append(gi.repository.Gtk.SeparatorMenuItem())
+    #
+    #     menuitem_label = _(u'New wxFormBuilder project')
+    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
+    #     new_menu.append(menuitem)
+    #     menuitem.connect('select', self.onNewWXFBMenuItem)
+    #
+    #     menuitem_label = _(u'New Glade project')
+    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
+    #     new_menu.append(menuitem)
+    #     menuitem.connect('select', self.onNewGladeMenuItem)
+    #
+    #     menuitem_label = _(u'New JasperReport report')
+    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
+    #     new_menu.append(menuitem)
+    #     menuitem.connect('select', self.onNewJasperReportMenuItem)
+    #
+    #     menuitem_label = _(u'New LimeReport report')
+    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
+    #     new_menu.append(menuitem)
+    #     menuitem.connect('select', self.onNewLimeReportMenuItem)
+    #
+    #     return new_menu
 
-    def createNewMenu(self):
-        """
-        Create New menu.
-
-        :return: Menu object.
-        """
-        new_menu = gi.repository.Gtk.Menu()
-
-        menuitem_label = _(u'New resource')
-        menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-        new_menu.append(menuitem)
-        menuitem.connect('select', self.onNewResMenuItem)
-        new_menu.append(gi.repository.Gtk.SeparatorMenuItem())
-
-        menuitem_label = _(u'New wxFormBuilder project')
-        menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-        new_menu.append(menuitem)
-        menuitem.connect('select', self.onNewWXFBMenuItem)
-
-        menuitem_label = _(u'New Glade project')
-        menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-        new_menu.append(menuitem)
-        menuitem.connect('select', self.onNewGladeMenuItem)
-
-        menuitem_label = _(u'New JasperReport report')
-        menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-        new_menu.append(menuitem)
-        menuitem.connect('select', self.onNewJasperReportMenuItem)
-
-        menuitem_label = _(u'New LimeReport report')
-        menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-        new_menu.append(menuitem)
-        menuitem.connect('select', self.onNewLimeReportMenuItem)
-
-        return new_menu
-
-    def onNewResMenuItem(self, widget):
+    def onNewResourceButtonClicked(self, widget):
         """
         Menu item handler <New resource>.
         """
@@ -153,21 +163,21 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
         if res_filename is not None:
             resource_editor.openResourceEditor(res_filename=res_filename)
 
-    def onNewWXFBMenuItem(self, widget):
+    def onNewWxFBButtonClicked(self, widget):
         """
         Menu item handler <New wxFormBuilder project>.
         """
         wxfb_manager.runWXFormBuilder()
         self.getGtkTopObject().close()
 
-    def onNewGladeMenuItem(self, widget):
+    def onNewGladeButtonClicked(self, widget):
         """
         Menu item handler <New Glade project>.
         """
         glade_manager.runGlade()
         self.getGtkTopObject().close()
 
-    def onNewJasperReportMenuItem(self, widget):
+    def onNewJasperReportButtonClicked(self, widget):
         """
         Menu item handler <New JasperReport project>.
         """
@@ -186,7 +196,7 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
                                         prompt_text=_(u'Error create JasperReport file') + ' <%s>' % new_prj_filename)
                 self.getGtkTopObject().close()
 
-    def onNewLimeReportMenuItem(self, widget):
+    def onNewLimeReportButtonClicked(self, widget):
         """
         Menu item handler <New LimeReport project>.
         """
@@ -218,7 +228,7 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
         self.getGtkTopObject().close()
 
 
-def openStartFolderWindow():
+def openStartFolderWindow(parent=None, folder_path=None):
     """
     Open start_folder_window.
 
@@ -228,6 +238,8 @@ def openStartFolderWindow():
     obj = None
     try:
         obj = iqStartFolderWindow()
+        new_title = _(u'Project folder/package') + ' <%s>' % os.path.basename(folder_path)
+        obj.getGtkTopObject().set_title(new_title)
         obj.init()
         obj.getGtkTopObject().run()
         result = True
@@ -253,6 +265,8 @@ def startFolderEditor(folder_path=None):
     try:
         win = iqStartFolderWindow()
         win.folder_path = folder_path
+        new_title = _(u'Project folder/package') + ' <%s>' % os.path.basename(folder_path)
+        win.getGtkTopObject().set_title(new_title)
         win.init()
         win.getGtkTopObject().show_all()
         result = True

@@ -15,6 +15,7 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from iq.util import log_func
+from iq.util import lang_func
 from iq.dialog import dlg_func
 
 from iq.engine.gtk import gtk_handler
@@ -28,6 +29,8 @@ from iq.engine.gtk import stored_gtk_form_manager
 
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqStartGladeWindow(gtk_handler.iqGtkHandler,
@@ -139,7 +142,7 @@ def openStartGladeWindow(glade_filename, *args, **kwargs):
     try:
         win = iqStartGladeWindow()
         win.glade_filename = glade_filename
-        new_title = u'Glade project <%s>' % os.path.basename(glade_filename)
+        new_title = _(u'Glade project') + ' <%s>' % os.path.basename(glade_filename)
         win.getGtkTopObject().set_title(new_title)
         win.init()
         win.getGtkTopObject().run()
@@ -165,7 +168,7 @@ def startGladeEditor(glade_filename, *args, **kwargs):
     try:
         win = iqStartGladeWindow()
         win.glade_filename = glade_filename
-        new_title = u'Glade project <%s>' % os.path.basename(glade_filename)
+        new_title = _(u'Glade project') + ' <%s>' % os.path.basename(glade_filename)
         win.getGtkTopObject().set_title(new_title)
         win.init()
         win.getGtkTopObject().show_all()

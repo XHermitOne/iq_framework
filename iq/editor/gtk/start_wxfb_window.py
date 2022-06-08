@@ -15,6 +15,7 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from iq.util import log_func
+from iq.util import lang_func
 
 from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
@@ -27,6 +28,8 @@ from ..wx import wxfb_manager
 from ...engine.gtk import stored_gtk_form_manager
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqStartWxFBWindow(gtk_handler.iqGtkHandler,
@@ -128,6 +131,8 @@ def openStartWxfbWindow(parent=None, fbp_filename=None):
     try:
         obj = iqStartWxFBWindow()
         obj.fbp_filename = fbp_filename
+        new_title = _(u'wxFormBuider project') + ' <%s>' % os.path.basename(fbp_filename)
+        obj.getGtkTopObject().set_title(new_title)
         obj.init()
         obj.getGtkTopObject().run()
         result = True
@@ -153,6 +158,8 @@ def startWxFormBuilderEditor(fbp_filename, *args, **kwargs):
     try:
         win = iqStartWxFBWindow()
         win.fbp_filename = fbp_filename
+        new_title = _(u'wxFormBuider project') + ' <%s>' % os.path.basename(fbp_filename)
+        win.getGtkTopObject().set_title(new_title)
         win.init()
         win.getGtkTopObject().show_all()
         result = True

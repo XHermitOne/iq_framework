@@ -119,9 +119,8 @@ def _openResourceEditor(res_filename):
 
         elif py_func.isPythonFile(res_filename):
             log_func.info(u'Edit python file <%s>' % res_filename)
-            # from .wx import start_py
-            # return start_py.startPythonEditor(py_filename=res_filename)
-            return True
+            from .gtk import start_py_window
+            return start_py_window.startPythonEditor(py_filename=res_filename)
 
         elif wxfb_manager.isWXFormBuilderProjectFile(res_filename):
             log_func.info(u'Edit wxFormBuilder project <%s>' % res_filename)
@@ -141,9 +140,8 @@ def _openResourceEditor(res_filename):
 
         elif limereport_manager.isLimeReportProjectFile(res_filename):
             log_func.info(u'Edit LimeReport project <%s>' % res_filename)
-            # from .wx import start_lime_report
-            # return start_lime_report.startLimeReportEditor(lrxml_filename=res_filename)
-            return True
+            from .gtk import start_limereport_window
+            return start_limereport_window.startLimeReportEditor(lrxml_filename=res_filename)
 
         elif os.path.isdir(res_filename) and os.path.exists(os.path.join(res_filename, 'descript.ion')):
             log_func.info(u'Design reports <%s>' % res_filename)

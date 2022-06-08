@@ -150,7 +150,7 @@
             <property name="margin_right">5</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">5</property>
-            <property name="stock">gtk-go-forward</property>
+            <property name="stock">gtk-media-play</property>
           </object>
           <packing>
             <property name="left_attach">0</property>

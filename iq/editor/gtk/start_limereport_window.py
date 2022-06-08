@@ -157,6 +157,8 @@ def openStartLimereportWindow(parent=None, lrxml_filename=None):
     try:
         obj = iqStartLimereportWindow()
         obj.lrxml_filename = lrxml_filename
+        new_title = _(u'LimeReport project') + ' <%s>' % os.path.basename(lrxml_filename)
+        obj.getGtkTopObject().set_title(new_title)
         obj.init()
         obj.getGtkTopObject().run()
         result = True
@@ -182,6 +184,8 @@ def startLimeReportEditor(lrxml_filename, *args, **kwargs):
     try:
         win = iqStartLimereportWindow()
         win.lrxml_filename = lrxml_filename
+        new_title = _(u'LimeReport project') + ' <%s>' % os.path.basename(lrxml_filename)
+        win.getGtkTopObject().set_title(new_title)
         win.init()
         win.getGtkTopObject().show_all()
         result = True
