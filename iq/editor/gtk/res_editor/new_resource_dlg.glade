@@ -2,12 +2,19 @@
 <!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="select_image">
+    <property name="name">select_image</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-go-forward</property>
+  </object>
   <object class="GtkDialog" id="new_resource_dialog">
     <property name="name">new_resource_dialog</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Create new resource</property>
     <property name="default_width">520</property>
     <property name="type_hint">dialog</property>
+    <signal name="destroy" handler="onDestroy" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
     </child>
@@ -63,11 +70,11 @@
             <property name="can_focus">False</property>
             <property name="spacing">5</property>
             <child>
-              <object class="GtkImage">
+              <object class="GtkImage" id="component_image">
+                <property name="name">component_image</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="stock">gtk-missing-image</property>
-                <property name="icon_size">3</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -88,7 +95,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="component_entry">
+                <property name="name">component_entry</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
@@ -100,12 +108,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">...</property>
+              <object class="GtkButton" id="select_component_button">
+                <property name="name">select_component_button</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="onComponentButtonClicked" swapped="no"/>
+                <property name="image">select_image</property>
+                <signal name="clicked" handler="gtk_main_quit" swapped="no"/>
+                <signal name="event" handler="onSelectComponentButtonClicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -138,7 +148,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="name_entry">
+                <property name="name">name_entry</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
@@ -174,10 +185,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkFileChooserButton">
+              <object class="GtkFileChooserButton" id="path_chooser_button">
+                <property name="name">path_chooser_button</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
+                <property name="action">select-folder</property>
                 <property name="title" translatable="yes"/>
               </object>
               <packing>

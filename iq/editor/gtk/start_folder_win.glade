@@ -8,17 +8,17 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">../../icons/glade.png</property>
   </object>
-  <object class="GtkImage" id="jasper_image">
-    <property name="name">jasper_image</property>
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">../../icons/fatcow/report.png</property>
-  </object>
   <object class="GtkImage" id="lime_image">
     <property name="name">lime_image</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">../../icons/fatcow/fruit_lime.png</property>
+  </object>
+  <object class="GtkImage" id="report_image">
+    <property name="name">report_image</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">../../icons/fatcow/report.png</property>
   </object>
   <object class="GtkImage" id="resource_image">
     <property name="visible">True</property>
@@ -31,112 +31,79 @@
     <property name="can_focus">False</property>
     <property name="pixbuf">../../icons/wxformbuilder.png</property>
   </object>
-  <object class="GtkPopover" id="new_popover">
-    <property name="name">new_popover</property>
+  <object class="GtkMenu" id="new_menu">
+    <property name="name">new_menu</property>
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="constrain_to">none</property>
+    <property name="menu_type_hint">dnd</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkImageMenuItem" id="new_resource_menuitem">
+        <property name="label" translatable="yes">New resource</property>
+        <property name="name">new_resource_menuitem</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">5</property>
-        <child>
-          <object class="GtkButton" id="new_resource_button">
-            <property name="label" translatable="yes">New resource</property>
-            <property name="name">new_resource_button</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">resource_image</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="onNewResourceButtonClicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="new_wxfb_button">
-            <property name="label" translatable="yes">New wxFormBuilder project</property>
-            <property name="name">new_wxfb_button</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">wxfb_image</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="onNewWxFBButtonClicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="new_glade_button">
-            <property name="label" translatable="yes">New Glade project</property>
-            <property name="name">new_glade_button</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">glade_image</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="onNewGladeButtonClicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="new_jasperreport_button">
-            <property name="label" translatable="yes">New JasperReport report</property>
-            <property name="name">new_jasperreport_button</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">jasper_image</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="onNewJasperReportButtonClicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="new_limereport_button">
-            <property name="label" translatable="yes">New LimeReport report</property>
-            <property name="name">new_limereport_button</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">lime_image</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="onNewLimeReportButtonClicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">5</property>
-          </packing>
-        </child>
+        <property name="tooltip_text" translatable="yes">New resource</property>
+        <property name="image">resource_image</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="onNewResourceMenuItemActivate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="new_wxfb_menuitem">
+        <property name="label" translatable="yes">New wxFormBuilder project</property>
+        <property name="name">new_wxfb_menuitem</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">New wxFormBuilder project</property>
+        <property name="image">wxfb_image</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="onNewWxFBMenuItemActivate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="new_glade_menuitem">
+        <property name="label" translatable="yes">New Glade project</property>
+        <property name="name">new_glade_menuitem</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">New Glade project</property>
+        <property name="image">glade_image</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="onNewGladeMenuItemActivate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="new_jasperreport_menuitem">
+        <property name="label" translatable="yes">New JasperReport project</property>
+        <property name="name">new_jasperreport_menuitem</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">New JasperReport project</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="onNewJasperReportMenuItemActivate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="new_limereport_menuitem">
+        <property name="label" translatable="yes">New LimeReport project</property>
+        <property name="name">new_limereport_menuitem</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">New LimeReport project</property>
+        <property name="image">lime_image</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="onNewLimeReportMenuItemActivate" swapped="no"/>
       </object>
     </child>
   </object>
@@ -145,7 +112,6 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Project folder/package</property>
     <property name="default_width">450</property>
-    <property name="default_height">300</property>
     <property name="icon">../../icons/python_folder.png</property>
     <signal name="destroy" handler="onDestroy" swapped="no"/>
     <child type="titlebar">
@@ -276,7 +242,8 @@
             <property name="focus_on_click">False</property>
             <property name="receives_default">True</property>
             <property name="hexpand">True</property>
-            <property name="popover">new_popover</property>
+            <property name="popup">new_menu</property>
+            <property name="use_popover">False</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
@@ -288,6 +255,115 @@
           <packing>
             <property name="left_attach">1</property>
             <property name="top_attach">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopover" id="new_popover">
+    <property name="name">new_popover</property>
+    <property name="can_focus">False</property>
+    <property name="constrain_to">none</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <child>
+          <object class="GtkButton" id="new_resource_button">
+            <property name="label" translatable="yes">New resource</property>
+            <property name="name">new_resource_button</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">resource_image</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="onNewResourceButtonClicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="new_wxfb_button">
+            <property name="label" translatable="yes">New wxFormBuilder project</property>
+            <property name="name">new_wxfb_button</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">wxfb_image</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="onNewWxFBButtonClicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="new_glade_button">
+            <property name="label" translatable="yes">New Glade project</property>
+            <property name="name">new_glade_button</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">glade_image</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="onNewGladeButtonClicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="new_jasperreport_button">
+            <property name="label" translatable="yes">New JasperReport report</property>
+            <property name="name">new_jasperreport_button</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">report_image</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="onNewJasperReportButtonClicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="new_limereport_button">
+            <property name="label" translatable="yes">New LimeReport report</property>
+            <property name="name">new_limereport_button</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">lime_image</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="onNewLimeReportButtonClicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>

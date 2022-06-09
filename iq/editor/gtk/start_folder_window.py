@@ -35,6 +35,8 @@ from ..jasper_report import jasperreport_manager
 from ..lime_report import limereport_manager
 from . import glade_manager
 
+from .res_editor import new_resource_dialog
+
 __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
@@ -50,10 +52,6 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='start_folder_window',  
                                           *args, **kwargs)
-
-        # eventbox = gi.repository.Gtk.EventBox()
-        # eventbox.connect('button-press-event', self.onNewButtonClicked())
-        # box.pack_start(eventbox, True, True, 0)
 
         self.folder_path = None
 
@@ -99,69 +97,19 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
 
         self.getGtkTopObject().close()
 
-    # def onNewButtonClicked(self, widget):
-    #     """
-    #     New button click handler.
-    #     """
-    #     try:
-    #         menu = self.createNewMenu()
-    #         menu.show_all()
-    #                    # gi.repository.Gtk.get_current_event_time())
-    #         menu.destroy()
-    #     except:
-    #         log_func.fatal(u'Error New menu popup')
-    #
-    #     # self.getGtkTopObject().close()
-
-    # def createNewMenu(self):
-    #     """
-    #     Create New menu.
-    #
-    #     :return: Menu object.
-    #     """
-    #     new_menu = gi.repository.Gtk.Menu()
-    #
-    #     menuitem_label = _(u'New resource')
-    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-    #     new_menu.append(menuitem)
-    #     menuitem.connect('select', self.onNewResMenuItem)
-    #     new_menu.append(gi.repository.Gtk.SeparatorMenuItem())
-    #
-    #     menuitem_label = _(u'New wxFormBuilder project')
-    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-    #     new_menu.append(menuitem)
-    #     menuitem.connect('select', self.onNewWXFBMenuItem)
-    #
-    #     menuitem_label = _(u'New Glade project')
-    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-    #     new_menu.append(menuitem)
-    #     menuitem.connect('select', self.onNewGladeMenuItem)
-    #
-    #     menuitem_label = _(u'New JasperReport report')
-    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-    #     new_menu.append(menuitem)
-    #     menuitem.connect('select', self.onNewJasperReportMenuItem)
-    #
-    #     menuitem_label = _(u'New LimeReport report')
-    #     menuitem = gi.repository.Gtk.MenuItem(label=menuitem_label)
-    #     new_menu.append(menuitem)
-    #     menuitem.connect('select', self.onNewLimeReportMenuItem)
-    #
-    #     return new_menu
-
     def onNewResourceButtonClicked(self, widget):
         """
         Menu item handler <New resource>.
         """
         new_res_filename = os.path.join(self.folder_path,
-                                        'default%d%s' % (id_func.genNewId(),
+                                        'default%s%s' % (id_func.genNewId(),
                                                          res_func.RESOURCE_FILE_EXT)) if self.folder_path else None
         res_filename = new_resource_dialog.createNewResource(parent=self, res_filename=new_res_filename)
 
         self.getGtkTopObject().close()
 
-        if res_filename is not None:
-            resource_editor.openResourceEditor(res_filename=res_filename)
+        # if res_filename is not None:
+        #     resource_editor.openResourceEditor(res_filename=res_filename)
 
     def onNewWxFBButtonClicked(self, widget):
         """
@@ -226,6 +174,36 @@ class iqStartFolderWindow(gtk_handler.iqGtkHandler,
         Exit button handler.
         """
         self.getGtkTopObject().close()
+
+    def onNewResourceMenuItemActivate(self, widget):
+        """
+        Menu item handler <New resource>.
+        """
+        return self.onNewResourceButtonClicked(widget)
+
+    def onNewWxFBMenuItemActivate(self, widget):
+        """
+        Menu item handler <New wxFormBuilder project>.
+        """
+        return self.onNewWxFBButtonClicked(widget)
+
+    def onNewGladeMenuItemActivate(self, widget):
+        """
+        Menu item handler <New Glade project>.
+        """
+        return self.onNewGladeButtonClicked(widget)
+
+    def onNewJasperReportMenuItemActivate(self, widget):
+        """
+        Menu item handler <New JasperReport project>.
+        """
+        return self.onNewJasperReportButtonClicked(widget)
+
+    def onNewLimeReportMenuItemActivate(self, widget):
+        """
+        Menu item handler <New LimeReport project>.
+        """
+        return self.onNewLimeReportButtonClicked(widget)
 
 
 def openStartFolderWindow(parent=None, folder_path=None):
