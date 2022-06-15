@@ -20,7 +20,7 @@ from ...util import id_func
 
 from . import base_manager
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 2, 1)
 
 ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT = '__gtktreeview_item_data_cache_%s__'
 
@@ -417,6 +417,19 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             return row_index
         return -1
 
+    def getGtkTreeViewSelectedItem(self, treeview=None):
+        """
+        Get selected item.
+
+        :param treeview: GtkTreeView control.
+        :return: Selected item or None if not selected.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        selection = treeview.get_selection()
+        model, selected_item = selection.get_selected()
+        return selected_item
+
     def setGtkTreeViewRowColor(self, treeview=None, row=None, store_color_column=-1, color=None):
         """
         Set tree row text color.
@@ -535,3 +548,107 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                                                                                item=child)
                     child = model.iter_next(child)
         return result
+
+    def hasGtkTreeViewItemChildren(self, treeview=None, item=None):
+        """
+        Has tree item children?
+
+        :param treeview: GtkTreeView control.
+        :param item: Parent tree item.
+            If not specified, it is considered to be the root element.
+        :return: True/False.
+        """
+        if treeview is None:
+            log_func.warning(u'Not define GtkTreeView object')
+            return None
+
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if item is None:
+            item = self.getGtkTreeViewRootItem(treeview=treeview)
+
+        try:
+            model = treeview.get_model()
+            return model.iter_has_child(item)
+        except:
+            log_func.fatal(u'Error has tree view item children')
+        return None
+
+    def getGtkTreeViewFirstChild(self, treeview=None, parent_item=None):
+        """
+        Get first parent item child.
+
+        :param treeview: GtkTreeView control.
+        :param parent_item: Parent tree item.
+            If not specified, it is considered to be the root element.
+        :return: Item or None.
+        """
+        if treeview is None:
+            log_func.warning(u'Not define GtkTreeView object')
+            return None
+
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if parent_item is None:
+            parent_item = self.getGtkTreeViewRootItem(treeview=treeview)
+
+        try:
+            model = treeview.get_model()
+            return model.iter_children(parent_item)
+        except:
+            log_func.fatal(u'Error get first tree view child')
+        return None
+
+    def getGtkTreeViewNextChild(self, treeview=None, item=None):
+        """
+        Get next parent item child.
+
+        :param treeview: GtkTreeView control.
+        :param item: Current tree item.
+            If not specified, it is considered to be the root element.
+        :return: Item or None.
+        """
+        if treeview is None:
+            log_func.warning(u'Not define GtkTreeView object')
+            return None
+
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if item is None:
+            item = self.getGtkTreeViewRootItem(treeview=treeview)
+
+        try:
+            model = treeview.get_model()
+            return model.iter_next(item)
+        except:
+            log_func.fatal(u'Error get next tree view child')
+        return None
+
+    def getGtkTreeViewParentItem(self, treeview=None, item=None):
+        """
+        Get parent item.
+
+        :param treeview: GtkTreeView control.
+        :param item: Current tree item.
+            If not specified, it is considered to be the selected element.
+        :return: Item or None.
+        """
+        if treeview is None:
+            log_func.warning(u'Not define GtkTreeView object')
+            return None
+
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if item is None:
+            item = self.getGtkTreeViewSelectedItem(treeview=treeview)
+
+        if item is None:
+            log_func.warning(u'Not define item for get parent item')
+            return None
+
+        try:
+            model = treeview.get_model()
+            return model.iter_parent(item)
+        except:
+            log_func.fatal(u'Error get parent item')
+        return None

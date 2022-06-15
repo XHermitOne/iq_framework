@@ -20,7 +20,7 @@ from ..editor.gtk import glade_manager
 from ..editor.jasper_report import jasperreport_manager
 from ..editor.lime_report import limereport_manager
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 
 def openFrameworkEditor():
@@ -113,9 +113,8 @@ def _openResourceEditor(res_filename):
 
         elif res_func.isResourceFile(res_filename):
             log_func.info(u'Edit resource <%s>' % res_filename)
-            # from .wx.res_editor import resource_editor
-            # resource_editor.runResourceEditor(res_filename=res_filename)
-            return True
+            from .gtk.res_editor import resource_editor
+            return resource_editor.runResourceEditor(res_filename=res_filename)
 
         elif py_func.isPythonFile(res_filename):
             log_func.info(u'Edit python file <%s>' % res_filename)

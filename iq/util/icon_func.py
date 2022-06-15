@@ -10,7 +10,7 @@ import os.path
 from . import log_func
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 ICON_FILENAME_EXT = '.png'
@@ -34,7 +34,9 @@ def getIconFilename(icon_filename):
     """
     library = None
 
-    if not isinstance(icon_filename, str):
+    if icon_filename is None:
+        icon_filename = 'fatcow/picture_error'
+    elif not isinstance(icon_filename, str):
         log_func.warning(u'Error type icon filename <%s>' % icon_filename)
         return None
 

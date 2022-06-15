@@ -199,10 +199,10 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
             result = self._loadResource(resource)
 
-            root_tem = self.resource_treeListCtrl.GetRootItem()
-            if root_tem and root_tem.IsOk():
-                self.resource_treeListCtrl.Expand(root_tem)
-                resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(root_tem)
+            root_item = self.resource_treeListCtrl.GetRootItem()
+            if root_item and root_item.IsOk():
+                self.resource_treeListCtrl.Expand(root_item)
+                resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(root_item)
                 self.buildPropertyEditors(property_editor=self.object_propertyGridManager,
                                           resource=resource, parent_resource=None)
             return result
@@ -376,7 +376,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
 
     def onNewToolClicked(self, event):
         """
-        <New> resoure tool button click handler.
+        <New> resource tool button click handler.
         """
         default_res_filename = os.path.join(os.path.dirname(self.res_filename), 'default' + res_func.RESOURCE_FILE_EXT)
         res_filename = new_resource_dialog.createNewResource(parent=self, res_filename=default_res_filename)

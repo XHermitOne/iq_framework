@@ -21,6 +21,7 @@ from ....util import lang_func
 
 # from . import login_dialog_proto
 from . import text_entry_dialog
+from . import single_choice_dialog
 
 __version__ = (0, 0, 1, 1)
 
@@ -301,25 +302,13 @@ def getSingleChoiceDlg(parent=None, title='', prompt_text='', choices=(),
     :param default_idx: Default selected line index.
     :return: Selected text or None if pressed cancel.
     """
-    dlg = None
-    win_clear = False
-    try:
-        if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
-
-        dlg = wx.SingleChoiceDialog(parent, prompt_text, title, choices, wx.CHOICEDLG_STYLE)
-        if default_idx >= 0:
-            dlg.SetSelection(default_idx)
-        if dlg.ShowModal() == wx.ID_OK:
-            txt = dlg.GetStringSelection()
-            return txt
-    finally:
-        if dlg:
-            dlg.Destroy()
-        if win_clear:
-            parent.Destroy()
-    return None
+    print(choices)
+    selected_idx = single_choice_dialog.openSingleChoiceDialog(parent=parent,
+                                                               title=title,
+                                                               prompt_text=prompt_text,
+                                                               choices=choices,
+                                                               default_idx=default_idx)
+    return choices[selected_idx] if 0 <= selected_idx < len(choices) else None
 
 
 def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=[],
@@ -334,27 +323,12 @@ def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=[],
     :param default_idx: Default selected line index.
     :return: Selected line index or -1 if pressed cancel.
     """
-    idx = -1
-    dlg = None
-    win_clear = False
-    try:
-        if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
-
-        dlg = wx.SingleChoiceDialog(parent, prompt_text, title,
-                                    choices, wx.CHOICEDLG_STYLE)
-        if default_idx >= 0:
-            dlg.SetSelection(default_idx)
-
-        if dlg.ShowModal() == wx.ID_OK:
-            idx = dlg.GetSelection()
-    finally:
-        if dlg:
-            dlg.Destroy()
-        if win_clear:
-            parent.Destroy()
-    return idx
+    selected_idx = single_choice_dialog.openSingleChoiceDialog(parent=parent,
+                                                               title=title,
+                                                               prompt_text=prompt_text,
+                                                               choices=choices,
+                                                               default_idx=default_idx)
+    return selected_idx
 
 
 def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
