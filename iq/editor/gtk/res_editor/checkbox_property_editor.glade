@@ -22,12 +22,13 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="property_entry">
-        <property name="name">property_entry</property>
+      <object class="GtkCheckButton" id="property_checkbutton">
+        <property name="label" translatable="yes">On / Off</property>
+        <property name="name">property_checkbutton</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="secondary_icon_stock">gtk-edit</property>
-        <signal name="icon-press" handler="onPropertyIconPress" swapped="no"/>
+        <property name="receives_default">False</property>
+        <property name="draw_indicator">True</property>
       </object>
       <packing>
         <property name="expand">True</property>

@@ -302,7 +302,6 @@ def getSingleChoiceDlg(parent=None, title='', prompt_text='', choices=(),
     :param default_idx: Default selected line index.
     :return: Selected text or None if pressed cancel.
     """
-    print(choices)
     selected_idx = single_choice_dialog.openSingleChoiceDialog(parent=parent,
                                                                title=title,
                                                                prompt_text=prompt_text,

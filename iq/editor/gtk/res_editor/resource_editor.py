@@ -39,6 +39,8 @@ from ....engine.gtk import gtkpaned_manager
 
 from . import new_resource_dialog
 
+from . import property_editor_manager
+
 __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
@@ -47,7 +49,8 @@ _ = lang_func.getTranslation().gettext
 class iqResourceEditor(gtk_handler.iqGtkHandler,
                        stored_gtk_form_manager.iqStoredGtkFormsManager,
                        gtktreeview_manager.iqGtkTreeViewManager,
-                       gtkpaned_manager.iqGtkPanedManager):
+                       gtkpaned_manager.iqGtkPanedManager,
+                       property_editor_manager.iqPropertyEditorManager):
     """
     Unknown class.
     """
@@ -117,6 +120,37 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
         Init controls method.
         """
         self.getGtkObject('expand_toolitem').set_sensitive(False)
+
+    def clearBox(self, box):
+        """
+        Clear box.
+
+        :return: True/False.
+        """
+        try:
+            for child in box.get_children():
+                box.remove(child)
+                child.destroy()
+            return True
+        except:
+            log_func.fatal(u'Error clear box <%s>' % box.get_name())
+        return False
+
+    def clearProperties(self):
+        """
+        Clear all properties.
+        """
+        basic_property_box = self.getGtkObject('basic_property_box')
+        self.clearBox(basic_property_box)
+
+        special_property_box = self.getGtkObject('special_property_box')
+        self.clearBox(special_property_box)
+
+        method_box = self.getGtkObject('method_box')
+        self.clearBox(method_box)
+
+        event_box = self.getGtkObject('event_box')
+        self.clearBox(event_box)
 
     def _loadResource(self, resource, parent_item=None):
         """
@@ -482,17 +516,16 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
                                  expand_tool=self.getGtkObject('expand_toolitem'),
                                  resize_panel=1)
 
-    def onResTreeViewMoveCursor(self, widget):
+    def onResTreeViewSelectionChanged(self, widget):
         """
         Resource tree list control item selection changes handler.
         """
         try:
-            item = self.getGtkTreeViewSelectedRow(treeview=self.getGtkObject('res_treeview'))
+            item = self.getGtkTreeViewSelectedItem(treeview=self.getGtkObject('res_treeview'))
             resource = self.getGtkTreeViewItemData(treeview=self.getGtkObject('res_treeview'), item=item)
             parent_item = self.getGtkTreeViewParentItem(treeview=self.getGtkObject('res_treeview'), item=item)
             parent_resource = self.getGtkTreeViewItemData(treeview=self.getGtkObject('res_treeview'), item=parent_item) if parent_item else None
-            self.buildPropertyEditors(property_editor=self.object_propertyGridManager,
-                                      resource=resource, parent_resource=parent_resource)
+            self.buildPropertyEditors(property_editor=self, resource=resource, parent_resource=parent_resource)
         except:
             log_func.fatal(u'Error resource tree list control item selection changes handler')
 

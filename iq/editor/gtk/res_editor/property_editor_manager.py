@@ -20,6 +20,17 @@ from ... import property_editor_id
 
 from ....engine.gtk.dlg import gtk_dlg_func
 
+from . import string_property_editor
+from . import text_property_editor
+from . import integer_property_editor
+from . import float_property_editor
+from . import choice_property_editor
+from . import checkbox_property_editor
+from . import multichoice_property_editor
+from . import stringlist_property_editor
+from . import script_property_editor
+from . import readonly_property_editor
+
 __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
@@ -27,16 +38,16 @@ _ = lang_func.getTranslation().gettext
 VALIDATE_ENABLE = True
 
 PROPERTY_EDITORS = (string_property_editor.iqStringPropertyEditor,
-                    # text_property_editor.iqTextPropertyEditor,
-                    # integer_property_editor.iqIntegerPropertyEditor,
-                    # float_property_editor.iqFloatPropertyEditor,
-                    # choice_property_editor.iqChoicePropertyEditor,
-                    # checkbox_property_editor.iqCheckBoxgPropertyEditor,
-                    # multichoice_property_editor.iqMultiChoicePropertyEditor,
-                    # stringlist_property_editor.iqStringListPropertyEditor,
-                    # script_property_editor.iqScriptPropertyEditor,
-                    # readonly_property_editor.iqReadOnlyPropertyEditor,
-                    #
+                    text_property_editor.iqTextPropertyEditor,
+                    integer_property_editor.iqIntegerPropertyEditor,
+                    float_property_editor.iqFloatPropertyEditor,
+                    choice_property_editor.iqChoicePropertyEditor,
+                    checkbox_property_editor.iqCheckBoxPropertyEditor,
+                    multichoice_property_editor.iqMultiChoicePropertyEditor,
+                    stringlist_property_editor.iqStringListPropertyEditor,
+                    script_property_editor.iqScriptPropertyEditor,
+                    readonly_property_editor.iqReadonlyPropertyEditor,
+
                     # color_property_editor.iqColorPropertyEditor,
                     # font_property_editor.iqFontPropertyEditor,
                     # point_property_editor.iqPointPropertyEditor,
@@ -46,14 +57,11 @@ PROPERTY_EDITORS = (string_property_editor.iqStringPropertyEditor,
                     # dir_property_editor.iqDirPropertyEditor,
                     # image_property_editor.iqImagePropertyEditor,
                     # date_property_editor.iqDatePropertyEditor,
-                    #
+
                     # passport_property_editor.iqPassportPropertyEditor,
                     # libicon_property_editor.iqLibraryIconPropertyEditor,
                     # flag_property_editor.iqFlagPropertyEditor,
                     # single_choice_property_editor.iqSingleChoicePropertyEditor,
-                    #
-                    # method_property_editor.iqMethodPropertyEditor,
-                    # event_property_editor.iqEventPropertyEditor,
                     )
 
 
@@ -85,19 +93,6 @@ class iqPropertyEditorManager(object):
                     log_func.warning(u'Custom property editor not defined')
             # ensure we only do it once
             sys._PropGridEditorsRegistered = True
-
-    def clearProperties(self, property_editor=None):
-        """
-        Clear property editor.
-
-        :return: True/False
-        """
-        if property_editor:
-            property_editor.clear()
-            return True
-        else:
-            log_func.warning(u'Not define property editor')
-        return False
 
     def setSpecification(self, spc=None):
         """
@@ -150,36 +145,37 @@ class iqPropertyEditorManager(object):
         if property_type == property_editor_id.STRING_EDITOR:
             if not isinstance(value, str):
                 value = str(value)
-            obj_property = wx.propgrid.StringProperty(name, value=value)
+            obj_property = string_property_editor.iqStringPropertyEditor(label=name, value=value)
 
-        # elif property_type == property_editor_id.TEXT_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = wx.propgrid.LongStringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.INTEGER_EDITOR:
-        #     value = int(value) if value else 0
-        #     obj_property = wx.propgrid.IntProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.FLOAT_EDITOR:
-        #     value = float(value) if value else 0.0
-        #     obj_property = wx.propgrid.FloatProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.CHOICE_EDITOR:
-        #     # log_func.debug(u'Attribute <%s>' % name)
-        #     choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
-        #     if isinstance(choices, (list, tuple)):
-        #         choices = [str(item) for item in choices]
-        #     elif callable(choices):
-        #         choices = choices(resource=spc, parent_resource=parent_spc)
-        #     else:
-        #         log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
-        #         choices = list()
-        #
-        #     idx = choices.index(value) if value in choices else 0
-        #     obj_property = wx.propgrid.EnumProperty(label=name, name=name, labels=choices,
-        #                                            values=list(range(len(choices))), value=idx)
-        #
+        elif property_type == property_editor_id.TEXT_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = text_property_editor.iqTextPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.INTEGER_EDITOR:
+            value = int(value) if value else 0
+            obj_property = integer_property_editor.iqIntegerPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.FLOAT_EDITOR:
+            value = float(value) if value else 0.0
+            obj_property = float_property_editor.iqFloatPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.CHOICE_EDITOR:
+            # log_func.debug(u'Attribute <%s>' % name)
+            choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
+            if isinstance(choices, (list, tuple)):
+                choices = [str(item) for item in choices]
+            elif callable(choices):
+                choices = choices(resource=spc, parent_resource=parent_spc)
+            else:
+                log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                choices = list()
+
+            idx = choices.index(value) if value in choices else 0
+            # obj_property = wx.propgrid.EnumProperty(label=name, name=name, labels=choices,
+            #                                        values=list(range(len(choices))), value=idx)
+            obj_property = choice_property_editor.iqChoicePropertyEditor(label=name, value=idx, choices=choices)
+
         # elif property_type == property_editor_id.SINGLE_CHOICE_EDITOR:
         #     # log_func.debug(u'Attribute <%s>' % name)
         #     choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
@@ -195,63 +191,62 @@ class iqPropertyEditorManager(object):
         #         value = str(value)
         #     obj_property = single_choice_property.iqSingleChoiceProperty(label=name, name=name,
         #                                                                 choices=choices, value=value)
-        #
-        # elif property_type == property_editor_id.CHECKBOX_EDITOR:
-        #     if isinstance(value, str):
-        #         value = eval(value)
-        #     value = bool(value)
-        #     obj_property = wx.propgrid.BoolProperty(name, value=value)
-        #     obj_property.SetAttribute('UseCheckbox', True)
-        #
-        # elif property_type == property_editor_id.MULTICHOICE_EDITOR:
-        #     choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', dict())
-        #     if isinstance(choices, dict):
-        #         choices = list(choices.keys())
-        #     elif callable(choices):
-        #         choices = choices(resource=spc, parent_resource=parent_spc)
-        #     else:
-        #         log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
-        #         choices = list()
-        #     if value is None:
-        #         value = list()
-        #     values = [name for name in choices if name in value]
-        #     obj_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=values)
-        #
-        # elif property_type == property_editor_id.STRINGLIST_EDITOR:
-        #     value_list = []
-        #     if isinstance(value, (list, tuple)):
-        #         for item in value:
-        #             if not isinstance(item, str):
-        #                 item = str(item)
-        #             value_list.append(item)
-        #     obj_property = wx.propgrid.ArrayStringProperty(name, value=value_list)
-        #
-        # elif property_type in (property_editor_id.SCRIPT_EDITOR,
-        #                        property_editor_id.METHOD_EDITOR,
-        #                        property_editor_id.EVENT_EDITOR):
-        #     if value is None:
-        #         value = str(value)
-        #     elif isinstance(value, str):
-        #         pass
-        #     elif isinstance(value, (int, float, list, tuple, dict, bool)):
-        #         value = str(value)
-        #     elif isinstance(value, datetime.datetime):
-        #         # Если указывается время, то скорее всего это текущее время
-        #         value = u'datetime.datetime.now()'
-        #     elif isinstance(value, datetime.date):
-        #         # Если указывается день, то скорее всего это сегодняшний
-        #         value = u'datetime.date.today()'
-        #     else:
-        #         log_func.warning(u'Attribute [%s]. Property editor <Python script> for type <%s> not supported' % (name, value.__class__.__name__))
-        #         value = u''
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.READONLY_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #     obj_property.Enable(False)
-        #
+
+        elif property_type == property_editor_id.CHECKBOX_EDITOR:
+            if isinstance(value, str):
+                value = eval(value)
+            value = bool(value)
+            obj_property = checkbox_property_editor.iqCheckBoxPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.MULTICHOICE_EDITOR:
+            choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', dict())
+            if isinstance(choices, dict):
+                choices = list(choices.keys())
+            elif callable(choices):
+                choices = choices(resource=spc, parent_resource=parent_spc)
+            else:
+                log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                choices = list()
+            if value is None:
+                value = list()
+            values = [name for name in choices if name in value]
+            obj_property = multichoice_property_editor.iqMultiChoicePropertyEditor(label=name, value=values, choices=choices)
+
+        elif property_type == property_editor_id.STRINGLIST_EDITOR:
+            value_list = []
+            if isinstance(value, (list, tuple)):
+                for item in value:
+                    if not isinstance(item, str):
+                        item = str(item)
+                    value_list.append(item)
+            obj_property = stringlist_property_editor.iqStringListPropertyEditor(label=name, value=value_list)
+
+        elif property_type in (property_editor_id.SCRIPT_EDITOR,
+                               property_editor_id.METHOD_EDITOR,
+                               property_editor_id.EVENT_EDITOR):
+            if value is None:
+                value = str(value)
+            elif isinstance(value, str):
+                pass
+            elif isinstance(value, (int, float, list, tuple, dict, bool)):
+                value = str(value)
+            elif isinstance(value, datetime.datetime):
+                # Если указывается время, то скорее всего это текущее время
+                value = u'datetime.datetime.now()'
+            elif isinstance(value, datetime.date):
+                # Если указывается день, то скорее всего это сегодняшний
+                value = u'datetime.date.today()'
+            else:
+                log_func.warning(u'Attribute [%s]. Property editor <Python script> for type <%s> not supported' % (name, value.__class__.__name__))
+                value = u''
+            obj_property = script_property_editor.iqScriptPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.READONLY_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = readonly_property_editor.iqReadonlyPropertyEditor(label=name, value=value)
+            # obj_property.Enable(False)
+
         # elif property_type == property_editor_id.EXTERNAL_EDITOR:
         #     log_func.warning(u'Attribute [%s]. Property editor <External editor> not supported' % name)
         #
@@ -334,7 +329,7 @@ class iqPropertyEditorManager(object):
 
         if obj_property:
             help_string = spc.get(spc_func.HELP_ATTR_NAME, dict()).get(name, name)
-            obj_property.SetHelpString(help_string)
+            obj_property.setHelpString(help_string)
         return obj_property
 
     def _getAttrEditorType(self, resource, attr_name):
@@ -374,7 +369,7 @@ class iqPropertyEditorManager(object):
             log_func.warning(u'Not define component resource for edit')
             return False
 
-        self.clearProperties(property_editor)
+        property_editor.clearProperties()
 
         # Set current component specification
         self.setSpecification(resource)
@@ -394,7 +389,7 @@ class iqPropertyEditorManager(object):
             obj_property = self.createPropertyEditor(attr_name, resource.get(attr_name, None), edt_type,
                                                      spc=resource, parent_spc=parent_resource)
             if obj_property is not None:
-                property_editor.getGtkObject('basic_property_box').add(obj_property)
+                property_editor.getGtkObject('basic_property_box').add(obj_property.getGtkTopObject())
 
         # ----------------------------------------
         #   2 - Special attributes
@@ -410,7 +405,7 @@ class iqPropertyEditorManager(object):
                                                      spc=resource, parent_spc=parent_resource)
             if obj_property is not None:
                 # add_property = prop_page.Append(obj_property)
-                property_editor.getGtkObject('special_property_box').add(obj_property)
+                property_editor.getGtkObject('special_property_box').add(obj_property.getGtkTopObject())
 
                 # Advanced customization of property editors
                 # if edt_type == property_editor_id.PASSWORD_EDITOR:
@@ -439,7 +434,7 @@ class iqPropertyEditorManager(object):
                                                     spc=resource, parent_spc=parent_resource)
             if obj_property is not None:
                 # methods_page.Append(obj_property)
-                property_editor.getGtkObject('method_box').add(obj_property)
+                property_editor.getGtkObject('method_box').add(obj_property.getGtkTopObject())
                 # property_editor.SetPropertyEditor(method_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
         # bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
@@ -454,12 +449,12 @@ class iqPropertyEditorManager(object):
                                                      spc=resource, parent_spc=parent_resource)
             if obj_property is not None:
                 # events_page.Append(obj_property)
-                property_editor.getGtkObject('event_box').add(obj_property)
+                property_editor.getGtkObject('event_box').add(obj_property.getGtkTopObject())
                 # property_editor.SetPropertyEditor(event_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
         # Moves splitter as left as possible,
         # while still allowing all labels to be shown in full
-        property_editor.SetSplitterLeft()
+        # property_editor.SetSplitterLeft()
 
     def getResourceAttributes(self, resource):
         """
@@ -470,10 +465,8 @@ class iqPropertyEditorManager(object):
         """
         edit_section = resource.get(spc_func.EDIT_ATTR_NAME, dict())
         # log_func.debug(u'Resource __edit__ section: %s' % str(edit_section))
-        return [attr_name for attr_name,
-                              editor_type in list(edit_section.items()) if
-                editor_type not in (property_editor_id.METHOD_EDITOR,
-                                    property_editor_id.EVENT_EDITOR)]
+        return [attr_name for attr_name, editor_type in list(edit_section.items()) if
+                editor_type not in (property_editor_id.METHOD_EDITOR, property_editor_id.EVENT_EDITOR)]
 
     def getResourceMethods(self, resource):
         """
@@ -483,8 +476,7 @@ class iqPropertyEditorManager(object):
         :return: Method name list.
         """
         edit_section = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-        res_methods = [attr_name for attr_name,
-                       editor_type in list(edit_section.items()) if
+        res_methods = [attr_name for attr_name, editor_type in list(edit_section.items()) if
                        editor_type == property_editor_id.METHOD_EDITOR]
         res_methods.sort()
         return res_methods
@@ -497,8 +489,7 @@ class iqPropertyEditorManager(object):
         :return: Event name list.
         """
         edit_section = resource.get(spc_func.EDIT_ATTR_NAME, dict())
-        res_events = [attr_name for attr_name,
-                      editor_type in list(edit_section.items()) if
+        res_events = [attr_name for attr_name, editor_type in list(edit_section.items()) if
                       editor_type == property_editor_id.EVENT_EDITOR]
         res_events.sort()
         return res_events

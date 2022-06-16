@@ -22,12 +22,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEntry" id="property_entry">
-        <property name="name">property_entry</property>
+      <object class="GtkSpinButton" id="property_spinbutton">
+        <property name="name">property_spinbutton</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="secondary_icon_stock">gtk-edit</property>
-        <signal name="icon-press" handler="onPropertyIconPress" swapped="no"/>
+        <property name="input_purpose">number</property>
+        <property name="numeric">True</property>
       </object>
       <packing>
         <property name="expand">True</property>

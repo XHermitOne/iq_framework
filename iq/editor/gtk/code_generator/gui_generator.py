@@ -15,7 +15,7 @@ from ....util import xml2dict
 from ....util import txtfile_func
 from ....dialog import dlg_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 DEFAULT_SRC_CLASS_NAME = u'iqUnknown'
 
@@ -104,7 +104,7 @@ HANDLER_PY_MODULE_FMT = '''    def %s(self, widget):
 
 DEFAULT_HANDLER_NAME = u'onUnknown'
 
-GTK_TOP_WINDOW_TYPES = ('GtkWindow',
+GTK_TOP_WIDGET_TYPES = ('GtkWindow',
                         'GtkOffscreenWindow',
                         'GtkApplicationWindow',
                         'GtkDialog',
@@ -115,7 +115,9 @@ GTK_TOP_WINDOW_TYPES = ('GtkWindow',
                         'GtkMessageDialog',
                         'GtkRecentChooserDialog',
                         'GtkAssistent',
-                        'GtkAppChooserDialog')
+                        'GtkAppChooserDialog',
+                        'GtkBox',
+                        'GtkGrid')
 
 GLADE_CSS_SIGNATURE = '<!-- interface-css-provider-path '
 
@@ -240,27 +242,27 @@ def gen(src_filename=None, dst_filename=None, src_name=None, parent=None, rewrit
 
         # Get Glade xml project file as dictionary
         glade_xml_content = xml2dict.convertXmlFile2Dict(src_filename)
+        glade_top_widgets = []
         if isinstance(glade_xml_content['interface']['object'], (list, tuple)):
-            glade_win = [dict(id=obj['@id'], classname=obj['@class']) for obj in glade_xml_content['interface']['object'] if obj.get('@class', None) in GTK_TOP_WINDOW_TYPES]
+            glade_top_widgets = [dict(id=obj['@id'], classname=obj['@class']) for obj in glade_xml_content['interface']['object'] if obj.get('@class', None) in GTK_TOP_WIDGET_TYPES]
         elif isinstance(glade_xml_content['interface']['object'], dict):
             obj = glade_xml_content['interface']['object']
-            glade_win = []
-            if obj.get('@class', None) in GTK_TOP_WINDOW_TYPES:
-                glade_win.append(dict(id=obj['@id'], classname=obj['@class']))
+            if obj.get('@class', None) in GTK_TOP_WIDGET_TYPES:
+                # Gen top window widgets
+                glade_top_widgets.append(dict(id=obj['@id'], classname=obj['@class']))
         else:
             log_func.warning(u'Not parsed XML content objects')
-            glade_win = []
 
         signal_handlers = _getSignalHandlers(glade_xml_content['interface']['object'])
         signal_handlers_txt = os.linesep.join([HANDLER_PY_MODULE_FMT % signal.get('@handler', DEFAULT_HANDLER_NAME) for signal in signal_handlers])
 
         if src_name is None:
-            if len(glade_win) == 1:
+            if len(glade_top_widgets) == 1:
                 # Only one class per module
-                src_name = glade_win[0]['id']
-                src_type = glade_win[0]['classname'].lstrip('Gtk')
-            else:
-                choices = [frm_name for frm_name, frm_type in glade_win]
+                src_name = glade_top_widgets[0]['id']
+                src_type = glade_top_widgets[0]['classname'].lstrip('Gtk')
+            elif len(glade_top_widgets) > 1:
+                choices = [frm_name for frm_name, frm_type in glade_top_widgets]
                 choices.sort()
                 src_name = dlg_func.getSingleChoiceDlg(parent=parent,
                                                        title=u'GENERATOR',
@@ -269,7 +271,9 @@ def gen(src_filename=None, dst_filename=None, src_name=None, parent=None, rewrit
                 if not src_name:
                     # Cancel pressed
                     return
-                src_type = glade_win[choices.index(src_name)]['classname']
+                src_type = glade_top_widgets[choices.index(src_name)]['classname']
+            else:
+                log_func.warning(u'GUI module generator. Empty top object list')
 
         if dst_filename is None:
             # If the output file name is not defined, then generate the file name from the form class name

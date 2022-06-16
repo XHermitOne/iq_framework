@@ -268,9 +268,10 @@
                     <property name="can_focus">True</property>
                     <property name="model">res_tree_treestore</property>
                     <property name="search_column">0</property>
-                    <signal name="move-cursor" handler="onResTreeViewMoveCursor" swapped="no"/>
                     <child internal-child="selection">
-                      <object class="GtkTreeSelection"/>
+                      <object class="GtkTreeSelection">
+                        <signal name="changed" handler="onResTreeViewSelectionChanged" swapped="no"/>
+                      </object>
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn" id="column_img">
