@@ -25,13 +25,13 @@ from . import property_editor_proto
 __version__ = (0, 0, 0, 1)
 
 
-class iqReadonlyPropertyEditor(gtk_handler.iqGtkHandler,
+class iqPasswordPropertyEditor(gtk_handler.iqGtkHandler,
                              property_editor_proto.iqPropertyEditorProto):
     """
-    Readonly property editor class.
+    Password property editor class.
     """
     def __init__(self, label='', value=None, choices=None, default=None, *args, **kwargs):
-        self.glade_filename = os.path.join(os.path.dirname(__file__), 'readonly_property_editor.glade')
+        self.glade_filename = os.path.join(os.path.dirname(__file__), 'password_property_editor.glade')
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='property_box',  
                                           *args, **kwargs)

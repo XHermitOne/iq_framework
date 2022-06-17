@@ -22,6 +22,7 @@ from ....util import lang_func
 # from . import login_dialog_proto
 from . import text_entry_dialog
 from . import single_choice_dialog
+from . import multi_choice_dialog
 
 __version__ = (0, 0, 1, 1)
 
@@ -338,30 +339,12 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
     :param choices: List of selection lines as tuple in format ((True/False, 'line text'),...).
-    :return: Selected chices as tuple ((True/False, 'line text'),...).
+    :return: Selected choices as tuple ((True/False, 'line text'),...).
     """
-    dlg = None
-    win_clear = False
-    try:
-        if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
-
-        choice_list = [row[1] for row in choices]
-        dlg = wx.MultiChoiceDialog(parent, prompt_text, title, choice_list)
-        selections = [i for i, row in enumerate(choices) if row[0]]
-        dlg.SetSelections(selections)
-        
-        if dlg.ShowModal() == wx.ID_OK:
-            selections = dlg.GetSelections()
-            result = [(bool(i in selections), txt) for i, txt in enumerate(choice_list)]
-            return result
-    finally:
-        if dlg:
-            dlg.Destroy()
-        if win_clear:
-            parent.Destroy()
-    return None
+    return multi_choice_dialog.openMultiChoiceDialog(parent=parent,
+                                                     title=title,
+                                                     prompt_text=prompt_text,
+                                                     choices=choices)
 
 
 # class iqProgressDlg(wx.ProgressDialog):

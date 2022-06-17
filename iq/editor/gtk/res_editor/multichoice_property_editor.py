@@ -15,6 +15,9 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from iq.util import log_func
+from iq.util import lang_func
+
+from ....engine.gtk.dlg import gtk_dlg_func
 
 from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
@@ -23,6 +26,8 @@ from iq.engine.gtk import gtk_handler
 from . import property_editor_proto
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
@@ -63,10 +68,21 @@ class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
         """
         pass
 
-    def onPropertyIconPress(self, widget):
+    def onPropertyIconPress(self, widget, icon, event):
         """
+        Property edit icon mouse click handler.
         """
-        pass
+        if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
+            if isinstance(self.value, (list, tuple)):
+                choices = tuple([(choice in self.value, choice) for choice in self.choices])
+            else:
+                choices = tuple([(False, choice) for choice in self.choices])
+            print(choices)
+            result = gtk_dlg_func.getMultiChoiceDlg(title=_(u'Multiple Choice'),
+                                                    prompt_text=_(u'Select:'),
+                                                    choices=choices)
+            self.value = [label for check, label in result if check]
+            self.setValue(self.value)
 
     def setValue(self, value):
         """

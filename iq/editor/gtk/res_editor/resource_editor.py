@@ -36,6 +36,7 @@ from ....engine.gtk import gtk_handler
 from ....engine.gtk import stored_gtk_form_manager
 from ....engine.gtk import gtktreeview_manager
 from ....engine.gtk import gtkpaned_manager
+from ....engine.gtk import gtkbox_manager
 
 from . import new_resource_dialog
 
@@ -50,6 +51,7 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
                        stored_gtk_form_manager.iqStoredGtkFormsManager,
                        gtktreeview_manager.iqGtkTreeViewManager,
                        gtkpaned_manager.iqGtkPanedManager,
+                       gtkbox_manager.iqGtkBoxManager,
                        property_editor_manager.iqPropertyEditorManager):
     """
     Unknown class.
@@ -64,10 +66,7 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
 
         self.component_icons = dict()
 
-        save_filename = os.path.join(file_func.getProfilePath(),
-                                     self.getClassName() + res_func.PICKLE_RESOURCE_FILE_EXT)
-
-        self.loadCustomProperties(save_filename)
+        self.loadCustomProperties()
 
     def initComponentIcons(self):
         """
@@ -121,36 +120,21 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
         """
         self.getGtkObject('expand_toolitem').set_sensitive(False)
 
-    def clearBox(self, box):
-        """
-        Clear box.
-
-        :return: True/False.
-        """
-        try:
-            for child in box.get_children():
-                box.remove(child)
-                child.destroy()
-            return True
-        except:
-            log_func.fatal(u'Error clear box <%s>' % box.get_name())
-        return False
-
     def clearProperties(self):
         """
         Clear all properties.
         """
         basic_property_box = self.getGtkObject('basic_property_box')
-        self.clearBox(basic_property_box)
+        self.clearGtkBox(basic_property_box)
 
         special_property_box = self.getGtkObject('special_property_box')
-        self.clearBox(special_property_box)
+        self.clearGtkBox(special_property_box)
 
         method_box = self.getGtkObject('method_box')
-        self.clearBox(method_box)
+        self.clearGtkBox(method_box)
 
         event_box = self.getGtkObject('event_box')
-        self.clearBox(event_box)
+        self.clearGtkBox(event_box)
 
     def _loadResource(self, resource, parent_item=None):
         """
@@ -208,13 +192,10 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
 
             result = self._loadResource(resource)
 
-            # root_item = self.getGtkObject('res_tree_treestore').GetRootItem()
-            # if root_item and root_item.IsOk():
-            #     # self.resource_treeListCtrl.Expand(root_item)
-            #     # resource = self.resource_treeListCtrl.GetMainWindow().GetItemData(root_item)
-            #     # self.buildPropertyEditors(property_editor=self.object_propertyGridManager,
-            #     #                           resource=resource, parent_resource=None)
-
+            self.expandGtkTreeViewItem(treeview=self.getGtkObject('res_treeview'))
+            resource = self.getGtkTreeViewItemData(treeview=self.getGtkObject('res_treeview'), item=None)
+            self.buildPropertyEditors(property_editor=self,
+                                      resource=resource, parent_resource=None)
             return result
         except:
             log_func.fatal(u'Error load resource in editor')
@@ -342,9 +323,7 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
         """
         Destroy window handler.
         """
-        save_filename = os.path.join(file_func.getProfilePath(),
-                                     self.getClassName() + res_func.PICKLE_RESOURCE_FILE_EXT)
-        self.saveCustomProperties(save_filename)
+        self.saveCustomProperties()
         gi.repository.Gtk.main_quit()
 
     def onNewToolClicked(self, widget):

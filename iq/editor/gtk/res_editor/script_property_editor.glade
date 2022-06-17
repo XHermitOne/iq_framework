@@ -26,6 +26,7 @@
         <property name="name">property_entry</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="editable">False</property>
         <property name="secondary_icon_stock">gtk-edit</property>
         <signal name="icon-press" handler="onPropertyIconPress" swapped="no"/>
       </object>

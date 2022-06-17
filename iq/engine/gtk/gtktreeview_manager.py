@@ -652,3 +652,59 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         except:
             log_func.fatal(u'Error get parent item')
         return None
+
+    def expandGtkTreeViewItem(self, treeview=None, item=None, expand_all=False):
+        """
+        Expand item.
+
+        :param treeview: GtkTreeView control.
+        :param item: Parent tree item.
+            If not specified, it is considered to be the root element.
+        :param expand_all: Expand all children?
+        :return: True/False.
+        """
+        if treeview is None:
+            log_func.warning(u'Not define GtkTreeView object')
+            return None
+
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if item is None:
+            item = self.getGtkTreeViewRootItem(treeview=treeview)
+
+        try:
+            model = treeview.get_model()
+            item_path = model.get_path(item)
+            treeview.expand_row(item_path, expand_all)  # doesn't work
+            # treeview.expand_to_path(item_path)
+            return True
+        except:
+            log_func.fatal(u'Error expand treeview item')
+        return False
+
+    def collapseGtkTreeViewItem(self, treeview=None, item=None):
+        """
+        Collapse item.
+
+        :param treeview: GtkTreeView control.
+        :param item: Parent tree item.
+            If not specified, it is considered to be the root element.
+        :return: True/False.
+        """
+        if treeview is None:
+            log_func.warning(u'Not define GtkTreeView object')
+            return None
+
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if item is None:
+            item = self.getGtkTreeViewRootItem(treeview=treeview)
+
+        try:
+            model = treeview.get_model()
+            item_path = model.get_path(item)
+            treeview.collapse_row(item_path)
+            return True
+        except:
+            log_func.fatal(u'Error collapse treeview item')
+        return False

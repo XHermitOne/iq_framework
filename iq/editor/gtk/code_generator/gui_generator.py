@@ -108,16 +108,19 @@ GTK_TOP_WIDGET_TYPES = ('GtkWindow',
                         'GtkOffscreenWindow',
                         'GtkApplicationWindow',
                         'GtkDialog',
-                        'GtkAboutDialog',
-                        'GtkFileChooserDialog',
-                        'GtkColorChooserDialog',
-                        'GtkFontChooserDialog',
-                        'GtkMessageDialog',
-                        'GtkRecentChooserDialog',
-                        'GtkAssistent',
-                        'GtkAppChooserDialog',
+                        # 'GtkAboutDialog',
+                        # 'GtkFileChooserDialog',
+                        # 'GtkColorChooserDialog',
+                        # 'GtkFontChooserDialog',
+                        # 'GtkMessageDialog',
+                        # 'GtkRecentChooserDialog',
+                        # 'GtkAssistent',
+                        # 'GtkAppChooserDialog',
+
                         'GtkBox',
-                        'GtkGrid')
+                        'GtkGrid',
+                        'GtkFlowBox',
+                        'GtkListBox')
 
 GLADE_CSS_SIGNATURE = '<!-- interface-css-provider-path '
 

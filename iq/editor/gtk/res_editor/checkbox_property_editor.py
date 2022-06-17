@@ -42,7 +42,7 @@ class iqCheckBoxPropertyEditor(gtk_handler.iqGtkHandler,
         if label:
             self.getGtkObject('property_label').set_text(label)
         if value:
-            self.getGtkObject('property_checkbutton').set_active(value)
+            self.getGtkObject('property_switch').set_state(value)
 
     def init(self):
         """

@@ -10,8 +10,8 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from ...util import log_func
-from ...util import spc_func
-from ...util import id_func
+# from ...util import spc_func
+# from ...util import id_func
 
 from . import base_manager
 

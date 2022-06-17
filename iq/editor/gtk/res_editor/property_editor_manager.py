@@ -30,6 +30,7 @@ from . import multichoice_property_editor
 from . import stringlist_property_editor
 from . import script_property_editor
 from . import readonly_property_editor
+from . import password_property_editor
 
 __version__ = (0, 0, 0, 1)
 
@@ -52,7 +53,7 @@ PROPERTY_EDITORS = (string_property_editor.iqStringPropertyEditor,
                     # font_property_editor.iqFontPropertyEditor,
                     # point_property_editor.iqPointPropertyEditor,
                     # size_property_editor.iqSizePropertyEditor,
-                    # password_property_editor.iqPasswordPropertyEditor,
+                    password_property_editor.iqPasswordPropertyEditor,
                     # file_property_editor.iqFilePropertyEditor,
                     # dir_property_editor.iqDirPropertyEditor,
                     # image_property_editor.iqImagePropertyEditor,
@@ -171,10 +172,7 @@ class iqPropertyEditorManager(object):
                 log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
                 choices = list()
 
-            idx = choices.index(value) if value in choices else 0
-            # obj_property = wx.propgrid.EnumProperty(label=name, name=name, labels=choices,
-            #                                        values=list(range(len(choices))), value=idx)
-            obj_property = choice_property_editor.iqChoicePropertyEditor(label=name, value=idx, choices=choices)
+            obj_property = choice_property_editor.iqChoicePropertyEditor(label=name, value=value, choices=choices)
 
         # elif property_type == property_editor_id.SINGLE_CHOICE_EDITOR:
         #     # log_func.debug(u'Attribute <%s>' % name)
@@ -276,14 +274,12 @@ class iqPropertyEditorManager(object):
         #     if not isinstance(value, str):
         #         value = str(value)
         #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.PASSWORD_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #     # wx_property.SetAttribute('Hint', 'This is a hint')
-        #     # wx_property.SetAttribute('Password', True)
-        #
+
+        elif property_type == property_editor_id.PASSWORD_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = password_property_editor.iqPasswordPropertyEditor(label=name, value=value)
+
         # elif property_type == property_editor_id.IMAGE_EDITOR:
         #     if not isinstance(value, str):
         #         value = u''
