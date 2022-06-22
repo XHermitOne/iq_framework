@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -114,23 +114,23 @@ class iqSelectPassportDialogProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onPrjTreelistSelectionChanged( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onPrjTreelistSelectionChanged(self, event):
 		event.Skip()
 
-	def onResTreelistSelectionChanged( self, event ):
+	def onResTreelistSelectionChanged(self, event):
 		event.Skip()
 
-	def onDeleteButtonClick( self, event ):
+	def onDeleteButtonClick(self, event):
 		event.Skip()
 
-	def onCancelButtonClick( self, event ):
+	def onCancelButtonClick(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
-	def m_splitter1OnIdle( self, event ):
+	def m_splitter1OnIdle(self, event):
 		self.m_splitter1.SetSashPosition( 0 )
 		self.m_splitter1.Unbind( wx.EVT_IDLE )
 

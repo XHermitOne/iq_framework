@@ -15,9 +15,6 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from iq.util import log_func
-from iq.util import lang_func
-
-from ....engine.gtk.dlg import gtk_dlg_func
 
 from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
@@ -27,16 +24,14 @@ from . import property_editor_proto
 
 __version__ = (0, 0, 0, 1)
 
-_ = lang_func.getTranslation().gettext
 
-
-class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
-                                  property_editor_proto.iqPropertyEditorProto):
+class iqFontPropertyEditor(gtk_handler.iqGtkHandler,
+                           property_editor_proto.iqPropertyEditorProto):
     """
-    Multichoice property editor class.
+    Font property editor class.
     """
     def __init__(self, label='', value=None, choices=None, default=None, *args, **kwargs):
-        self.glade_filename = os.path.join(os.path.dirname(__file__), 'multichoice_property_editor.glade')
+        self.glade_filename = os.path.join(os.path.dirname(__file__), 'font_property_editor.glade')
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='property_box',  
                                           *args, **kwargs)
@@ -68,37 +63,22 @@ class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
         """
         pass
 
-    def onPropertyIconPress(self, widget, icon, event):
-        """
-        Property edit icon mouse click handler.
-        """
-        if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
-            if isinstance(self.value, (list, tuple)):
-                choices = tuple([(choice in self.value, choice) for choice in self.choices])
-            else:
-                choices = tuple([(False, choice) for choice in self.choices])
-
-            result = gtk_dlg_func.getMultiChoiceDlg(title=_(u'Multiple Choice'),
-                                                    prompt_text=_(u'Select:'),
-                                                    choices=choices)
-            self.value = [label for check, label in result if check]
-            self.setValue(self.value)
-
     def setValue(self, value):
         """
-        Set property editor value.
+        Set font.
         """
-        if isinstance(value, (list, tuple)):
-            value = ' '.join([u'\"%s\"' % str(item) for item in value])
-        self.getGtkObject('property_entry').set_text(value)
+        if isinstance(value, str):
+            font = gi.repository.Gtk.FontDescription().from_string(value)
+            self.getGtkObject('property_fontbutton').set_font_desc(font)
+            font_str = font.to_string()
+            self.getGtkObject('property_entry').set_text(font_str)
 
-    def setChoices(self, choices):
+    def getValue(self):
         """
-        Set property editor choices.
+        Get font value.
         """
-        self.getGtkObject('property_liststore').clear()
-        for choice in choices:
-            self.getGtkObject('property_liststore').append([str(choice)])
+        font = self.getGtkObject('property_fontbutton').get_font_desc()
+        return font.to_string()
 
     def setHelpString(self, help_string):
         """
@@ -109,9 +89,10 @@ class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
         label = self.getGtkObject('property_label')
         label.set_property('tooltip-text', help_string)
 
-
-class iqFlagPropertyEditor(iqMultiChoicePropertyEditor):
-    """
-    Flag property editor class.
-    """
-    pass
+    def onPropertyFontSet(self, widget):
+        """
+        Set font handler.
+        """
+        font = widget.get_font_desc()
+        font_str = font.to_string()
+        self.getGtkObject('property_entry').set_text(font_str)

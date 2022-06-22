@@ -15,7 +15,7 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from ....util import log_func
-from ....util import lang_func
+from ....util import icon_func
 
 from ....engine.gtk.dlg import gtk_dlg_func
 
@@ -27,19 +27,20 @@ from . import property_editor_proto
 
 __version__ = (0, 0, 0, 1)
 
-_ = lang_func.getTranslation().gettext
+IMAGE_WILDCARD_FILTER = u'PNG images (*.png)|*.png'
 
 
-class iqTextPropertyEditor(gtk_handler.iqGtkHandler,
-                             property_editor_proto.iqPropertyEditorProto):
+class iqIconPropertyEditor(gtk_handler.iqGtkHandler,
+                            property_editor_proto.iqPropertyEditorProto):
     """
-    Text property editor class.
+    Library icon property editor class.
     """
-    def __init__(self, label='', value=None, choices=None, default=None, *args, **kwargs):
-        self.glade_filename = os.path.join(os.path.dirname(__file__), 'text_property_editor.glade')
+    def __init__(self,  label='', value=None, choices=None, default=None, *args, **kwargs):
+        self.glade_filename = os.path.join(os.path.dirname(__file__), 'icon_property_editor.glade')
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='property_box',  
                                           *args, **kwargs)
+
         property_editor_proto.iqPropertyEditorProto.__init__(self, label=label, value=value,
                                                              choices=choices, default=default)
 
@@ -67,6 +68,30 @@ class iqTextPropertyEditor(gtk_handler.iqGtkHandler,
         """
         pass
 
+    def setValue(self, value):
+        """
+        Set value.
+        """
+        if value and os.path.exists(value):
+            self.getGtkObject('property_image').set_from_file(value)
+        else:
+            log_func.warning(u'Image filename <%s> not found' % value)
+            self.getGtkObject('property_image').set_from_icon_name('gtk-missing-image',
+                                                                    gi.repository.Gtk.IconSize.BUTTON)
+            value = None
+        self.value = value
+
+    def getValue(self):
+        """
+        Get value.
+        """
+        if self.value:
+            if os.path.exists(self.value):
+                return self.value
+            else:
+                log_func.warning(u'Image filename <%s> not found' % self.value)
+        return None
+
     def setHelpString(self, help_string):
         """
         Set help string.
@@ -76,24 +101,11 @@ class iqTextPropertyEditor(gtk_handler.iqGtkHandler,
         label = self.getGtkObject('property_label')
         label.set_property('tooltip-text', help_string)
 
-    def onPropertyIconPress(self, widget, icon, event):
+    def onPropertyButtonClicked(self, widget):
         """
-        Property edit icon mouse click handler.
+        Change image button click handler.
         """
-        if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
-            result = gtk_dlg_func.getTextEntryDlg(title=_(u'Text'),
-                                                  prompt_text=_(u'Entry text:'),
-                                                  default_value=self.value)
-            self.value = result
-            self.setValue(self.value)
-
-    def setValue(self, value):
-        """
-        Set property editor value.
-        """
-        if not isinstance(value, str):
-            value = str(value)
-
-        value_lines = value.splitlines()
-        property_value = value_lines[0] + ' ...' if len(value_lines) >= 1 else value_lines[0]
-        self.getGtkObject('property_entry').set_text(property_value)
+        img_filename = gtk_dlg_func.getFileDlg(title=u'Select library icon file',
+                                               wildcard_filter=IMAGE_WILDCARD_FILTER,
+                                               default_path=icon_func.getIconPath())
+        self.setValue(img_filename)

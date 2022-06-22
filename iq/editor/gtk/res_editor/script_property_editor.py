@@ -15,6 +15,9 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from iq.util import log_func
+from iq.util import lang_func
+
+from ....engine.gtk.dlg import script_edit_dialog
 
 from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
@@ -23,6 +26,8 @@ from iq.engine.gtk import gtk_handler
 from . import property_editor_proto
 
 __version__ = (0, 0, 0, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqScriptPropertyEditor(gtk_handler.iqGtkHandler,
@@ -42,7 +47,7 @@ class iqScriptPropertyEditor(gtk_handler.iqGtkHandler,
         if label:
             self.getGtkObject('property_label').set_text(label)
         if value:
-            self.getGtkObject('property_entry').set_text(value)
+            self.setValue(value)
 
     def init(self):
         """
@@ -63,28 +68,47 @@ class iqScriptPropertyEditor(gtk_handler.iqGtkHandler,
         """
         pass
 
-    def onPropertyIconPress(self, widget):
+    def onPropertyIconPress(self, widget, icon, event):
         """
+        Property edit icon mouse click handler.
         """
-        pass
+        if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
+            result = script_edit_dialog.openPythonEditDialog(title=_(u'Python script'),
+                                                             prompt_text=_(u'Python code:'),
+                                                             script=self.value)
+            self.value = result
+            self.setValue(self.value)
+
+    def setValue(self, value):
+        """
+        Set property editor value.
+        """
+        if not isinstance(value, str):
+            value = str(value)
+
+        value_lines = value.splitlines()
+        property_value = value_lines[0] + ' ...' if len(value_lines) >= 1 else value_lines[0]
+        self.getGtkObject('property_entry').set_text(property_value)
 
 
-def openPropertyBox():
+class iqPythonScriptPropertyEditor(iqScriptPropertyEditor):
     """
-    Open property_box.
-
-    :return: True/False.
+    Python script property editor class.
     """
-    result = False
-    obj = None
-    try:
-        obj = iqPropertyBox()
-        obj.init()
-        obj.getGtkTopObject().run()
-        result = True
-    except:
-        log_func.fatal(u'Error open window <property_box>')
+    pass
 
-    if obj and obj.getGtkTopObject() is not None:
-        obj.getGtkTopObject().destroy()
-    return result                    
+
+class iqSqlPropertyEditor(iqScriptPropertyEditor):
+    """
+    SQL script property editor class.
+    """
+    def onPropertyIconPress(self, widget, icon, event):
+        """
+        Property edit icon mouse click handler.
+        """
+        if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
+            result = script_edit_dialog.openSqlEditDialog(title=_(u'SQL query'),
+                                                          prompt_text=_(u'SQL:'),
+                                                          script=self.value)
+            self.value = result
+            self.setValue(self.value)

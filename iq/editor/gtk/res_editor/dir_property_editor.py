@@ -14,10 +14,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
-from ....util import log_func
-from ....util import lang_func
-
-from ....engine.gtk.dlg import gtk_dlg_func
+from iq.util import log_func
 
 from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
@@ -27,26 +24,25 @@ from . import property_editor_proto
 
 __version__ = (0, 0, 0, 1)
 
-_ = lang_func.getTranslation().gettext
 
-
-class iqTextPropertyEditor(gtk_handler.iqGtkHandler,
-                             property_editor_proto.iqPropertyEditorProto):
+class iqDirPropertyEditor(gtk_handler.iqGtkHandler,
+                          property_editor_proto.iqPropertyEditorProto):
     """
-    Text property editor class.
+    Directory property editor class.
     """
     def __init__(self, label='', value=None, choices=None, default=None, *args, **kwargs):
-        self.glade_filename = os.path.join(os.path.dirname(__file__), 'text_property_editor.glade')
+        self.glade_filename = os.path.join(os.path.dirname(__file__), 'dir_property_editor.glade')
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='property_box',  
                                           *args, **kwargs)
+
         property_editor_proto.iqPropertyEditorProto.__init__(self, label=label, value=value,
                                                              choices=choices, default=default)
 
         if label:
             self.getGtkObject('property_label').set_text(label)
         if value:
-            self.setValue(value)
+            self.getGtkObject('property_chooserbutton').set_filename(value)
 
     def init(self):
         """
@@ -75,25 +71,3 @@ class iqTextPropertyEditor(gtk_handler.iqGtkHandler,
         """
         label = self.getGtkObject('property_label')
         label.set_property('tooltip-text', help_string)
-
-    def onPropertyIconPress(self, widget, icon, event):
-        """
-        Property edit icon mouse click handler.
-        """
-        if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
-            result = gtk_dlg_func.getTextEntryDlg(title=_(u'Text'),
-                                                  prompt_text=_(u'Entry text:'),
-                                                  default_value=self.value)
-            self.value = result
-            self.setValue(self.value)
-
-    def setValue(self, value):
-        """
-        Set property editor value.
-        """
-        if not isinstance(value, str):
-            value = str(value)
-
-        value_lines = value.splitlines()
-        property_value = value_lines[0] + ' ...' if len(value_lines) >= 1 else value_lines[0]
-        self.getGtkObject('property_entry').set_text(property_value)

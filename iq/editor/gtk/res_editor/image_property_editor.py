@@ -15,7 +15,6 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from iq.util import log_func
-from iq.util import lang_func
 
 from ....engine.gtk.dlg import gtk_dlg_func
 
@@ -27,16 +26,16 @@ from . import property_editor_proto
 
 __version__ = (0, 0, 0, 1)
 
-_ = lang_func.getTranslation().gettext
+IMAGE_WILDCARD_FILTER = u'PNG images (*.png)|*.png|GIF images (*.gif)|*.gif|JPG images (*.jpg)|*.jpg|JPEG images (*.jpeg)|*.jpeg'
 
 
-class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
-                                  property_editor_proto.iqPropertyEditorProto):
+class iqImagePropertyEditor(gtk_handler.iqGtkHandler,
+                            property_editor_proto.iqPropertyEditorProto):
     """
-    Multichoice property editor class.
+    Image property editor class.
     """
     def __init__(self, label='', value=None, choices=None, default=None, *args, **kwargs):
-        self.glade_filename = os.path.join(os.path.dirname(__file__), 'multichoice_property_editor.glade')
+        self.glade_filename = os.path.join(os.path.dirname(__file__), 'image_property_editor.glade')
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='property_box',  
                                           *args, **kwargs)
@@ -68,37 +67,29 @@ class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
         """
         pass
 
-    def onPropertyIconPress(self, widget, icon, event):
-        """
-        Property edit icon mouse click handler.
-        """
-        if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
-            if isinstance(self.value, (list, tuple)):
-                choices = tuple([(choice in self.value, choice) for choice in self.choices])
-            else:
-                choices = tuple([(False, choice) for choice in self.choices])
-
-            result = gtk_dlg_func.getMultiChoiceDlg(title=_(u'Multiple Choice'),
-                                                    prompt_text=_(u'Select:'),
-                                                    choices=choices)
-            self.value = [label for check, label in result if check]
-            self.setValue(self.value)
-
     def setValue(self, value):
         """
-        Set property editor value.
+        Set value.
         """
-        if isinstance(value, (list, tuple)):
-            value = ' '.join([u'\"%s\"' % str(item) for item in value])
-        self.getGtkObject('property_entry').set_text(value)
+        if value and os.path.exists(value):
+            self.getGtkObject('property_image').set_from_file(value)
+        else:
+            log_func.warning(u'Image filename <%s> not found' % value)
+            self.getGtkObject('property_image').set_from_icon_name('gtk-missing-image',
+                                                                    gi.repository.Gtk.IconSize.BUTTON)
+            value = None
+        self.value = value
 
-    def setChoices(self, choices):
+    def getValue(self):
         """
-        Set property editor choices.
+        Get value.
         """
-        self.getGtkObject('property_liststore').clear()
-        for choice in choices:
-            self.getGtkObject('property_liststore').append([str(choice)])
+        if self.value:
+            if os.path.exists(self.value):
+                return self.value
+            else:
+                log_func.warning(u'Image filename <%s> not found' % self.value)
+        return None
 
     def setHelpString(self, help_string):
         """
@@ -109,9 +100,11 @@ class iqMultiChoicePropertyEditor(gtk_handler.iqGtkHandler,
         label = self.getGtkObject('property_label')
         label.set_property('tooltip-text', help_string)
 
-
-class iqFlagPropertyEditor(iqMultiChoicePropertyEditor):
-    """
-    Flag property editor class.
-    """
-    pass
+    def onPropertyButtonClicked(self, widget):
+        """
+        Change image button click handler.
+        """
+        img_filename = gtk_dlg_func.getFileDlg(title=u'Select image file',
+                                               wildcard_filter=IMAGE_WILDCARD_FILTER,
+                                               default_path=os.path.dirname(self.value) if self.value and os.path.exists(self.value) else None)
+        self.setValue(img_filename)

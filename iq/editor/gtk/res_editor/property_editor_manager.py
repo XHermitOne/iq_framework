@@ -32,6 +32,16 @@ from . import script_property_editor
 from . import readonly_property_editor
 from . import password_property_editor
 
+from . import size_property_editor
+from . import point_property_editor
+from . import dir_property_editor
+from . import file_property_editor
+from . import colour_property_editor
+from . import font_property_editor
+from . import image_property_editor
+from . import icon_property_editor
+from . import date_property_editor
+
 __version__ = (0, 0, 0, 1)
 
 _ = lang_func.getTranslation().gettext
@@ -237,7 +247,17 @@ class iqPropertyEditorManager(object):
             else:
                 log_func.warning(u'Attribute [%s]. Property editor <Python script> for type <%s> not supported' % (name, value.__class__.__name__))
                 value = u''
-            obj_property = script_property_editor.iqScriptPropertyEditor(label=name, value=value)
+            obj_property = script_property_editor.iqPythonScriptPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.SQL_EDITOR:
+            if value is None:
+                value = u''
+            elif isinstance(value, str):
+                pass
+            else:
+                log_func.warning(u'Attribute [%s]. Property editor <SQL script> for type <%s> not supported' % (name, value.__class__.__name__))
+                value = u''
+            obj_property = script_property_editor.iqSqlPropertyEditor(label=name, value=value)
 
         elif property_type == property_editor_id.READONLY_EDITOR:
             if not isinstance(value, str):
@@ -252,73 +272,87 @@ class iqPropertyEditorManager(object):
         #     if not isinstance(value, str):
         #         value = str(value)
         #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.COLOUR_EDITOR:
-        #     colour = None
-        #     if isinstance(value, (list, tuple)):
-        #         colour = wx.Colour(*value)
-        #     obj_property = wx.propgrid.ColourProperty(name, value=colour)
-        #
-        # elif property_type == property_editor_id.FONT_EDITOR:
-        #     value = value if value else dict()
-        #     log_func.debug(u'Font %s' % str(value))
-        #     font = wx.Font(**value)
-        #     obj_property = wx.propgrid.FontProperty(name, value=font)
-        #
-        # elif property_type == property_editor_id.POINT_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.SIZE_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
+
+        elif property_type == property_editor_id.COLOUR_EDITOR:
+            value = value if value else 'black'
+            log_func.debug(u'Colour %s' % str(value))
+            obj_property = colour_property_editor.iqColourPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.FONT_EDITOR:
+            value = value if value else dict()
+            log_func.debug(u'Font %s' % str(value))
+            obj_property = font_property_editor.iqFontPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.POINT_EDITOR:
+            if isinstance(value, str):
+                try:
+                    value = eval(value)
+                except:
+                    log_func.fatal(u'Error point property editor value <%s>' % value)
+                    value = (-1, -1)
+            elif isinstance(value, (list, tuple)):
+                pass
+            else:
+                log_func.warning(u'Error point property editor value type <%s>' % value.__class__.__name__)
+                value = (-1, -1)
+            obj_property = point_property_editor.iqPointPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.SIZE_EDITOR:
+            if isinstance(value, str):
+                try:
+                    value = eval(value)
+                except:
+                    log_func.fatal(u'Error size property editor value <%s>' % value)
+                    value = (-1, -1)
+            elif isinstance(value, (list, tuple)):
+                pass
+            else:
+                log_func.warning(u'Error size property editor value type <%s>' % value.__class__.__name__)
+                value = (-1, -1)
+            obj_property = size_property_editor.iqSizePropertyEditor(label=name, value=value)
 
         elif property_type == property_editor_id.PASSWORD_EDITOR:
             if not isinstance(value, str):
                 value = str(value)
             obj_property = password_property_editor.iqPasswordPropertyEditor(label=name, value=value)
 
-        # elif property_type == property_editor_id.IMAGE_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = u''
-        #     obj_property = wx.propgrid.ImageFileProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.DATE_EDITOR:
-        #     obj_property = wx.propgrid.DateProperty(name, value=value)
-        #
+        elif property_type == property_editor_id.IMAGE_EDITOR:
+            if not isinstance(value, str):
+                value = None
+            obj_property = image_property_editor.iqImagePropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.DATE_EDITOR:
+            obj_property = date_property_editor.iqDatePropertyEditor(label=name, value=value)
+
         # elif property_type == property_editor_id.PASSPORT_EDITOR:
         #     if not isinstance(value, str):
         #         value = str(value)
         #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.ICON_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.FLAG_EDITOR:
-        #     choice_dict = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', dict())
-        #     choices = list(choice_dict.keys())
-        #
-        #     values = list()
-        #     for choice_name, code in choice_dict.items():
-        #         if code & value:
-        #             values.append(choice_name)
-        #     obj_property = wx.propgrid.MultiChoiceProperty(name, choices=choices, value=values)
-        #
-        # elif property_type == property_editor_id.FILE_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     # wx_property = wx.propgrid.FileProperty(name, value=value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
-        #
-        # elif property_type == property_editor_id.DIR_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     # wx_property = wx.propgrid.DirProperty(name, value=value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
+
+        elif property_type == property_editor_id.ICON_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = icon_property_editor.iqIconPropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.FLAG_EDITOR:
+            choice_dict = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', dict())
+            choices = list(choice_dict.keys())
+
+            values = list()
+            for choice_name, code in choice_dict.items():
+                if code & value:
+                    values.append(choice_name)
+            obj_property = multichoice_property_editor.iqFlagPropertyEditor(label=name, value=values, choices=choices)
+
+        elif property_type == property_editor_id.FILE_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = file_property_editor.iqFilePropertyEditor(label=name, value=value)
+
+        elif property_type == property_editor_id.DIR_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = dir_property_editor.iqDirPropertyEditor(label=name, value=value)
 
         else:
             log_func.warning(u'Property type <%s> not supported' % property_type)
