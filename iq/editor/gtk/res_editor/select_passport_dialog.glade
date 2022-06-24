@@ -165,7 +165,9 @@
                             <property name="can_focus">True</property>
                             <property name="model">prj_treestore</property>
                             <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
+                              <object class="GtkTreeSelection">
+                                <signal name="changed" handler="onPrjTreelistSelectionChanged" swapped="no"/>
+                              </object>
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="image_column">
@@ -227,7 +229,9 @@
                             <property name="can_focus">True</property>
                             <property name="model">res_treestore</property>
                             <child internal-child="selection">
-                              <object class="GtkTreeSelection"/>
+                              <object class="GtkTreeSelection">
+                                <signal name="changed" handler="onResTreelistSelectionChanged" swapped="no"/>
+                              </object>
                             </child>
                             <child>
                               <object class="GtkTreeViewColumn" id="image_column1">

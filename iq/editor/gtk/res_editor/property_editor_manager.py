@@ -31,6 +31,8 @@ from . import stringlist_property_editor
 from . import script_property_editor
 from . import readonly_property_editor
 from . import password_property_editor
+from . import singlechoice_property_editor
+from . import flag_property_editor
 
 from . import size_property_editor
 from . import point_property_editor
@@ -41,6 +43,7 @@ from . import font_property_editor
 from . import image_property_editor
 from . import icon_property_editor
 from . import date_property_editor
+from . import passport_property_editor
 
 __version__ = (0, 0, 0, 1)
 
@@ -59,20 +62,20 @@ PROPERTY_EDITORS = (string_property_editor.iqStringPropertyEditor,
                     script_property_editor.iqScriptPropertyEditor,
                     readonly_property_editor.iqReadonlyPropertyEditor,
 
-                    # color_property_editor.iqColorPropertyEditor,
-                    # font_property_editor.iqFontPropertyEditor,
-                    # point_property_editor.iqPointPropertyEditor,
-                    # size_property_editor.iqSizePropertyEditor,
+                    colour_property_editor.iqColourPropertyEditor,
+                    font_property_editor.iqFontPropertyEditor,
+                    point_property_editor.iqPointPropertyEditor,
+                    size_property_editor.iqSizePropertyEditor,
                     password_property_editor.iqPasswordPropertyEditor,
-                    # file_property_editor.iqFilePropertyEditor,
-                    # dir_property_editor.iqDirPropertyEditor,
-                    # image_property_editor.iqImagePropertyEditor,
-                    # date_property_editor.iqDatePropertyEditor,
+                    file_property_editor.iqFilePropertyEditor,
+                    dir_property_editor.iqDirPropertyEditor,
+                    image_property_editor.iqImagePropertyEditor,
+                    date_property_editor.iqDatePropertyEditor,
 
-                    # passport_property_editor.iqPassportPropertyEditor,
-                    # libicon_property_editor.iqLibraryIconPropertyEditor,
-                    # flag_property_editor.iqFlagPropertyEditor,
-                    # single_choice_property_editor.iqSingleChoicePropertyEditor,
+                    passport_property_editor.iqPassportPropertyEditor,
+                    icon_property_editor.iqIconPropertyEditor,
+                    flag_property_editor.iqFlagPropertyEditor,
+                    singlechoice_property_editor.iqSingleChoicePropertyEditor,
                     )
 
 
@@ -184,21 +187,21 @@ class iqPropertyEditorManager(object):
 
             obj_property = choice_property_editor.iqChoicePropertyEditor(label=name, value=value, choices=choices)
 
-        # elif property_type == property_editor_id.SINGLE_CHOICE_EDITOR:
-        #     # log_func.debug(u'Attribute <%s>' % name)
-        #     choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
-        #     if isinstance(choices, (list, tuple)):
-        #         choices = [str(item) for item in choices]
-        #     elif callable(choices):
-        #         choices = choices(resource=spc, parent_resource=parent_spc)
-        #     else:
-        #         log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
-        #         choices = list()
-        #
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = single_choice_property.iqSingleChoiceProperty(label=name, name=name,
-        #                                                                 choices=choices, value=value)
+        elif property_type == property_editor_id.SINGLE_CHOICE_EDITOR:
+            # log_func.debug(u'Attribute <%s>' % name)
+            choices = spc.get(spc_func.EDIT_ATTR_NAME, dict()).get(name, dict()).get('choices', list())
+            if isinstance(choices, (list, tuple)):
+                choices = [str(item) for item in choices]
+            elif callable(choices):
+                choices = choices(resource=spc, parent_resource=parent_spc)
+            else:
+                log_func.warning(u'Property editor. Not support choices type <%s : %s>' % (name, type(choices)))
+                choices = list()
+
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = singlechoice_property_editor.iqSingleChoicePropertyEditor(label=name, value=value,
+                                                                                     choices=choices)
 
         elif property_type == property_editor_id.CHECKBOX_EDITOR:
             if isinstance(value, str):
@@ -324,10 +327,10 @@ class iqPropertyEditorManager(object):
         elif property_type == property_editor_id.DATE_EDITOR:
             obj_property = date_property_editor.iqDatePropertyEditor(label=name, value=value)
 
-        # elif property_type == property_editor_id.PASSPORT_EDITOR:
-        #     if not isinstance(value, str):
-        #         value = str(value)
-        #     obj_property = wx.propgrid.StringProperty(name, value=value)
+        elif property_type == property_editor_id.PASSPORT_EDITOR:
+            if not isinstance(value, str):
+                value = str(value)
+            obj_property = passport_property_editor.iqPassportPropertyEditor(label=name, value=value)
 
         elif property_type == property_editor_id.ICON_EDITOR:
             if not isinstance(value, str):

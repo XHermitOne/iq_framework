@@ -14,32 +14,29 @@ import gi
 gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
-from iq.util import log_func
+from ....util import log_func
 
-from iq.engine.gtk import gtk_handler
+from ....engine.gtk.dlg import gtk_dlg_func
+
+from ....engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
 # from iq.engine.gtk import gtkwindow_manager
 
 from . import property_editor_proto
 
-from . import edit_stringlist_dialog
-
 __version__ = (0, 0, 0, 1)
 
-STRING_DELIMETER = ', '
 
-
-class iqStringListPropertyEditor(gtk_handler.iqGtkHandler,
-                                 property_editor_proto.iqPropertyEditorProto):
+class iqSingleChoicePropertyEditor(gtk_handler.iqGtkHandler,
+                                   property_editor_proto.iqPropertyEditorProto):
     """
-    String list property editor class.
+    Single choice property editor class.
     """
     def __init__(self, label='', value=None, choices=None, default=None, *args, **kwargs):
-        self.glade_filename = os.path.join(os.path.dirname(__file__), 'stringlist_property_editor.glade')
+        self.glade_filename = os.path.join(os.path.dirname(__file__), 'singlechoice_property_editor.glade')
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='property_box',  
                                           *args, **kwargs)
-
         property_editor_proto.iqPropertyEditorProto.__init__(self, label=label, value=value,
                                                              choices=choices, default=default)
 
@@ -72,7 +69,11 @@ class iqStringListPropertyEditor(gtk_handler.iqGtkHandler,
         Property edit icon mouse click handler.
         """
         if icon.value_name == 'GTK_ENTRY_ICON_SECONDARY':
-            result = edit_stringlist_dialog.editStringlistDialog(string_list=self.value)
+            selected_idx = -1
+            if self.value in self.choices:
+                selected_idx = self.choices.index(self.value)
+            result = gtk_dlg_func.getSingleChoiceDlg(title=u'Choice', prompt_text=u'Select item',
+                                                     choices=self.choices, default_idx=selected_idx)
             self.value = result
             self.setValue(self.value)
 
@@ -80,10 +81,8 @@ class iqStringListPropertyEditor(gtk_handler.iqGtkHandler,
         """
         Set property editor value.
         """
-        if isinstance(value, (list, tuple)):
-            value = STRING_DELIMETER.join([str(value_item) for value_item in value])
-        else:
-            value = u''
+        if not isinstance(value, str):
+            value = str(value)
 
         self.getGtkObject('property_entry').set_text(value)
 

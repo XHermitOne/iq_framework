@@ -430,6 +430,28 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         model, selected_item = selection.get_selected()
         return selected_item
 
+    def selectGtkTreeViewItem(self, treeview=None, item=None):
+        """
+        Select item.
+
+        :param treeview: GtkTreeView control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :return: True/False.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if item is None:
+            item = self.getGtkTreeViewRootItem(treeview=treeview)
+
+        try:
+            selection = treeview.get_selection()
+            selection.select_iter(item)
+            return True
+        except:
+            log_func.fatal(u'Error select treeview item')
+        return False
+
     def setGtkTreeViewRowColor(self, treeview=None, row=None, store_color_column=-1, color=None):
         """
         Set tree row text color.

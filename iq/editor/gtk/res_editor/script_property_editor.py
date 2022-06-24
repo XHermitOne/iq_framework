@@ -90,6 +90,15 @@ class iqScriptPropertyEditor(gtk_handler.iqGtkHandler,
         property_value = value_lines[0] + ' ...' if len(value_lines) >= 1 else value_lines[0]
         self.getGtkObject('property_entry').set_text(property_value)
 
+    def setHelpString(self, help_string):
+        """
+        Set help string.
+
+        :param help_string: Help string.
+        """
+        label = self.getGtkObject('property_label')
+        label.set_property('tooltip-text', help_string)
+
 
 class iqPythonScriptPropertyEditor(iqScriptPropertyEditor):
     """
