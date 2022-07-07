@@ -12,15 +12,16 @@ from iq.util import log_func
 from iq.util import res_func
 from iq.util import str_func
 from iq.util import file_func
+from iq.util import global_func
 
-from . import report_browser
 from . import report_gen_func
 from . import style_library
 
+from .dlg import report_folder_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
-DEFAULT_REPORT_FILE_EXT = report_browser.REPORT_FILENAME_EXT
+DEFAULT_REPORT_FILE_EXT = report_folder_func.REPORT_FILENAME_EXT
 XML_REPORT_FILE_EXT = '.xml'
 
 
@@ -166,9 +167,18 @@ def openReportEditor(parent_form=None, report_dir=''):
     :param report_dir: Directory where reports are stored.
     :return: True/False.
     """
-    return report_browser.openReportBrowser(parent_form, report_dir,
-                                            mode=report_browser.REPORT_EDITOR_MODE,
-                                            lock_run_copy=True)
+    if global_func.isWXEngine():
+        from .dlg.wx_dlg import report_browser
+        return report_browser.openReportBrowser(parent_form, report_dir,
+                                                mode=report_browser.REPORT_EDITOR_MODE,
+                                                lock_run_copy=True)
+    elif global_func.isGTKEngine():
+        from .dlg.gtk_dlg import report_browser_win
+        return report_browser_win.openReportBrowser(parent_form, report_dir,
+                                                    mode=report_browser_win.REPORT_EDITOR_MODE,
+                                                    lock_run_copy=True)
+    else:
+        log_func.warning(u'Report editor. Not supported  engine <%s>' % global_func.getEngineType())
 
 
 def openReportViewer(parent_form=None, report_dir=''):
@@ -179,9 +189,18 @@ def openReportViewer(parent_form=None, report_dir=''):
     :param report_dir: Directory where reports are stored.
     :return: True/False.
     """
-    return report_browser.openReportBrowser(parent_form, report_dir,
-                                            mode=report_browser.REPORT_VIEWER_MODE,
-                                            lock_run_copy=True)
+    if global_func.isWXEngine():
+        from .dlg.wx_dlg import report_browser
+        return report_browser.openReportBrowser(parent_form, report_dir,
+                                                mode=report_browser.REPORT_VIEWER_MODE,
+                                                lock_run_copy=True)
+    elif global_func.isGTKEngine():
+        from .dlg.gtk_dlg import report_browser_win
+        return report_browser_win.openReportBrowser(parent_form, report_dir,
+                                                    mode=report_browser_win.REPORT_VIEWER_MODE,
+                                                    lock_run_copy=True)
+    else:
+        log_func.warning(u'Report viewer. Not supported  engine <%s>' % global_func.getEngineType())
 
 
 def printReport(parent_form=None, report_filename='', report_dir='',

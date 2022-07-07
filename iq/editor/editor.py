@@ -144,12 +144,11 @@ def _openResourceEditor(res_filename):
 
         elif os.path.isdir(res_filename) and os.path.exists(os.path.join(res_filename, 'descript.ion')):
             log_func.info(u'Design reports <%s>' % res_filename)
-            # # Report folder
-            # from iq_report import report_manager
-            # rep_manager = report_manager.getReportManager()
-            # rep_manager.setReportDir(report_dir=res_filename)
-            # return rep_manager.design()
-            return True
+            # Report folder
+            from iq_report import report_manager
+            rep_manager = report_manager.getReportManager()
+            rep_manager.setReportDir(report_dir=res_filename)
+            return rep_manager.design()
 
         elif os.path.isdir(res_filename):
             log_func.info(u'Edit folder <%s>' % res_filename)

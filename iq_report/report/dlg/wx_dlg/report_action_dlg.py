@@ -7,7 +7,7 @@ Dialog box for selecting an action on a report.
 
 import wx
 
-from . import report_dlg_proto
+from iq_report.report.dlg.wx_dlg import report_dlg_proto
 
 from iq.util import str_func
 from iq.util import log_func

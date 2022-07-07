@@ -9,7 +9,7 @@ import copy
 import os 
 import os.path
 
-from .dlg import report_action_dlg
+from .dlg.wx_dlg import report_action_dlg
 
 import iq
 from iq.util import log_func

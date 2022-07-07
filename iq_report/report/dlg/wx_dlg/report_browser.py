@@ -22,19 +22,14 @@ from iq.util import sys_func
 from iq.dialog import dlg_func
 from iq.engine import img_func
 
-from . import report_gen_func
-from . import report_glob_data
+from iq_report.report import report_gen_func
+from iq_report.report import report_glob_data
 
-__version__ = (0, 0, 2, 2)
+from .. import report_folder_func
+
+__version__ = (0, 0, 3, 1)
 
 _ = lang_func.getTranslation().gettext
-
-# Indexes
-REP_FILE_IDX = 0            # full file name / report directory
-REP_NAME_IDX = 1            # report name / directory
-REP_DESCRIPTION_IDX = 2     # report description / directory
-REP_ITEMS_IDX = 3           # nested objects
-REP_IMG_IDX = 4             # Report image in the report tree
 
 # Browser modes
 REPORT_VIEWER_MODE = 0
@@ -45,113 +40,12 @@ REP_BROWSER_BUTTONS_POS_X = 980
 REP_BROWSER_BUTTONS_WIDTH = 200
 REP_BROWSER_BUTTONS_HEIGHT = 30
 
-# Unprocessed folder names
-NOT_WORK_DIRNAMES = ('__pycache__',)
-
 # Dialog box size
 REP_BROWSER_DLG_WIDTH = 1200
 REP_BROWSER_DLG_HEIGHT = 460
 
 # Dialog title
 TITLE = 'iqReport'
-
-REPORT_FILENAME_EXT = '.rep'
-XLS_FILENAME_EXT = '.xls'
-
-
-def getReportList(report_dir, is_sort=True):
-    """
-    Get report template list.
-
-    :param report_dir: Report directory.
-    :type is_sort: bool.
-    :param is_sort: Sort list by name?
-    :return: Format list:
-        [
-            [
-            full file name / report directory,
-            report name / directory,
-            report description / directory,
-            None / Nested Objects,
-            image index
-            ],
-        .
-        .
-        .
-        ]
-        The description of the directory is taken from the descript.ion file,
-        which should be in the same directory.
-        If such a file is not found, then the directory description is empty.
-        Nested objects is a list whose elements have the same structure.
-    """
-    try:
-        report_dir = os.path.abspath(os.path.normpath(report_dir))
-        log_func.debug(u'Report folder scan <%s>' % report_dir)
-
-        dir_list = list()
-        rep_list = list()
-
-        sub_dirs = file_func.getSubDirs(report_dir)
-
-        img_idx = 0
-        for sub_dir in sub_dirs:
-            # Exclude not processed folders
-            if os.path.basename(sub_dir) in NOT_WORK_DIRNAMES:
-                continue
-
-            description_file = None
-            try:
-                description_file = open(os.path.join(sub_dir, 'descript.ion'), 'rt')
-                dir_description = description_file.read()
-                description_file.close()
-            except:
-                if description_file:
-                    description_file.close()
-                dir_description = sub_dir
-
-            data = [sub_dir, os.path.basename(sub_dir), dir_description,
-                    getReportList(sub_dir, is_sort), img_idx]
-            dir_list.append(data)
-
-        if is_sort:
-            dir_list.sort(key=lambda i: i[2])
-
-        filename_mask = os.path.join(report_dir, '*%s' % REPORT_FILENAME_EXT)
-        file_rep_list = [filename for filename in file_func.getFilesByMask(filename_mask)]
-
-        for rep_file_name in file_rep_list:
-            rep_struct = res_func.loadResourcePickle(rep_file_name)
-            img_idx = 2
-            try:
-                if rep_struct['generator'][-3:].lower() == 'xml':
-                    img_idx = 1
-            except:
-                log_func.warning(u'Report type definition error')
-
-            try:
-                data = [rep_file_name, rep_struct['name'],
-                        rep_struct['description'], None, img_idx]
-                rep_list.append(data)
-            except:
-                log_func.fatal(u'Error reading report template <%s>' % rep_file_name)
-
-        if is_sort:
-            rep_list.sort(key=lambda i: i[2])
-
-        return dir_list + rep_list
-    except:
-        log_func.fatal(u'Error filling out information about report files <%s>.' % report_dir)
-    return list()
-
-
-def getRootDirname():
-    """
-    Get project root dirname.
-    """
-    cur_dirname = os.path.dirname(__file__)
-    if not cur_dirname:
-        cur_dirname = os.getcwd()
-    return os.path.dirname(os.path.dirname(cur_dirname))
 
 
 class iqReportBrowserDialog(wx.Dialog):
@@ -288,7 +182,7 @@ class iqReportBrowserDialog(wx.Dialog):
         if global_func.getProjectName():
             prj_settings_filename = file_func.getProjectSettingsFilename()
             return prj_settings_filename
-        return os.path.join(getRootDirname(), 'settings.ini')
+        return os.path.join(report_folder_func.getRootDirname(), 'settings.ini')
         
     def onPreviewReportButton(self, event):
         """
@@ -296,10 +190,10 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
-        log_func.debug(u'Preview <%s>' % str(item_data[REP_FILE_IDX] if item_data else u'-'))
+        log_func.debug(u'Preview <%s>' % str(item_data[report_folder_func.REP_FILE_IDX] if item_data else u'-'))
 
-        if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
+        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
+            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX],
                                                      parent=self,
                                                      refresh=True).preview()
         else:
@@ -313,9 +207,9 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
-        log_func.debug(u'Print <%s>' % item_data[REP_FILE_IDX] if item_data else u'-')
-        if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
+        log_func.debug(u'Print <%s>' % item_data[report_folder_func.REP_FILE_IDX] if item_data else u'-')
+        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
+            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX],
                                                      parent=self,
                                                      refresh=True).print()
         else:
@@ -329,8 +223,8 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
-        if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self).setPageSetup()
+        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
+            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX], parent=self).setPageSetup()
         else:
             dlg_func.openWarningBox(title=_(u'WARNING'),
                                     message=_(u'You must select a report'), parent=self)
@@ -377,12 +271,12 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
-        if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            rep_generator = report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self)
+        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
+            rep_generator = report_gen_func.getReportGeneratorSystem(report_folder_func.item_data[report_folder_func.REP_FILE_IDX], parent=self)
             if rep_generator is not None:
                 rep_generator.edit(item_data[0])
             else:
-                log_func.warning(u'Report generator not defined. Type <%s>' % item_data[REP_FILE_IDX])
+                log_func.warning(u'Report generator not defined. Type <%s>' % item_data[report_folder_func.REP_FILE_IDX])
 
         event.Skip()
 
@@ -392,9 +286,9 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
-        if item_data is not None and item_data[REP_ITEMS_IDX] is None:
+        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
             log_func.debug(u'Update report <%s>' % item_data[0])
-            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX], parent=self).update(item_data[0])
+            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX], parent=self).update(item_data[0])
         else:
             report_gen_func.getCurReportGeneratorSystem(self).update()
                 
@@ -408,9 +302,9 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
-        log_func.debug(u'Convert <%s>' % item_data[REP_FILE_IDX] if item_data else u'-')
-        if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[REP_FILE_IDX],
+        log_func.debug(u'Convert <%s>' % item_data[report_folder_func.REP_FILE_IDX] if item_data else u'-')
+        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
+            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX],
                                                      parent=self,
                                                      refresh=True).convert()
         else:
@@ -436,16 +330,16 @@ class iqReportBrowserDialog(wx.Dialog):
         """
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
-        if item_data is not None and item_data[REP_ITEMS_IDX] is None:
-            old_rep_name = os.path.splitext(os.path.split(item_data[REP_FILE_IDX])[1])[0]
+        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
+            old_rep_name = os.path.splitext(os.path.split(item_data[report_folder_func.REP_FILE_IDX])[1])[0]
             new_rep_name = dlg_func.getTextEntryDlg(self, _(u'Rename report'),
                                                     _(u'Entry new report name'), old_rep_name)
             if new_rep_name and new_rep_name != old_rep_name:
-                new_rep_file_name = os.path.join(os.path.split(item_data[REP_FILE_IDX])[0],
-                                                 new_rep_name + REPORT_FILENAME_EXT)
+                new_rep_file_name = os.path.join(os.path.split(item_data[report_folder_func.REP_FILE_IDX])[0],
+                                                 new_rep_name + report_folder_func.REPORT_FILENAME_EXT)
 
                 if not os.path.isfile(new_rep_file_name):
-                    self.renameReport(item_data[REP_FILE_IDX], new_rep_name)
+                    self.renameReport(item_data[report_folder_func.REP_FILE_IDX], new_rep_name)
                 else:
                     dlg_func.openWarningBox(title=_(u'WARNING'),
                                             prompt_text=_(u'A report with the same name already exists'),
@@ -460,9 +354,9 @@ class iqReportBrowserDialog(wx.Dialog):
         old_name = os.path.splitext(os.path.split(rep_filename)[1])[0]
         old_rep_file_name = rep_filename
         old_rep_pkl_file_name = os.path.splitext(old_rep_file_name)[0] + res_func.PICKLE_RESOURCE_FILE_EXT
-        old_xls_file_name = os.path.splitext(old_rep_file_name)[0] + XLS_FILENAME_EXT
+        old_xls_file_name = os.path.splitext(old_rep_file_name)[0] + report_folder_func.XLS_FILENAME_EXT
         new_rep_file_name = os.path.join(os.path.split(old_rep_file_name)[0],
-                                         new_name + REPORT_FILENAME_EXT)
+                                         new_name + report_folder_func.REPORT_FILENAME_EXT)
         if os.path.isfile(old_rep_file_name):
             try:
                 os.rename(old_rep_file_name, new_rep_file_name)
@@ -484,7 +378,7 @@ class iqReportBrowserDialog(wx.Dialog):
                 rep_file.close()
 
         new_xls_file_name = os.path.join(os.path.split(old_rep_file_name)[0],
-                                         new_name + XLS_FILENAME_EXT)
+                                         new_name + report_folder_func.XLS_FILENAME_EXT)
         if os.path.isfile(old_xls_file_name):
             os.rename(old_xls_file_name, new_xls_file_name)
             try:
@@ -511,7 +405,7 @@ class iqReportBrowserDialog(wx.Dialog):
 
         :param report_dir: Report directory.
         """
-        rep_data = getReportList(report_dir)
+        rep_data = report_folder_func.getReportList(report_dir)
         if rep_data is None:
             log_func.warning(u'Error data. Report directory <%s>' % report_dir)
             return
@@ -533,18 +427,18 @@ class iqReportBrowserDialog(wx.Dialog):
             log_func.warning(u'An empty list of report descriptions when building a report tree')
 
         for item_data in items:
-            label = '%s / %s' % (item_data[REP_DESCRIPTION_IDX], os.path.basename(item_data[REP_FILE_IDX]))
+            label = '%s / %s' % (item_data[report_folder_func.REP_DESCRIPTION_IDX], os.path.basename(item_data[report_folder_func.REP_FILE_IDX]))
             item = self.report_treectrl.AppendItem(parent_id, label, -1, -1, data=None)
 
-            if item_data[REP_ITEMS_IDX] is not None:
-                self._appendItemsReportTree(item, item_data[REP_ITEMS_IDX])
+            if item_data[report_folder_func.REP_ITEMS_IDX] is not None:
+                self._appendItemsReportTree(item, item_data[report_folder_func.REP_ITEMS_IDX])
 
                 self.report_treectrl.SetItemImage(item, 0, wx.TreeItemIcon_Normal)
                 self.report_treectrl.SetItemImage(item, 0, wx.TreeItemIcon_Selected)
             else:
 
-                self.report_treectrl.SetItemImage(item, item_data[REP_IMG_IDX], wx.TreeItemIcon_Normal)
-                self.report_treectrl.SetItemImage(item, item_data[REP_IMG_IDX], wx.TreeItemIcon_Selected)
+                self.report_treectrl.SetItemImage(item, item_data[report_folder_func.REP_IMG_IDX], wx.TreeItemIcon_Normal)
+                self.report_treectrl.SetItemImage(item, item_data[report_folder_func.REP_IMG_IDX], wx.TreeItemIcon_Selected)
 
             self.report_treectrl.SetItemData(item, item_data)
 

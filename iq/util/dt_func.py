@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 7, 1)
+__version__ = (0, 0, 8, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -382,6 +382,27 @@ def getYearAgoDT(day=None):
 
     cur_year = day.year
     return day.replace(year=cur_year - 1)
+
+
+def getMinDateTime():
+    """
+    Get minimum datetime.
+    """
+    return datetime.datetime.min
+
+
+def getMinDate():
+    """
+    Get minimum date.
+    """
+    return datetime.date.min()
+
+
+def getTimeDelta(*args, **kwargs):
+    """
+    Get timedelta.
+    """
+    return datetime.timedelta(*args, **kwargs)
 
 
 def str2datetime(dt_str, fmt=DEFAULT_DATETIME_FMT):
