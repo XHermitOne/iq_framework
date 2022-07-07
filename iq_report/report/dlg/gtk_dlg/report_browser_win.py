@@ -89,10 +89,12 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         Preview button click handler.
         """
         item_data = self.getGtkTreeViewSelectedItemData(treeview=self.getGtkObject('report_treeview'))
-        log_func.debug(u'Preview <%s>' % str(item_data[report_folder_func.REP_FILE_IDX] if item_data else u'-'))
+        has_children = isinstance(item_data, dict) and 'data' in item_data and item_data['data'][report_folder_func.REP_ITEMS_IDX]
 
-        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX],
+        if not has_children:
+            rep_filename = item_data['data'][report_folder_func.REP_FILE_IDX]
+            log_func.debug(u'Preview <%s>' % str(rep_filename))
+            report_gen_func.getReportGeneratorSystem(rep_filename,
                                                      parent=self,
                                                      refresh=True).preview()
         else:
@@ -104,9 +106,11 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         Print button click handler.
         """
         item_data = self.getGtkTreeViewSelectedItemData(treeview=self.getGtkObject('report_treeview'))
-        log_func.debug(u'Print <%s>' % item_data[report_folder_func.REP_FILE_IDX] if item_data else u'-')
-        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX],
+        has_children = isinstance(item_data, dict) and 'data' in item_data and item_data['data'][report_folder_func.REP_ITEMS_IDX]
+        if not has_children:
+            rep_filename = item_data['data'][report_folder_func.REP_FILE_IDX]
+            log_func.debug(u'Print <%s>' % rep_filename)
+            report_gen_func.getReportGeneratorSystem(rep_filename,
                                                      parent=self,
                                                      refresh=True).print()
         else:
@@ -118,8 +122,11 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         Page setup button click handler.
         """
         item_data = self.getGtkTreeViewSelectedItemData(treeview=self.getGtkObject('report_treeview'))
-        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX], parent=self).setPageSetup()
+        has_children = isinstance(item_data, dict) and 'data' in item_data and item_data['data'][report_folder_func.REP_ITEMS_IDX]
+        if not has_children:
+            rep_filename = item_data['data'][report_folder_func.REP_FILE_IDX]
+            report_gen_func.getReportGeneratorSystem(rep_filename,
+                                                     parent=self).setPageSetup()
         else:
             dlg_func.openWarningBox(title=_(u'WARNING'),
                                     message=_(u'You must select a report'), parent=self)
@@ -129,9 +136,11 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         Convert button click handler.
         """
         item_data = self.getGtkTreeViewSelectedItemData(treeview=self.getGtkObject('report_treeview'))
-        log_func.debug(u'Convert <%s>' % item_data[report_folder_func.REP_FILE_IDX] if item_data else u'-')
-        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
-            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX],
+        has_children = isinstance(item_data, dict) and 'data' in item_data and item_data['data'][report_folder_func.REP_ITEMS_IDX]
+        if not has_children:
+            rep_filename = item_data['data'][report_folder_func.REP_FILE_IDX]
+            log_func.debug(u'Convert <%s>' % rep_filename)
+            report_gen_func.getReportGeneratorSystem(rep_filename,
                                                      parent=self,
                                                      refresh=True).convert()
         else:
@@ -162,12 +171,13 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         """
         Edit button click handler.
         """
-        item = self.report_treectrl.GetSelection()
-        item_data = self.report_treectrl.GetItemData(item)
-        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
-            rep_generator = report_gen_func.getReportGeneratorSystem(report_folder_func.item_data[report_folder_func.REP_FILE_IDX], parent=self)
+        item_data = self.getGtkTreeViewSelectedItemData(treeview=self.getGtkObject('report_treeview'))
+        has_children = isinstance(item_data, dict) and 'data' in item_data and item_data['data'][report_folder_func.REP_ITEMS_IDX]
+        if not has_children:
+            rep_filename = item_data['data'][report_folder_func.REP_FILE_IDX]
+            rep_generator = report_gen_func.getReportGeneratorSystem(rep_filename, parent=self)
             if rep_generator is not None:
-                rep_generator.edit(item_data[0])
+                rep_generator.edit(rep_filename)
             else:
                 log_func.warning(u'Report generator not defined. Type <%s>' % item_data[report_folder_func.REP_FILE_IDX])
 
@@ -175,13 +185,13 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         """
         Update button click handler.
         """
-        # item = self.report_treectrl.GetSelection()
-        # item_data = self.report_treectrl.GetItemData(item)
         item_data = self.getGtkTreeViewSelectedItemData(treeview=self.getGtkObject('report_treeview'))
-        if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
-            log_func.debug(u'Update report <%s>' % item_data[0])
-            report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX], parent=self).update(
-                item_data[0])
+        has_children = isinstance(item_data, dict) and 'data' in item_data and item_data['data'][report_folder_func.REP_ITEMS_IDX]
+        if not has_children:
+            rep_filename = item_data['data'][report_folder_func.REP_FILE_IDX]
+            log_func.debug(u'Update report <%s>' % rep_filename)
+            report_gen_func.getReportGeneratorSystem(rep_filename,
+                                                     parent=self).update(rep_filename)
         else:
             report_gen_func.getCurReportGeneratorSystem(self).update()
 
@@ -192,25 +202,28 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         Exit button click handler.
         """
         self.getGtkTopObject().close()
+        gi.repository.Gtk.main_quit()
 
     def buildReportTree(self, report_dir):
         """
         Build the report tree by report data.
 
         :param report_dir: Report directory.
+        :return: True/False.
         """
         rep_data = report_folder_func.getReportList(report_dir)
         if rep_data is None:
             log_func.warning(u'Error data. Report directory <%s>' % report_dir)
-            return
+            return False
 
         treeview = self.getGtkObject('report_treeview')
         self.clearGtkTreeView(treeview=treeview)
-        # root = self.report_treectrl.AddRoot(_(u'Reports'), image=0)
-        root = self.addGtkTreeViewRootItem(treeview=treeview, node=dict(description=_(u'Reports')))
-        self.setGtkTreeViewItemData(treeview=treeview, item=root, item_data=None)
+        root = self.addGtkTreeViewRootItem(treeview=treeview,
+                                           node=dict(img='fatcow/report_stack', description=_(u'Reports'), data=None),
+                                           columns=('img', 'description'))
         self._appendItemsReportTree(parent_item=root, data=rep_data)
         self.expandGtkTreeViewItem(treeview=treeview, item=root)
+        return True
 
     def _appendItemsReportTree(self, parent_item, data):
         """
@@ -226,21 +239,14 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
         for item_data in data:
             label = '%s / %s' % (item_data[report_folder_func.REP_DESCRIPTION_IDX],
                                  os.path.basename(item_data[report_folder_func.REP_FILE_IDX]))
-            # item = self.report_treectrl.AppendItem(parent_id, label, -1, -1, data=None)
-            item = self.appendGtkTreeViewChildItem(treeview=treeview, parent_item=parent_item, columns=[None, label])
+            img_name = 'fatcow/report_stack' if item_data[report_folder_func.REP_ITEMS_IDX] is not None else 'fatcow/report'
+            item = self.appendGtkTreeViewChildItem(treeview=treeview,
+                                                   parent_item=parent_item,
+                                                   columns=[img_name, label],
+                                                   data=dict(label=label, data=item_data))
 
             if item_data[report_folder_func.REP_ITEMS_IDX] is not None:
                 self._appendItemsReportTree(item, item_data[report_folder_func.REP_ITEMS_IDX])
-
-                # self.report_treectrl.SetItemImage(item, 0, wx.TreeItemIcon_Normal)
-                # self.report_treectrl.SetItemImage(item, 0, wx.TreeItemIcon_Selected)
-            else:
-                # self.report_treectrl.SetItemImage(item, item_data[report_folder_func.REP_IMG_IDX], wx.TreeItemIcon_Normal)
-                # self.report_treectrl.SetItemImage(item, item_data[report_folder_func.REP_IMG_IDX], wx.TreeItemIcon_Selected)
-                pass
-
-            # self.report_treectrl.SetItemData(item, item_data)
-            self.setGtkTreeViewItemData(treeview=treeview, item=item, item_data=item_data)
 
     def setReportDir(self, rep_dir):
         """

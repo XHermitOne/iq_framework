@@ -160,7 +160,8 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
         # log_func.debug(u'Add new resource item <%s : %s : %s : %s>' % (component_type, name, description, icon_idx))
 
         if icon_filename is None or not os.path.exists(icon_filename):
-            img = gi.repository.Gtk.IconTheme.get_default().load_icon('image-missing', gi.repository.Gtk.IconSize.MENU, 0)
+            img = gi.repository.Gtk.IconTheme.get_default().load_icon(gi.repository.Gtk.STOCK_MISSING_IMAGE,
+                                                                      gi.repository.Gtk.IconSize.MENU, 0)
         else:
             img = gi.repository.GdkPixbuf.Pixbuf.new_from_file(icon_filename)
         if parent_item is None:

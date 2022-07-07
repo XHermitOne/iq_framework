@@ -55,6 +55,8 @@
   </object>
   <object class="GtkTreeStore" id="report_treestore">
     <columns>
+      <!-- column-name guid -->
+      <column type="gchararray"/>
       <!-- column-name img -->
       <column type="GdkPixbuf"/>
       <!-- column-name description -->
@@ -64,7 +66,7 @@
   <object class="GtkWindow" id="report_browser_win">
     <property name="name">report_browser_win</property>
     <property name="can_focus">False</property>
-    <property name="default_width">850</property>
+    <property name="default_width">950</property>
     <property name="default_height">500</property>
     <child type="titlebar">
       <placeholder/>
@@ -117,22 +119,21 @@
                         </child>
                         <child>
                           <object class="GtkTreeViewColumn" id="image_column">
-                            <property name="title" translatable="yes">column</property>
                             <child>
                               <object class="GtkCellRendererPixbuf" id="image_renderer"/>
                               <attributes>
-                                <attribute name="pixbuf">0</attribute>
+                                <attribute name="pixbuf">1</attribute>
                               </attributes>
                             </child>
                           </object>
                         </child>
                         <child>
                           <object class="GtkTreeViewColumn" id="description_column">
-                            <property name="title" translatable="yes">column</property>
+                            <property name="title" translatable="yes">Description</property>
                             <child>
                               <object class="GtkCellRendererText" id="description_renderer"/>
                               <attributes>
-                                <attribute name="text">1</attribute>
+                                <attribute name="text">2</attribute>
                               </attributes>
                             </child>
                           </object>

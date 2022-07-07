@@ -10,17 +10,22 @@ the first column in the model
 must be the item's GUID as gchararray.
 """
 
+import os
+import os.path
+
 import gi
 gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
+import gi.repository.GdkPixbuf
 
 from ...util import log_func
 from ...util import spc_func
 from ...util import id_func
+from ...util import icon_func
 
 from . import base_manager
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT = '__gtktreeview_item_data_cache_%s__'
 
@@ -167,7 +172,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                         log_func.warning(u'Not valid column key <%s> in item data for column <%d>' % (key, i))
                         value = u''
                 else:
-                    log_func.warning(u'Not define column key in item data for column <%d>' % i)
+                    log_func.warning(u'Not define column key in item data for column <%d from %d >' % (i, columns_count))
                     value = u''
                 #
                 if column_type == 'gchararray':
@@ -178,6 +183,18 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                     value = int(value) if value else 0
                 elif column_type in ('gfloat', 'gdouble'):
                     value = float(value) if value else 0.0
+                elif column_type == 'GdkPixbuf':
+                    if value and os.path.exists(value):
+                        # Image filename
+                        value = gi.repository.GdkPixbuf.Pixbuf.new_from_file(value)
+                    elif value and isinstance(value, str):
+                        # Icon name
+                        icon_filename = icon_func.getIconFilename(value)
+                        value = gi.repository.GdkPixbuf.Pixbuf.new_from_file(icon_filename)
+                    else:
+                        log_func.warning(u'Not define image value <%s>' % str(value))
+                        value = gi.repository.Gtk.IconTheme.get_default().load_icon(gi.repository.Gtk.STOCK_MISSING_IMAGE,
+                                                                                    gi.repository.Gtk.IconSize.MENU, 0)
                 else:
                     log_func.warning(u'Not supported column <%d> type <%s> in <%s>' % (i, column_type,
                                                                                        self.__class__.__name__))
@@ -214,7 +231,8 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                                                            columns=columns, ext_func=ext_func)
                 return result
             elif isinstance(node, dict):
-                item = self.addGtkTreeViewRootItem(treeview, node, columns=columns, ext_func=ext_func)
+                item = self.addGtkTreeViewRootItem(treeview=treeview, node=node,
+                                                   columns=columns, ext_func=ext_func)
             else:
                 log_func.warning(u'Node type <%s> not support in GtkTreeView manager' % str(type(node)))
                 return False
@@ -390,7 +408,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             model = treeview.get_model()
             row = self._initGtkTreeViewRow(treeview=treeview, node=data, columns=columns)
             new_item = model.append(parent_item, row)
-            # log_func.debug(u'Append item <%s>' % label)
+            # log_func.debug(u'Append item <%s>' % str(row))
             if data is not None:
                 self.setGtkTreeViewItemData(treeview=treeview, item=new_item, item_data=data)
 
