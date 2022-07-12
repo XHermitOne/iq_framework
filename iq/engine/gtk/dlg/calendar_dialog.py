@@ -37,12 +37,14 @@ class iqCalendarDialog(gtk_handler.iqGtkHandler):
                                           top_object_name='calendar_dialog',  
                                           *args, **kwargs)
                                           
-    def init(self):
+    def init(self, default_date=None):
         """
         Init form.
+
+        :param default_date: If define then set default date.
         """
         self.initImages()
-        self.initControls()
+        self.initControls(default_date=default_date)
 
     def initImages(self):
         """
@@ -50,11 +52,18 @@ class iqCalendarDialog(gtk_handler.iqGtkHandler):
         """
         pass
 
-    def initControls(self):
+    def initControls(self, default_date=None):
         """
         Init controls method.
+
+        :param default_date: If define then set default date.
         """
-        pass
+        if default_date:
+            day = default_date.day
+            month = default_date.month
+            year = default_date.year
+            self.getGtkObject('calendar').select_month(month, year)
+            self.getGtkObject('calendar').select_day(day)
 
     def onCancelButttonClicked(self, widget):
         """

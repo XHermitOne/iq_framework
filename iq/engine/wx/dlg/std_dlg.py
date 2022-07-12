@@ -63,7 +63,7 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
 
 def getDateDlg(parent=None, default_date=None):
     """
-    Select date dalog.
+    Select date dialog.
 
     :param parent: Parent window.
         If None then get wx.GetApp().GetTopWindow()

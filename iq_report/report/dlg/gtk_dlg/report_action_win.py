@@ -15,6 +15,8 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from iq.util import log_func
+from iq.util import str_func
+from iq.util import lang_func
 
 from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
@@ -22,17 +24,27 @@ from iq.engine.gtk import gtk_handler
 
 __version__ = (0, 0, 0, 1)
 
+_ = lang_func.getTranslation().gettext
+
+DEFAULT_UNICODE = 'utf-8'
+
+PRINT_ACTION_ID = 'print'
+PREVIEW_ACTION_ID = 'preview'
+EXPORT_ACTION_ID = 'export'
+
 
 class iqReportActionWin(gtk_handler.iqGtkHandler):
     """
-    Unknown class.
+    Dialog box for selecting an action on a report.
     """
     def __init__(self, *args, **kwargs):
         self.glade_filename = os.path.join(os.path.dirname(__file__), 'report_action_win.glade')
         gtk_handler.iqGtkHandler.__init__(self, glade_filename=self.glade_filename,
                                           top_object_name='report_action_win',  
                                           *args, **kwargs)
-                                          
+        # Selected action
+        self._selected_action = None
+
     def init(self):
         """
         Init form.
@@ -52,25 +64,78 @@ class iqReportActionWin(gtk_handler.iqGtkHandler):
         """
         pass
 
+    def setReportNameTitle(self, report_name):
+        """
+        Set the name of the report in the title of the dialog box.
+
+        :param report_name: Report name.
+        :return: True/False.
+        """
+        if not isinstance(report_name, str):
+            report_name = str_func.toUnicode(report_name, DEFAULT_UNICODE)
+        title = _(u'Report:') + ' ' + report_name
+        self.getGtkTopObject().set_title(title)
+        return True
+
+    def getSelectedAction(self):
+        """
+        Get selected action.
+
+        :return: Selected action identifier.
+        """
+        return self._selected_action
+
+    def isSelectedPrintAction(self):
+        """
+        Select PRINT action?
+
+        :return: True/False.
+        """
+        return self._selected_action == PRINT_ACTION_ID
+
+    def isSelectedPreviewAction(self):
+        """
+        Selec PREVIEW action?
+
+        :return: True/False.
+        """
+        return self._selected_action == PREVIEW_ACTION_ID
+
+    def isSelectedExportAction(self):
+        """
+        Selec EXPORT action?
+
+        :return: True/False.
+        """
+        return self._selected_action == EXPORT_ACTION_ID
+
     def onPrintButtonClicked(self, widget):
         """
+        Button click handler <Print>.
         """
-        pass
+        self._selected_action = PRINT_ACTION_ID
+        self.getGtkTopObject().close()
 
     def onPreviewButtonClicked(self, widget):
         """
+        Button click handler <Preview>.
         """
-        pass
+        self._selected_action = PREVIEW_ACTION_ID
+        self.getGtkTopObject().close()
 
     def onExportButtonClicked(self, widget):
         """
+        Button click handler <Export>.
         """
-        pass
+        self._selected_action = EXPORT_ACTION_ID
+        self.getGtkTopObject().close()
 
     def onExitButtonClicked(self, widget):
         """
+        Button click handler <Exit>.
         """
-        pass
+        self._selected_action = None
+        self.getGtkTopObject().close()
 
 
 def openReportActionWin():
@@ -92,3 +157,27 @@ def openReportActionWin():
     if obj and obj.getGtkTopObject() is not None:
         obj.getGtkTopObject().destroy()
     return result                    
+
+
+def getReportActionDlg(parent=None, title=''):
+    """
+    Open the dialog box for selecting an action on the report.
+
+    :param parent: Parent window.
+    :param title: Dialog title.
+    :return: Action ID.
+    """
+    result = None
+    dlg = None
+    try:
+        dlg = iqReportActionWin()
+        dlg.init()
+        dlg.setReportNameTitle(title)
+        dlg.getGtkTopObject().run()
+        result = dlg.getSelectedAction()
+    except:
+        log_func.fatal(u'Error report action dialog')
+
+    if dlg and dlg.getGtkTopObject() is not None:
+        dlg.getGtkTopObject().destroy()
+    return result
