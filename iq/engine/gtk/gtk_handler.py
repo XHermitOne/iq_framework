@@ -12,10 +12,13 @@ gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
 from ...util import log_func
+from ...util import lang_func
 
 from ...editor.gtk.code_generator import gui_generator
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
+
+_ = lang_func.getTranslation().gettext
 
 
 class iqGtkHandler(object):
@@ -44,6 +47,8 @@ class iqGtkHandler(object):
 
         # Builder object
         self.gtk_builder = gi.repository.Gtk.Builder()
+        # Set translation domain
+        self.gtk_builder.set_translation_domain(lang_func.TEXT_DOMAIN)
         if self.gtk_builder:
             if add_from_glade_file:
                 self.gtk_builder.add_from_file(glade_filename)

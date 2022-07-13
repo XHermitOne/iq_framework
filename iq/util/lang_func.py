@@ -7,14 +7,17 @@ Internationalization functions.
 
 import gettext
 import locale
+import os.path
 
 from . import log_func
 from . import sys_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 TEXT_DOMAIN = 'iq'
 DEFAULT_LOCALE_DIR = 'locale'
+DEFAULT_LOCALE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                                   DEFAULT_LOCALE_DIR)
 
 DEFAULT_LOCALE = 'en_US'
 RUSSIAN_LOCALE = 'ru_RU'
@@ -33,7 +36,10 @@ def getDefaultLocaleLanguage():
     :return: Locale language as string.
         For Unix and Windows should be the same.
     """
+    # Setup textdomain
+    locale.bindtextdomain(TEXT_DOMAIN, DEFAULT_LOCALE_PATH)
     language = locale.getlocale()[0]
+
     if sys_func.isWindowsPlatform():
         if language in WINDOWS2UNIX_LANGUAGE:
             language = WINDOWS2UNIX_LANGUAGE.get(language, DEFAULT_LOCALE)
