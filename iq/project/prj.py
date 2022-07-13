@@ -166,7 +166,23 @@ class iqProjectManager(object):
 
             return all([mainform_generator.genDefaultMainFormFormBuilderPrj(prj_filename=mainform_res_filename),
                         wxfb_manager.adaptWXWFormBuilderPy(mainform_py_filename),
-                        gui_generator.gen_mainform(src_filename=mainform_py_filename)])
+                        gui_generator.genMainForm(src_filename=mainform_py_filename)])
+
+        elif engine == global_data.GTK_ENGINE_TYPE:
+            mainform_res_filename = os.path.join(file_func.getFrameworkPath(),
+                                                 prj_name,
+                                                 'main_forms',
+                                                 'main_appwin.glade')
+            mainform_py_filename = file_func.setFilenameExt(mainform_res_filename, '.py')
+
+            from ..editor.gtk.code_generator import main_appwin_generator
+            from ..editor.gtk.code_generator import gui_generator
+
+            return all([main_appwin_generator.genDefaultMainAppWindowGlade(prj_filename=mainform_res_filename),
+                        gui_generator.genMainForm(src_filename=mainform_py_filename)])
+        else:
+            log_func.warning(u'Create main form resource not supported for <%s> engine' % engine)
+
         return False
 
     def createDefaultReportsFolder(self, engine=global_data.WX_ENGINE_TYPE,
