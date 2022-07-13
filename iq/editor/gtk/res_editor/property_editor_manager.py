@@ -32,7 +32,6 @@ from . import script_property_editor
 from . import readonly_property_editor
 from . import password_property_editor
 from . import singlechoice_property_editor
-from . import flag_property_editor
 
 from . import size_property_editor
 from . import point_property_editor
@@ -74,7 +73,7 @@ PROPERTY_EDITORS = (string_property_editor.iqStringPropertyEditor,
 
                     passport_property_editor.iqPassportPropertyEditor,
                     icon_property_editor.iqIconPropertyEditor,
-                    flag_property_editor.iqFlagPropertyEditor,
+                    multichoice_property_editor.iqFlagPropertyEditor,
                     singlechoice_property_editor.iqSingleChoicePropertyEditor,
                     )
 
