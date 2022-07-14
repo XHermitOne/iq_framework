@@ -14,8 +14,9 @@ from . import user
 
 from ..util import log_func
 from ..util import exec_func
+from ..util import global_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqUser(object.iqObject, user.iqUserManager):
@@ -94,6 +95,13 @@ class iqUser(object.iqObject, user.iqUserManager):
         # log_func.debug(u'Roles %s' % str(role_names))
         roles = [role for role in prj.getRoles() if role.getName() in role_names]
         return tuple(roles)
+
+    def getEngineType(self):
+        """
+        Get engine type.
+        """
+        engine_type = self.getAttribute('engine')
+        return engine_type
 
 
 COMPONENT = iqUser

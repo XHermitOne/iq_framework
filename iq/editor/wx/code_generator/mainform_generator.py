@@ -44,7 +44,6 @@ def run%s():
     """
     app = global_func.getApplication()
     if app is None:
-        log_func.info(u'Create WX application')
         app = global_func.createApplication()
     if mainform_manager.show%s(%s):
         app.MainLoop()

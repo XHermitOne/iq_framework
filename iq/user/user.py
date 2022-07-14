@@ -8,6 +8,8 @@ User manager module.
 import hashlib
 
 from ..util import log_func
+from ..util import global_func
+
 from .. import role
 
 __version__ = (0, 0, 0, 1)
@@ -117,3 +119,20 @@ class iqUserManager(object):
         """
         log_func.warning(u'Not define get roles method')
         return tuple()
+
+    def getEngineType(self):
+        """
+        Get engine type.
+        """
+        return global_func.getEngineType()
+
+    def initEngineType(self):
+        """
+        Init user engine.
+        """
+        engine_type = self.getEngineType()
+        cur_engine_type = global_func.getEngineType()
+        log_func.info(u'User <%s> engine type: %s / System engine type: %s' % (self.getName(), engine_type, cur_engine_type))
+        if engine_type != cur_engine_type:
+            global_func.setEngineType(engine_type)
+        return global_func.getEngineType()

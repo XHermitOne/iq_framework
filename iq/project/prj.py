@@ -331,6 +331,10 @@ class iqProjectManager(object):
                 result = cui_dlg_func.getLoginDlg(title=_(u'LOGIN'),
                                                   reg_users=self.getUserNames(),
                                                   user_descriptions=[user.getDescription() for user in self.getUsers()])
+            elif global_func.isGTKEngine():
+                result = dlg_func.getLoginDlg(title=_(u'LOGIN'),
+                                              reg_users=self.getUserNames(),
+                                              user_descriptions=[user.getDescription() for user in self.getUsers()])
             else:
                 log_func.warning(u'Not supported %s engine login' % global_func.getEngineType())
 
@@ -356,6 +360,7 @@ class iqProjectManager(object):
 
         global_data.setGlobal('USER', user_obj if result else None)
         if result:
+            user_obj.initEngineType()
             user_obj.run()
         return result
 

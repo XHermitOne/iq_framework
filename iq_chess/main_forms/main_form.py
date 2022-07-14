@@ -82,7 +82,6 @@ def runMainForm():
     """
     app = global_func.getApplication()
     if app is None:
-        log_func.info(u'Create WX application')
         app = global_func.createApplication()
     if mainform_manager.showMainForm(iqMainForm):
         app.MainLoop()

@@ -17,14 +17,14 @@ import gi.repository.Gtk
 from ....util import log_func
 from ....util import global_func
 from ....util import lang_func
-# from .. import wxbitmap_func
 
-# from . import login_dialog_proto
 from . import text_entry_dialog
 from . import single_choice_dialog
 from . import multi_choice_dialog
 
-__version__ = (0, 0, 1, 1)
+from . import login_dialog
+
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -632,77 +632,10 @@ def openAboutDlg(parent=None, title='', prompt_text='', logo_bitmap=None):
     :param parent: Parent form.
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
-    :param logo_bitmap: Logo as wx.Bitmap object.
+    :param logo_bitmap: Logo as Bitmap object.
     """
-    dlg = None
-    win_clear = False
-    try:
-        if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
-
-        dlg = iqAboutDialog(parent, title, prompt_text, logo_bitmap)
-        dlg.ShowModal()
-
-        if dlg:
-            dlg.Destroy()
-
-        if win_clear:
-            parent.Destroy()
-    except:
-        if dlg:
-            dlg.Destroy()
-
-        if win_clear:
-           parent.Destroy()
-
-
-# class iqAboutDialog(wx.Dialog):
-#     """
-#     Dialog <About...>.
-#     """
-#     def __init__(self, parent, title='', prompt_text='', logo_bitmap=None):
-#         """
-#         Constructor.
-#
-#         :param parent: Parent form.
-#         :param title: Dialog form title.
-#         :param prompt_text: Dialog form prompt text.
-#         :param logo_bitmap: Logo as wx.Bitmap object.
-#         """
-#         try:
-#             wx.Dialog.__init__(self, parent, -1, title=title,
-#                                pos=wx.DefaultPosition, size=wx.Size(500, 500))
-#
-#             sizer = wx.BoxSizer(wx.VERTICAL)
-#             self._logo = None
-#             if logo_bitmap is not None:
-#                 self._logo = wx.StaticBitmap(self, -1, logo_bitmap, pos=wx.Point(10, 10))
-#                 sizer.Add(self._logo, 10, wx.ALL, 5)
-#
-#             self._text = wx.StaticText(self, -1, prompt_text)
-#             sizer.Add(self._text, 0, wx.ALL, 5)
-#
-#             line = wx.StaticLine(self, -1, size=(20, -1), style=wx.LI_HORIZONTAL)
-#             sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
-#
-#             id_ = wx.NewId()
-#             self._ok_button = wx.Button(self, id_, _(u'OK'))
-#             self.Bind(wx.EVT_BUTTON, self.onOKButtonClick, id=id_)
-#             sizer.Add(self._ok_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
-#
-#             self.SetSizer(sizer)
-#             self.SetAutoLayout(True)
-#             sizer.Fit(self)
-#         except:
-#             log_func.fatal(u'Diallog <About...> create error')
-#
-#     def onOKButtonClick(self, event):
-#         """
-#         Button click handler <OK>.
-#         """
-#         self.EndModal(wx.ID_OK)
-#         event.Skip()
+    about_dialog = gi.repository.Gtk.AboutDialog(transient_for=parent, modal=True)
+    about_dialog.present()
 
 
 LOGIN_USER_IDX = 0
@@ -721,115 +654,7 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None, user
     :param user_descriptions: User description list.
     :return: Tuple: (username, password, password hash) or None if error.
     """
-    app = global_func.getApplication()
-    if app is None:
-        log_func.info(u'LOGIN. Create WX application')
-        app = global_func.createApplication()
-
-    dlg = None
-    result = None
-    try:
-        dlg = iqLoginDialog(parent, title, default_username, reg_users, user_descriptions)
-        if dlg.ShowModal() == wx.ID_OK:
-            result = (dlg.getUsername(), dlg.getPassword(), dlg.getPasswordHash())
-    except:
-        log_func.fatal(u'Open login dialog error')
-
-    if dlg:
-       dlg.Destroy()
-    return result
-
-
-USER_ITEM_DELIMETER = '\t:\t'
-
-
-# class iqLoginDialog(login_dialog_proto.iqLoginDialogProto):
-#     """
-#     Login user dialog.
-#     """
-#     def __init__(self, parent, title='', default_username='', reg_users=None, user_descriptions=None):
-#         """
-#         Constructor.
-#
-#         :param parent: Parent form.
-#         :param title: Dialog form title.
-#         :param default_username: Default user name.
-#         :param user_descriptions: User description list.
-#         :param reg_users: User name list.
-#         """
-#         login_dialog_proto.iqLoginDialogProto.__init__(self, parent=parent)
-#
-#         if title:
-#             self.SetTitle(title=title)
-#
-#         icon_img = wxbitmap_func.createIconBitmap('fatcow/set_security_question')
-#         if icon_img:
-#             icon = wx.Icon(icon_img)
-#             self.SetIcon(icon)
-#
-#         try:
-#             if reg_users is None:
-#                 reg_users = list()
-#             if default_username is None:
-#                 default_username = ''
-#
-#             user_choices = reg_users
-#             if user_descriptions:
-#                 user_choices = [u'%s%s%s' % (username,
-#                                              USER_ITEM_DELIMETER,
-#                                              user_descriptions[i]) for i, username in enumerate(reg_users)]
-#
-#             self.username_comboBox.SetItems(user_choices)
-#             if user_choices:
-#                 self.username_comboBox.Select(0)
-#
-#             self._user = default_username
-#             self._password = ''
-#
-#             # self.username_comboBox.SetFocus()
-#             self.ok_button.SetFocus()
-#         except:
-#             log_func.fatal(u'Error init login dialog')
-#
-#     def onOkButtonClick(self, event):
-#         """
-#         Button click handler <OK>.
-#         """
-#         self._user = self._getSelectedUsername()
-#         self._password = self.password_textCtrl.GetValue()
-#         self.EndModal(wx.ID_OK)
-#         event.Skip()
-#
-#     def onCancelButtonClick(self, event):
-#         """
-#         Button click handler <Cancel>.
-#         """
-#         self.EndModal(wx.ID_CANCEL)
-#         event.Skip()
-#
-#     def _getSelectedUsername(self):
-#         """
-#         Get selected username in combobox.
-#         """
-#         value = self.username_comboBox.GetValue()
-#         if value:
-#             return value.split(USER_ITEM_DELIMETER)[0].strip()
-#         return ''
-#
-#     def getUsername(self):
-#         """
-#         Get username.
-#         """
-#         return self._user
-#
-#     def getPassword(self):
-#         """
-#         Get password.
-#         """
-#         return self._password
-#
-#     def getPasswordHash(self):
-#         """
-#         Get password hash as md5.
-#         """
-#         return hashlib.md5(self._password.encode()).hexdigest()
+    return login_dialog.openLoginDialog(title=title,
+                                        default_username=default_username,
+                                        reg_users=reg_users,
+                                        user_descriptions=user_descriptions)

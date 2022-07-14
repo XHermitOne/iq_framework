@@ -282,6 +282,10 @@ def showMainForm(main_form_class):
     :param main_form_class: Main form class.
     :return: True/False.
     """
+    app = global_func.getApplication()
+    if app is None:
+        app = global_func.createApplication()
+
     frame = None
     try:
         frame = main_form_class(parent=None)

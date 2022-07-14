@@ -729,7 +729,6 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None, user
     """
     app = global_func.getApplication()
     if app is None:
-        log_func.info(u'LOGIN. Create WX application')
         app = global_func.createApplication()
 
     dlg = None
