@@ -272,7 +272,7 @@ class iqReportBrowserDialog(wx.Dialog):
         item = self.report_treectrl.GetSelection()
         item_data = self.report_treectrl.GetItemData(item)
         if item_data is not None and item_data[report_folder_func.REP_ITEMS_IDX] is None:
-            rep_generator = report_gen_func.getReportGeneratorSystem(report_folder_func.item_data[report_folder_func.REP_FILE_IDX], parent=self)
+            rep_generator = report_gen_func.getReportGeneratorSystem(item_data[report_folder_func.REP_FILE_IDX], parent=self)
             if rep_generator is not None:
                 rep_generator.edit(item_data[0])
             else:
