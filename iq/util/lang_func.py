@@ -40,7 +40,7 @@ def getDefaultLocaleLanguage():
     try:
         locale.bindtextdomain(TEXT_DOMAIN, DEFAULT_LOCALE_PATH)
     except AttributeError:
-        log_func.warning(u'Old version of locale module')
+        log_func.warning(u'Locale module not support text domain')
 
     language = locale.getlocale()[0]
 
