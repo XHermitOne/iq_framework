@@ -37,7 +37,11 @@ def getDefaultLocaleLanguage():
         For Unix and Windows should be the same.
     """
     # Setup textdomain
-    locale.bindtextdomain(TEXT_DOMAIN, DEFAULT_LOCALE_PATH)
+    try:
+        locale.bindtextdomain(TEXT_DOMAIN, DEFAULT_LOCALE_PATH)
+    except AttributeError:
+        log_func.warning(u'Old version of locale module')
+
     language = locale.getlocale()[0]
 
     if sys_func.isWindowsPlatform():
