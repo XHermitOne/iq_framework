@@ -55,6 +55,18 @@ class iqReportBrowserWin(gtk_handler.iqGtkHandler,
 
         self._report_dirname = report_dir
 
+        if not self._report_dirname or not os.path.exists(self._report_dirname):
+            self._report_dirname = ini_func.loadParamINI(self.getReportSettingsINIFile(), 'REPORTS', 'report_dir')
+            if not self._report_dirname or not os.path.exists(self._report_dirname):
+                self._report_dirname = dlg_func.getDirDlg(self,
+                                                          u'Report directory <%s> not found. Select report directory.' % self._report_dirname)
+
+                if self._report_dirname:
+                    self._report_dirname = os.path.normpath(self._report_dirname)
+                    ini_func.saveParamINI(self.getReportSettingsINIFile(),
+                                          'REPORTS', 'report_dir', self._report_dirname)
+        self.getGtkObject('report_folder_label').set_text(self._report_dirname)
+
     def init(self):
         """
         Init form.
