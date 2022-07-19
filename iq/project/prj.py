@@ -343,6 +343,10 @@ class iqProjectManager(object):
                 log_func.warning(u'Failed login')
                 return result
             else:
+                # After login change engine
+                # Clear import dialog functions
+                dlg_func._clearImportDialogFunctions()
+
                 username, password, password_hash = result
 
         user_psp = passport.iqPassport(prj=self.name, module=self.name,

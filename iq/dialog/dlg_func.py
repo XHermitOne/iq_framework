@@ -8,9 +8,9 @@ Dialog functions module.
 from ..util import global_func
 from ..util import log_func
 
-DIALOG_FUNCTION_MODULE = None
-
 __version__ = (0, 0, 2, 1)
+
+DIALOG_FUNCTION_MODULE = None
 
 
 def _importDialogFunctions():
@@ -34,6 +34,14 @@ def _importDialogFunctions():
             from ..engine.cui.dlg import cui_dlg_func as _dlg_func
         globals()['DIALOG_FUNCTION_MODULE'] = _dlg_func
     return globals()['DIALOG_FUNCTION_MODULE']
+
+
+def _clearImportDialogFunctions():
+    """
+    Clear imports dialog functions.
+    """
+    globals()['DIALOG_FUNCTION_MODULE'] = None
+    return True
 
 
 def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):

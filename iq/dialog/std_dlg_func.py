@@ -8,18 +8,31 @@ Standart dialogs functions module.
 from ..util import global_func
 from ..util import log_func
 
-if global_func.isWXEngine():
-    from ..engine.wx.dlg import std_dlg as _std_dlg
-elif global_func.isGTKEngine():
-    from ..engine.gtk.dlg import std_dlg as _std_dlg
-elif global_func.isQTEngine():
-    _std_dlg = None
-    log_func.warning(u'Standard dialog functions. Not support QT engine')
-elif global_func.isCUIEngine():
-    _std_dlg = None
-    log_func.warning(u'Standard dialog functions. Not support CUI engine')
+__version__ = (0, 0, 3, 1)
 
-__version__ = (0, 0, 2, 1)
+DIALOG_FUNCTION_MODULE = None
+
+
+def _importDialogFunctions():
+    """
+    Check and import dialog function module.
+
+    :return: Dialog function module object or None if error.
+    """
+    _std_dlg = None
+    if globals()['DIALOG_FUNCTION_MODULE'] is None:
+        if global_func.isWXEngine():
+            log_func.info(u'Standard dialog functions. Use WX engine')
+            from ..engine.wx.dlg import std_dlg as _std_dlg
+        elif global_func.isQTEngine():
+            log_func.warning(u'Standard dialog functions. Not support QT engine')
+        elif global_func.isGTKEngine():
+            log_func.info(u'Standard dialog functions. Use GTK engine')
+            from ..engine.gtk.dlg import std_dlg as _std_dlg
+        elif global_func.isCUIEngine():
+            log_func.info(u'Standard dialog functions. Not support QT engine')
+        globals()['DIALOG_FUNCTION_MODULE'] = _std_dlg
+    return globals()['DIALOG_FUNCTION_MODULE']
 
 
 def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100):
@@ -34,6 +47,7 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
     :param max_value: Maximum value.
     :return: Entered value or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getIntegerDlg(parent=parent, title=title,
                                       label=label, min_value=min_value,
@@ -50,6 +64,7 @@ def getDateDlg(parent=None, default_date=None):
     :param default_date: If define then set default date.
     :return: Selected date (as datetime) or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getDateDlg(parent=parent, default_date=default_date)
     return None
@@ -65,6 +80,7 @@ def getYearDlg(parent=None, title=None, default_year=None):
     :param default_year: Default year.
     :return: Selected year (as datetime) or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getYearDlg(parent=parent, title=title,
                                    default_year=default_year)
@@ -79,6 +95,7 @@ def getMonthDlg(parent=None):
         If None then get wx.GetApp().GetTopWindow()
     :return: Selected first month day (as datetime) or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getMonthDlg(parent=parent)
     return None
@@ -92,6 +109,7 @@ def getQuarterDlg(parent=None):
         If None then get wx.GetApp().GetTopWindow()
     :return: Tuple (year, quarter number) or None press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getQuarterDlg(parent=parent)
     return None
@@ -107,6 +125,7 @@ def getMonthNumDlg(parent=None, title=None, text=None):
     :param text: Prompt text.
     :return: Month number or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getMonthNumDlg(parent=parent, title=title,
                                        text=text)
@@ -121,6 +140,7 @@ def getMonthRangeDlg(parent=None):
         If None then get wx.GetApp().GetTopWindow()
     :return: Month range tuple (as datetime) or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getMonthRangeDlg(parent=parent)
     return None
@@ -138,6 +158,7 @@ def getDateRangeDlg(parent=None, is_concrete_date=False,
     :param default_stop_date: Default end range date.
     :return: Date range tuple (as datetime) or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getDateRangeDlg(parent=parent,
                                         is_concrete_date=is_concrete_date,
@@ -158,6 +179,7 @@ def getStdDlgQueue(*dlgs):
          'kwargs': Dialog function named arguments}.
     :return: Result dictionary.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getStdDlgQueue(*dlgs)
     return None
@@ -175,6 +197,7 @@ def getRadioChoiceDlg(parent=None, title=None, label=None, choices=()):
         Maximum 5 items.
     :return: Selected item index or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getRadioChoiceDlg(parent=parent, title=title,
                                           label=label, choices=choices)
@@ -194,6 +217,7 @@ def getIntRangeDlg(parent=None, title=None, label_begin=None, label_end=None, mi
     :param max_value: Maximal value.
     :return: Entered value or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getIntRangeDlg(parent=parent, title=title,
                                        label_begin=label_begin,
@@ -216,6 +240,7 @@ def getCheckBoxDlg(parent=None, title=None, label=None, choices=(), defaults=())
     :param defaults: Default selection list.
     :return: Selected values or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getCheckBoxDlg(parent=parent, title=title,
                                        label=label, choices=choices)
@@ -236,6 +261,7 @@ def getRadioChoiceMaxiDlg(parent=None, title=None, label=None,
     :param default: Default selection list.
     :return: Selected item index or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getRadioChoiceMaxiDlg(parent=parent, title=title,
                                               label=label, choices=choices,
@@ -256,6 +282,7 @@ def getCheckBoxMaxiDlg(parent=None, title=None, label=None, choices=(), defaults
     :param defaults: Default selection list.
     :return: Selected items index or None if press <Cancel>.
     """
+    _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getCheckBoxMaxiDlg(parent=parent, title=title,
                                            label=label, choices=choices,
