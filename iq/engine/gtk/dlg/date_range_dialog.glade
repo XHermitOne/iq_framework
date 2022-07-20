@@ -5,6 +5,7 @@
   <object class="GtkDialog" id="date_range_dialog">
     <property name="name">date_range_dialog</property>
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Date range</property>
     <property name="default_width">500</property>
     <property name="type_hint">dialog</property>
     <child type="titlebar">
@@ -13,8 +14,12 @@
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
+        <property name="spacing">5</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
@@ -67,6 +72,8 @@
                 <property name="name">prompt_label</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Select date range</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>

@@ -71,8 +71,9 @@ class iqMonthDialog(gtk_handler.iqGtkHandler):
             cur_year = datetime.date.today().year
             self.getGtkObject('year_spinbutton').set_value(cur_year)
 
+        model = self.getGtkObject('month_combobox').get_model()
+        model.clear()
         for month_name in dt_func.RU_MONTHS:
-            model = self.getGtkObject('month_combobox').get_model()
             model.append([month_name])
 
         if default_month:

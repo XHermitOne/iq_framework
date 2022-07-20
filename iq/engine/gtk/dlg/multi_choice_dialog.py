@@ -106,8 +106,10 @@ def openMultiChoiceDialog(parent=None, title='', prompt_text='', choices=()):
     try:
         dlg = iqMultiChoiceDialog()
         dlg.init()
-        dlg.getGtkTopObject().set_title(title)
-        dlg.getGtkObject('prompt_label').set_label(prompt_text)
+        if title:
+            dlg.getGtkTopObject().set_title(title)
+        if prompt_text:
+            dlg.getGtkObject('prompt_label').set_label(prompt_text)
         dlg.setChoices(choices)
         response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:

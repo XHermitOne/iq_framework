@@ -28,7 +28,7 @@ from . import checkbox_dialog
 from . import radio_choice_maxi_dialog
 from . import checkbox_maxi_dialog
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100):
@@ -48,7 +48,7 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
     try:
         dlg = integer_dialog.iqIntegerDialog()
         dlg.init(title=title, label=label, min_value=min_value, max_value=max_value)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             value = dlg.getGtkObject('integer_spinbutton').get_value()
     except:
@@ -75,9 +75,12 @@ def getDateDlg(parent=None, default_date=None):
     try:
         dlg = calendar_dialog.iqCalendarDialog()
         dlg.init(default_date=default_date)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
-            selected_date = dlg.getGtkObject('calendar').get_date()
+            selected_year, selected_month, selected_day = dlg.getGtkObject('calendar').get_date()
+            selected_date = datetime.date.today().replace(year=selected_year,
+                                                          month=selected_month + 1,
+                                                          day=selected_day)
     except:
         log_func.fatal(u'Error date dialog')
 
@@ -102,7 +105,7 @@ def getYearDlg(parent=None, title=None, default_year=None):
     try:
         dlg = year_dialog.iqYearDialog()
         dlg.init(title=title, default_year=default_year)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             year = dlg.getGtkObject('year_spinbutton').get_value()
             selected_year = datetime.date.today().replace(year=year, month=1, day=1)
@@ -131,11 +134,13 @@ def getMonthDlg(parent=None, title=None, default_year=None, default_month=None):
     try:
         dlg = month_dialog.iqMonthDialog()
         dlg.init(title=title, default_year=default_year, default_month=default_month)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             year = dlg.getGtkObject('year_spinbutton').get_value()
             month = dlg.getGtkObject('month_combobox').get_active()
-            selected_month = datetime.date.today().replace(year=year, month=month, day=1)
+            selected_month = datetime.date.today().replace(year=int(year),
+                                                           month=month + 1,
+                                                           day=1)
     except:
         log_func.fatal(u'Error month dialog')
 
@@ -161,7 +166,7 @@ def getQuarterDlg(parent=None, title=None, default_quarter=None, default_year=No
     try:
         dlg = quarter_dialog.iqQuarterDialog()
         dlg.init(title=title, default_year=default_year, default_quarter=default_quarter)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             year = dlg.getGtkObject('year_spinbutton').get_value()
             quarter = dlg.getGtkObject('quarter_combobox').get_active() + 1
@@ -218,7 +223,7 @@ def getMonthRangeDlg(parent=None, title=None, default_from_year=None, default_fr
                  default_from_month=default_from_month,
                  default_to_year=default_to_year,
                  default_to_month=default_to_month)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             from_year = dlg.getGtkObject('from_year_spinbutton').get_value()
             from_month = dlg.getGtkObject('from_month_combobox').get_active()
@@ -257,12 +262,12 @@ def getDateRangeDlg(parent=None, title=None, is_concrete_date=False,
                  is_concrete_date=is_concrete_date,
                  default_start_date=default_start_date,
                  default_stop_date=default_stop_date)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             from_date_txt = dlg.getGtkObject('from_date_entry').get_text()
-            selected_from_date = datetime.strptime(from_date_txt, date_range_dialog.DEFAULT_ENTRY_DATE_FMT)
+            selected_from_date = datetime.datetime.strptime(from_date_txt, date_range_dialog.DEFAULT_ENTRY_DATE_FMT)
             to_date_txt = dlg.getGtkObject('to_date_entry').get_text()
-            selected_to_date = datetime.strptime(to_date_txt, date_range_dialog.DEFAULT_ENTRY_DATE_FMT)
+            selected_to_date = datetime.datetime.strptime(to_date_txt, date_range_dialog.DEFAULT_ENTRY_DATE_FMT)
             selected_range = (selected_from_date, selected_to_date)
     except:
         log_func.fatal(u'Error date range dialog')
@@ -315,7 +320,7 @@ def getRadioChoiceDlg(parent=None, title=None, label=None, choices=()):
     try:
         dlg = radio_choice_dialog.iqRadioChoiceDialog()
         dlg.init(title=title, label=label, choices=choices)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             value = dlg.getValue()
     except:
@@ -346,7 +351,7 @@ def getIntRangeDlg(parent=None, title=None, label_begin=None, label_end=None, mi
         dlg = int_range_dialog.iqIntRangeDialog()
         dlg.init(title=title, label_begin=label_begin, label_end=label_end,
                  min_value=min_value, max_value=max_value)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             value = dlg.getValue()
     except:
@@ -375,7 +380,7 @@ def getCheckBoxDlg(parent=None, title=None, label=None, choices=(), defaults=())
     try:
         dlg = checkbox_dialog.iqCheckboxDialog()
         dlg.init(title=title, label=label, choices=choices, defaults=defaults)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             value = dlg.getValue()
     except:
@@ -406,7 +411,7 @@ def getRadioChoiceMaxiDlg(parent=None, title=None, label=None,
     try:
         dlg = radio_choice_maxi_dialog.iqRadioChoiceMaxiDialog()
         dlg.init(title=title, label=label, choices=choices, default=default)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             value = dlg.getValue()
     except:
@@ -436,7 +441,7 @@ def getCheckBoxMaxiDlg(parent=None, title=None, label=None, choices=(), defaults
     try:
         dlg = checkbox_maxi_dialog.iqCheckboxMaxiDialog()
         dlg.init(title=title, label=label, choices=choices, defaults=defaults)
-        response = dlg.run()
+        response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
             value = dlg.getValue()
     except:

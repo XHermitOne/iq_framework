@@ -25,7 +25,7 @@ from ...util import icon_func
 
 from . import base_manager
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 2, 3)
 
 ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT = '__gtktreeview_item_data_cache_%s__'
 
@@ -427,12 +427,15 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         :param treeview: GtkTreeView control.
         :return: Selected row index or -1 if not selected.
         """
-        selection = treeview.get_selection()
-        model, selected_item = selection.get_selected()
-        if selected_item:
-            path = selected_item.get_selected_rows()[0]
-            row_index = path.get_indices()[0]
-            return row_index
+        try:
+            selection = treeview.get_selection()
+            if selection:
+                paths = selection.get_selected_rows()[1]
+                if paths:
+                    row_index = paths[0].get_indices()[0]
+                    return row_index
+        except:
+            log_func.fatal(u'Error get selected row index')
         return -1
 
     def getGtkTreeViewSelectedItem(self, treeview=None):

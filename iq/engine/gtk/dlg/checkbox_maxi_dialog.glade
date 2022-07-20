@@ -5,6 +5,7 @@
   <object class="GtkDialog" id="checkbox_maxi_dialog">
     <property name="name">checkbox_maxi_dialog</property>
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Check items</property>
     <property name="type_hint">dialog</property>
     <child type="titlebar">
       <placeholder/>
@@ -12,8 +13,12 @@
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
+        <property name="spacing">5</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
@@ -68,6 +73,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
+                <property name="label" translatable="yes">Select items</property>
               </object>
               <packing>
                 <property name="expand">False</property>

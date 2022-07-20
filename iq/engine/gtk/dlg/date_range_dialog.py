@@ -21,9 +21,8 @@ from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
 # from iq.engine.gtk import gtkwindow_manager
 
-from .std_dlg import getDateDlg
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 DEFAULT_ENTRY_DATE_FMT = '%d-%m-%Y'
 
@@ -73,7 +72,7 @@ class iqDateRangeDialog(gtk_handler.iqGtkHandler):
         if title:
             self.getGtkTopObject().set_title(title)
 
-        self.getGtkObject('concrete_date_checkbutton').set_check(is_concrete_date)
+        self.getGtkObject('concrete_date_checkbutton').set_active(is_concrete_date)
         self.getGtkObject('to_date_entry').set_sensitive(not is_concrete_date)
         if is_concrete_date:
             first_date_txt = self.getGtkObject('from_date_entry').get_text()
@@ -103,20 +102,22 @@ class iqDateRangeDialog(gtk_handler.iqGtkHandler):
         """
         self.getGtkTopObject().close()
 
-    def onFromDateEntryIconPress(self, widget):
+    def onFromDateEntryIconPress(self, widget, icon, event):
         """
         From date entry icon press handler.
         """
-        selected_date = getDateDlg()
+        from . import std_dlg
+        selected_date = std_dlg.getDateDlg()
         if selected_date is not None:
             date_txt = selected_date.strftime(DEFAULT_ENTRY_DATE_FMT)
             self.getGtkObject('from_date_entry').set_text(date_txt)
 
-    def onToDateEntryIconPress(self, widget):
+    def onToDateEntryIconPress(self, widget, icon, event):
         """
         To date entry icon press handler.
         """
-        selected_date = getDateDlg()
+        from . import std_dlg
+        selected_date = std_dlg.getDateDlg()
         if selected_date is not None:
             date_txt = selected_date.strftime(DEFAULT_ENTRY_DATE_FMT)
             self.getGtkObject('to_date_entry').set_text(date_txt)

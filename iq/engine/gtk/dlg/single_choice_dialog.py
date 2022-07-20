@@ -17,13 +17,14 @@ import gi.repository.Gtk
 from iq.util import log_func
 
 from iq.engine.gtk import gtk_handler
-# from iq.engine.gtk import gtktreeview_manager
+from iq.engine.gtk import gtktreeview_manager
 # from iq.engine.gtk import gtkwindow_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
-class iqSingleChoiceDialog(gtk_handler.iqGtkHandler):
+class iqSingleChoiceDialog(gtk_handler.iqGtkHandler,
+                           gtktreeview_manager.iqGtkTreeViewManager):
     """
     Single choice dialog class.
     """
@@ -93,14 +94,16 @@ def openSingleChoiceDialog(parent=None, title='', prompt_text='', choices=(),
     try:
         dlg = iqSingleChoiceDialog()
         dlg.init()
-        dlg.getGtkTopObject().set_title(title)
-        dlg.getGtkObject('prompt_label').set_label(prompt_text)
+        if title:
+            dlg.getGtkTopObject().set_title(title)
+        if prompt_text:
+            dlg.getGtkObject('prompt_label').set_label(prompt_text)
         dlg.setChoices(choices)
         if default_idx >= 0:
             dlg.getGtkObject('choice_treeview').set_selection(default_idx)
         response = dlg.getGtkTopObject().run()
         if response == gi.repository.Gtk.ResponseType.OK:
-            result = dlg.getGtkObject('choice_treeview').get_selection()
+            result = dlg.getGtkTreeViewSelectedRow(treeview=dlg.getGtkObject('choice_treeview'))
     except:
         log_func.fatal(u'Error open window <single_choice_dialog>')
 

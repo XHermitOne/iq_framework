@@ -22,7 +22,7 @@ from iq.engine.gtk import gtk_handler
 # from iq.engine.gtk import gtktreeview_manager
 # from iq.engine.gtk import gtkwindow_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -58,12 +58,14 @@ class iqCalendarDialog(gtk_handler.iqGtkHandler):
 
         :param default_date: If define then set default date.
         """
-        if default_date:
-            day = default_date.day
-            month = default_date.month
-            year = default_date.year
-            self.getGtkObject('calendar').select_month(month, year)
-            self.getGtkObject('calendar').select_day(day)
+        if default_date is None:
+            default_date = datetime.date.today()
+
+        day = default_date.day
+        month = default_date.month - 1
+        year = default_date.year
+        self.getGtkObject('calendar').select_month(month, year)
+        self.getGtkObject('calendar').select_day(day)
 
     def onCancelButttonClicked(self, widget):
         """
