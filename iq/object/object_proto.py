@@ -5,6 +5,7 @@
 Base object class module.
 """
 
+import os
 import os.path
 
 from . import object_context
@@ -166,22 +167,6 @@ class iqObject(object):
                                              import_filename=module_filename)
             return module
         return None
-
-    # def genModule(self, module_filename=None):
-    #     """
-    #     Generate resource python module.
-    #
-    #     :param module_filename: Resource python module filename.
-    #     :return: True/False.
-    #     """
-    #     if not module_filename:
-    #         log_func.warning(u'Not define module filename for generate')
-    #         return False
-    #
-    #     package_path = os.path.dirname(module_filename)
-    #     py_modulename = file_func.setFilenameExt(os.path.basename(module_filename), '.py')
-    #     result = py_func.createPyModule(package_path=package_path, py_modulename=py_modulename)
-    #     return result
 
     def getContext(self):
         """
