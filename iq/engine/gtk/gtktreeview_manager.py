@@ -25,7 +25,7 @@ from ...util import icon_func
 
 from . import base_manager
 
-__version__ = (0, 0, 2, 3)
+__version__ = (0, 0, 2, 4)
 
 ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT = '__gtktreeview_item_data_cache_%s__'
 
@@ -165,7 +165,8 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                 if i <= columns_count:
                     key = columns[i - 1]
                     if isinstance(node, dict) and key:
-                        value = node.get(key, key)
+                        # value = node.get(key, key)
+                        value = node.get(key, None)
                     elif not isinstance(node, dict) and key:
                         value = key
                     else:
@@ -190,7 +191,11 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
                     elif value and isinstance(value, str):
                         # Icon name
                         icon_filename = icon_func.getIconFilename(value)
-                        value = gi.repository.GdkPixbuf.Pixbuf.new_from_file(icon_filename)
+                        if icon_filename and os.path.exists(icon_filename):
+                            value = gi.repository.GdkPixbuf.Pixbuf.new_from_file(icon_filename)
+                        else:
+                            value = gi.repository.Gtk.IconTheme.get_default().load_icon(gi.repository.Gtk.STOCK_MISSING_IMAGE,
+                                                                                        gi.repository.Gtk.IconSize.MENU, 0)
                     else:
                         log_func.warning(u'Not define image value <%s>' % str(value))
                         value = gi.repository.Gtk.IconTheme.get_default().load_icon(gi.repository.Gtk.STOCK_MISSING_IMAGE,
