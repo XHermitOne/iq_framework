@@ -18,7 +18,7 @@ from ..util import id_func
 
 from .. import passport
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 class iqObject(object):
@@ -161,7 +161,7 @@ class iqObject(object):
         """
         if module_filename is None:
             module_filename = self.getModuleFilename()
-        if module_filename:
+        if module_filename and os.path.exist(module_filename):
             module = imp_func.importPyModule(import_name=self.getName(),
                                              import_filename=module_filename)
             return module
