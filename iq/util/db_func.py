@@ -24,7 +24,48 @@ except:
     pass
 
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
+
+
+def createDBURL(db_type='postgresql', db_driver='',
+                db_host='localhost', db_port=None,
+                db_name='', db_username='', db_password=None,
+                db_params=None):
+    """
+    Create database URL.
+
+    :param db_type: Database type. postgresql/mysql/sqlite ...
+    :param db_driver: Database driver.
+    :param db_host: Database host.
+    :param db_port: Database port.
+    :param db_name: Database name.
+    :param db_username: Database username.
+    :param db_password: Database user password.
+    :param db_params: Parameters as dictionary.
+    :return: Database URL as string.
+    """
+    db_url = db_type
+    if db_driver:
+        db_url += '+' + db_driver
+    db_url += '://'
+
+    if db_username:
+        db_url += db_username
+        if db_password is not None:
+            db_url += ':' + db_password
+        db_url += '@'
+    if db_host:
+        if ':' in db_host:
+            db_url += '[%s]' % db_host
+        else:
+            db_url += db_host
+    if db_port:
+        db_url += ':' + str(db_port)
+    if db_name:
+        db_url += '/' + db_name
+    if db_params:
+        db_url += '?' + '&'.join('%s=%s' % (name, value) for name, value in db_params.items())
+    return db_url
 
 
 # --- Use ODBC ---

@@ -15,7 +15,7 @@ from ....util import xml2dict
 from ....util import txtfile_func
 from ....dialog import dlg_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 DEFAULT_SRC_CLASS_NAME = u'iqUnknown'
 
@@ -96,7 +96,7 @@ def open%s():
     return result                    
 '''
 
-HANDLER_PY_MODULE_FMT = '''    def %s(self, widget):
+HANDLER_PY_MODULE_FMT = '''    def %s(self, widget, *args, **kwargs):
         """
         """
         pass

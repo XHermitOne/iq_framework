@@ -25,7 +25,7 @@ from ...util import icon_func
 
 from . import base_manager
 
-__version__ = (0, 0, 2, 4)
+__version__ = (0, 0, 3, 1)
 
 ITEM_DATA_CACHE_ATTRIBUTE_NAME_FMT = '__gtktreeview_item_data_cache_%s__'
 
@@ -125,7 +125,7 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         Set tree data of control GtkTreeView.
 
         :param treeview: GtkTreeView control.
-        :param tree_data: Tree data:
+        :param tree_data: Tree data.
         :param columns: Item data keys for fill columns.
         :param ext_func: Extended function.
         :param do_expand_all: Auto expand all items?
@@ -564,15 +564,16 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
         model = treeview.get_model()
         result = True
         if item is None:
-            for row, model_row in enumerate(model):
-                item =model_row.iter
-                result = result and self.setGtkTreeViewRowsColorExpression(treeview=treeview,
-                                                                           fg_color=fg_color,
-                                                                           bg_color=bg_color,
-                                                                           fg_color_column=fg_color_column,
-                                                                           bg_color_column=bg_color_column,
-                                                                           expression=expression,
-                                                                           item=item)
+            if model is not None:
+                for row, model_row in enumerate(model):
+                    item = model_row.iter
+                    result = result and self.setGtkTreeViewRowsColorExpression(treeview=treeview,
+                                                                               fg_color=fg_color,
+                                                                               bg_color=bg_color,
+                                                                               fg_color_column=fg_color_column,
+                                                                               bg_color_column=bg_color_column,
+                                                                               expression=expression,
+                                                                               item=item)
         else:
             colorize = expression(item)
             if fg_color and colorize:
@@ -755,4 +756,37 @@ class iqGtkTreeViewManager(base_manager.iqBaseManager):
             return True
         except:
             log_func.fatal(u'Error collapse treeview item')
+        return False
+
+    def setGtkTreeViewModelRows(self, treeview=None, rows=None, columns=()):
+        """
+        Set tree data of control GtkTreeView.
+
+        :param treeview: GtkTreeView control.
+        :param rows: List of row dictionaries.
+        :param columns: Item data keys for fill columns.
+        :return: True/False.
+        """
+        assert issubclass(treeview.__class__, gi.repository.Gtk.TreeView), u'GtkTreeView manager type error'
+
+        if rows is None:
+            log_func.warning(u'Not define rows of GtkTreeView control')
+            return False
+
+        model = treeview.get_model()
+
+        if model is not None:
+            model_n_columns = model.get_n_columns()
+            model.clear()
+
+            for row in rows:
+                model_row = [row.get(column, None) for column in columns]
+                if len(model_row) < model_n_columns:
+                    model_row += [''] * (model_n_columns - len(model_row))
+                item = model.append(model_row)
+                self.setGtkTreeViewItemData(treeview=treeview, item=item, item_data=row)
+
+            return True
+        else:
+            log_func.warning(u'Model %s is None' % str(treeview))
         return False
