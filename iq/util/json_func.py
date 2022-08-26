@@ -23,7 +23,7 @@ except ImportError:
     log_func.error(u'Import error urllib3')
 
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 
 def dict2JSON(data_dict):
@@ -113,6 +113,7 @@ def getJSONAsDictByURL3(url, headers=None, *args, **kwargs):
         log_func.warning(u'Not define URL for get JSON data')
         return None
 
+    json_content = None
     try:
         http = urllib3.PoolManager()
         response = http.request('GET', url, headers=headers)
@@ -121,4 +122,7 @@ def getJSONAsDictByURL3(url, headers=None, *args, **kwargs):
         return json_dict
     except:
         log_func.fatal(u'Error get JSON data by URL <%s> by urllib3' % url)
+        if json_content:
+            log_func.error(u'JSON content:')
+            log_func.error(json_content)
     return None

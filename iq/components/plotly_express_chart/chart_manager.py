@@ -27,7 +27,7 @@ CHART_TYPE2DRAW_FUNCTION = {
     'bar': plotly.express.bar,
     'timeline': plotly.express.timeline,
     'histogram': plotly.express.histogram,
-    'ecdf': plotly.express.ecdf,
+    # 'ecdf': plotly.express.ecdf,
     'violin': plotly.express.violin,
     'box': plotly.express.box,
     'strip': plotly.express.strip,
@@ -51,7 +51,7 @@ CHART_TYPE2DRAW_FUNCTION = {
     'pie': plotly.express.pie,
     'sunburst': plotly.express.sunburst,
     'treemap': plotly.express.treemap,
-    'icicle': plotly.express.icicle,
+    # 'icicle': plotly.express.icicle,
     'funnel': plotly.express.funnel,
     'funnel_area': plotly.express.funnel_area,
 }
