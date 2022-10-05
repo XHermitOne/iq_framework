@@ -13,13 +13,13 @@ from . import global_func
 from . import str_func
 from . import file_func
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 4, 2)
 
 DEFAULT_ENCODING = global_func.getDefaultEncoding()
 DEFAULT_REPLACEMENTS = {u'"': u'\''}
 
 DEFAULT_CSV_DELITEMER = u','
-ALTER_CSV_DELITEMER = u';'
+ALTER_CSV_DELIMETER = u';'
 
 
 def saveTextFile(txt_filename, txt='', rewrite=True):
@@ -309,7 +309,7 @@ def saveCSVFile(csv_filename, records=(),
     if replacements is None:
         replacements = DEFAULT_REPLACEMENTS
         if delim not in replacements:
-            replacements[delim] = ALTER_CSV_DELITEMER if delim == DEFAULT_CSV_DELITEMER else (DEFAULT_CSV_DELITEMER if delim == ALTER_CSV_DELITEMER else DEFAULT_CSV_DELITEMER)
+            replacements[delim] = ALTER_CSV_DELIMETER if delim == DEFAULT_CSV_DELITEMER else (DEFAULT_CSV_DELITEMER if delim == ALTER_CSV_DELIMETER else DEFAULT_CSV_DELITEMER)
     prepare_records = [[str_func.replaceInText(str_func.toUnicode(field, encoding), replacements) for field in record] for record in records]
     txt = u'\n'.join([delim.join(record) for record in prepare_records])
     return saveTextFile(csv_filename, txt)
