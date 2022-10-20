@@ -10,7 +10,7 @@ import os.path
 from . import log_func
 
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 
 ICON_FILENAME_EXT = '.png'
@@ -50,6 +50,17 @@ def getIconFilename(icon_filename):
             return None
     icon_filename = getLibraryIconFilename(icon_filename=icon_filename, library=library)
     return icon_filename
+
+
+def existsIconFile(icon_filename):
+    """
+    Exist library icon file name?
+
+    :param icon_filename: Icon filename as 'library/img_filename.png'
+    :return: True/False.
+    """
+    filename = getIconFilename(icon_filename)
+    return os.path.exists(filename)
 
 
 def getLibraryIconFilename(icon_filename, library=None):

@@ -5,22 +5,34 @@
 TreeListCtrl manager.
 """
 
+import os.path
+import hashlib
 import wx
 import wx.lib.gizmos
 
 from ...util import log_func
 from ...util import spc_func
+from ...util import icon_func
+
+from ...engine.wx import wxbitmap_func
 
 from . import base_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
+
+DEFAULT_ITEM_IMAGE_WIDTH = wxbitmap_func.DEFAULT_ICON_WIDTH
+DEFAULT_ITEM_IMAGE_HEIGHT = wxbitmap_func.DEFAULT_ICON_HEIGHT
+DEFAULT_ITEM_IMAGE_SIZE = (DEFAULT_ITEM_IMAGE_WIDTH, DEFAULT_ITEM_IMAGE_HEIGHT)
+
+TREE_LIST_CTRL_IMAGE_LIST_CACHE_NAME = '__image_list_cache'
 
 
 class iqTreeListCtrlManager(base_manager.iqBaseManager):
     """
     TreeListCtrl manager.
     """
-    def _setTreeListCtrlData(self, treelistctrl=None, tree_data=None, columns=(),
+    def _setTreeListCtrlData(self, treelistctrl=None, tree_data=None,
+                             columns=(), image=None,
                              ext_func=None, do_expand_all=False):
         """
         Set tree data of control wx.TreeListCtrl.
@@ -28,6 +40,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param treelistctrl: wx.TreeListCtrl control.
         :param tree_data: Tree data:
         :param columns: Columns as tuple.
+        :param image: Image as attribute name.
         :param ext_func: Extended function.
         :param do_expand_all: Auto expand all items?
         :return: True/False.
@@ -39,13 +52,14 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
             return False
 
         treelistctrl.GetMainWindow().DeleteAllItems()
-        self.appendTreeListCtrlBranch(treelistctrl=treelistctrl, node=tree_data, columns=columns, ext_func=ext_func)
+        self.appendTreeListCtrlBranch(treelistctrl=treelistctrl, node=tree_data, columns=columns, image=image, ext_func=ext_func)
 
         if do_expand_all:
             treelistctrl.GetMainWindow().ExpandAll()
         return True
 
-    def setTreeListCtrlData(self, treelistctrl=None, tree_data=None, columns=(),
+    def setTreeListCtrlData(self, treelistctrl=None, tree_data=None,
+                            columns=(), image=None,
                             ext_func=None, do_expand_all=False):
         """
         Set tree data of control wx.TreeListCtrl.
@@ -53,17 +67,19 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         :param treelistctrl: wx.TreeListCtrl control.
         :param tree_data: Tree data:
         :param columns: Columns as tuple.
+        :param image: Image as attribute name.
         :param ext_func: Extended function.
         :param do_expand_all: Auto expand all items?
         :return: True/False.
         """
         try:
-            return self._setTreeListCtrlData(treelistctrl, tree_data, columns, ext_func, do_expand_all)
+            return self._setTreeListCtrlData(treelistctrl, tree_data, columns, image, ext_func, do_expand_all)
         except:
             log_func.fatal(u'Set tree data of wx.TreeListCtrl control.')
         return False
 
-    def _appendTreeListCtrlBranch(self, treelistctrl=None, parent_item=None, node=None, columns=(), ext_func=None):
+    def _appendTreeListCtrlBranch(self, treelistctrl=None, parent_item=None, node=None,
+                                  columns=(), image=None, ext_func=None):
         """
         Add branch data to node of wx.TreeListCtrl control.
 
@@ -75,6 +91,7 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
             If item data is list then add nodes.
         :param columns: Columns as tuple:
             ('column key 1', ...)
+        :param image: Image as attribute name: 'image key'.
         :param ext_func: Extended function.
         :return: True/False.
         """
@@ -86,13 +103,13 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
                 parent_item = treelistctrl.GetMainWindow().AddRoot(base_manager.UNKNOWN)
                 result = self.appendTreeListCtrlBranch(treelistctrl, parent_item=parent_item,
                                                        node={spc_func.CHILDREN_ATTR_NAME: node},
-                                                       columns=columns, ext_func=ext_func)
+                                                       columns=columns, image=image, ext_func=ext_func)
                 return result
             elif (isinstance(node, list) or isinstance(node, tuple)) and len(node) == 1:
                 node = node[0]
-                parent_item = self.addTreeListCtrlRootItem(treelistctrl, node, columns, ext_func)
+                parent_item = self.addTreeListCtrlRootItem(treelistctrl, node, columns, image, ext_func)
             elif isinstance(node, dict):
-                parent_item = self.addTreeListCtrlRootItem(treelistctrl, node, columns, ext_func)
+                parent_item = self.addTreeListCtrlRootItem(treelistctrl, node, columns, image, ext_func)
             else:
                 log_func.warning(u'Node type <%s> not support in wx.TreeListCtrl manager' % str(type(node)))
                 return False
@@ -100,6 +117,8 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         for record in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
             label = str(record.get(columns[0], u''))
             item = treelistctrl.GetMainWindow().AppendItem(parent_item, label)
+            if image is not None:
+                self.setTreeListCtrlItemImage(treelistctrl=treelistctrl, item=item, image=image)
             for i, column in enumerate(columns[1:]):
                 label = str(record.get(columns[i + 1], u''))
                 treelistctrl.GetMainWindow().SetItemText(item, label, i + 1)
@@ -114,9 +133,10 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
 
             if spc_func.CHILDREN_ATTR_NAME in record and record[spc_func.CHILDREN_ATTR_NAME]:
                 for child in record[spc_func.CHILDREN_ATTR_NAME]:
-                    self.appendTreeListCtrlBranch(treelistctrl, item, child, columns=columns, ext_func=ext_func)
+                    self.appendTreeListCtrlBranch(treelistctrl, item, child, columns=columns, image=image, ext_func=ext_func)
 
-    def appendTreeListCtrlBranch(self, treelistctrl=None, parent_item=None, node=None, columns=(), ext_func=None):
+    def appendTreeListCtrlBranch(self, treelistctrl=None, parent_item=None, node=None,
+                                 columns=(), image=None, ext_func=None):
         """
         Add branch data to node of wx.TreeListCtrl control.
 
@@ -128,25 +148,32 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
             If item data is list then add nodes.
         :param columns: Columns as tuple:
             ('column key 1', ...)
+        :param image: Image as attribute name: 'image key'.
         :param ext_func: Extended function.
         :return: True/False.
         """
         try:
-            return self._appendTreeListCtrlBranch(treelistctrl, parent_item, node, columns, ext_func)
+            return self._appendTreeListCtrlBranch(treelistctrl, parent_item, node, columns, image, ext_func)
         except:
             log_func.fatal(u'Add branch to node of wx.TreeListCtrl control error')
         return False
 
-    def addTreeListCtrlRootItem(self, treelistctrl=None, node=None, columns=(), ext_func=None):
+    def addTreeListCtrlRootItem(self, treelistctrl=None, node=None,
+                                columns=(), image=None, ext_func=None):
         """
         Add root item.
 
+        :param image: Image as attribute name: 'image key'.
         :return:
         """
         assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         label = str(node.get(columns[0], base_manager.UNKNOWN))
         parent_item = treelistctrl.GetMainWindow().AddRoot(label)
+
+        if image is not None:
+            self.setTreeListCtrlItemImage(treelistctrl=treelistctrl, item=parent_item, image=image)
+
         for i, column in enumerate(columns[1:]):
             label = str(node.get(columns[i + 1], base_manager.UNKNOWN))
             treelistctrl.GetMainWindow().SetItemText(parent_item, label, i + 1)
@@ -393,3 +420,129 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         except:
             log_func.fatal(u'Error get level path in <%s>' % str(treelistctrl))
         return None
+
+    def getTreeListCtrlImageIndex(self, treelistctrl=None, image=None, auto_add=True):
+        """
+        Searching for an image in the image list wx.TreeListCtrl.
+
+        :param treelistctrl: wx.TreeListCtrl control.
+        :param image: Image object.
+        :param auto_add: Automatically add to list if missing?
+        :return: Object image or -1 if image not found.
+        """
+        if image is None:
+            return -1
+
+        if isinstance(image, wx.Bitmap):
+            img = image.ConvertToImage()
+            img_id = hashlib.md5(img.GetData()).hexdigest()
+        elif isinstance(image, wx.Image):
+            img_id = hashlib.md5(image.GetData()).hexdigest()
+        else:
+            log_func.warning(u'Unsupported image type <%s : %s>' % (image.__class__.__name__, str(image)))
+            return -1
+
+        # First check in the cache
+        img_cache = self.getTreeListCtrlImageListCache(treelistctrl=treelistctrl)
+
+        img_idx = -1
+        if img_id in img_cache:
+            img_idx = img_cache[img_id]
+        else:
+            if auto_add:
+                image_list = self.getTreeListCtrlImageList(treelistctrl=treelistctrl)
+                img_idx = image_list.Add(image)
+                # Save to cache
+                img_cache[img_id] = img_idx
+        return img_idx
+
+    def getTreeListCtrlImageList(self, treelistctrl=None, image_width=DEFAULT_ITEM_IMAGE_WIDTH,
+                                 image_height=DEFAULT_ITEM_IMAGE_HEIGHT):
+        """
+        Get a list of pictures of elements of the tree control wx.TreeListCtrl.
+
+        :param treelistctrl: wx.TreeListCtrl control.
+        :param image_width: Image width.
+        :param image_height: Image height.
+        :return: wx.ImageList object.
+        """
+        if treelistctrl is None:
+            log_func.warning(u'Not define wx.TreeListCtrl object')
+            return None
+
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+
+        image_list = treelistctrl.GetImageList()
+        if not image_list:
+            image_list = wx.ImageList(image_width, image_height)
+            # [NOTE] Add empty Bitmap
+            empty_dx = image_list.Add(wxbitmap_func.createEmptyBitmap(image_width, image_height))
+            treelistctrl.SetImageList(image_list)
+        return image_list
+
+    def getTreeListCtrlImageListCache(self, treelistctrl=None):
+        """
+        Image list cache.
+
+        :param treelistctrl: wx.TreeListCtrl control.
+        """
+        if treelistctrl is None:
+            log_func.warning(u'Not define wx.TreeListCtrl object')
+            return None
+
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+
+        if not hasattr(treelistctrl, TREE_LIST_CTRL_IMAGE_LIST_CACHE_NAME):
+            setattr(treelistctrl, TREE_LIST_CTRL_IMAGE_LIST_CACHE_NAME, dict())
+        return getattr(treelistctrl, TREE_LIST_CTRL_IMAGE_LIST_CACHE_NAME)
+
+    def setTreeListCtrlItemImage(self, treelistctrl=None, item=None, image=None):
+        """
+        Set tree item image.
+
+        :param treelistctrl: wx.TreeListCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param image: wx.Bitmap object/Icon name/Image filename/Item data key
+            If not specified, the image is deleted.
+        :return: True/False.
+        """
+        if treelistctrl is None:
+            log_func.warning(u'Not define wx.TreeListCtrl object')
+            return None
+
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+
+        if item is None:
+            item = treelistctrl.GetRootItem()
+
+        if image is None:
+            treelistctrl.SetItemImage(item, None)
+        else:
+            if image and isinstance(image, str):
+                # If item image as icon name or image filename
+                item_data = self.getTreeListCtrlItemData(treelistctrl=treelistctrl, item=item)
+                img = item_data[image] if item_data and image in item_data else image
+                if isinstance(img, str) and os.path.exists(img):
+                    # Image as filename
+                    log_func.debug(u'Set item image as filename <%s>' % img)
+                    image = wxbitmap_func.createBitmap(img)
+                elif isinstance(img, str) and icon_func.existsIconFile(img):
+                    # Image as icon name
+                    log_func.debug(u'Set item image as icon <%s>' % img)
+                    image = wxbitmap_func.createIconBitmap(img)
+                elif isinstance(img, wx.Bitmap):
+                    image = img
+                elif isinstance(img, wx.Image):
+                    image = img
+                else:
+                    image = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+            else:
+                log_func.debug(u'Set image as not string')
+
+            if image is not None:
+                img_idx = self.getTreeListCtrlImageIndex(treelistctrl=treelistctrl, image=image, auto_add=True)
+                treelistctrl.SetItemImage(item, img_idx)
+            else:
+                return False
+        return True
