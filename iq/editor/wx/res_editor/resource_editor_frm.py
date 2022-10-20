@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -124,47 +124,47 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onNewToolClicked( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onNewToolClicked(self, event):
 		event.Skip()
 
-	def onOpenToolClicked( self, event ):
+	def onOpenToolClicked(self, event):
 		event.Skip()
 
-	def onSaveToolClicked( self, event ):
+	def onSaveToolClicked(self, event):
 		event.Skip()
 
-	def onSaveAsToolClicked( self, event ):
+	def onSaveAsToolClicked(self, event):
 		event.Skip()
 
-	def onTestToolClicked( self, event ):
+	def onTestToolClicked(self, event):
 		event.Skip()
 
-	def onDesignToolClicked( self, event ):
+	def onDesignToolClicked(self, event):
 		event.Skip()
 
-	def onModuleToolClicked( self, event ):
+	def onModuleToolClicked(self, event):
 		event.Skip()
 
-	def onHelpToolClicked( self, event ):
+	def onHelpToolClicked(self, event):
 		event.Skip()
 
-	def onCollapseToolClicked( self, event ):
+	def onCollapseToolClicked(self, event):
 		event.Skip()
 
-	def onExpandToolClicked( self, event ):
+	def onExpandToolClicked(self, event):
 		event.Skip()
 
-	def onResTreelistItemContextMenu( self, event ):
+	def onResTreelistItemContextMenu(self, event):
 		event.Skip()
 
-	def onResItemTreelistSelectionChanged( self, event ):
+	def onResItemTreelistSelectionChanged(self, event):
 		event.Skip()
 
-	def onObjPropertyGridChanged( self, event ):
+	def onObjPropertyGridChanged(self, event):
 		event.Skip()
 
-	def editor_splitterOnIdle( self, event ):
+	def editor_splitterOnIdle(self, event):
 		self.editor_splitter.SetSashPosition( 0 )
 		self.editor_splitter.Unbind( wx.EVT_IDLE )
 

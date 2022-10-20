@@ -15,7 +15,7 @@ from ...util import file_func
 
 from ...script import migrate_fbp
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 0, 2)
 
 WXFB_PROJECT_FILE_EXT = '.fbp'
 
@@ -70,7 +70,8 @@ ADAPTATION_REPLACES = (
     dict(compare=CONTAIN_SIGNATURE, src='wx.dataview.EVT_TREELIST_SELECTION_CHANGING', dst='wx.EVT_TREE_SEL_CHANGING'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.dataview.EVT_TREE_ITEM_ACTIVATED', dst='wx.EVT_TREE_ITEM_ACTIVATED'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.dataview.EVT_TREELIST_ITEM_CONTEXT_MENU', dst='wx.EVT_TREE_ITEM_RIGHT_CLICK'),
-    dict(compare=CONTAIN_SIGNATURE, src='_treeListCtrl.AppendColumn(', dst='_treeListCtrl.AddColumn('),
+    dict(compare=CONTAIN_SIGNATURE, src='treeListCtrl.AppendColumn(', dst='treeListCtrl.AddColumn('),
+    dict(compare=CONTAIN_SIGNATURE, src='TreeListCtrl.AppendColumn(', dst='TreeListCtrl.AddColumn('),
     dict(compare=CONTAIN_SIGNATURE, src=', wx.COL_RESIZABLE )', dst=')'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.COL_WIDTH_AUTOSIZE', dst='300'),
     dict(compare=CONTAIN_SIGNATURE, src='wx.COL_WIDTH_DEFAULT', dst='300'),
