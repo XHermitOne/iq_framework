@@ -9,6 +9,7 @@ import os.path
 import hashlib
 import wx
 import wx.lib.gizmos
+import wx.dataview
 
 from ...util import log_func
 from ...util import spc_func
@@ -116,9 +117,9 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
 
         for record in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
             label = str(record.get(columns[0], u''))
-            item = treelistctrl.GetMainWindow().AppendItem(parent_item, label)
-            if image is not None:
-                self.setTreeListCtrlItemImage(treelistctrl=treelistctrl, item=item, image=image)
+            # Normal or checkable item
+            item_type = 1 if treelistctrl.GetWindowStyle() & wx.dataview.TL_CHECKBOX else 0
+            item = treelistctrl.GetMainWindow().AppendItem(parent_item, label, ct_type=item_type)
             for i, column in enumerate(columns[1:]):
                 label = str(record.get(columns[i + 1], u''))
                 treelistctrl.GetMainWindow().SetItemText(item, label, i + 1)
@@ -130,6 +131,9 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
                     log_func.fatal(u'Extended function <%s> error' % str(ext_func))
 
             treelistctrl.GetMainWindow().SetItemData(item, record)
+
+            if image is not None:
+                self.setTreeListCtrlItemImage(treelistctrl=treelistctrl, item=item, image=image)
 
             if spc_func.CHILDREN_ATTR_NAME in record and record[spc_func.CHILDREN_ATTR_NAME]:
                 for child in record[spc_func.CHILDREN_ATTR_NAME]:
@@ -169,21 +173,25 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         label = str(node.get(columns[0], base_manager.UNKNOWN))
-        parent_item = treelistctrl.GetMainWindow().AddRoot(label)
-
-        if image is not None:
-            self.setTreeListCtrlItemImage(treelistctrl=treelistctrl, item=parent_item, image=image)
+        # Normal or checkable item
+        item_type = 1 if treelistctrl.GetWindowStyle() & wx.dataview.TL_CHECKBOX else 0
+        parent_item = treelistctrl.GetMainWindow().AddRoot(label, ct_type=item_type)
 
         for i, column in enumerate(columns[1:]):
             label = str(node.get(columns[i + 1], base_manager.UNKNOWN))
             treelistctrl.GetMainWindow().SetItemText(parent_item, label, i + 1)
-        treelistctrl.GetMainWindow().SetItemData(parent_item, node)
 
         if ext_func:
             try:
                 ext_func(treelistctrl, parent_item, node)
             except:
                 log_func.fatal(u'Extended function <%s> error' % str(ext_func))
+
+        treelistctrl.GetMainWindow().SetItemData(parent_item, node)
+
+        if image is not None:
+            self.setTreeListCtrlItemImage(treelistctrl=treelistctrl, item=parent_item, image=image)
+
         return parent_item
 
     def getTreeListCtrlItemData(self, treelistctrl=None, item=None):
@@ -523,13 +531,14 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
                 # If item image as icon name or image filename
                 item_data = self.getTreeListCtrlItemData(treelistctrl=treelistctrl, item=item)
                 img = item_data[image] if item_data and image in item_data else image
+                # log_func.debug(u'Image <%s>. Item data %s' % (str(img), str(item_data)))
                 if isinstance(img, str) and os.path.exists(img):
                     # Image as filename
-                    log_func.debug(u'Set item image as filename <%s>' % img)
+                    # log_func.debug(u'Set item image as filename <%s>' % img)
                     image = wxbitmap_func.createBitmap(img)
                 elif isinstance(img, str) and icon_func.existsIconFile(img):
                     # Image as icon name
-                    log_func.debug(u'Set item image as icon <%s>' % img)
+                    # log_func.debug(u'Set item image as icon <%s>' % img)
                     image = wxbitmap_func.createIconBitmap(img)
                 elif isinstance(img, wx.Bitmap):
                     image = img
@@ -537,8 +546,6 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
                     image = img
                 else:
                     image = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
-            else:
-                log_func.debug(u'Set image as not string')
 
             if image is not None:
                 img_idx = self.getTreeListCtrlImageIndex(treelistctrl=treelistctrl, image=image, auto_add=True)
