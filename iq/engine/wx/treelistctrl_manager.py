@@ -99,45 +99,42 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
         assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
 
         if parent_item is None:
-            if (isinstance(node, list) or isinstance(node, tuple)) and len(node) > 1:
+            if isinstance(node, (list, tuple)):
                 log_func.info(u'Create UNKNOWN root item of wx.TreeListCtrl control')
                 parent_item = treelistctrl.GetMainWindow().AddRoot(base_manager.UNKNOWN)
                 result = self.appendTreeListCtrlBranch(treelistctrl, parent_item=parent_item,
                                                        node={spc_func.CHILDREN_ATTR_NAME: node},
                                                        columns=columns, image=image, ext_func=ext_func)
                 return result
-            elif (isinstance(node, list) or isinstance(node, tuple)) and len(node) == 1:
-                node = node[0]
-                parent_item = self.addTreeListCtrlRootItem(treelistctrl, node, columns, image, ext_func)
             elif isinstance(node, dict):
-                parent_item = self.addTreeListCtrlRootItem(treelistctrl, node, columns, image, ext_func)
+                item = self.addTreeListCtrlRootItem(treelistctrl, node, columns, image, ext_func)
             else:
                 log_func.warning(u'Node type <%s> not support in wx.TreeListCtrl manager' % str(type(node)))
                 return False
-
-        for record in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
-            label = str(record.get(columns[0], u''))
+        else:
+            # for record in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
+            label = str(node.get(columns[0], u''))
             # Normal or checkable item
             item_type = 1 if treelistctrl.GetWindowStyle() & wx.dataview.TL_CHECKBOX else 0
             item = treelistctrl.GetMainWindow().AppendItem(parent_item, label, ct_type=item_type)
             for i, column in enumerate(columns[1:]):
-                label = str(record.get(columns[i + 1], u''))
+                label = str(node.get(columns[i + 1], u''))
                 treelistctrl.GetMainWindow().SetItemText(item, label, i + 1)
 
             if ext_func:
                 try:
-                    ext_func(treelistctrl, item, record)
+                    ext_func(treelistctrl, item, node)
                 except:
                     log_func.fatal(u'Extended function <%s> error' % str(ext_func))
 
-            treelistctrl.GetMainWindow().SetItemData(item, record)
+            treelistctrl.GetMainWindow().SetItemData(item, node)
 
             if image is not None:
                 self.setTreeListCtrlItemImage(treelistctrl=treelistctrl, item=item, image=image)
 
-            if spc_func.CHILDREN_ATTR_NAME in record and record[spc_func.CHILDREN_ATTR_NAME]:
-                for child in record[spc_func.CHILDREN_ATTR_NAME]:
-                    self.appendTreeListCtrlBranch(treelistctrl, item, child, columns=columns, image=image, ext_func=ext_func)
+        # Create children items
+        for child in node.get(spc_func.CHILDREN_ATTR_NAME, list()):
+            self.appendTreeListCtrlBranch(treelistctrl, item, child, columns=columns, image=image, ext_func=ext_func)
 
     def appendTreeListCtrlBranch(self, treelistctrl=None, parent_item=None, node=None,
                                  columns=(), image=None, ext_func=None):
