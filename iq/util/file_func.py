@@ -12,12 +12,13 @@ import platform
 import hashlib
 import shutil
 import glob
+import pathlib
 
 from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 5, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -635,3 +636,20 @@ def getPrjProfileTempFilename():
     :return: Temp filename or None if error.
     """
     return getTempFilename(to_path=getProjectProfilePath())
+
+
+def extractProjectNameFromPath(path):
+    """
+    Extract project name from path. If path not in framework folder then return THIS.
+
+    :param path: Path for exctract.
+    :return: Project name or THIS.
+    """
+    path = getAbsolutePath(path)
+    framework_path = getFrameworkPath()
+    if path.startswith(framework_path):
+        path = path.replace(framework_path, '')
+        path_parts = pathlib.Path(path).parts
+        if path_parts:
+            return path_parts[0] if path_parts[0] != os.path.sep else path_parts[1]
+    return 'THIS'

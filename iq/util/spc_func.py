@@ -11,7 +11,7 @@ from . import log_func
 
 from .. import components
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 SYS_ATTR_SIGN = '__'
 CHILDREN_ATTR_NAME = '_children_'
@@ -27,7 +27,18 @@ TEST_FUNC_ATTR_NAME = '__test__'
 DESIGN_FUNC_ATTR_NAME = '__design__'
 GEN_MODULE_FUNC_ATTR_NAME = '__gen_module__'
 
-BASIC_ATTRIBUTES = ('name', 'type', 'description', 'activate', 'guid', 'module')
+NAME_ATTR_NAME = 'name'
+TYPE_ATTR_NAME = 'type'
+DESCRIPTION_ATTR_NAME = 'description'
+ACTIVATE_ATTR_NAME = 'activate'
+GUID_ATTR_NAME = 'guid'
+MODULE_ATTR_NAME = 'module'
+BASIC_ATTRIBUTES = (NAME_ATTR_NAME,
+                    TYPE_ATTR_NAME,
+                    DESCRIPTION_ATTR_NAME,
+                    ACTIVATE_ATTR_NAME,
+                    GUID_ATTR_NAME,
+                    MODULE_ATTR_NAME)
 ALL_BASIC_ATTRIBUTES = list(BASIC_ATTRIBUTES) + [CHILDREN_ATTR_NAME]
 
 

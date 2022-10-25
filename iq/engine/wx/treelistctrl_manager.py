@@ -19,7 +19,7 @@ from ...engine.wx import wxbitmap_func
 
 from . import base_manager
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 DEFAULT_ITEM_IMAGE_WIDTH = wxbitmap_func.DEFAULT_ICON_WIDTH
 DEFAULT_ITEM_IMAGE_HEIGHT = wxbitmap_func.DEFAULT_ICON_HEIGHT
@@ -550,3 +550,34 @@ class iqTreeListCtrlManager(base_manager.iqBaseManager):
             else:
                 return False
         return True
+
+    def getTreeListCtrlCheckedItemsDataList(self, treelistctrl=None, item=None):
+        """
+        Get checked items data as list.
+
+        :param treelistctrl: wx.TreeListCtrl control.
+        :param item: Current item.
+        :return: If the item is checked, the item data is added to the resulting list.
+        """
+        if treelistctrl is None:
+            log_func.warning(u'Not define wx.TreeListCtrl object')
+            return None
+
+        assert issubclass(treelistctrl.__class__, wx.lib.gizmos.TreeListCtrl), u'TreeListCtrl manager type error'
+
+        if item is None:
+            item = treelistctrl.GetRootItem()
+
+        if item is None:
+            return list()
+
+        result = list()
+        if treelistctrl.IsItemChecked(item):
+            item_data = self.getTreeListCtrlItemData(treelistctrl=treelistctrl, item=item)
+            result.append(item_data)
+        children = self.getTreeListCtrlItemChildren(treelistctrl=treelistctrl, item=item)
+        for child in children:
+            child_data = self.getTreeListCtrlCheckedItemsDataList(treelistctrl=treelistctrl, item=child)
+            result += child_data
+        return result
+
