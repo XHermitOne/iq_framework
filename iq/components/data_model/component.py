@@ -11,10 +11,11 @@ from . import spc
 from . import model
 
 from ...util import log_func
+from ...util import exec_func
 
 from ..data_column import COMPONENT as column_component
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqDataModel(model.iqModelManager, object.iqObject):
@@ -63,6 +64,15 @@ class iqDataModel(model.iqModelManager, object.iqObject):
         except:
             log_func.fatal(u'Error get model in <%s>' % self.getName())
         return None
+
+    def setDefault(self):
+        """
+        Set default data.
+        """
+        context = self.getContext()
+        function_body = self.getAttribute('set_default')
+        result = exec_func.execTxtFunction(function=function_body, context=context)
+        return result
 
 
 COMPONENT = iqDataModel

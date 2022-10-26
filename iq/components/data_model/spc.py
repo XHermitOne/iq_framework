@@ -36,6 +36,8 @@ DATAMODEL_SPC = {
 
     'tablename': None,
 
+    'set_default': None,
+
     '__package__': u'Data',
     '__icon__': 'fatcow/table',
     '__parent__': object_spc.OBJECT_SPC,
@@ -43,9 +45,11 @@ DATAMODEL_SPC = {
     '__content__': ('iqDataColumn', 'iqDataModel'),
     '__edit__': {
         'tablename': property_editor_id.STRING_EDITOR,
+        'set_default': property_editor_id.METHOD_EDITOR,
     },
     '__help__': {
         'tablename': u'Storage table name',
+        'set_default': u'Function to set the model with default data',
     },
 }
 
