@@ -21,7 +21,7 @@ from sqlalchemy.orm import sessionmaker
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 # Default operation table
 DEFAULT_OPERATIONS_TABLE = 'operations'
@@ -75,7 +75,7 @@ class iqObjRegistry(object):
     +---------------------------------------+
 
     Data object
-    Объект identified by fields GUID and n_obj.
+    Object identified by fields GUID and n_obj.
     Change object state log in fields:
     prev - previous object state.
     post - next object state.
@@ -98,8 +98,16 @@ class iqObjRegistry(object):
         self._obj_table_name = obj_table_name
         self._obj_table = None
 
+        # Resource requisites
+        self._resource_requisites = list()
+        # Dimension requisites
+        self._dimension_requisites = list()
+
+        # Extended requisites
+        self._extended_requisites = list()
+
         # Object requisites
-        self._obj_requisites = list()
+        # self._obj_requisites = list()
 
     def getOperationTable(self):
         """
@@ -201,7 +209,10 @@ class iqObjRegistry(object):
                       guidobj_requisite,
                       nobj_requisite,
                       prev_requisite,
-                      post_requisite] + self._obj_requisites
+                      post_requisite] + \
+                      self._dimension_requisites + \
+                      self._resource_requisites + \
+                      self._extended_requisites
         self._operation_table = self.genTable(operation_table_name, requisites)
         self._operation_table.create(bind=self.getConnection(),
                                      checkfirst=True)
@@ -232,7 +243,10 @@ class iqObjRegistry(object):
                       nobj_requisite,
                       dtcreate_requisite,
                       state_requisite,
-                      dtstate_requisite] + self._obj_requisites
+                      dtstate_requisite] + \
+                     self._dimension_requisites + \
+                     self._resource_requisites + \
+                     self._extended_requisites
         self._obj_table = self.genTable(obj_table_name, requisites)
         self._obj_table.create(bind=self.getConnection(),
                                checkfirst=True)
@@ -276,28 +290,28 @@ class iqObjRegistry(object):
         table = sqlalchemy.Table(table_name, metadata, *columns)
         return table
 
-    def getObjRequisiteNames(self):
-        """
-        Get object requisite names.
-
-        :return: Requisite name list.
-        """
-        names = [requisite.get('requisite_name', None) for requisite in self._obj_requisites]
-        return names
-
-    def addObjRequisite(self, requisite_name, requisite_type):
-        """
-        Add object requisite.
-
-        :param requisite_name: Requisite name.
-        :param requisite_type: Requisite type.
-            Requisite type
-            can Integer ('int')/Float ('float')/
-            DateTime('datetime')/Text ('text').
-        """
-        requisite = dict(requisite_name=requisite_name,
-                         requisite_type=requisite_type)
-        self._obj_requisites.append(requisite)
+    # def getObjRequisiteNames(self):
+    #     """
+    #     Get object requisite names.
+    #
+    #     :return: Requisite name list.
+    #     """
+    #     names = [requisite.get('requisite_name', None) for requisite in self._obj_requisites]
+    #     return names
+    #
+    # def addObjRequisite(self, requisite_name, requisite_type):
+    #     """
+    #     Add object requisite.
+    #
+    #     :param requisite_name: Requisite name.
+    #     :param requisite_type: Requisite type.
+    #         Requisite type
+    #         can Integer ('int')/Float ('float')/
+    #         DateTime('datetime')/Text ('text').
+    #     """
+    #     requisite = dict(requisite_name=requisite_name,
+    #                      requisite_type=requisite_type)
+    #     self._obj_requisites.append(requisite)
 
     def _getOperationRequisiteValues(self, **requisite_values):
         """
@@ -310,8 +324,104 @@ class iqObjRegistry(object):
                                 OBJ_OPERATION_FIELD,
                                 DT_OPERATION_FIELD,
                                 PREV_OPERATION_FIELD,
-                                POST_OPERATION_FIELD] + self.getObjRequisiteNames()
+                                POST_OPERATION_FIELD] + \
+                                self.getDimensionRequisiteNames() + \
+                                self.getResourceRequisiteNames() + \
+                                self.getExtendedRequisiteNames()
         return dict([(name, value) for name, value in requisite_values.items() if name in used_requisite_names])
+
+    def addResourceRequisite(self, requisite_name, requisite_type):
+        """
+        Append resource requisite.
+
+        :param requisite_name: Requisite name.
+        :param requisite_type: Requisite type.
+            Resource requisite type can as integer ('int') or floating ('float').
+        """
+        requisite = dict(requisite_name=requisite_name,
+                         requisite_type=requisite_type)
+        self._resource_requisites.append(requisite)
+
+    def clearResourceRequisites(self):
+        """
+        Clear resource requisites list.
+
+        :return: True/False.
+        """
+        # Resource requisites
+        self._resource_requisites = list()
+        return True
+
+    def getResourceRequisiteNames(self):
+        """
+        Get resource requisite name list.
+
+        :return: Resource requisite name list.
+        """
+        names = [requisite.get('requisite_name', None) for requisite in self._resource_requisites]
+        return names
+
+    def addDimensionRequisite(self, requisite_name, requisite_type):
+        """
+        Add dimension requisite.
+
+        :param requisite_name: Requisite name.
+        :param requisite_type: Requisite type.
+            Dimension requisite type can as Integer ('int')/Date time ('datetime')/Text ('text').
+        """
+        requisite = dict(requisite_name=requisite_name,
+                         requisite_type=requisite_type)
+        self._dimension_requisites.append(requisite)
+
+    def clearDimensionRequisites(self):
+        """
+        Clear dimension requisites list.
+
+        :return: True/False.
+        """
+        # Dimension requisites
+        self._dimension_requisites = list()
+        return True
+
+    def getDimensionRequisiteNames(self):
+        """
+        Get dimension requisite name list.
+
+        :return: Dimension requisite name list.
+        """
+        names = [requisite.get('requisite_name', None) for requisite in self._dimension_requisites]
+        return names
+
+    def addExtendedRequisite(self, requisite_name, requisite_type):
+        """
+        Add extended requisite.
+
+        :param requisite_name: Requisite name.
+        :param requisite_type: Requisite type.
+            Extended requisite type can as Integer ('int')/Floating ('float')/Date time ('datetime')/Text ('text').
+        """
+        requisite = dict(requisite_name=requisite_name,
+                         requisite_type=requisite_type)
+        self._extended_requisites.append(requisite)
+
+    def clearExtendedRequisites(self):
+        """
+        Clear extended requisites list.
+
+        :return: True/False.
+        """
+        # Extended requisites
+        self._extended_requisites = list()
+        return True
+
+    def getExtendedRequisiteNames(self):
+        """
+        Get extended requisite name list.
+
+        :return: Extended requisite name list.
+        """
+        names = [requisite.get('requisite_name', None) for requisite in self._extended_requisites]
+        return names
 
     def doState(self, **requisite_values):
         """
@@ -346,7 +456,7 @@ class iqObjRegistry(object):
             find = obj_table.select(sqlalchemy.and_(*where)).execute()
             if not find.rowcount:
                 # If an object with this identifier is not found, then create it
-                obj_requisite_names = self.getObjRequisiteNames()
+                obj_requisite_names = self.getDimensionRequisiteNames()
                 obj_requisites = dict([(name, requisite_values.get(name, None)) for name in obj_requisite_names])
                 obj_requisites[DTCREATE_OBJ_FIELD] = requisite_values.get(DTCREATE_OBJ_FIELD, dt_now)
                 obj_requisites[N_OBJ_FIELD] = n_obj
@@ -371,7 +481,7 @@ class iqObjRegistry(object):
                 n_obj = find_obj[N_OBJ_FIELD]
 
                 # Record the new state of the object and details
-                obj_requisite_names = self.getObjRequisiteNames()
+                obj_requisite_names = self.getDimensionRequisiteNames()
                 obj_requisites = dict([(name, requisite_values.get(name, None)) for name in obj_requisite_names])
                 obj_requisites[STATE_OBJ_FIELD] = new_state
                 obj_requisites[DTSTATE_OBJ_FIELD] = dt_now
@@ -458,7 +568,7 @@ class iqObjRegistry(object):
                     obj_requisites[STATE_OBJ_FIELD] = find_state[PREV_OPERATION_FIELD]
                     obj_requisites[DTSTATE_OBJ_FIELD] = prev_state[DT_OPERATION_FIELD]
                     # Restore the details of the object corresponding to the previous state
-                    obj_requisite_names = self.getObjRequisiteNames()
+                    obj_requisite_names = self.getDimensionRequisiteNames()
                     for requisite_name in obj_requisite_names:
                         obj_requisites[requisite_name] = prev_state[requisite_name]
                     requisite_values.update(obj_requisites)

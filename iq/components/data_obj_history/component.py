@@ -14,7 +14,7 @@ from ...util import log_func
 
 from .. import data_column
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 REQUISITE_VAL_TYPE_TRANSLATE = dict(Text='text',
@@ -48,11 +48,36 @@ class iqDataObjectHistory(obj_registry.iqObjRegistry, object.iqObject):
 
         self.createChildren()
 
-        obj_requisites = self.getChildrenRequisites()
-        for requisite in obj_requisites:
-            requisite_name = requisite.name
-            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getTypeValue(), 'text')
-            self.addObjRequisite(requisite_name, requisite_type)
+        # obj_requisites = self.getChildrenRequisites()
+        # for requisite in obj_requisites:
+        #     requisite_name = requisite.name
+        #     requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getTypeValue(), 'text')
+        #     self.addObjRequisite(requisite_name, requisite_type)
+
+        dimension_requisite_names = self.getAttribute('dimension_requisites')
+        dimension_requisites = [requisite for requisite in self.getChildrenRequisites() if
+                                requisite.getName() in dimension_requisite_names]
+        for requisite in dimension_requisites:
+            requisite_name = requisite.getName()
+            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
+            self.addDimensionRequisite(requisite_name, requisite_type)
+
+        resource_requisite_names = self.getAttribute('resource_requisites')
+        resource_requisites = [requisite for requisite in self.getChildrenRequisites() if
+                               requisite.getName() in resource_requisite_names]
+        for requisite in resource_requisites:
+            requisite_name = requisite.getName()
+            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
+            self.addResourceRequisite(requisite_name, requisite_type)
+
+        used_requisite_names = self.getDimensionRequisiteNames() + self.getResourceRequisiteNames()
+        extended_requisite_names = [requisite.getName() for requisite in self.getChildrenRequisites() if requisite.getName() not in used_requisite_names]
+        extended_requisites = [requisite for requisite in self.getChildrenRequisites() if
+                               requisite.getName() in extended_requisite_names]
+        for requisite in extended_requisites:
+            requisite_name = requisite.getName()
+            requisite_type = REQUISITE_VAL_TYPE_TRANSLATE.get(requisite.getFieldType(), 'text')
+            self.addExtendedRequisite(requisite_name, requisite_type)
 
     def getDBPsp(self):
         """
