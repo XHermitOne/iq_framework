@@ -31,73 +31,21 @@ class iqPygalChartProto(chart_manager_proto.iqChartManagerProto):
         """
         chart_manager_proto.iqChartManagerProto.__init__(self, *args, **kwargs)
         self.chart_type = DEFAULT_CHART_TYPE
-        # self.width = None
-        # self.height = None
         self.args = dict()
         self.output_type = DEFAULT_OUTPUT_FILE_TYPE
-        # self.output_image_filename = None
 
-    # def getChartType(self):
-    #     """
-    #     Get chart type.
-    #     """
-    #     return self.chart_type
+    def setChartType(self, chart_type=DEFAULT_CHART_TYPE):
+        """
+        Set chart type.
+        """
+        self.chart_type = chart_type
 
-    # def setChartType(self, chart_type=DEFAULT_CHART_TYPE):
-    #     """
-    #     Set chart type.
-    #     """
-    #     self.chart_type = chart_type
+    def setOutputType(self, output_type=DEFAULT_OUTPUT_FILE_TYPE):
+        """
+        Set output file type.
+        """
+        self.output_type = output_type
 
-    # def getWidth(self):
-    #     """
-    #     Get output file width.
-    #     """
-    #     return self.width
-
-    # def setWidth(self, width=None):
-    #     """
-    #     Set output file width.
-    #     """
-    #     self.width = width
-    #
-    # def getHeight(self):
-    #     """
-    #     Get output file height.
-    #     """
-    #     return self.height
-
-    # def setHeight(self, height=None):
-    #     """
-    #     Set output file height.
-    #     """
-    #     self.height = height
-    #
-    # def getSize(self):
-    #     """
-    #     Get output file size.
-    #     """
-    #     return self.width, self.height
-    #
-    # def setSize(self, width=None, height=None):
-    #     """
-    #     Set output file size.
-    #     """
-    #     self.width = width
-    #     self.height = height
-
-    # def getOutputType(self):
-    #     """
-    #     Get output file type.
-    #     """
-    #     return self.output_type
-
-    # def setOutputType(self, output_type=DEFAULT_OUTPUT_FILE_TYPE):
-    #     """
-    #     Set output file type.
-    #     """
-    #     self.output_type = output_type
-    #
     def getChartArguments(self):
         """
         Get chart function arguments.
