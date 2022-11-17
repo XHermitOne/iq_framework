@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Plotly-express chart wx panel component package.
+Plotly-express/Pygal chart wx panel component package.
 """
 
 from .spc import SPC

@@ -2,21 +2,20 @@
 # -*- coding: utf-8 -*-
 
 """
-Plotly-express chart manager specification module.
+Pygal chart manager specification module.
 """
 
 from iq.object import object_spc
 from ...editor import property_editor_id
 
-import plotly.express
-import plotly.io._orca
+import pygal
 
 __version__ = (0, 0, 0, 1)
 
-COMPONENT_TYPE = 'iqPlotlyExpressChart'
+COMPONENT_TYPE = 'iqPygalChart'
 
 
-PLOTLYEXPRESSCHART_SPC = {
+PYGALCHART_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
     'description': '',
@@ -31,21 +30,21 @@ PLOTLYEXPRESSCHART_SPC = {
     'output_type': 'png',
     
     '__package__': u'Special',
-    '__icon__': 'fatcow/chart_pie_title',
+    '__icon__': 'fatcow/chart_pie_plane',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
     '__content__': (),
     '__edit__': {
         'chart_type': {
             'editor': property_editor_id.CHOICE_EDITOR,
-            'choices': plotly.express.__all__,
+            'choices': tuple(pygal.CHARTS_BY_NAME.keys()),
         },
         'width': property_editor_id.INTEGER_EDITOR,
         'height': property_editor_id.INTEGER_EDITOR,
         'args': property_editor_id.SCRIPT_EDITOR,
         'output_type': {
             'editor': property_editor_id.CHOICE_EDITOR,
-            'choices': plotly.io._orca.valid_formats,
+            'choices': ('svg', 'png'),
         },
     },
     '__help__': {
@@ -57,5 +56,5 @@ PLOTLYEXPRESSCHART_SPC = {
     },
 }
 
-SPC = PLOTLYEXPRESSCHART_SPC
+SPC = PYGALCHART_SPC
 

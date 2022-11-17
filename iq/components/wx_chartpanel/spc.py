@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Plotly-express chart wx panel specification module.
+Plotly-express/Pygal chart wx panel specification module.
 """
 
 from ...editor import property_editor_id
@@ -10,13 +10,15 @@ from .. import wx_panel
 from ... import passport
 
 from .. import plotly_express_chart
+from .. import pygal_chart
 from .. import data_query
 from .. import data_model
 from .. import transform_datasource
 
 __version__ = (0, 0, 0, 1)
 
-CHART_TYPES = (plotly_express_chart.COMPONENT_TYPE, )
+CHART_TYPES = (plotly_express_chart.COMPONENT_TYPE,
+               pygal_chart.COMPONENT_TYPE)
 
 
 def validChartPsp(psp, *args, **kwargs):
@@ -50,9 +52,9 @@ def validChartDataSourcePsp(psp, *args, **kwargs):
     return psp_obj.getType() in CHART_DATASOURCE_TYPES
 
 
-COMPONENT_TYPE = 'iqWxPlotlyExpressChartPanel'
+COMPONENT_TYPE = 'iqWxChartPanel'
 
-WXPLOTLYEXPRESSCHARTPANEL_SPC = {
+WXCHARTPANEL_SPC = {
     'name': 'default',
     'type': COMPONENT_TYPE,
     'description': '',
@@ -79,9 +81,9 @@ WXPLOTLYEXPRESSCHARTPANEL_SPC = {
         },
     },
     '__help__': {
-        'chart': u'Plotly-express chart',
+        'chart': u'Plotly-express/Pygal chart',
         'datasource': u'Datasource pandas.DataFrame or Dataset (list of dictionaries)',
     },
 }
 
-SPC = WXPLOTLYEXPRESSCHARTPANEL_SPC
+SPC = WXCHARTPANEL_SPC

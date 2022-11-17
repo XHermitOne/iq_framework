@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Plotly-express chart wx panel component.
+Plotly-express/Pygal chart wx panel component.
 """
 
 import os.path
@@ -18,9 +18,9 @@ from ...engine.wx import wxbitmap_func
 __version__ = (0, 0, 0, 1)
 
 
-class iqWxPlotlyExpressChartPanel(wx_panel.COMPONENT):
+class iqWxChartPanel(wx_panel.COMPONENT):
     """
-    Plotly-express chart wx panel component class.
+    Plotly-express/Pygal chart wx panel component class.
     """
     def __init__(self, parent=None, resource=None, context=None, *args, **kwargs):
         """
@@ -157,4 +157,4 @@ class iqWxPlotlyExpressChartPanel(wx_panel.COMPONENT):
         event.Skip()
 
 
-COMPONENT = iqWxPlotlyExpressChartPanel
+COMPONENT = iqWxChartPanel
