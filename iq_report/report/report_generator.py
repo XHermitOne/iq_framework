@@ -791,11 +791,7 @@ class iqReportGenerator(object):
 
             # vvv For use records in generate cell text vvv
             query_table = self._query_table
-            records = [dict([(field_name,
-                              table_rec[i_field]) for i_field,
-                                                      field_name in enumerate(query_table.get('__fields__',
-                                                                                              list()))]) for table_rec in query_table.get('__data__',
-                                                                                                                                          list())]
+            records = [{field_name: table_rec[i_field] for i_field, field_name in enumerate(query_table.get('__fields__', list()))} for table_rec in query_table.get('__data__', list())]
             variables = self._variables
 
             i_record = self._current_record['sys_num_rec_idx']
@@ -1148,11 +1144,7 @@ class iqReportGenerator(object):
 
             # vvv For use records in generate cell text vvv
             query_table = self._query_table
-            records = [dict([(field_name,
-                              table_rec[i_field]) for i_field,
-                                                      field_name in enumerate(query_table.get('__fields__',
-                                                                                              list()))]) for table_rec in query_table.get('__data__',
-                                                                                                                                          list())]
+            records = [{field_name: table_rec[i_field] for i_field, field_name in enumerate(query_table.get('__fields__', list()))} for table_rec in query_table.get('__data__', list())]
             variables = self._variables
             # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

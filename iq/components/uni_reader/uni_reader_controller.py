@@ -121,11 +121,11 @@ class iqUniReaderControllerProto(object):
                 log_func.warning(u'UniReader. Empty values: %s' % str(values))
                 log_func.warning(u'UniReader. Check type <%s> uni_reader service node' % node)
 
-            result = dict([(tag_name, values[i] if values else u'') for i, tag_name in enumerate(tag_names)])
+            result = {tag_name: values[i] if values else u'' for i, tag_name in enumerate(tag_names)}
             return result
         except:
             log_func.fatal(u'Error read server data <%s:%d / %s>' % (host, port, server))
-            return dict([(tag_name, u'') for tag_name in tag_names])
+            return {tag_name: u'' for tag_name in tag_names}
 
     def readTag(self, host=None, port=DEFAULT_PORT, server=None, node=None,
                 address=None, typecast=True):

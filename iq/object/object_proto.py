@@ -199,7 +199,7 @@ class iqObject(object):
             # Add resource module name space
             module = self.getModule()
             if module:
-                module_dict = dict([(name, getattr(module, name)) for name in dir(module)])
+                module_dict = {name: getattr(module, name) for name in dir(module)}
                 self._context.update(module_dict)
         return self._context
 

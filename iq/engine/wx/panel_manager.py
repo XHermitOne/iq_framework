@@ -259,7 +259,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             panel = self
         accord_values = self.__accord.values()
         ctrl_data = self.getPanelCtrlData(panel, None, *accord_values)
-        result_data = dict([(name, ctrl_data.get(ctrl_name, None)) for name, ctrl_name in self.__accord.items()])
+        result_data = {name: ctrl_data.get(ctrl_name, None) for name, ctrl_name in self.__accord.items()}
         return result_data
 
     def setPanelAccordCtrlData(self, panel=None, **data):
@@ -273,7 +273,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
         """
         if panel is None:
             panel = self
-        ctrl_data = dict([(self.__accord[name], data[name]) for name in data.keys() if name in self.__accord])
+        ctrl_data = {self.__accord[name]: data[name] for name in data.keys() if name in self.__accord}
         self.setPanelCtrlData(panel, ctrl_data, *ctrl_data.keys())
 
     def findPanelAccord(self, panel):

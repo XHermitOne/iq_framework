@@ -328,7 +328,7 @@ class iqObjRegistry(object):
                                 self.getDimensionRequisiteNames() + \
                                 self.getResourceRequisiteNames() + \
                                 self.getExtendedRequisiteNames()
-        return dict([(name, value) for name, value in requisite_values.items() if name in used_requisite_names])
+        return {name: value for name, value in requisite_values.items() if name in used_requisite_names}
 
     def addResourceRequisite(self, requisite_name, requisite_type):
         """
@@ -457,7 +457,7 @@ class iqObjRegistry(object):
             if not find.rowcount:
                 # If an object with this identifier is not found, then create it
                 obj_requisite_names = self.getDimensionRequisiteNames()
-                obj_requisites = dict([(name, requisite_values.get(name, None)) for name in obj_requisite_names])
+                obj_requisites = {name: requisite_values.get(name, None) for name in obj_requisite_names}
                 obj_requisites[DTCREATE_OBJ_FIELD] = requisite_values.get(DTCREATE_OBJ_FIELD, dt_now)
                 obj_requisites[N_OBJ_FIELD] = n_obj
                 # The object must be GUID
@@ -482,7 +482,7 @@ class iqObjRegistry(object):
 
                 # Record the new state of the object and details
                 obj_requisite_names = self.getDimensionRequisiteNames()
-                obj_requisites = dict([(name, requisite_values.get(name, None)) for name in obj_requisite_names])
+                obj_requisites = {name: requisite_values.get(name, None) for name in obj_requisite_names}
                 obj_requisites[STATE_OBJ_FIELD] = new_state
                 obj_requisites[DTSTATE_OBJ_FIELD] = dt_now
                 sql = obj_table.update().where(sqlalchemy.and_(*where)).values(**obj_requisites)

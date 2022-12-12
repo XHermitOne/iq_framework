@@ -128,7 +128,7 @@ class iqXMLReportData(iqReportData):
             styles = dict()
             styles_lst = [element for element in workbook['_children_'] if element['name'] == 'Styles']
             if styles_lst:
-                styles = dict([(style['ID'], style) for style in styles_lst[0]['_children_']])
+                styles = {style['ID']: style for style in styles_lst[0]['_children_']}
 
             worksheets = [element for element in workbook['_children_'] if element['name'] == 'Worksheet']
             # Variables
@@ -220,7 +220,7 @@ class iqXMLReportData(iqReportData):
         Name space variables.
         """
         try:
-            variables = dict([(var['Name'], var['value']) for var in variables])
+            variables = {var['Name']: var['value'] for var in variables}
             return variables
         except:
             log_func.fatal(u'Error name space variables')
@@ -231,8 +231,7 @@ class iqXMLReportData(iqReportData):
         Coordinate replacements of cell values.
         """
         try:
-            coord_fill = dict([((int(fill['Row']), int(fill['Col'])),
-                                fill['value']) for fill in coord_values])
+            coord_fill = {(int(fill['Row']), int(fill['Col'])): fill['value'] for fill in coord_values}
             return coord_fill
         except:
             log_func.fatal(u'Error determining coordinate report replacements')

@@ -90,7 +90,7 @@ class iqXMLReportStyleLibrary(iqReportStyleLibrary):
             styles = dict()
             styles_lst = [element for element in workbook['_children_'] if element['name'] == 'Styles']
             if styles_lst:
-                styles = dict([(style['ID'], style) for style in styles_lst[0]['_children_']])
+                styles = {style['ID']: style for style in styles_lst[0]['_children_']}
 
             worksheets = [element for element in workbook['_children_'] if element['name'] == 'Worksheet']
 

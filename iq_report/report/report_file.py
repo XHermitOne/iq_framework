@@ -520,8 +520,7 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
             for border_pos in range(4):
                 border = self._borderReport2XML(style['border'], border_pos)
                 if border:
-                    border_element = dict([('ss:'+stl_name, border[stl_name]) for stl_name in
-                                          [stl_name for stl_name in border.keys() if border[stl_name] is not None]])
+                    border_element = {'ss:'+stl_name: border[stl_name] for stl_name in [stl_name for stl_name in border.keys() if border[stl_name] is not None]}
                     self.startElement('Border', border_element)
                     self.endElement('Border')
             self.endElementLevel('Borders')

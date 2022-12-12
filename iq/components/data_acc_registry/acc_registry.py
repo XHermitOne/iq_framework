@@ -491,17 +491,17 @@ class iqAccRegistry(data_object.iqDataObject):
         """
         # Extended requisites (only needed for the summary table)
         extended_requisite_names = self.getExtendedRequisiteNames()
-        extended_requisites = dict([(name, requisite_values[name]) for name in extended_requisite_names if name in requisite_values])
+        extended_requisites = {name: requisite_values[name] for name in extended_requisite_names if name in requisite_values}
 
         # Check if there is a record in the summary table according to measurements
         dimension_requisite_names = self.getDimensionRequisiteNames()
-        dimension_requisites = dict([(name, value) for name, value in requisite_values.items() if name in dimension_requisite_names])
+        dimension_requisites = {name: value for name, value in requisite_values.items() if name in dimension_requisite_names}
         where = [getattr(result_table.c, name) == value for name, value in dimension_requisites.items()]
         find = result_table.select(sqlalchemy.and_(*where)).execute()
         if not find.rowcount:
             # If there is no such record, then create it
             resource_requisite_names = self.getResourceRequisiteNames()
-            resource_requisites = dict([(name, 0) for name in resource_requisite_names])
+            resource_requisites = {name: 0 for name in resource_requisite_names}
             requisites = dict()
             requisites.update(dimension_requisites)
             requisites.update(resource_requisites)
@@ -516,10 +516,10 @@ class iqAccRegistry(data_object.iqDataObject):
         # log_func.debug(u'Resource requisite names %s' % str(resource_requisite_names))
         if self.isReceipt(**requisite_values):
             # If the operation of receipt, then add
-            resource_requisites = dict([(name, getattr(result_table.c, name)+requisite_values.get(name, 0)) for name in resource_requisite_names])
+            resource_requisites = {name: getattr(result_table.c, name)+requisite_values.get(name, 0) for name in resource_requisite_names}
         elif self.isExpense(**requisite_values):
             # If the operation of expense, then subtract
-            resource_requisites = dict([(name, getattr(result_table.c, name)-requisite_values.get(name, 0)) for name in resource_requisite_names])
+            resource_requisites = {name: getattr(result_table.c, name)-requisite_values.get(name, 0) for name in resource_requisite_names}
         else:
             log_func.warning(u'Unsupported operation <%s>' % requisite_values.get(CODE_OPERATION_FIELD, None))
             transaction.rollback()
@@ -552,7 +552,7 @@ class iqAccRegistry(data_object.iqDataObject):
                                 OWNER_OPERATION_FIELD] + \
                                [requisite['requisite_name'] for requisite in self._dimension_requisites] + \
                                [requisite['requisite_name'] for requisite in self._resource_requisites]
-        return dict([(name, value) for name, value in requisite_values.items() if name in used_requisite_names])
+        return {name: value for name, value in requisite_values.items() if name in used_requisite_names}
 
     def _getResultRequisiteValues(self, **requisite_values):
         """
@@ -564,7 +564,7 @@ class iqAccRegistry(data_object.iqDataObject):
         used_requisite_names = [requisite['requisite_name'] for requisite in self._dimension_requisites] + \
                                [requisite['requisite_name'] for requisite in self._resource_requisites] + \
                                [requisite['requisite_name'] for requisite in self._extended_requisites]
-        return dict([(name, value) for name, value in requisite_values.items() if name in used_requisite_names])
+        return {name: value for name, value in requisite_values.items() if name in used_requisite_names}
 
     def doOperation(self, **requisite_values):
         """
@@ -628,15 +628,15 @@ class iqAccRegistry(data_object.iqDataObject):
                     if operation_code == RECEIPT_OPERATION_CODE:
                         # It is receipt, then need to be subtracted from the summary table
                         resource_requisite_names = self.getResourceRequisiteNames()
-                        resource_requisites = dict([(name, getattr(result_table.c, name)-operation[name]) for name in resource_requisite_names])
+                        resource_requisites = {name: getattr(result_table.c, name)-operation[name] for name in resource_requisite_names}
                         # Dictionary of details for adding a position
-                        init_resource_requisites = dict([(name, -operation[name]) for name in resource_requisite_names])
+                        init_resource_requisites = {name: -operation[name] for name in resource_requisite_names}
                     elif operation_code == EXPENSE_OPERATION_CODE:
                         # It is expense, then you need to add in the result table
                         resource_requisite_names = self.getResourceRequisiteNames()
-                        resource_requisites = dict([(name, getattr(result_table.c, name)+operation[name]) for name in resource_requisite_names])
+                        resource_requisites = {name: getattr(result_table.c, name)+operation[name] for name in resource_requisite_names}
                         # Dictionary of details for adding a position
-                        init_resource_requisites = dict([(name, operation[name]) for name in resource_requisite_names])
+                        init_resource_requisites = {name: operation[name] for name in resource_requisite_names}
                     else:
                         log_func.warning(u'Unsupported operation <%s>' % operation_code)
                         transaction.rollback()
@@ -645,7 +645,7 @@ class iqAccRegistry(data_object.iqDataObject):
                     # Make an update in the summary table
                     dimension_requisite_names = self.getDimensionRequisiteNames()
                     operation_values = dict(operation)
-                    dimension_requisites = dict([(name, value) for name, value in operation_values.items() if name in dimension_requisite_names])
+                    dimension_requisites = {name: value for name, value in operation_values.items() if name in dimension_requisite_names}
                     where = [getattr(result_table.c, name) == value for name, value in dimension_requisites.items()]
                     # If the search condition is not defined in the summary table,
                     # then there is no way to make an update in the summary table
@@ -668,9 +668,7 @@ class iqAccRegistry(data_object.iqDataObject):
                                 requisites.update(init_resource_requisites)
                                 requisites.update(dimension_requisites)
                                 extended_requisite_names = self.getExtendedRequisiteNames()
-                                extended_requisites = dict(
-                                    [(name, value) for name, value in operation_values.items() if
-                                     name in extended_requisite_names])
+                                extended_requisites = {name: value for name, value in operation_values.items() if name in extended_requisite_names}
                                 requisites.update(extended_requisites)
                                 log_func.debug(u'Undo operation. Add position in result table %s' % requisites)
                                 sql = result_table.insert().values(**requisites)

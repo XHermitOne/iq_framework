@@ -377,7 +377,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                 record = dict(record)
 
             model = self.getModel()
-            model_rec = dict([(col_name, value) for col_name, value in record.items() if hasattr(model, col_name)])
+            model_rec = {col_name: value for col_name, value in record.items() if hasattr(model, col_name)}
             new_obj = model(**model_rec)
             return new_obj
         except:
@@ -478,7 +478,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         try:
             query = transaction.query(model)
             save_record = [(col_name, value) for col_name, value in record.items() if hasattr(model, col_name)]
-            values = dict([(getattr(model, col_name), value) for col_name, value in save_record])
+            values = {getattr(model, col_name): value for col_name, value in save_record}
             query.filter(getattr(model, id_field) == id).update(values=values, synchronize_session=False)
             if transaction:
                 transaction.commit()

@@ -96,9 +96,7 @@ class iqDataObject(iqDataObjectProto):
                             value = record.get(column_name, None)
                             link_rec = link_obj.getDataObjectRec(value)
                             if isinstance(link_rec, dict):
-                                update_rec = dict([(DATA_NAME_DELIMETER.join([column_name,
-                                                                              name]),
-                                                    value) for name, value in link_rec.items()])
+                                update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
                                 dataset[i].update(update_rec)
                             else:
                                 log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
@@ -149,7 +147,7 @@ class iqDataObject(iqDataObjectProto):
         transaction = scheme.startTransaction()
         try:
             for record in dataset:
-                model_rec = dict([(col_name, value) for col_name, value in record.items() if hasattr(scheme_model, col_name)])
+                model_rec = {col_name: value for col_name, value in record.items() if hasattr(scheme_model, col_name)}
                 new_model_rec = scheme_model(**model_rec)
                 transaction.add(new_model_rec)
             transaction.commit()

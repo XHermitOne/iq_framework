@@ -180,7 +180,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         model_obj = self.ref_obj.getModelObj()
         # Dictionary table field specifications dictionary
         if model_obj:
-            field_dict = dict([(field.getName(), field) for field in model_obj.getChildren()])
+            field_dict = {field.getName(): field for field in model_obj.getChildren()}
         else:
             log_func.warning(u'Not define model in ref object <%s>' % self.ref_obj.getName())
             field_dict = dict()
@@ -212,7 +212,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
             return
 
         model_obj = self.ref_obj.getModelObj()
-        field_dict = dict([(field.getName(), field) for field in model_obj.getChildren()])
+        field_dict = {field.getName(): field for field in model_obj.getChildren()}
 
         choices = list()
         for field_name in field_names:

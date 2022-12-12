@@ -47,7 +47,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Initialization of the style dictionary.
         """
-        self._style_dict = dict([(style['ID'], style) for style in self._attributes['_children_']])
+        self._style_dict = {style['ID']: style for style in self._attributes['_children_']}
         return self._style_dict
 
     style_dict = property(getStyleDict)
@@ -215,8 +215,7 @@ class iqVStyles(v_prototype.iqVPrototype):
         """
         Present an element in string form without additional fields.
         """
-        return str(dict([(key, element[key]) for key in element.keys() \
-                         if key not in v_prototype.PROTOTYPE_ATTR_NAMES]))
+        return str({key: element[key] for key in element.keys() if key not in v_prototype.PROTOTYPE_ATTR_NAMES})
         
     def _getCrcAlignmentStr(self, style):
         """

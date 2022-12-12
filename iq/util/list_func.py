@@ -182,5 +182,5 @@ def queryTable2dataset(query_table):
     """
     assert isinstance(query_table, dict), u'Query table type error'
 
-    dataset = [dict([(col_name, row[i]) for i, col_name in enumerate(query_table.get('__fields__', list()))]) for row in query_table.get('__data__', list())]
+    dataset = [{col_name: row[i] for i, col_name in enumerate(query_table.get('__fields__', list()))} for row in query_table.get('__data__', list())]
     return dataset

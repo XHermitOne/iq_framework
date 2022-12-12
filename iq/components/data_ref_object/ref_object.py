@@ -335,7 +335,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
                     if column_name not in rec:
                         log_func.warning(u'Column <%s> not define in ref object <%s>' % (column_name, self.getName()))
 
-                return dict([(column_name, rec.get(column_name, None)) for column_name in column_names])
+                return {column_name: rec.get(column_name, None) for column_name in column_names}
             else:
                 log_func.warning(u'Ref object <%s> cod <%s> not activate' % (self.getName(), cod))
         return None

@@ -210,7 +210,7 @@ class iqScanManager(object):
         """
         options = self.getScanOptions()
         if options:
-            return dict([(option[1], option) for option in options])
+            return {option[1]: option for option in options}
         return dict()
 
     def setScanOptions(self, **options):

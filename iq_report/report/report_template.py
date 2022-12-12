@@ -734,8 +734,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
 
             workbook = template_data['_children_'][0]
             # Styles
-            styles = dict([(style['ID'], style) for style in [element for element in workbook['_children_']
-                                                              if element['name'] == 'Styles'][0]['_children_']])
+            styles = {style['ID']: style for style in [element for element in workbook['_children_'] if element['name'] == 'Styles'][0]['_children_']}
             worksheets = [element for element in workbook['_children_'] if element['name'] == 'Worksheet']
 
             # I. Define all bands in the template

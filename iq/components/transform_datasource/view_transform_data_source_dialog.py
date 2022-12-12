@@ -85,7 +85,7 @@ class iqViewTransformDataSourceDialog(view_transform_datasource_dlg_proto.iqView
             sql_query = tab_datasource.getSQLText()
             if txtgen_func.isGenered(sql_query):
                 var_names = txtgen_func.getReplaceNames(sql_query)
-                self.variables = dict([(name, u'') for name in var_names])
+                self.variables = {name: u'' for name in var_names}
                 self.setVariables(self.variables)
         else:
             log_func.warning(u'Type error table datasource for testing <%s>' % tab_datasource.__class__.__name__)

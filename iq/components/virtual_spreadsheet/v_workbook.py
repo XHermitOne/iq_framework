@@ -59,8 +59,8 @@ class iqVWorkbook(v_prototype.iqVPrototype):
         """
         Initializing the dictionary of sheets.
         """
-        self._worksheet_dict = dict([(worksheet['Name'], worksheet) for worksheet in \
-                                    [element for element in self._attributes['_children_'] if element['name'] == 'Worksheet']])
+        self._worksheet_dict = {worksheet['Name']: worksheet for worksheet in \
+                                    [element for element in self._attributes['_children_'] if element['name'] == 'Worksheet']}
         return self._worksheet_dict
         
     worksheet_dict = property(getWorksheetDict)

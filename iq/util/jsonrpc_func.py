@@ -172,8 +172,8 @@ def executeJSONRPCServerTask(connection, username, task_name, *args, **kwargs):
     :param kwargs: Task named arguments.
     :return: Task result or None if error.
     """
-    args = tuple([_toJSONRPCType(arg) for arg in args])
-    kwargs = dict([(name, _toJSONRPCType(value)) for name, value in kwargs.items()])
+    args = (_toJSONRPCType(arg) for arg in args)
+    kwargs = {name: _toJSONRPCType(value) for name, value in kwargs.items()}
 
     if not connection:
         msg = u'Execute task <%s>. Not define JSON RPC server connection' % task_name

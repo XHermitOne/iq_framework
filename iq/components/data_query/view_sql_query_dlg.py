@@ -80,7 +80,7 @@ class iqViewSQLQueryDialog(view_sql_query_dlg_proto.iqViewSQLQueryDialogProto,
 
         if txtgen_func.isGenered(self.sql_query):
             var_names = txtgen_func.getReplaceNames(self.sql_query)
-            self.variables = dict([(name, u'') for name in var_names])
+            self.variables = {name: u'' for name in var_names}
             self.setVariables(self.variables)
         return True
 
