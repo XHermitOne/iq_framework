@@ -11,8 +11,11 @@ import subprocess
 import locale
 
 from . import log_func
+from . import file_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
+
+ZIP_EXT = '.zip'
 
 
 def unzipToDir(zip_filename, dst_dir=None, overwrite=True, to_console=True):
@@ -47,4 +50,41 @@ def unzipToDir(zip_filename, dst_dir=None, overwrite=True, to_console=True):
             return lines
     except:
         log_func.fatal(u'Error unzip <%s>' % unzip_cmd)
+    return False
+
+
+def zipFile(src_filename, zip_filename=None, overwrite=True, to_console=True):
+    """
+    Compress file to *.zip.
+
+    :param src_filename: Compressed file name.
+    :param zip_filename: Zip filename.
+    :param overwrite: Overwrite existing files without prompting?
+    :param to_console: Console output?
+    :return: True/False or lines if not console output.
+    """
+    if not os.path.exists(src_filename):
+        log_func.warning(u'Compressed file <%s> to ZIP not found' % src_filename)
+        return False
+
+    if zip_filename is None:
+        zip_filename = os.path.splitext(src_filename)[0] + ZIP_EXT
+
+    zip_cmd = ''
+    try:
+        if overwrite and os.path.exists(zip_filename):
+            file_func.removeFile(zip_filename)
+
+        zip_cmd = 'zip %s %s' % (zip_filename, src_filename)
+        if to_console:
+            os.system(zip_cmd)
+            return True
+        else:
+            process = subprocess.Popen(zip_cmd, stdout=subprocess.PIPE)
+            b_lines = process.stdout.readlines()
+            console_encoding = locale.getpreferredencoding()
+            lines = [line.decode(console_encoding).strip() for line in b_lines]
+            return lines
+    except:
+        log_func.fatal(u'Error zip <%s>' % zip_cmd)
     return False

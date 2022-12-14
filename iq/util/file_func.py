@@ -18,7 +18,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 5, 1)
+__version__ = (0, 0, 6, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -653,3 +653,13 @@ def extractProjectNameFromPath(path):
         if path_parts:
             return path_parts[0] if path_parts[0] != os.path.sep else path_parts[1]
     return 'THIS'
+
+
+def isEmptyFolder(path):
+    """
+    Checking for an empty folder.
+
+    :param path: Folder path.
+    :return: True/False.
+    """
+    return bool(os.listdir(path))

@@ -14,7 +14,7 @@ from . import wxcolour_func
 from . import base_manager
 from . import imglib_manager
 
-__version__ = (0, 0, 1, 4)
+__version__ = (0, 0, 2, 1)
 
 LISTCTRL_DATA_CACHE_ATTR_NAME = '__listctrl_data'
 
@@ -573,6 +573,17 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
 
         item_count = self.getListCtrlItemCount(listctrl)
         return item_count - 1
+
+    def enableListCtrlCheckBoxes(self, listctrl, enable=True):
+        """
+        Enable or disable checkboxes for list items.
+
+        :param listctrl: wx.ListCtrl/wx.CheckListBox object.
+        :param enable: If True, enable checkboxes, otherwise disable checkboxes.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, (wx.ListCtrl, wx.CheckListBox)), u'ListCtrl/CheckListBox manager type error'
+        return listctrl.EnableCheckBoxes(enable=enable)
 
     def checkListCtrlAllItems(self, listctrl, check=True):
         """
