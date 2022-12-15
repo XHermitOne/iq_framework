@@ -24,11 +24,14 @@ import locale
 import datetime
 
 from . import log_func
+from . import sys_func
 from . import file_func
 from . import exec_func
+from . import net_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
+NFS_URL_TYPE = 'nfs://'
 DEFAULT_WORKGROUP = 'WORKGROUP'
 ANONYMOUS_USERNAME = 'guest'
 
@@ -104,10 +107,14 @@ def mountNfsResource(url, dst_path=None, options=None, root_password=None):
         options = ''
 
     if root_password is None:
-        root_password = ''
+        root_password = sys_func.getSysRootPassword()
 
     try:
         nfs_host = getNfsHostFromUrl(url)
+        if not net_func.validPingHost(nfs_host):
+            log_func.warning(u'NFS resource host <%s> not found' % nfs_host)
+            return False
+
         nfs_path = getNfsPathFromUrl(url)
         mount_cmd = NFS_MOUNT_CMD_FMT % (root_password, options, nfs_host, nfs_path, dst_path)
         result = exec_func.execSystemCommand(mount_cmd)
@@ -133,7 +140,7 @@ def umountNfsResource(mnt_path, root_password=None, auto_delete=False):
         return False
 
     if root_password is None:
-        root_password = ''
+        root_password = sys_func.getSysRootPassword()
 
     try:
         umount_cmd = NFS_UMOUNT_CMD_FMT % (root_password, mnt_path)
@@ -187,7 +194,7 @@ def downloadNfsFile(download_url=None, filename=None, dst_path=None, rewrite=Tru
             log_func.warning(u'NFS resource mount path <%s> not found' % mnt_path)
 
     if mounted:
-        umountNfsResource(mnt_path=mnt_path, auto_delete=True)
+        umountNfsResource(mnt_path=mnt_path, auto_delete=True, *args, **kwargs)
     return result
 
 
@@ -228,5 +235,5 @@ def uploadNfsFile(upload_url=None, filename=None, dst_path=None, rewrite=True, m
             log_func.warning(u'NFS resource mount path <%s> not found' % mnt_path)
 
     if mounted:
-        umountNfsResource(mnt_path=mnt_path, auto_delete=True)
+        umountNfsResource(mnt_path=mnt_path, auto_delete=True, *args, **kwargs)
     return result

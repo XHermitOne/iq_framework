@@ -20,8 +20,11 @@ except ImportError:
     import subprocess as get_procesess_module
 
 from . import log_func
+from . import global_func
 
-__version__ = (0, 0, 2, 1)
+import iq
+
+__version__ = (0, 0, 3, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -378,3 +381,43 @@ def printOSFetchInfo():
         return True
     else:
         return False
+
+
+def getSysRootPassword(parent_win=None):
+    """
+    Get and remember system root/administrator password.
+
+    :param parent_win: Parent window for dialogs.
+    :return: Password or None if error.
+    """
+    try:
+        sys_username = getSystemUsername()
+        settings_root_username = iq.KERNEL.settings.THIS.SETTINGS.root_username.get()
+        settings_root_password = iq.KERNEL.settings.THIS.SETTINGS.root_password.get()
+        if sys_username == settings_root_username:
+            root_password = settings_root_password
+        else:
+            sys_root_password = global_func.getSysRootPassword()
+            if sys_root_password is None:
+                # Imports
+                from . import lang_func
+                from ..dialog import dlg_func
+                _ = lang_func.getTranslation().gettext
+
+                login_result = dlg_func.getLoginDlg(parent=parent_win,
+                                                    title=_('Entry password for user') + ' <%s>' % sys_username,
+                                                    default_username=sys_username,
+                                                    reg_users=[sys_username],
+                                                    user_descriptions=[''])
+                if login_result is not None:
+                    root_password = login_result[1]
+                    global_func.setSysRootPassword(root_password)
+                else:
+                    log_func.warning(u'Not entry system root/administrator password')
+                    return None
+            else:
+                root_password = sys_root_password
+        return root_password
+    except:
+        log_func.fatal(u'Error get root password')
+    return None

@@ -7,7 +7,7 @@ Global functions module.
 
 from .. import global_data
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def isRuntimeMode():
@@ -280,3 +280,17 @@ def getDefaultStrDatetimeFmt():
     Get default string datetime format.
     """
     return global_data.getGlobal('DEFAULT_STR_DATETIME_FMT')
+
+
+def setSysRootPassword(password):
+    """
+    Set system root/administrator password.
+    """
+    return global_data.setGlobal('SYS_ROOT_PASSWORD', password)
+
+
+def getSysRootPassword():
+    """
+    Get system root/administrator password.
+    """
+    return global_data.getGlobal('SYS_ROOT_PASSWORD')

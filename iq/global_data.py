@@ -83,6 +83,9 @@ OPERATE_YEAR = datetime.datetime.now().year
 DEFAULT_STR_DATE_FMT = '%Y-%m-%d'
 DEFAULT_STR_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
 
+# System root/administrator password
+SYS_ROOT_PASSWORD = None
+
 
 def getGlobal(name):
     """

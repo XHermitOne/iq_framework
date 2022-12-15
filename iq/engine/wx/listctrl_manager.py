@@ -14,7 +14,7 @@ from . import wxcolour_func
 from . import base_manager
 from . import imglib_manager
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 LISTCTRL_DATA_CACHE_ATTR_NAME = '__listctrl_data'
 
@@ -695,7 +695,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         try:
             indexes = list()
             if isinstance(listctrl, wx.ListCtrl):
-                indexes = [i for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
+                indexes = [i for i in range(listctrl.GetItemCount()) if listctrl.IsItemChecked(i)]
             elif isinstance(listctrl, wx.CheckListBox):
                 indexes = [i for i in range(listctrl.GetCount()) if listctrl.IsChecked(i)]
 
