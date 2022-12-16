@@ -16,12 +16,8 @@ nfs://workgroup;user:password@server:/share/folder
 
 import os
 import os.path
-import tempfile
-import fnmatch
-import shutil
 import urllib.parse
-import locale
-import datetime
+import time
 
 from . import log_func
 from . import sys_func
@@ -29,7 +25,7 @@ from . import file_func
 from . import exec_func
 from . import net_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 NFS_URL_TYPE = 'nfs://'
 DEFAULT_WORKGROUP = 'WORKGROUP'
@@ -37,6 +33,8 @@ ANONYMOUS_USERNAME = 'guest'
 
 NFS_MOUNT_CMD_FMT = 'echo "%s" | sudo --stdin mount --verbose --types nfs %s %s:/%s %s'
 NFS_UMOUNT_CMD_FMT = 'echo "%s" | sudo --stdin umount --verbose %s'
+
+DEFAULT_AUTO_DELETE_DELAY = 0
 
 
 def splitNfsUrlPath(url):
@@ -147,6 +145,10 @@ def umountNfsResource(mnt_path, root_password=None, auto_delete=False):
         result = exec_func.execSystemCommand(umount_cmd)
         if result:
             if auto_delete:
+                # Make a delay 1 sec
+                if DEFAULT_AUTO_DELETE_DELAY:
+                    time.sleep(DEFAULT_AUTO_DELETE_DELAY)
+
                 if file_func.isEmptyFolder(mnt_path):
                     os.rmdir(mnt_path)
                 else:

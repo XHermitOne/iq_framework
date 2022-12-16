@@ -662,4 +662,4 @@ def isEmptyFolder(path):
     :param path: Folder path.
     :return: True/False.
     """
-    return bool(os.listdir(path))
+    return not bool(os.listdir(path))

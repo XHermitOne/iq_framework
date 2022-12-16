@@ -408,7 +408,7 @@ def getSysRootPassword(parent_win=None):
                                                     title=_('Entry password for user') + ' <%s>' % sys_username,
                                                     default_username=sys_username,
                                                     reg_users=[sys_username],
-                                                    user_descriptions=[''])
+                                                    user_descriptions=[_('System root/administrator')])
                 if login_result is not None:
                     root_password = login_result[1]
                     global_func.setSysRootPassword(root_password)
