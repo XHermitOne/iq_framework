@@ -93,7 +93,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
         # Create configuration object
         ini_parser = configparser.ConfigParser()
         ini_file = open(ini_filename, 'rt')
-        ini_parser.readfp(ini_file)
+        ini_parser.read_file(ini_file)
         ini_file.close()
 
         # If there is no such section, then create it.
@@ -137,7 +137,7 @@ def delParamINI(ini_filename, section_name, param_name):
         # Create configuration object
         ini_parser = configparser.ConfigParser()
         ini_file = open(ini_filename, 'rt')
-        ini_parser.readfp(ini_file)
+        ini_parser.read_file(ini_file)
         ini_file.close()
 
         # If there is no such section
@@ -178,7 +178,7 @@ def getParamCountINI(ini_filename, section_name):
             
         ini_parser = configparser.ConfigParser()
         ini_file = open(ini_filename, 'rt')
-        ini_parser.readfp(ini_file)
+        ini_parser.read_file(ini_file)
         ini_file.close()
 
         if not ini_parser.has_section(section_name):
@@ -210,7 +210,7 @@ def getParamNamesINI(ini_filename, section_name):
             
         ini_parser = configparser.ConfigParser()
         ini_file = open(ini_filename, 'rt')
-        ini_parser.readfp(ini_file)
+        ini_parser.read_file(ini_file)
         ini_file.close()
 
         if not ini_parser.has_section(section_name):
@@ -240,7 +240,7 @@ def INI2Dict(ini_filename):
             
         ini_parser = configparser.ConfigParser()
         ini_file = open(ini_filename, 'rt')
-        ini_parser.readfp(ini_file)
+        ini_parser.read_file(ini_file)
         ini_file.close()
         
         ini_dict = {}
@@ -295,7 +295,7 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
 
         ini_parser = configparser.ConfigParser()
         ini_file = open(ini_filename, 'rt')
-        ini_parser.readfp(ini_file)
+        ini_parser.read_file(ini_file)
         ini_file.close()
 
         for section in src_dictionary.keys():

@@ -16,7 +16,7 @@ try:
 except ImportError:
     log_func.error(u'Import error urllib3')
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 
 def getHTTP3(url, headers=None, **kwargs):
@@ -99,7 +99,7 @@ def postHTTP3(url, headers=None, body=None, **kwargs):
     :return: HTTP response content or None if error.
     """
     if not url:
-        log_func.warning(u'Not define URL for GET request')
+        log_func.warning(u'Not define URL for POST request')
         return None
 
     try:
@@ -109,4 +109,49 @@ def postHTTP3(url, headers=None, body=None, **kwargs):
         return response_content
     except:
         log_func.fatal(u'Error POST request by URL <%s> by urllib3' % url)
+    return None
+
+
+def deleteHTTP3(url, headers=None, **kwargs):
+    """
+    DELETE request HTTP. urllib3 version.
+
+    :param url: URL.
+    :param headers: Request headers.
+    :return: HTTP response code or None if error.
+    """
+    if not url:
+        log_func.warning(u'Not define URL for DELETE request')
+        return None
+
+    try:
+        http = urllib3.PoolManager()
+        response = http.request('DELETE', url, headers=headers, **kwargs)
+        response_code = response.status
+        return response_code
+    except:
+        log_func.fatal(u'Error DELETE request by URL <%s> by urllib3' % url)
+    return None
+
+
+def putHTTP3(url, headers=None, fields=None, **kwargs):
+    """
+    PUT request HTTP. urllib3 version.
+
+    :param url: URL.
+    :param fields: Request fields.
+    :param headers: Request headers.
+    :return: HTTP response code or None if error.
+    """
+    if not url:
+        log_func.warning(u'Not define URL for PUT request')
+        return None
+
+    try:
+        http = urllib3.PoolManager()
+        response = http.request('PUT', url, fields=fields, headers=headers, **kwargs)
+        response_code = response.status
+        return response_code
+    except:
+        log_func.fatal(u'Error PUT request by URL <%s> by urllib3' % url)
     return None
