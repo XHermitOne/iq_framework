@@ -8,10 +8,11 @@ Net connection functions.
 import sys
 import os
 import time
+import socket
 
 from . import log_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 
 def validPingHost(host_name):
@@ -108,4 +109,18 @@ def anySeriesPing(host, count, delay=0):
         return any(results)
     except:
         log_func.fatal(u'Error series ping to <%s>' % host)
+    return None
+
+
+def getIpByHostName(host_name):
+    """
+    Resolve host ip address by name.
+
+    :param host_name: Host name.
+    :return: Host IP address or None if error.
+    """
+    try:
+        return socket.gethostbyname(host_name)
+    except:
+        log_func.fatal(u'Error resolve host ip address by name <%s>' % host_name)
     return None
