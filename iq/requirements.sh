@@ -20,6 +20,8 @@ sudo apt install --assume-yes smbclient
 sudo apt install --assume-yes indicator-applet-complete
 sudo apt install --assume-yes ttf-mscorefonts-installer
 sudo apt install --assume-yes python3-apt
+# Net
+pip3 install ping3
 
 # Work with the console
 sudo apt install --assume-yes python3-dialog
