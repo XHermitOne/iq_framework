@@ -6,20 +6,96 @@ ListCtrl manager.
 """
 
 import sys
+import os.path
 import wx
 
 from ...util import log_func
+from ...util import file_func
+from ...util import res_func
+from ...util import lang_func
 
 from . import wxcolour_func
 from . import base_manager
 from . import imglib_manager
 
-__version__ = (0, 0, 2, 2)
+from .. import stored_ctrl_manager
+
+from .dlg import wxdlg_func
+
+__version__ = (0, 0, 3, 1)
+
+_ = lang_func.getTranslation().gettext
 
 LISTCTRL_DATA_CACHE_ATTR_NAME = '__listctrl_data'
+LISTCTR_COLUMNS_ATTR_NAME = '__listctrl_columns'
 
 
-class iqListCtrlManager(imglib_manager.iqImageLibManager):
+class iqStoredListCtrlManager(stored_ctrl_manager.iqStoredCtrlManager):
+    """
+    Manager for storing properties of wxPython ListCtrl objects.
+    """
+    def genCustomPropertiesFilename(self, listctrl=None):
+        """
+        Generate custom data stored file name.
+
+        :param listctrl: wx.ListCtrl object.
+        :return:
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        profile_path = file_func.getProjectProfilePath()
+        return os.path.join(profile_path,
+                            self.getClassName() + '_' + str(listctrl.GetId()) + res_func.PICKLE_RESOURCE_FILE_EXT)
+
+    def loadListCtrlProperties(self, listctrl=None, save_filename=None):
+        """
+        Load custom properties.
+
+        :param listctrl: wx.ListCtrl object.
+        :param save_filename: Stored file name.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if save_filename is None:
+            save_filename = self.genCustomPropertiesFilename(listctrl=listctrl)
+
+        var_data = self.loadCustomData(save_filename=save_filename)
+        if var_data:
+            columns = var_data.get('columns', list())
+            if columns:
+                for i, column in enumerate(columns):
+                    hide = column.get('hide', False)
+                    if hide:
+                        self.hideListCtrlColumn(listctrl=listctrl, column_idx=i)
+                    else:
+                        self.showListCtrlColumn(listctrl=listctrl, column_idx=i)
+            return True
+        return False
+
+    def saveListCtrlProperties(self, listctrl=None, save_filename=None):
+        """
+        Save custom properties.
+
+        :param listctrl: wx.ListCtrl object.
+        :param save_filename: Stored file name.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if save_filename is None:
+            save_filename = self.genCustomPropertiesFilename(listctrl=listctrl)
+
+        columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME) if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME) else list()
+        for i in range(len(columns)):
+            columns[i]['hide'] = not self.isListCtrlShownColumn(listctrl=listctrl, column_idx=i)
+
+        res = dict(columns=columns)
+        return self.saveCustomData(save_filename=save_filename, save_data=res)
+
+
+class iqListCtrlManager(imglib_manager.iqImageLibManager,
+                        iqStoredListCtrlManager):
     """
     ListCtrl manager.
     """
@@ -145,6 +221,10 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             else:
                 col_format = wx.LIST_FORMAT_LEFT
             listctrl.InsertColumn(i, label, format=col_format, width=width)
+
+            if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME):
+                columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME)
+                columns.append(dict(label=label, width=width, align=col_align))
             return True
         except:
             log_func.fatal(u'Append column in wx.ListCtrl object error')
@@ -167,11 +247,22 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
 
         result = True
         listctrl.ClearAll()
+        columns = list()
         for col in cols:
             if isinstance(col, dict):
-                result = result and self.appendListCtrlColumn(listctrl=listctrl, **col)
+                append_result = self.appendListCtrlColumn(listctrl=listctrl, **col)
+                if append_result:
+                    columns.append(col)
+                result = result and append_result
             elif isinstance(col, (list, tuple)):
-                result = result and self.appendListCtrlColumn(listctrl, *col)
+                append_result = self.appendListCtrlColumn(listctrl=listctrl, **col)
+                if append_result:
+                    columns.append(dict(label=col[0],
+                                        width=col[1] if len(col) > 1 else -1,
+                                        align=col[2] if len(col) > 2 else 'LEFT'))
+                result = result and append_result
+        # Set internal columns attribute
+        setattr(self, LISTCTR_COLUMNS_ATTR_NAME, columns)
         return result
 
     def setListCtrlColumnsAutoSize(self, listctrl=None):
@@ -185,6 +276,9 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
 
         for i in range(listctrl.GetColumnCount()):
             listctrl.SetColumnWidth(i, wx.LIST_AUTOSIZE)
+            if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME):
+                columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME)
+                columns[i]['width'] = -1
         return True
 
     def setListCtrlColumnLabel(self, listctrl=None, column_idx=0, label=u''):
@@ -202,6 +296,10 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
             column = listctrl.GetColumn(column_idx)
             column.SetText(label)
             listctrl.SetColumn(column_idx, column)
+
+            if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME):
+                columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME)
+                column[column_idx]['label'] = label
             return True
         else:
             log_func.warning(u'Not valid column index [%s] ListCtrl object <%s>' % (column_idx, str(listctrl)))
@@ -923,3 +1021,104 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager):
         except:
             log_func.fatal(u'Error get ListCtrl item <%s> data' % str(item_idx))
         return None
+
+    def showListCtrlColumn(self, listctrl=None, column_idx=0):
+        """
+        Show column.
+
+        :param listctrl: wx.ListCtrl object.
+        :param column_idx: Column index.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        try:
+            width = -1
+            if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME):
+                columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME)
+                width = columns[column_idx].get('width', -1)
+                columns[column_idx]['hide'] = False
+            listctrl.SetColumnWidth(column_idx, wx.LIST_AUTOSIZE if width <= -1 else width)
+            return True
+        except:
+            log_func.fatal(u'Error show ListCtrl column [%d]' % column_idx)
+        return False
+
+    def hideListCtrlColumn(self, listctrl=None, column_idx=0):
+        """
+        Hide column.
+
+        :param listctrl: wx.ListCtrl object.
+        :param column_idx: Column index.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        try:
+            listctrl.SetColumnWidth(column_idx, 0)
+            if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME):
+                columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME)
+                columns[column_idx]['hide'] = True
+            return True
+        except:
+            log_func.fatal(u'Error hide ListCtrl column [%d]' % column_idx)
+        return False
+
+    def isListCtrlShownColumn(self, listctrl=None, column_idx=0):
+        """
+        Is shown column?
+
+        :param listctrl: wx.ListCtrl object.
+        :param column_idx: Column index.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        try:
+            return listctrl.GetColumnWidth(column_idx) > 0
+        except:
+            log_func.fatal(u'Error is shown ListCtrl column [%d]' % column_idx)
+        return False
+
+    def selectListCtrlShownColumns(self, listctrl=None, parent=None, auto_save=True, pos=None):
+        """
+        Select shown columns.
+
+        :param listctrl: wx.ListCtrl object.
+        :param parent: Parent window.
+        :param auto_save: Auto save properties file.
+        :param pos: Dialog position.
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if parent is None:
+            parent = listctrl
+
+        try:
+            columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME) if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME) else list()
+            choices = [(not column.get('hide', False), column.get('label', 'column%d' % i)) for i, column in enumerate(columns)]
+            selections = wxdlg_func.getMultiChoiceDlg(parent=parent, title=_('COLUMNS'),
+                                                      prompt_text=_('Select shown columns'),
+                                                      pos=pos, choices=choices)
+            if selections is None:
+                return False
+
+            columns = [dict(label=columns[i].get('label', item[1]),
+                            width=columns[i].get('width', -1),
+                            align=columns[i].get('align', 'LEFT'),
+                            hide=not item[0]) for i, item in enumerate(selections)]
+            setattr(self, LISTCTR_COLUMNS_ATTR_NAME, columns)
+
+            for i, column in enumerate(columns):
+                if column['hide']:
+                    self.hideListCtrlColumn(listctrl=listctrl, column_idx=i)
+                else:
+                    self.showListCtrlColumn(listctrl=listctrl, column_idx=i)
+
+            if auto_save:
+                self.saveListCtrlProperties(listctrl=listctrl)
+            return True
+        except:
+            log_func.fatal(u'Error select shown columns')
+        return False

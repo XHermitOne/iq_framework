@@ -8,7 +8,7 @@ Dialog functions module.
 from ..util import global_func
 from ..util import log_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 DIALOG_FUNCTION_MODULE = None
 
@@ -228,7 +228,7 @@ def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=(),
     return None
 
 
-def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
+def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=(), pos=None):
     """
     Multiple choice dialog.
 
@@ -236,12 +236,13 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
     :param choices: List of selection lines as tuple in format ((True/False, 'line text'),...).
+    :param pos: Dialog position.
     :return: Selected choices as tuple ((True/False, 'line text'),...).
     """
     _dlg_func = _importDialogFunctions()
 
     if _dlg_func:
-        return _dlg_func.getMultiChoiceDlg(parent=parent, title=title, prompt_text=prompt_text, choices=choices)
+        return _dlg_func.getMultiChoiceDlg(parent=parent, title=title, prompt_text=prompt_text, choices=choices, pos=pos)
     return None
 
 

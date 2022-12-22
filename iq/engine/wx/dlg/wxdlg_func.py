@@ -19,7 +19,7 @@ from .. import wxbitmap_func
 
 from . import login_dialog_proto
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -319,7 +319,7 @@ def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=[],
     return idx
 
 
-def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
+def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=(), pos=None):
     """
     Multiple choice dialog.
 
@@ -327,17 +327,20 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=()):
     :param title: Dialog form title.
     :param prompt_text: Dialog form prompt text.
     :param choices: List of selection lines as tuple in format ((True/False, 'line text'),...).
+    :param pos: Dialog position.
     :return: Selected chices as tuple ((True/False, 'line text'),...).
     """
     dlg = None
     win_clear = False
+    if pos is None:
+        pos = wx.DefaultPosition
     try:
         if parent is None:
            parent = wx.Frame(None, -1, '')
            win_clear = True
 
         choice_list = [row[1] for row in choices]
-        dlg = wx.MultiChoiceDialog(parent, prompt_text, title, choice_list)
+        dlg = wx.MultiChoiceDialog(parent, prompt_text, title, choice_list, pos=pos)
         selections = [i for i, row in enumerate(choices) if row[0]]
         dlg.SetSelections(selections)
         

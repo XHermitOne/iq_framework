@@ -5,18 +5,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2021-11-26 15:26+0700\n"
-"PO-Revision-Date: 2022-02-21 16:09+0700\n"
+"POT-Creation-Date: 2022-12-22 14:47+0700\n"
+"PO-Revision-Date: 2022-12-22 15:04+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Poedit 2.3\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: dealer_sales/menubars/main_menubar_proto.py:28
 msgid "Импорт классификатора адресов ФИАС"
@@ -47,7 +47,7 @@ msgid "Редактирование справочника регионов"
 msgstr ""
 
 #: dealer_sales/menubars/main_menubar_proto.py:52
-#: sales_analiz/menubars/main_menubar_proto.py:116
+#: sales_analiz/menubars/main_menubar_proto.py:125
 msgid "Редактирование справочника дилеров"
 msgstr ""
 
@@ -67,7 +67,7 @@ msgstr ""
 #: dealer_sales/menubars/main_menubar_proto.py:66
 #: online_warehouse/menubars/main_menubar_proto.py:69
 #: rozliv_asiiu/menubars/main_menubar_proto.py:94
-#: sales_analiz/menubars/main_menubar_proto.py:127
+#: sales_analiz/menubars/main_menubar_proto.py:139
 #: sales_map/menubars/main_menubar_proto.py:49
 #: secretary/menubars/main_menubar_proto.py:96
 msgid "Справочники"
@@ -102,7 +102,7 @@ msgid "Аналитика. Загрузить данные вторичных п
 msgstr ""
 
 #: dealer_sales/menubars/main_menubar_proto.py:92
-#: sales_analiz/menubars/main_menubar_proto.py:106
+#: sales_analiz/menubars/main_menubar_proto.py:109
 msgid "Аналитические отчеты"
 msgstr ""
 
@@ -111,7 +111,7 @@ msgid "Аналитика"
 msgstr ""
 
 #: dealer_sales/menubars/main_menubar_proto.py:98
-#: sales_analiz/menubars/main_menubar_proto.py:109
+#: sales_analiz/menubars/main_menubar_proto.py:112
 #: sales_map/menubars/main_menubar_proto.py:28
 msgid "Карта продаж"
 msgstr ""
@@ -216,8 +216,8 @@ msgstr "Значение"
 #: iq/components/cubes_olap_server/cubes_olap_srv_request_panel_proto.py:444
 #: iq/components/cubes_olap_server/cubes_olap_srv_request_panel_proto.py:446
 #: iq/components/cubes_olap_server/cubes_olap_srv_test_dlg_proto.py:51
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:40
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:52
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:38
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:50
 #: iq/components/wx_olap_query_browser/olap_query_browse_panel_proto.py:48
 #: iq/components/wx_olap_query_browser/olap_query_browse_panel_proto.py:50
 #: iq/components/wx_olap_query_browser/olap_query_browse_panel_proto.py:54
@@ -286,7 +286,7 @@ msgstr "Значение"
 #: secretary/phone_book/phone_book_browse_panel_proto.py:265
 #: secretary/phone_book/phone_book_browse_panel_proto.py:267
 #: secretary/phone_book/phone_book_browse_panel_proto.py:271
-#: secretary/phone_book/phone_book_browse_panel_proto.py:285
+#: secretary/phone_book/phone_book_browse_panel_proto.py:275
 msgid "tool"
 msgstr ""
 
@@ -390,8 +390,10 @@ msgid "Database connection established"
 msgstr ""
 
 #: iq/components/data_engine/component.py:50
-#: iq/editor/wx/start_folder_dialog.py:184
-#: iq/editor/wx/start_folder_dialog.py:204
+#: iq/editor/gtk/start_folder_window.py:143
+#: iq/editor/gtk/start_folder_window.py:162
+#: iq/editor/wx/start_folder_dialog.py:201
+#: iq/editor/wx/start_folder_dialog.py:221
 #: iq/engine/wx/dlg/edit_masked_txt_dlg.py:43
 msgid "ERROR"
 msgstr "ОШИБКА"
@@ -410,6 +412,7 @@ msgid "Variables:"
 msgstr "Переменные:"
 
 #: iq/components/data_query/view_sql_query_dlg_proto.py:59
+#: iq/editor/gtk/res_editor/script_property_editor.py:120
 msgid "SQL:"
 msgstr ""
 
@@ -449,9 +452,9 @@ msgid "Total records:"
 msgstr ""
 
 #: iq/components/data_query/view_sql_query_dlg_proto.py:129
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:66
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:187
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:286
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:64
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:185
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:284
 #: iq/components/transform_datasource/view_transform_datasource_dlg_proto.py:110
 #: iq/components/wx_filterchoicectrl/filter_choice_dlg.py:74
 #: iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:91
@@ -463,7 +466,7 @@ msgstr ""
 #: iq/engine/wx/dlg/log_browser_proto.py:200
 #: iq/engine/wx/dlg/login_dialog_proto.py:63
 #: iq/engine/wx/dlg/py_script_edit_dlg_proto.py:35
-#: iq/engine/wx/dlg/wxdlg_func.py:596 iq/engine/wx/dlg/wxdlg_func.py:694
+#: iq/engine/wx/dlg/wxdlg_func.py:601 iq/engine/wx/dlg/wxdlg_func.py:699
 #: secretary/in_documents/edit_in_doc_dlg_proto.py:209
 #: secretary/in_documents/edit_in_doc_dlg_proto.py:380
 #: secretary/in_documents/new_in_doc_dlg_proto.py:209
@@ -500,28 +503,28 @@ msgstr ""
 msgid "Can edit records/change ref objects"
 msgstr ""
 
-#: iq/components/data_ref_object/ref_object.py:549
+#: iq/components/data_ref_object/ref_object.py:549 iq/util/lock_func.py:497
 msgid " Computer "
 msgstr " Компьютер "
 
-#: iq/components/data_ref_object/ref_object.py:549
+#: iq/components/data_ref_object/ref_object.py:549 iq/util/lock_func.py:497
 msgid "Editing locked by user "
 msgstr "Редактирование заблокировано пользователем "
 
-#: iq/components/data_ref_object/ref_object.py:550
+#: iq/components/data_ref_object/ref_object.py:550 iq/util/lock_func.py:498
 msgid "ATTENTION"
 msgstr "ВНИМАНИЕ"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:44
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:130
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:163
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:338
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:42
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:128
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:161
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:336
 msgid "Find:"
 msgstr "Наити:"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:63
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:283
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:360
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:61
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:281
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:358
 #: iq/components/wx_filterchoicectrl/filter_choice_dlg.py:71
 #: iq/components/wx_filterchoicectrl/filter_constructor_dlg.py:94
 #: iq/components/wx_olap_query_treectrl/edit_cubes_olap_srv_request_dlg_proto.py:44
@@ -533,8 +536,8 @@ msgstr "Наити:"
 #: iq/engine/wx/dlg/ext_dialogs_proto.py:51
 #: iq/engine/wx/dlg/login_dialog_proto.py:60
 #: iq/engine/wx/dlg/py_script_edit_dlg_proto.py:32
-#: iq/engine/wx/dlg/wxdlg_func.py:600
-#: iq_report/report/dlg/report_dlg_proto.py:60
+#: iq/engine/wx/dlg/wxdlg_func.py:605
+#: iq_report/report/dlg/wx_dlg/report_dlg_proto.py:61
 #: iq_scanner/scanner/scanner_dlg_proto.py:288
 #: iq_scanner/scanner/scanner_dlg_proto.py:398
 #: iq_scanner/scanner/scanner_dlg_proto.py:471
@@ -554,31 +557,31 @@ msgstr "Наити:"
 msgid "Cancel"
 msgstr "Отмена"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:117
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:155
-#: iq/components/data_ref_object/wx_editdlg.py:378
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:115
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:153
+#: iq/components/data_ref_object/wx_editdlg.py:427
 #: iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:25
-#: iq_report/report/report_browser.py:259
+#: iq_report/report/dlg/wx_dlg/report_browser.py:154
 #: online_warehouse/product/product_browser_proto.py:37
 msgid "Edit"
 msgstr "Редактировать"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:136
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:169
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:346
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:134
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:167
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:344
 msgid "Find"
 msgstr "Найти"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:136
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:169
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:346
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:134
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:167
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:344
 #: secretary/in_documents/in_doc_browse_panel_proto.py:315
 #: secretary/out_documents/out_doc_browse_panel_proto.py:307
-#: secretary/phone_book/phone_book_browse_panel_proto.py:285
+#: secretary/phone_book/phone_book_browse_panel_proto.py:275
 msgid "Найти"
 msgstr ""
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:153
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:151
 #: iq/components/wx_filterchoicectrl/filter_choice_dlg.py:65
 #: iq/components/wx_olap_query_treectrl/indicator_constructor_dlg_proto.py:39
 #: iq/components/wx_olap_query_treectrl/olap_query_tree_ctrl.py:247
@@ -586,7 +589,7 @@ msgstr ""
 msgid "Add"
 msgstr "Добавить"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:153
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:151
 #: online_warehouse/product/production_crud_forms.py:97
 #: online_warehouse/product/production_crud_forms.py:114
 #: secretary/in_documents/in_doc_browse_panel_proto.py:38
@@ -594,7 +597,7 @@ msgstr "Добавить"
 msgid "Добавить"
 msgstr ""
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:155
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:153
 #: secretary/in_documents/in_doc_browse_panel_proto.py:42
 #: secretary/in_documents/in_doc_browse_panel_proto.py:311
 #: secretary/out_documents/out_doc_browse_panel_proto.py:42
@@ -604,7 +607,7 @@ msgstr ""
 msgid "Редактировать"
 msgstr ""
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:159
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:157
 #: iq/components/wx_filterchoicectrl/filter_choice_dlg.py:68
 #: iq/components/wx_olap_query_treectrl/indicator_constructor_dlg_proto.py:41
 #: iq/components/wx_olap_query_treectrl/olap_query_tree_ctrl.py:257
@@ -613,7 +616,8 @@ msgstr ""
 msgid "Delete"
 msgstr "Удалить"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:159
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:157
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:117
 #: online_warehouse/product/production_crud_forms.py:102
 #: online_warehouse/product/production_crud_forms.py:116
 #: secretary/in_documents/in_doc_browse_panel_proto.py:40
@@ -625,19 +629,19 @@ msgstr "Удалить"
 msgid "Удалить"
 msgstr ""
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:260
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:258
 msgid "Record edit"
 msgstr "Редактирование записи"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:268
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:266
 msgid "On/Off"
 msgstr "Включить/Отключить"
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:357
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:355
 msgid "Edit..."
 msgstr "Редактировать..."
 
-#: iq/components/data_ref_object/refobj_dialogs_proto.py:363
+#: iq/components/data_ref_object/refobj_dialogs_proto.py:361
 #: iq/engine/wx/dlg/edit_masked_txt_dlg_proto.py:47
 #: online_warehouse/product/production_crud_forms.py:136
 #: online_warehouse/product/production_crud_forms.py:271
@@ -645,7 +649,7 @@ msgid "ОК"
 msgstr ""
 
 #: iq/components/data_ref_object/wx_choicelistdlg.py:47
-#: iq/components/wx_refobjcodconstructor/refobjcodconstructor.py:78
+#: iq/components/wx_refobjcodconstructor/refobjcodconstructor.py:80
 msgid "Cod"
 msgstr "Код"
 
@@ -663,27 +667,35 @@ msgstr "Новый проект"
 
 #: iq/components/data_ref_object/wx_choicetreedlg.py:723
 #: iq/components/data_ref_object/wx_choicetreedlg.py:738
-#: iq/components/data_ref_object/wx_editdlg.py:292
-#: iq/components/data_ref_object/wx_editdlg.py:325
-#: iq/components/data_ref_object/wx_editdlg.py:896
-#: iq/components/data_ref_object/wx_editdlg.py:929
-#: iq/components/data_ref_object/wx_editdlg.py:944
-#: iq/components/data_ref_object/wx_editdlg.py:1031
+#: iq/components/data_ref_object/wx_editdlg.py:294
+#: iq/components/data_ref_object/wx_editdlg.py:327
+#: iq/components/data_ref_object/wx_editdlg.py:961
+#: iq/components/data_ref_object/wx_editdlg.py:994
+#: iq/components/data_ref_object/wx_editdlg.py:1009
+#: iq/components/data_ref_object/wx_editdlg.py:1096
+#: iq/editor/gtk/start_limereport_window.py:86
+#: iq/editor/gtk/start_limereport_window.py:97
+#: iq/editor/gtk/start_limereport_window.py:108
 #: iq/editor/wx/start_jasper_report.py:117
 #: iq/editor/wx/start_jasper_report.py:132
 #: iq/editor/wx/start_jasper_report.py:147
 #: iq/editor/wx/start_jasper_report.py:163
 #: iq/editor/wx/start_lime_report.py:122 iq/editor/wx/start_lime_report.py:135
-#: iq/editor/wx/start_lime_report.py:148 iq_report/report/report_browser.py:305
-#: iq_report/report/report_browser.py:321
-#: iq_report/report/report_browser.py:334
-#: iq_report/report/report_browser.py:416
-#: iq_report/report/report_browser.py:449
+#: iq/editor/wx/start_lime_report.py:148
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:113
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:129
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:143
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:159
+#: iq_report/report/dlg/wx_dlg/report_browser.py:200
+#: iq_report/report/dlg/wx_dlg/report_browser.py:216
+#: iq_report/report/dlg/wx_dlg/report_browser.py:229
+#: iq_report/report/dlg/wx_dlg/report_browser.py:311
+#: iq_report/report/dlg/wx_dlg/report_browser.py:344
 msgid "WARNING"
 msgstr "ПРЕДУПРЕЖДЕНИЕ"
 
 #: iq/components/data_ref_object/wx_choicetreedlg.py:724
-#: iq/components/data_ref_object/wx_editdlg.py:930
+#: iq/components/data_ref_object/wx_editdlg.py:995
 msgid "No records found matching search string"
 msgstr ""
 
@@ -691,28 +703,28 @@ msgstr ""
 msgid "No search bar selected"
 msgstr ""
 
-#: iq/components/data_ref_object/wx_editdlg.py:852
+#: iq/components/data_ref_object/wx_editdlg.py:912
 #: iq/components/data_uni_object/uni_object.py:246
 #: iq/components/wx_filterchoicectrl/filter_choicectrl.py:98
 msgid "DELETE"
 msgstr "УДАЛЕНИЕ"
 
-#: iq/components/data_ref_object/wx_editdlg.py:853
+#: iq/components/data_ref_object/wx_editdlg.py:913
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
-#: iq/components/data_ref_object/wx_editdlg.py:853
+#: iq/components/data_ref_object/wx_editdlg.py:913
 #, fuzzy
 #| msgid "Delete"
 msgid "Delete record"
 msgstr "Удалить"
 
-#: iq/components/data_ref_object/wx_editdlg.py:945
-#: iq/components/data_ref_object/wx_editdlg.py:1032
+#: iq/components/data_ref_object/wx_editdlg.py:1010
+#: iq/components/data_ref_object/wx_editdlg.py:1097
 msgid "No search string selected"
 msgstr ""
 
-#: iq/components/data_ref_object/wx_editdlg.py:1017
+#: iq/components/data_ref_object/wx_editdlg.py:1082
 msgid "SEARCH"
 msgstr "ПОИСК"
 
@@ -1178,7 +1190,7 @@ msgid "New node"
 msgstr "Новый проект"
 
 #: iq/components/wx_olap_query_treectrl/olap_query_tree_ctrl.py:216
-#: iq_report/report/report_browser.py:427
+#: iq_report/report/dlg/wx_dlg/report_browser.py:322
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -1209,6 +1221,158 @@ msgstr "Переименовать"
 msgid "ADD"
 msgstr "И"
 
+#: iq/editor/gtk/res_editor/multichoice_property_editor.py:81
+#, fuzzy
+#| msgid "Multipage scan"
+msgid "Multiple Choice"
+msgstr "Многостраничное сканирование"
+
+#: iq/editor/gtk/res_editor/multichoice_property_editor.py:82
+#: iq/engine/wx/dlg/ext_dialogs_proto.py:31
+#, fuzzy
+#| msgid "Select"
+msgid "Select:"
+msgstr "Выбрать"
+
+#: iq/editor/gtk/res_editor/property_editor_manager.py:762
+#: iq/editor/wx/res_editor/property_editor_manager.py:725
+msgid "Not define attribute editor"
+msgstr ""
+
+#: iq/editor/gtk/res_editor/property_editor_manager.py:764
+#: iq/editor/gtk/res_editor/property_editor_manager.py:776
+#: iq/editor/wx/res_editor/property_editor_manager.py:727
+#: iq/editor/wx/res_editor/property_editor_manager.py:739
+msgid "VALIDATION"
+msgstr "КОНТРОЛЬ"
+
+#: iq/editor/gtk/res_editor/property_editor_manager.py:774
+#: iq/editor/wx/res_editor/property_editor_manager.py:737
+msgid "Error valid property/attribute"
+msgstr "Ошибка контроля свойства/атрибута"
+
+#: iq/editor/gtk/res_editor/resource_editor.py:217
+#: iq/editor/wx/res_editor/resource_editor.py:225
+#: iq/editor/wx/res_editor/resource_editor_frm.py:27
+msgid "Resource editor"
+msgstr "Редактор ресурса"
+
+#: iq/editor/gtk/res_editor/script_property_editor.py:76
+#: iq/engine/wx/dlg/py_script_edit_dlg_proto.py:24
+msgid "Python script"
+msgstr "Скрипт Python"
+
+#: iq/editor/gtk/res_editor/script_property_editor.py:77
+#, fuzzy
+#| msgid "Python module"
+msgid "Python code:"
+msgstr "Модуль Python"
+
+#: iq/editor/gtk/res_editor/script_property_editor.py:119
+#, fuzzy
+#| msgid "Query"
+msgid "SQL query"
+msgstr "Запрос"
+
+#: iq/editor/gtk/res_editor/text_property_editor.py:84
+msgid "Text"
+msgstr ""
+
+#: iq/editor/gtk/res_editor/text_property_editor.py:85
+msgid "Entry text:"
+msgstr ""
+
+#: iq/editor/gtk/start_folder_window.py:132
+#: iq/editor/gtk/start_folder_window.py:151
+#: iq/editor/gtk/start_limereport_window.py:116
+#: iq/editor/gtk/start_limereport_window.py:119
+#: iq/editor/wx/start_folder_dialog.py:190
+#: iq/editor/wx/start_folder_dialog.py:210
+#: iq/editor/wx/start_jasper_report.py:96
+#: iq/editor/wx/start_jasper_report.py:99 iq/editor/wx/start_lime_report.py:101
+#: iq/editor/wx/start_lime_report.py:104
+msgid "NEW"
+msgstr "НОВЫЙ"
+
+#: iq/editor/gtk/start_folder_window.py:133
+#: iq/editor/wx/start_folder_dialog.py:191
+#, fuzzy
+#| msgid "Entry new report name"
+msgid "New JasperReport filename"
+msgstr "Введите новое иия отчета"
+
+#: iq/editor/gtk/start_folder_window.py:138
+#: iq/editor/gtk/start_folder_window.py:157
+#: iq/editor/wx/start_folder_dialog.py:196
+#: iq/editor/wx/start_folder_dialog.py:216
+msgid "CREATE"
+msgstr "СОЗДАТЬ"
+
+#: iq/editor/gtk/start_folder_window.py:139
+#: iq/editor/wx/start_folder_dialog.py:197
+#, fuzzy
+#| msgid "Create new resource"
+msgid "Create JasperReport file"
+msgstr "Создать новый ресурс"
+
+#: iq/editor/gtk/start_folder_window.py:144
+#: iq/editor/wx/start_folder_dialog.py:202
+msgid "Error create JasperReport file"
+msgstr ""
+
+#: iq/editor/gtk/start_folder_window.py:152
+#: iq/editor/wx/start_folder_dialog.py:211
+msgid "New LimeReport filename"
+msgstr "Новый LimeReport файл"
+
+#: iq/editor/gtk/start_folder_window.py:158
+#: iq/editor/wx/start_folder_dialog.py:217
+msgid "Create LimeReport file"
+msgstr "Создать LimeReport файл"
+
+#: iq/editor/gtk/start_folder_window.py:163
+#: iq/editor/wx/start_folder_dialog.py:222
+msgid "Error create LimeReport file"
+msgstr "Ошибка создания LimeReport файла"
+
+#: iq/editor/gtk/start_folder_window.py:219
+#: iq/editor/gtk/start_folder_window.py:246 iq/editor/wx/start_folder_dlg.py:25
+msgid "Project folder/package"
+msgstr "Папка/пакет проекта"
+
+#: iq/editor/gtk/start_glade_window.py:145
+#: iq/editor/gtk/start_glade_window.py:171
+#, fuzzy
+#| msgid "New project"
+msgid "Glade project"
+msgstr "Новый проект"
+
+#: iq/editor/gtk/start_limereport_window.py:117
+#: iq/editor/wx/start_lime_report.py:102
+#, fuzzy
+#| msgid "Entry new report name"
+msgid "Entry new LRXML filename"
+msgstr "Введите новое иия отчета"
+
+#: iq/editor/gtk/start_limereport_window.py:160
+#: iq/editor/gtk/start_limereport_window.py:187
+#, fuzzy
+#| msgid "New project"
+msgid "LimeReport project"
+msgstr "Новый проект"
+
+#: iq/editor/gtk/start_py_window.py:147 iq/editor/gtk/start_py_window.py:174
+#: iq/editor/wx/start_py_dlg.py:25
+msgid "Python module"
+msgstr "Модуль Python"
+
+#: iq/editor/gtk/start_wxfb_window.py:134
+#: iq/editor/gtk/start_wxfb_window.py:161
+#, fuzzy
+#| msgid "New wxFormBuilder project"
+msgid "wxFormBuider project"
+msgstr "Новый проект wxFormBuilder"
+
 #: iq/editor/wx/res_editor/new_resource_dlg.py:25
 msgid "Create new resource"
 msgstr "Создать новый ресурс"
@@ -1216,10 +1380,6 @@ msgstr "Создать новый ресурс"
 #: iq/editor/wx/res_editor/new_resource_dlg.py:36
 msgid "Component:"
 msgstr "Компонент:"
-
-#: iq/editor/wx/res_editor/new_resource_dlg.py:44
-msgid "..."
-msgstr ""
 
 #: iq/editor/wx/res_editor/new_resource_dlg.py:67
 msgid "Path:"
@@ -1247,24 +1407,6 @@ msgstr "Методы"
 msgid "Events"
 msgstr "События"
 
-#: iq/editor/wx/res_editor/property_editor_manager.py:725
-msgid "Not define attribute editor"
-msgstr ""
-
-#: iq/editor/wx/res_editor/property_editor_manager.py:727
-#: iq/editor/wx/res_editor/property_editor_manager.py:739
-msgid "VALIDATION"
-msgstr "КОНТРОЛЬ"
-
-#: iq/editor/wx/res_editor/property_editor_manager.py:737
-msgid "Error valid property/attribute"
-msgstr "Ошибка контроля свойства/атрибута"
-
-#: iq/editor/wx/res_editor/resource_editor.py:225
-#: iq/editor/wx/res_editor/resource_editor_frm.py:27
-msgid "Resource editor"
-msgstr "Редактор ресурса"
-
 #: iq/editor/wx/res_editor/resource_editor.py:370
 #, fuzzy
 #| msgid "VALIDATION"
@@ -1272,7 +1414,7 @@ msgid "VALIDATE"
 msgstr "КОНТРОЛЬ"
 
 #: iq/editor/wx/res_editor/resource_editor_frm.py:34
-#: iq/editor/wx/start_folder_dialog.py:99
+#: iq/editor/wx/start_folder_dialog.py:100
 msgid "New resource"
 msgstr "Новый ресурс"
 
@@ -1365,6 +1507,7 @@ msgstr "Дополнительные инструменты"
 
 #: iq/editor/wx/start_editor_dlg.py:80
 #: iq_chess/menubars/main_menubar_proto.py:31
+#: mark_sign/menubars/main_menubar_proto.py:58
 #: online_warehouse/menubars/main_menubar_proto.py:75
 #: rozliv_asiiu/menubars/main_menubar_proto.py:100
 #: sales_map/menubars/main_menubar_proto.py:61
@@ -1373,72 +1516,57 @@ msgid "Help"
 msgstr "Помощь"
 
 #: iq/editor/wx/start_editor_dlg.py:91 iq/editor/wx/start_folder_dlg.py:60
+#: iq/editor/wx/start_glade_dlg.py:80
 #: iq/editor/wx/start_jasperreport_dlg.py:103
-#: iq/editor/wx/start_limereport_dlg.py:103 iq/editor/wx/start_py_dlg.py:68
-#: iq/editor/wx/start_wxfb_dlg.py:69 iq_report/report/report_browser.py:273
+#: iq/editor/wx/start_limereport_dlg.py:103 iq/editor/wx/start_py_dlg.py:69
+#: iq/editor/wx/start_wxfb_dlg.py:69
+#: iq_report/report/dlg/wx_dlg/report_browser.py:168 sticker/gtk_app.py:119
 msgid "Exit"
 msgstr "Выход"
 
-#: iq/editor/wx/start_folder_dialog.py:108 iq/editor/wx/start_wxfb_dlg.py:36
+#: iq/editor/wx/start_folder_dialog.py:109 iq/editor/wx/start_wxfb_dlg.py:36
 msgid "New wxFormBuilder project"
 msgstr "Новый проект wxFormBuilder"
 
-#: iq/editor/wx/start_folder_dialog.py:116
+#: iq/editor/wx/start_folder_dialog.py:117 iq/editor/wx/start_glade_dlg.py:36
+#, fuzzy
+#| msgid "New project"
+msgid "New Glade project"
+msgstr "Новый проект"
+
+#: iq/editor/wx/start_folder_dialog.py:125
 msgid "New JasperReport report"
 msgstr "Новый отчет JasperReport"
 
-#: iq/editor/wx/start_folder_dialog.py:124
+#: iq/editor/wx/start_folder_dialog.py:133
 msgid "New LimeReport report"
 msgstr "Новый отчет LimeReport"
-
-#: iq/editor/wx/start_folder_dialog.py:173
-#: iq/editor/wx/start_folder_dialog.py:193
-#: iq/editor/wx/start_jasper_report.py:96
-#: iq/editor/wx/start_jasper_report.py:99 iq/editor/wx/start_lime_report.py:101
-#: iq/editor/wx/start_lime_report.py:104
-msgid "NEW"
-msgstr "НОВЫЙ"
-
-#: iq/editor/wx/start_folder_dialog.py:174
-#, fuzzy
-#| msgid "Entry new report name"
-msgid "New JasperReport filename"
-msgstr "Введите новое иия отчета"
-
-#: iq/editor/wx/start_folder_dialog.py:179
-#: iq/editor/wx/start_folder_dialog.py:199
-msgid "CREATE"
-msgstr "СОЗДАТЬ"
-
-#: iq/editor/wx/start_folder_dialog.py:180
-#, fuzzy
-#| msgid "Create new resource"
-msgid "Create JasperReport file"
-msgstr "Создать новый ресурс"
-
-#: iq/editor/wx/start_folder_dialog.py:185
-msgid "Error create JasperReport file"
-msgstr ""
-
-#: iq/editor/wx/start_folder_dialog.py:194
-msgid "New LimeReport filename"
-msgstr "Новый LimeReport файл"
-
-#: iq/editor/wx/start_folder_dialog.py:200
-msgid "Create LimeReport file"
-msgstr "Создать LimeReport файл"
-
-#: iq/editor/wx/start_folder_dialog.py:205
-msgid "Error create LimeReport file"
-msgstr "Ошибка создания LimeReport файла"
-
-#: iq/editor/wx/start_folder_dlg.py:25
-msgid "Project folder/package"
-msgstr "Папка/пакет проекта"
 
 #: iq/editor/wx/start_folder_dlg.py:36
 msgid "New..."
 msgstr "Новый..."
+
+#: iq/editor/wx/start_glade_dlg.py:25
+msgid "Glade"
+msgstr ""
+
+#: iq/editor/wx/start_glade_dlg.py:47
+#, fuzzy
+#| msgid "Open wxFormBuilder project"
+msgid "Open Glade project"
+msgstr "Открыть проект wxFormBuilder"
+
+#: iq/editor/wx/start_glade_dlg.py:58
+#, fuzzy
+#| msgid "New project"
+msgid "Preview Glade project"
+msgstr "Новый проект"
+
+#: iq/editor/wx/start_glade_dlg.py:69
+#, fuzzy
+#| msgid "Migrate python module"
+msgid "Generate python module by Glade project"
+msgstr "Произвести миграцию модуля"
 
 #: iq/editor/wx/start_jasper_report.py:97
 #, fuzzy
@@ -1466,15 +1594,15 @@ msgstr "Открыть ресурс"
 
 #: iq/editor/wx/start_jasperreport_dlg.py:58
 #: iq/editor/wx/start_limereport_dlg.py:58
-#: iq_report/report/dlg/report_dlg_proto.py:48
-#: iq_report/report/report_browser.py:216
+#: iq_report/report/dlg/wx_dlg/report_browser.py:111
+#: iq_report/report/dlg/wx_dlg/report_dlg_proto.py:49
 msgid "Preview"
 msgstr "Пред. просмотр"
 
 #: iq/editor/wx/start_jasperreport_dlg.py:69
 #: iq/editor/wx/start_limereport_dlg.py:69
-#: iq_report/report/dlg/report_dlg_proto.py:41
-#: iq_report/report/report_browser.py:223
+#: iq_report/report/dlg/wx_dlg/report_browser.py:118
+#: iq_report/report/dlg/wx_dlg/report_dlg_proto.py:41
 msgid "Print"
 msgstr "Печать"
 
@@ -1512,15 +1640,7 @@ msgid "RTF"
 msgstr ""
 
 #: iq/editor/wx/start_jasperreport_dlg.py:85
-msgid "XLS"
-msgstr ""
-
-#: iq/editor/wx/start_jasperreport_dlg.py:85
 msgid "XLSX"
-msgstr ""
-
-#: iq/editor/wx/start_jasperreport_dlg.py:85
-msgid "XML"
 msgstr ""
 
 #: iq/editor/wx/start_jasperreport_dlg.py:85
@@ -1528,11 +1648,17 @@ msgstr ""
 msgid "PDF"
 msgstr ""
 
-#: iq/editor/wx/start_lime_report.py:102
-#, fuzzy
-#| msgid "Entry new report name"
-msgid "Entry new LRXML filename"
-msgstr "Введите новое иия отчета"
+#: iq/editor/wx/start_jasperreport_dlg.py:85
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:107
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:84
+msgid "XML"
+msgstr ""
+
+#: iq/editor/wx/start_jasperreport_dlg.py:85
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:109
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:86
+msgid "XLS"
+msgstr ""
 
 #: iq/editor/wx/start_limereport_dlg.py:25
 #, fuzzy
@@ -1556,19 +1682,15 @@ msgstr "Открыть проект wxFormBuilder"
 msgid "SVG"
 msgstr ""
 
-#: iq/editor/wx/start_py_dlg.py:24
-msgid "Python module"
-msgstr "Модуль Python"
-
-#: iq/editor/wx/start_py_dlg.py:35
+#: iq/editor/wx/start_py_dlg.py:36
 msgid "Adapt wxFormBuilder form module"
 msgstr "Адаптировать модуль формы wxFormBuilder"
 
-#: iq/editor/wx/start_py_dlg.py:46
+#: iq/editor/wx/start_py_dlg.py:47
 msgid "Generate GUI module"
 msgstr "Генерировать GUI модуль"
 
-#: iq/editor/wx/start_py_dlg.py:57
+#: iq/editor/wx/start_py_dlg.py:58
 msgid "Migrate python module"
 msgstr "Произвести миграцию модуля"
 
@@ -1594,7 +1716,7 @@ msgstr "Выберите пользователя для входа "
 
 #: iq/engine/cui/dlg/cui_dlg.py:274
 msgid "Enter user password to login"
-msgstr ""
+msgstr "Введи пароль пользователя для входа"
 
 #: iq/engine/cui/dlg/cui_dlg_func.py:36
 #: iq/engine/wx/dlg/login_dialog_proto.py:33
@@ -1602,8 +1724,8 @@ msgid "User name:"
 msgstr "Пользователь:"
 
 #: iq/engine/cui/dlg/cui_dlg_func.py:37 iq/engine/cui/dlg/cui_dlg_func.py:45
-#: iq/engine/wx/dlg/login_dialog_proto.py:25 iq/project/prj.py:307
-#: iq/project/prj.py:312
+#: iq/engine/wx/dlg/login_dialog_proto.py:25 iq/project/prj.py:326
+#: iq/project/prj.py:331 iq/project/prj.py:335
 msgid "LOGIN"
 msgstr "ВХОД"
 
@@ -1619,12 +1741,6 @@ msgstr ""
 #: iq/engine/wx/dlg/ext_dialogs_proto.py:25
 msgid "Select items"
 msgstr "Выберите элементы"
-
-#: iq/engine/wx/dlg/ext_dialogs_proto.py:31
-#, fuzzy
-#| msgid "Select"
-msgid "Select:"
-msgstr "Выбрать"
 
 #: iq/engine/wx/dlg/ext_dialogs_proto.py:37
 msgid "Clear"
@@ -1689,11 +1805,11 @@ msgstr "Условие выбора"
 
 #: iq/engine/wx/dlg/log_browser_proto.py:189
 msgid "Programm log"
-msgstr ""
+msgstr "Лог программы"
 
 #: iq/engine/wx/dlg/logbrowser.py:53
 msgid "Debug service message"
-msgstr ""
+msgstr "Сервисное сообщение отладки"
 
 #: iq/engine/wx/dlg/logbrowser.py:54
 msgid "Service message"
@@ -1711,27 +1827,31 @@ msgstr "Тип"
 msgid "Time"
 msgstr "Время"
 
-#: iq/engine/wx/dlg/py_script_edit_dlg_proto.py:24
-msgid "Python script"
-msgstr "Скрипт Python"
+#: iq/engine/wx/listctrl_manager.py:1101
+msgid "COLUMNS"
+msgstr "КОЛОНКИ"
 
-#: iq/project/prj.py:66
+#: iq/engine/wx/listctrl_manager.py:1102
+msgid "Select shown columns"
+msgstr "Выберите отображаемые колонки"
+
+#: iq/project/prj.py:72
 msgid "PROJECT NAME"
 msgstr "Наименование проекта"
 
-#: iq/project/prj.py:67
+#: iq/project/prj.py:73
 msgid "Enter the name of the project:"
 msgstr "Введите наименование проекта:"
 
-#: iq/project/prj.py:100
+#: iq/project/prj.py:107
 msgid "ENGINE TYPE"
 msgstr "ТИП ДВИЖКА"
 
-#: iq/project/prj.py:101
+#: iq/project/prj.py:108
 msgid "Select engine type of the project:"
 msgstr "Выберите вид движка проекта:"
 
-#: iq/project/prj.py:182
+#: iq/project/prj.py:205
 #, fuzzy
 #| msgid "Report folder"
 msgid "Reports folder"
@@ -1765,7 +1885,16 @@ msgstr ""
 msgid "Can edit"
 msgstr ""
 
+#: iq/util/sys_func.py:408
+msgid "Entry password for user"
+msgstr "Введите пароль пользователя"
+
+#: iq/util/sys_func.py:411
+msgid "System root/administrator"
+msgstr "Системный администратор"
+
 #: iq_chess/menubars/main_menubar_proto.py:28
+#: mark_sign/menubars/main_menubar_proto.py:55
 #: online_warehouse/menubars/main_menubar_proto.py:72
 #: rozliv_asiiu/menubars/main_menubar_proto.py:97
 #: sales_map/menubars/main_menubar_proto.py:58
@@ -1773,61 +1902,68 @@ msgstr ""
 msgid "About..."
 msgstr "О программе..."
 
-#: iq_report/report/dlg/report_action_dlg.py:49
-#: iq_report/report/dlg/report_dlg_proto.py:25
+#: iq_report/report/dlg/gtk_dlg/report_action_win.py:76
+#: iq_report/report/dlg/wx_dlg/report_action_dlg.py:49
+#: iq_report/report/dlg/wx_dlg/report_dlg_proto.py:25
 msgid "Report:"
 msgstr "Отчет:"
 
-#: iq_report/report/dlg/report_dlg_proto.py:54
-msgid "Export to Office"
-msgstr "Экспорт в Офис"
-
-#: iq_report/report/report_browser.py:230
-msgid "Page setup"
-msgstr "Параметры страницы"
-
-#: iq_report/report/report_browser.py:237
-msgid "Export"
-msgstr "Экспорт"
-
-#: iq_report/report/report_browser.py:245
-msgid "Report folder"
-msgstr "Папка отчетов"
-
-#: iq_report/report/report_browser.py:252
-msgid "Create"
-msgstr "Создать"
-
-#: iq_report/report/report_browser.py:266
-msgid "Update"
-msgstr "Обновить"
-
-#: iq_report/report/report_browser.py:306
-#: iq_report/report/report_browser.py:322
-#: iq_report/report/report_browser.py:335
-#: iq_report/report/report_browser.py:417
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:114
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:130
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:144
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:160
+#: iq_report/report/dlg/wx_dlg/report_browser.py:201
+#: iq_report/report/dlg/wx_dlg/report_browser.py:217
+#: iq_report/report/dlg/wx_dlg/report_browser.py:230
+#: iq_report/report/dlg/wx_dlg/report_browser.py:312
 msgid "You must select a report"
 msgstr "Необходимо выбрать отчет"
 
-#: iq_report/report/report_browser.py:343
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:167
+#: iq_report/report/dlg/wx_dlg/report_browser.py:238
 msgid "Select report folder path:"
 msgstr "Выберите папку отчетов:"
 
-#: iq_report/report/report_browser.py:440
+#: iq_report/report/dlg/gtk_dlg/report_browser_win.py:234
+#: iq_report/report/dlg/wx_dlg/report_browser.py:414
+msgid "Reports"
+msgstr "Отчеты"
+
+#: iq_report/report/dlg/wx_dlg/report_browser.py:125
+msgid "Page setup"
+msgstr "Параметры страницы"
+
+#: iq_report/report/dlg/wx_dlg/report_browser.py:132
+msgid "Export"
+msgstr "Экспорт"
+
+#: iq_report/report/dlg/wx_dlg/report_browser.py:140
+msgid "Report folder"
+msgstr "Папка отчетов"
+
+#: iq_report/report/dlg/wx_dlg/report_browser.py:147
+msgid "Create"
+msgstr "Создать"
+
+#: iq_report/report/dlg/wx_dlg/report_browser.py:161
+msgid "Update"
+msgstr "Обновить"
+
+#: iq_report/report/dlg/wx_dlg/report_browser.py:335
 msgid "Rename report"
 msgstr "Переименовать отчет"
 
-#: iq_report/report/report_browser.py:441
+#: iq_report/report/dlg/wx_dlg/report_browser.py:336
 msgid "Entry new report name"
 msgstr "Введите новое иия отчета"
 
-#: iq_report/report/report_browser.py:450
+#: iq_report/report/dlg/wx_dlg/report_browser.py:345
 msgid "A report with the same name already exists"
-msgstr ""
+msgstr "Отчет с таким именем уже существует"
 
-#: iq_report/report/report_browser.py:519
-msgid "Reports"
-msgstr "Отчеты"
+#: iq_report/report/dlg/wx_dlg/report_dlg_proto.py:55
+msgid "Export to Office"
+msgstr "Экспорт в Офис"
 
 #: iq_scanner/scanner/scanner_dlg_proto.py:25
 msgid "Scanning"
@@ -1961,6 +2097,180 @@ msgstr "Пред. просмотр..."
 msgid "Rescan"
 msgstr "Пересканировать"
 
+#: mark_sign/line_forms/notification_view_panel_proto.py:30
+#: telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:133
+msgid "MyLabel"
+msgstr ""
+
+#: mark_sign/line_forms/notification_view_panel_proto.py:35
+msgid "Первая страница"
+msgstr ""
+
+#: mark_sign/line_forms/notification_view_panel_proto.py:37
+msgid "Предыдущая страница"
+msgstr ""
+
+#: mark_sign/line_forms/notification_view_panel_proto.py:39
+msgid "Следующая страница"
+msgstr ""
+
+#: mark_sign/line_forms/notification_view_panel_proto.py:41
+msgid "Последняя страница"
+msgstr ""
+
+#: mark_sign/line_forms/notification_view_panel_proto.py:45
+msgid "Сортировка по дате"
+msgstr ""
+
+#: mark_sign/line_forms/notification_view_panel_proto.py:47
+msgid "Сортировка по дате в обратном порядке"
+msgstr ""
+
+#: mark_sign/line_forms/notification_view_panel_proto.py:51
+msgid "Записей на странице:"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:37
+#: mark_sign/menubars/main_menubar_proto.py:41
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:37
+msgid "Отчет об агрегации"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:39
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:39
+msgid "Отбракованная продукция"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:45
+msgid "Центры управления:"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:56
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:51
+msgid "Уведомления системы"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:62
+msgid "Производственные линии:"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:80
+msgid "Скрыть"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:82
+msgid "Показать"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:84
+msgid "Колонки"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:88
+msgid "Выделить все"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:92
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:70
+msgid "За дату:"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:97
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:75
+#: online_warehouse/product/production_crud_forms.py:44
+#: online_warehouse/product/production_crud_forms.py:201
+msgid "Состояние:"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+msgid "ASSIGNED"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+#, fuzzy
+#| msgid "CREATE"
+msgid "CREATED"
+msgstr "СОЗДАТЬ"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+msgid "DECLINED"
+msgstr "ОТКЛОНЕНО"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+#, fuzzy
+#| msgid "DELETE"
+msgid "DELETED"
+msgstr "УДАЛЕНИЕ"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+#, fuzzy
+#| msgid "DELETE"
+msgid "DELETING"
+msgstr "УДАЛЕНИЕ"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+msgid "EXECUTED"
+msgstr "ВЫПОЛНЕНО"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+msgid "EXPORTED"
+msgstr "ЭКСПОРТИРОВАНО"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+msgid "PROCESSING"
+msgstr "ОБРАБОТКА"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:99
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:78
+msgid "UPDATING"
+msgstr "ОБНОВЛЕНИЕ"
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:111
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:88
+msgid "Отчет по заданию"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:113
+#: mark_sign/task_forms/view_executed_tasks_panel_proto.py:90
+msgid "Отчет ввода в оборот по заданию"
+msgstr ""
+
+#: mark_sign/line_forms/view_all_lines_panel_proto.py:123
+msgid "Задания на производство:"
+msgstr ""
+
+#: mark_sign/menubars/main_menubar_proto.py:28
+msgid "Просмотр всех производственных линий"
+msgstr ""
+
+#: mark_sign/menubars/main_menubar_proto.py:34
+msgid "Выполненные задания на производство"
+msgstr ""
+
+#: mark_sign/menubars/main_menubar_proto.py:38
+msgid "Производственные линии"
+msgstr ""
+
+#: mark_sign/menubars/main_menubar_proto.py:45
+msgid "Отчеты"
+msgstr ""
+
+#: mark_sign/menubars/main_menubar_proto.py:48
+msgid "Настройки программы"
+msgstr ""
+
+#: mark_sign/menubars/main_menubar_proto.py:52
+msgid "Администрирование"
+msgstr ""
+
 #: online_warehouse/menubars/main_menubar_proto.py:28
 msgid "Продукция на складе"
 msgstr ""
@@ -2018,11 +2328,6 @@ msgstr ""
 
 #: online_warehouse/product/production_crud_forms.py:28
 msgid "Продукция. Добавление."
-msgstr ""
-
-#: online_warehouse/product/production_crud_forms.py:44
-#: online_warehouse/product/production_crud_forms.py:201
-msgid "Состояние:"
 msgstr ""
 
 #: online_warehouse/product/production_crud_forms.py:52
@@ -2195,89 +2500,106 @@ msgstr ""
 msgid "Расширенный дистрибуционный отчет продаж продукции по торговым точкам"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:60
-#: sales_analiz/menubars/main_menubar_proto.py:98
-msgid "АКБ по видам продукции за месяц"
+#: sales_analiz/menubars/main_menubar_proto.py:58
+msgid "Детализация вторичных продаж дилера по торговым точкам"
 msgstr ""
 
 #: sales_analiz/menubars/main_menubar_proto.py:63
+#: sales_analiz/menubars/main_menubar_proto.py:101
+msgid "АКБ по видам продукции за месяц"
+msgstr ""
+
+#: sales_analiz/menubars/main_menubar_proto.py:66
 msgid "Вторичные продажи"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:65
+#: sales_analiz/menubars/main_menubar_proto.py:68
 msgid "Оперативные отчеты"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:69
+#: sales_analiz/menubars/main_menubar_proto.py:72
 msgid "Анализ динамики первичных продаж"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:73
+#: sales_analiz/menubars/main_menubar_proto.py:76
 msgid "Сравнительный анализ динамики первичных продаж"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:76
+#: sales_analiz/menubars/main_menubar_proto.py:79
 msgid "Итоговая диаграмма первичных продаж за год"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:79
+#: sales_analiz/menubars/main_menubar_proto.py:82
 msgid "Анализ первичных продаж"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:82
+#: sales_analiz/menubars/main_menubar_proto.py:85
 msgid "Анализ динамики вторичных продаж"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:85
+#: sales_analiz/menubars/main_menubar_proto.py:88
 msgid "Сравнительный анализ динамики вторичных продаж"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:88
+#: sales_analiz/menubars/main_menubar_proto.py:91
 msgid "Итоговая диаграмма вторичных продаж за год"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:93
+#: sales_analiz/menubars/main_menubar_proto.py:96
 msgid "Сравнительный отчет вторичных продаж в регионе по месячно"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:98
+#: sales_analiz/menubars/main_menubar_proto.py:101
 msgid "АКБ по видам продукции за год"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:101
+#: sales_analiz/menubars/main_menubar_proto.py:104
 msgid "Анализ вторичных продаж"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:103
+#: sales_analiz/menubars/main_menubar_proto.py:106
 msgid "Сводные отчеты"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:112
+#: sales_analiz/menubars/main_menubar_proto.py:115
 msgid "Логистика"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:119
+#: sales_analiz/menubars/main_menubar_proto.py:118
+msgid "Журнал загрузки данных о торговых точках"
+msgstr ""
+
+#: sales_analiz/menubars/main_menubar_proto.py:121
+msgid "Журналы"
+msgstr ""
+
+#: sales_analiz/menubars/main_menubar_proto.py:128
 msgid "Администрирование справочников"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:122
+#: sales_analiz/menubars/main_menubar_proto.py:131
 #: sales_map/menubars/main_menubar_proto.py:41
 msgid "Справочник дилеров"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:125
+#: sales_analiz/menubars/main_menubar_proto.py:134
+#: sales_map/menubars/main_menubar_proto.py:35
+msgid "Справочник продукции"
+msgstr ""
+
+#: sales_analiz/menubars/main_menubar_proto.py:137
 msgid "Заполнение справочников"
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:130
+#: sales_analiz/menubars/main_menubar_proto.py:142
 msgid "Презентация ..."
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:135
+#: sales_analiz/menubars/main_menubar_proto.py:147
 msgid "О программе ..."
 msgstr ""
 
-#: sales_analiz/menubars/main_menubar_proto.py:138
+#: sales_analiz/menubars/main_menubar_proto.py:150
 msgid "Помощь"
 msgstr ""
 
@@ -2367,10 +2689,6 @@ msgstr ""
 
 #: sales_analiz/operate_forms/first_sales_dynamic_panel_proto.py:356
 msgid "Регионы"
-msgstr ""
-
-#: sales_map/menubars/main_menubar_proto.py:35
-msgid "Справочник продукции"
 msgstr ""
 
 #: sales_map/menubars/main_menubar_proto.py:38
@@ -2539,7 +2857,7 @@ msgstr ""
 #: secretary/phone_book/new_phone_dlg_proto.py:80
 #: secretary/phone_book/new_phone_dlg_proto.py:200
 #: secretary/phone_book/phone_book_browse_panel_proto.py:93
-#: secretary/phone_book/phone_book_browse_panel_proto.py:320
+#: secretary/phone_book/phone_book_browse_panel_proto.py:310
 msgid "Организация:"
 msgstr ""
 
@@ -2739,7 +3057,7 @@ msgstr ""
 #: secretary/phone_book/new_phone_dlg_proto.py:41
 #: secretary/phone_book/new_phone_dlg_proto.py:187
 #: secretary/phone_book/phone_book_browse_panel_proto.py:80
-#: secretary/phone_book/phone_book_browse_panel_proto.py:307
+#: secretary/phone_book/phone_book_browse_panel_proto.py:297
 msgid "Телефон:"
 msgstr ""
 
@@ -2760,7 +3078,7 @@ msgstr ""
 
 #: secretary/phone_book/edit_phone_dlg_proto.py:179
 #: secretary/phone_book/new_phone_dlg_proto.py:179
-#: secretary/phone_book/phone_book_browse_panel_proto.py:299
+#: secretary/phone_book/phone_book_browse_panel_proto.py:289
 msgid "Наименование/ФИО:"
 msgstr ""
 
@@ -2843,7 +3161,6 @@ msgid "Просмотр"
 msgstr ""
 
 #: secretary/phone_book/phone_book_browse_panel_proto.py:48
-#: secretary/phone_book/phone_book_browse_panel_proto.py:275
 msgid "Поиск: "
 msgstr ""
 
@@ -2910,10 +3227,6 @@ msgstr ""
 
 #: telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:128
 msgid "Вычесленная поправка (имп.):"
-msgstr ""
-
-#: telemetria/ref_objects/correct_impulse_node_counter_dlg_proto.py:133
-msgid "MyLabel"
 msgstr ""
 
 #, fuzzy
