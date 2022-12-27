@@ -16,7 +16,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -360,7 +360,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
 
     def newRec(self, record):
         """
-        Create new record.
+        Create new record (without commit).
 
         :param record: Record dictionary.
         :return: New model object or None if error.

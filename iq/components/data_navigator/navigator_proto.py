@@ -11,7 +11,7 @@ from ...util import log_func
 
 from ..data_model import data_object
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 class iqNavigatorManagerProto(data_object.iqDataObject):
@@ -210,7 +210,7 @@ class iqNavigatorManagerProto(data_object.iqDataObject):
 
     def newRec(self, record):
         """
-        Create new record.
+        Create new record (without commit).
 
         :param record: Record dictionary.
         :return: New model object or None if error.

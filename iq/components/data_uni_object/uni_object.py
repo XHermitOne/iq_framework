@@ -207,7 +207,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
     def newRec(self, record):
         """
-        Create new record.
+        Create new record (without commit).
 
         :param record: Record dictionary.
         :return: New model object or None if error.
