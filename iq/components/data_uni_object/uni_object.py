@@ -14,7 +14,7 @@ from ...dialog import dlg_func
 
 from ..wx_filterchoicectrl import filter_convert
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -214,7 +214,21 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         """
         if not record.get(DEFAULT_GUID_COL_NAME, None):
             record[DEFAULT_GUID_COL_NAME] = id_func.genGUID()
+        log_func.debug(u'New unic object <%s>' % record[DEFAULT_GUID_COL_NAME])
         return model_navigator.iqModelNavigatorManager.newRec(self, record=record)
+
+    def add(self, record, auto_commit=True):
+        """
+        Add record in model.
+
+        :param record: Record dictionary.
+        :param auto_commit: Automatic commit?
+        :return: True/False.
+        """
+        if not record.get(DEFAULT_GUID_COL_NAME, None):
+            record[DEFAULT_GUID_COL_NAME] = id_func.genGUID()
+        log_func.debug(u'Add unic object <%s>' % record[DEFAULT_GUID_COL_NAME])
+        return self.addRec(record=record, auto_commit=auto_commit)
 
     def save(self, guid=None, save_record=None):
         """
