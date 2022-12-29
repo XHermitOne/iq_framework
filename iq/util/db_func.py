@@ -327,12 +327,13 @@ def getNotValidDBConnectSQLAlchemyErrTxt(db_url=None):
     return error_txt
 
 
-def executeSQL(db_url=None, sql=None):
+def executeSQL(db_url=None, sql=None, echo=False):
     """
     Open connection. Execute SQL. Close connection.
 
     :param db_url: Connection string/Database URL for connection.
     :param sql: SQL expression.
+    :param echo: The echo flag is a shortcut to setting up SQLAlchemy logging.
     :return: Result SQL as list of dictionaries or None if error.
     """
     if not db_url:
@@ -344,7 +345,7 @@ def executeSQL(db_url=None, sql=None):
         return None
 
     try:
-        engine = sqlalchemy.create_engine(db_url, echo=False)
+        engine = sqlalchemy.create_engine(db_url, echo=echo)
     except:
         err_msg = u'Error connect with database server\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
         print(err_msg)

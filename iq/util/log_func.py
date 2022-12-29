@@ -28,7 +28,7 @@ if sys.platform.startswith('win'):
 
 from . import global_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 # Shell text colors
 RED_COLOR_TEXT = 'red'
@@ -53,6 +53,9 @@ def printColourText(text, color=NORMAL_COLOR_TEXT):
     :param text: Text.
     :param color: Colour code.
     """
+    if not isinstance(text, str):
+        message = str(text)
+
     if color == NORMAL_COLOR_TEXT:
         txt = text
     elif sys.platform.startswith('win'):
@@ -127,6 +130,9 @@ def debug(message=u'', is_force_print=False, is_force_log=False):
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
+    if not isinstance(message, str):
+        message = str(message)
+
     if global_func.isDebugMode() or is_force_print:
         printColourText('DEBUG. ' + message, BLUE_COLOR_TEXT)
     if global_func.isLogMode() or is_force_log:
@@ -141,6 +147,9 @@ def info(message=u'', is_force_print=False, is_force_log=False):
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
+    if not isinstance(message, str):
+        message = str(message)
+
     if global_func.isDebugMode() or is_force_print:
         printColourText('INFO. ' + message, GREEN_COLOR_TEXT)
     if global_func.isLogMode() or is_force_log:
@@ -155,6 +164,9 @@ def error(message=u'', is_force_print=False, is_force_log=False):
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
+    if not isinstance(message, str):
+        message = str(message)
+
     if global_func.isDebugMode() or is_force_print:
         printColourText('ERROR. ' + message, RED_COLOR_TEXT)
     if global_func.isLogMode() or is_force_log:
@@ -169,6 +181,9 @@ def warning(message=u'', is_force_print=False, is_force_log=False):
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
+    if not isinstance(message, str):
+        message = str(message)
+
     if global_func.isDebugMode() or is_force_print:
         printColourText('WARNING. ' + message, YELLOW_COLOR_TEXT)
     if global_func.isLogMode() or is_force_log:
@@ -183,6 +198,9 @@ def fatal(message=u'', is_force_print=False, is_force_log=False):
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
+    if not isinstance(message, str):
+        message = str(message)
+
     trace_txt = traceback.format_exc()
 
     try:
@@ -208,6 +226,9 @@ def service(message=u'', is_force_print=False, is_force_log=False):
     :param is_force_print: Forcibly display.
     :param is_force_log: Forcibly recorded in a journal.
     """
+    if not isinstance(message, str):
+        message = str(message)
+
     if global_func.isDebugMode() or is_force_print:
         printColourText('SERVICE. ' + message, CYAN_COLOR_TEXT)
     if global_func.isLogMode() or is_force_log:

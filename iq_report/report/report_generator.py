@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 3, 2)
 
 # Report cell tags:
 # query table field values
@@ -794,7 +794,7 @@ class iqReportGenerator(object):
             records = [{field_name: table_rec[i_field] for i_field, field_name in enumerate(query_table.get('__fields__', list()))} for table_rec in query_table.get('__data__', list())]
             variables = self._variables
 
-            i_record = self._current_record['sys_num_rec_idx']
+            i_record = self._current_record.get('sys_num_rec_idx', 0)
             # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
             func_str = list()   # Result value list

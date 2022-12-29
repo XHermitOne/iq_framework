@@ -33,7 +33,7 @@ from iq_report.report import report_gen_func
 
 from .. import report_folder_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -309,7 +309,7 @@ def openReportBrowser(parent_form=None, report_dir='', mode=REPORT_EDITOR_MODE, 
     if lock_run_copy:
         find_report_dir_process = sys_func.getActiveProcessCount(report_dir)
         if sys_func.isActiveProcess('iq_report --edit') or sys_func.isActiveProcess('iq_report --view') or (find_report_dir_process > 2):
-            log_func.warning(u'Report browser already open [%d]' % find_report_dir_process)
+            log_func.warning(u'GTK. Report browser already open [%d]' % find_report_dir_process)
             return False
 
     log_func.info(u'GTK library version: %s' % gi.__version__)

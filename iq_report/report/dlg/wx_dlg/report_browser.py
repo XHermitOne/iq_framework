@@ -27,7 +27,7 @@ from iq_report.report import report_glob_data
 
 from .. import report_folder_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 3, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -470,7 +470,7 @@ def openReportBrowser(parent_form=None, report_dir='', mode=REPORT_EDITOR_MODE, 
     if lock_run_copy:
         find_report_dir_process = sys_func.getActiveProcessCount(report_dir)
         if sys_func.isActiveProcess('iq_report --edit') or sys_func.isActiveProcess('iq_report --view') or (find_report_dir_process > 2):
-            log_func.warning(u'Report browser already open [%d]' % find_report_dir_process)
+            log_func.warning(u'WX. Report browser already open [%d]' % find_report_dir_process)
             return False
 
     app = wx.GetApp()
