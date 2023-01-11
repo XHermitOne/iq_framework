@@ -13,7 +13,7 @@ import locale
 from . import log_func
 from . import file_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 ZIP_EXT = '.zip'
 
@@ -77,6 +77,7 @@ def zipFile(src_filename, zip_filename=None, overwrite=True, to_console=True):
 
         zip_cmd = 'zip %s %s' % (zip_filename, src_filename)
         if to_console:
+            log_func.info(u'ZIP. Command <%s>' % zip_cmd)
             os.system(zip_cmd)
             return True
         else:

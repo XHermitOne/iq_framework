@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 8, 3)
+__version__ = (0, 0, 9, 2)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -102,6 +102,20 @@ def getNowYear():
     Get current system year.
     """
     return datetime.datetime.now().year
+
+
+def getNowMonth():
+    """
+    Get current system month.
+    """
+    return datetime.datetime.now().month
+
+
+def getNowDay():
+    """
+    Get current system day.
+    """
+    return datetime.datetime.now().day
 
 
 def getStartYearDT(year=None):
@@ -622,3 +636,10 @@ def strDateTime2DateTime(dt_str, fmt=DEFAULT_DATETIME_FMT):
     except:
         log_func.fatal(u'Error convert string datetime to datetime')
     return None
+
+
+def sleep(seconds=1):
+    """
+    Sleep.
+    """
+    return time.sleep(seconds)
