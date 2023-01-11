@@ -22,12 +22,13 @@ from .. import stored_ctrl_manager
 
 from .dlg import wxdlg_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 1)
 
 _ = lang_func.getTranslation().gettext
 
 LISTCTRL_DATA_CACHE_ATTR_NAME = '__listctrl_data'
 LISTCTR_COLUMNS_ATTR_NAME = '__listctrl_columns'
+LISTCTR_RECORDS_ATTR_NAME = '__listctrl_records'
 
 
 class iqStoredListCtrlManager(stored_ctrl_manager.iqStoredCtrlManager):
@@ -603,6 +604,77 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             return listctrl_or_event.GetFirstSelected()
         return -1
 
+    def setListCtrlRecords(self, listctrl, records=(), columns=(),
+                           even_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                           odd_background_colour=wxcolour_func.DEFAULT_COLOUR,
+                           keep_pos=False):
+        """
+        Set rows as records in wx.ListCtrl object.
+
+        :param listctrl: wx.ListCtrl object.
+        :param records: Record dictionary list.
+            [
+            {'name1': value 1, 'name2': value 2, ..., 'nameN': value N), ...
+            ]
+        :param columns: Column names as record keys:
+            ('name1', 'name2', ...)
+        :param even_background_colour: Even line background color.
+        :param odd_background_colour: Odd line background color.
+        :param keep_pos: Keep cursor position?
+        :return: True/False.
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        try:
+            rows = [[str(record.get(column, '')) for column in columns] for record in records]
+            result = self.setListCtrlRows(listctrl=listctrl, rows=rows,
+                                          even_background_colour=even_background_colour,
+                                          odd_background_colour=odd_background_colour,
+                                          keep_pos=keep_pos)
+            if result:
+                setattr(listctrl, LISTCTR_RECORDS_ATTR_NAME, records)
+            return result
+        except:
+            log_func.fatal(u'Error set wx.ListCtrl records')
+        return False
+
+    def getListCtrlRecords(self, listctrl):
+        """
+        Get a list of rows as a list of dictionaries.
+
+        :param listctrl: wx.ListCtrl object.
+        :return: Record list.
+            [
+            {'name1': value 1, 'name2': value 2, ..., 'nameN': value N), ...
+            ]
+        """
+        assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        try:
+            records = getattr(listctrl, LISTCTR_RECORDS_ATTR_NAME) if hasattr(listctrl, LISTCTR_RECORDS_ATTR_NAME) else list()
+            return records
+        except:
+            log_func.fatal(u'Error get wx.ListCtrl records')
+        return list()
+
+    def getListCtrlRecord(self, listctrl, record_idx=None):
+        """
+        Get record by index.
+
+        :param listctrl: wx.ListCtrl object.
+        :param record_idx: Record index [0...N].
+            If None, then there is the currently selected item.
+        :return: Record dictionary or None if error.
+        """
+        records = self.getListCtrlRecords(listctrl=listctrl)
+        try:
+            if record_idx is None:
+                record_idx = self.getListCtrlSelectedRowIdx(listctrl_or_event=listctrl)
+            return records[record_idx]
+        except IndexError:
+            log_func.warning(u'Inncorrect index [%d] ListCtrl records' % record_idx)
+        return None
+
     def getListCtrlSelectedRow(self, listctrl):
         """
         Get the row of the selected control.
@@ -806,7 +878,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             log_func.fatal(u'Error in defining indices of marked controls <%s>' % listctrl.__class__.__name__)
         return None
 
-    def getListCtrlCheckedItemRecords(self, listctrl, records, check_selected=False):
+    def getListCtrlCheckedItemRecords(self, listctrl, records=None, check_selected=False):
         """
         Get a list of checked entries for list control items.
 
@@ -820,6 +892,9 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         try:
+            if records is None:
+                records = self.getListCtrlRecords(listctrl=listctrl)
+
             check_records = [records[i] for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
 
             if not check_records and check_selected:
@@ -977,7 +1052,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             elif isinstance(item, int):
                 item_idx = item
             else:
-                log_func.warning(u'Incorrect ListCtrl item type <%s>' % item.__class__.__name__)
+                log_func.warning(u'Incorrect ListCtrl item type <%s> : [%s]' % (item.__class__.__name__, str(item)))
 
             if not hasattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME):
                 setattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME, dict())
@@ -1011,7 +1086,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             elif isinstance(item, int):
                 item_idx = item
             else:
-                log_func.warning(u'Incorrect ListCtrl item type <%s>' % item.__class__.__name__)
+                log_func.warning(u'Incorrect ListCtrl item type <%s> : [%s]' % (item.__class__.__name__, str(item)))
 
             data_cache = getattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) if hasattr(listctrl, LISTCTRL_DATA_CACHE_ATTR_NAME) else dict()
 

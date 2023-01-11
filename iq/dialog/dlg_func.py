@@ -7,8 +7,11 @@ Dialog functions module.
 
 from ..util import global_func
 from ..util import log_func
+from ..util import lang_func
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 3, 1)
+
+_ = lang_func.getTranslation().gettext
 
 DIALOG_FUNCTION_MODULE = None
 
@@ -128,7 +131,7 @@ def openAskBox(title='', prompt_text='', **kwargs):
     return None
 
 
-def openMsgBox(title='', prompt_text='', **kwargs):
+def openMsgBox(title=_('MESSAGE'), prompt_text='', **kwargs):
     """
     Open message box.
 
@@ -143,7 +146,7 @@ def openMsgBox(title='', prompt_text='', **kwargs):
     return None
 
 
-def openErrBox(title='', prompt_text='', **kwargs):
+def openErrBox(title=_('ERROR'), prompt_text='', **kwargs):
     """
     Open error message box.
 
@@ -158,7 +161,7 @@ def openErrBox(title='', prompt_text='', **kwargs):
     return None
 
 
-def openFatalBox(title='', prompt_text='', **kwargs):
+def openFatalBox(title=_('CRITICAL'), prompt_text='', **kwargs):
     """
     Open error message box with Traceback.
 
@@ -173,7 +176,7 @@ def openFatalBox(title='', prompt_text='', **kwargs):
     return None
 
 
-def openWarningBox(title='', prompt_text='', **kwargs):
+def openWarningBox(title=_('WARNING'), prompt_text='', **kwargs):
     """
     Open warning message box.
 
