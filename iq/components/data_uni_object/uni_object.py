@@ -241,7 +241,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         if guid is None:
             log_func.warning(u'Not define unic object GUID for save')
             return False
-        log_func.debug(u'Save unic object <%s>' % guid)
+        # log_func.debug(u'Save unic object <%s>' % guid)
         return self.saveRec(id=guid, record=save_record,
                             id_field=DEFAULT_GUID_COL_NAME)
 

@@ -640,7 +640,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         if self.hasCod(cod):
-            log_func.debug(u'Save. Update record. Code <%s>' % cod)
+            # log_func.debug(u'Save. Update record. Code <%s>' % cod)
             cod_col_name = self.getCodColumnName()
             model = self.getModel()
             find_cod_param = [getattr(model, cod_col_name) == cod]
