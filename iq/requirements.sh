@@ -77,9 +77,11 @@ sudo apt install --assume-yes python3-gi
 sudo apt install --assume-yes python3-gi-cairo
 sudo apt install --assume-yes gir1.2-gtk-3.0
 sudo apt install --assume-yes glade
-sudo apt install --assume-yes gir1.2-appindicator3-0.1
-sudo apt install --assume-yes libappindicator3-0.1-cil
-sudo apt install --assume-yes libappindicator3-1
+sudo apt install --assume-yes gir1.2-appindicator3-0.1 
+sudo apt install --assume-yes libappindicator3-0.1-cil 
+#sudo apt install --assume-yes libappindicator3-1
+sudo apt install --assume-yes libayatana-appindicator3-1
+sudo apt install --assume-yes gnome-shell-extension-appindicator
 
 # JSONRPC (Ubuntu 20.04)
 sudo apt install python3-jsonrpclib-pelix
