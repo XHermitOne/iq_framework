@@ -42,7 +42,7 @@ def loadParamINI(ini_filename, section_name, param_name):
         param_value = None
         ini_parser = configparser.ConfigParser()
         # ini_parser.read(ini_filename, encoding=DEFAULT_ENCODE)
-        ini_parser.read_file(codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE))
+        ini_parser.read_file(open(ini_filename, 'rt', encoding=DEFAULT_ENCODE))
         if ini_parser.has_section(section_name) and ini_parser.has_option(section_name, param_name):
             param_value = ini_parser.get(section_name, param_name)
         log_func.debug(u'INI <%s : %s>\t%s.%s = %s' % (ini_filename, global_func.getDefaultEncoding(), section_name, param_name, param_value))
@@ -99,7 +99,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
             
         # Create configuration object
         ini_parser = configparser.ConfigParser()
-        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -143,7 +143,7 @@ def delParamINI(ini_filename, section_name, param_name):
             
         # Create configuration object
         ini_parser = configparser.ConfigParser()
-        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -184,7 +184,7 @@ def getParamCountINI(ini_filename, section_name):
             return 0
             
         ini_parser = configparser.ConfigParser()
-        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -216,7 +216,7 @@ def getParamNamesINI(ini_filename, section_name):
             return None
             
         ini_parser = configparser.ConfigParser()
-        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -246,7 +246,7 @@ def INI2Dict(ini_filename):
             return None
             
         ini_parser = configparser.ConfigParser()
-        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
         
@@ -307,7 +307,7 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
             ini_file.close()
 
         ini_parser = configparser.ConfigParser()
-        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
