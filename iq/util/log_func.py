@@ -28,7 +28,7 @@ if sys.platform.startswith('win'):
 
 from . import global_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 # Shell text colors
 RED_COLOR_TEXT = 'red'
@@ -54,7 +54,7 @@ def printColourText(text, color=NORMAL_COLOR_TEXT):
     :param color: Colour code.
     """
     if not isinstance(text, str):
-        message = str(text)
+        text = str(text)
 
     if color == NORMAL_COLOR_TEXT:
         txt = text
