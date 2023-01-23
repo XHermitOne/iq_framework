@@ -38,12 +38,13 @@ def loadParamINI(ini_filename, section_name, param_name):
     :return: Returns the value of the parameter or None (if there is no parameter or error).
     """
     try:
-        param = None
+        param_value = None
         ini_parser = configparser.ConfigParser()
         ini_parser.read(ini_filename)
         if ini_parser.has_section(section_name) and ini_parser.has_option(section_name, param_name):
-            param = ini_parser.get(section_name, param_name)
-        return param
+            param_value = ini_parser.get(section_name, param_name)
+        log_func.debug(u'\t%s.%s = %s' % (section_name, param_name, param_value))
+        return param_value
     except:
         log_func.fatal(u'Error loading parameter [%s.%s] from INI file <%s>' % (section_name, param_name, ini_filename))
     return None
