@@ -20,7 +20,7 @@ try:
 except ImportError:
     log_func.warning('Import error configparser', is_force_print=True)
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 INI_FILE_EXT = '.ini'
 DEFAULT_ENCODE = 'utf-8'
@@ -42,10 +42,10 @@ def loadParamINI(ini_filename, section_name, param_name):
         param_value = None
         ini_parser = configparser.ConfigParser()
         # ini_parser.read(ini_filename, encoding=DEFAULT_ENCODE)
-        ini_parser.read_file(codecs.open(ini_filename, 'r', DEFAULT_ENCODE))
+        ini_parser.read_file(codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE))
         if ini_parser.has_section(section_name) and ini_parser.has_option(section_name, param_name):
             param_value = ini_parser.get(section_name, param_name)
-        log_func.debug(u'INI <%s>\t%s.%s = %s' % (ini_filename, section_name, param_name, param_value))
+        log_func.debug(u'INI <%s : %s>\t%s.%s = %s' % (ini_filename, global_func.getDefaultEncoding(), section_name, param_name, param_value))
         return param_value
     except:
         log_func.fatal(u'Error loading parameter [%s.%s] from INI file <%s>' % (section_name, param_name, ini_filename))
@@ -99,7 +99,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
             
         # Create configuration object
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt')
+        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -143,7 +143,7 @@ def delParamINI(ini_filename, section_name, param_name):
             
         # Create configuration object
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt')
+        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -184,7 +184,7 @@ def getParamCountINI(ini_filename, section_name):
             return 0
             
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt')
+        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -216,7 +216,7 @@ def getParamNamesINI(ini_filename, section_name):
             return None
             
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt')
+        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -246,7 +246,7 @@ def INI2Dict(ini_filename):
             return None
             
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt')
+        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
         
@@ -302,12 +302,12 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
             os.makedirs(path)
 
         if not os.path.exists(ini_filename) or rewrite:
-            ini_file = open(ini_filename, 'wt')
+            ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODE)
             ini_file.write('')
             ini_file.close()
 
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt')
+        ini_file = codecs.open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
