@@ -12,13 +12,14 @@ import os
 import os.path
 
 from . import log_func
+from . import global_func
 
 try:
     import configparser
 except ImportError:
     log_func.warning('Import error configparser', is_force_print=True)
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 INI_FILE_EXT = '.ini'
 DEFAULT_ENCODE = 'utf-8'
@@ -60,6 +61,9 @@ def loadParamINIValue(*args, **kwargs):
         value = eval(param)
     except:
         value = param
+
+    if isinstance(value, bytes):
+        value = value.decode(global_func.getDefaultEncoding())
     return value
 
 
@@ -256,6 +260,10 @@ def INI2Dict(ini_filename):
                 except:
                     # No, it's a string.
                     param_value = param_str
+
+                if isinstance(param_value, bytes):
+                    param_value = param_value.decode(global_func.getDefaultEncoding())
+
                 ini_dict[section][param] = param_value
         
         return ini_dict
