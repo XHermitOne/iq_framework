@@ -10,17 +10,15 @@ and the section names in the upper.
 
 import os
 import os.path
-import codecs
 
 from . import log_func
-from . import global_func
 
 try:
     import configparser
 except ImportError:
     log_func.warning('Import error configparser', is_force_print=True)
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 INI_FILE_EXT = '.ini'
 DEFAULT_ENCODE = 'utf-8'
@@ -45,7 +43,7 @@ def loadParamINI(ini_filename, section_name, param_name):
         ini_parser.read_file(open(ini_filename, 'rt', encoding=DEFAULT_ENCODE))
         if ini_parser.has_section(section_name) and ini_parser.has_option(section_name, param_name):
             param_value = ini_parser.get(section_name, param_name)
-        log_func.debug(u'INI <%s : %s>\t%s.%s = %s' % (ini_filename, global_func.getDefaultEncoding(), section_name, param_name, param_value))
+        # log_func.debug(u'INI <%s : %s>\t%s.%s = %s' % (ini_filename, global_func.getDefaultEncoding(), section_name, param_name, param_value))
         return param_value
     except:
         log_func.fatal(u'Error loading parameter [%s.%s] from INI file <%s>' % (section_name, param_name, ini_filename))
@@ -65,8 +63,6 @@ def loadParamINIValue(*args, **kwargs):
     except:
         value = param
 
-    if isinstance(value, bytes):
-        value = value.decode(DEFAULT_ENCODE)
     return value
 
 
@@ -264,10 +260,7 @@ def INI2Dict(ini_filename):
                     # No, it's a string.
                     param_value = param_str
 
-                log_func.debug(u'\t%s.%s = %s' % (section, param, param_value))
-
-                if isinstance(param_value, bytes):
-                    param_value = param_value.decode(DEFAULT_ENCODE)
+                # log_func.debug(u'\t%s.%s = %s' % (section, param, param_value))
 
                 ini_dict[section][param] = param_value
         
