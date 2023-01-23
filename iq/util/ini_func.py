@@ -12,7 +12,7 @@ import os
 import os.path
 
 from . import log_func
-from . import global_func
+# from . import global_func
 
 try:
     import configparser
@@ -64,7 +64,7 @@ def loadParamINIValue(*args, **kwargs):
         value = param
 
     if isinstance(value, bytes):
-        value = value.decode(global_func.getDefaultEncoding())
+        value = value.decode(DEFAULT_ENCODE)
     return value
 
 
@@ -265,7 +265,7 @@ def INI2Dict(ini_filename):
                 log_func.debug(u'\t%s.%s = %s' % (section, param, param_value))
 
                 if isinstance(param_value, bytes):
-                    param_value = param_value.decode(global_func.getDefaultEncoding())
+                    param_value = param_value.decode(DEFAULT_ENCODE)
 
                 ini_dict[section][param] = param_value
         
