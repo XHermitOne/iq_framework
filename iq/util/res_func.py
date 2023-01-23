@@ -12,13 +12,14 @@ import pickle
 from . import log_func
 from . import file_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 # Resource file extension
 RESOURCE_FILE_EXT = '.res'
 REPORT_FILE_EXT = '.rep'
 PICKLE_RESOURCE_FILE_EXT = '.pcl'
 PICKLE_RESOURCE_FILES_EXT = (PICKLE_RESOURCE_FILE_EXT, REPORT_FILE_EXT)
+RESOURCE_FILE_ENCODING = 'utf-8'
 
 
 def loadResource(res_filename):
@@ -94,7 +95,7 @@ def loadResourceText(res_filename):
     if os.path.isfile(res_filename):
         f = None
         try:
-            f = open(res_filename, 'rt')
+            f = open(res_filename, 'rt', encoding=RESOURCE_FILE_ENCODING)
             txt = f.read().replace('\r\n', os.linesep)
             f.close()
             return eval(txt)
@@ -166,7 +167,7 @@ def saveResourceText(res_filename, resource_data, rewrite=True):
                 log_func.fatal(u'Error create path <%s>' % dir_name)
 
         if not os.path.exists(res_filename) or rewrite:
-            f = open(res_filename, 'wt')
+            f = open(res_filename, 'wt', encoding=RESOURCE_FILE_ENCODING)
             text = str(resource_data)
             f.write(text)
             f.close()
