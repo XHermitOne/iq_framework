@@ -261,6 +261,8 @@ def INI2Dict(ini_filename):
                     # No, it's a string.
                     param_value = param_str
 
+                log_func.debug(u'\t%s.%s = %s' % (section, param, param_value))
+
                 if isinstance(param_value, bytes):
                     param_value = param_value.decode(global_func.getDefaultEncoding())
 
