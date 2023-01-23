@@ -10,6 +10,7 @@ and the section names in the upper.
 
 import os
 import os.path
+import codecs
 
 from . import log_func
 from . import global_func
@@ -40,7 +41,8 @@ def loadParamINI(ini_filename, section_name, param_name):
     try:
         param_value = None
         ini_parser = configparser.ConfigParser()
-        ini_parser.read(ini_filename, encoding=global_func.getDefaultEncoding())
+        # ini_parser.read(ini_filename, encoding=DEFAULT_ENCODE)
+        ini_parser.read_file(codecs.open(ini_filename, 'r', DEFAULT_ENCODE))
         if ini_parser.has_section(section_name) and ini_parser.has_option(section_name, param_name):
             param_value = ini_parser.get(section_name, param_name)
         log_func.debug(u'INI <%s>\t%s.%s = %s' % (ini_filename, section_name, param_name, param_value))
