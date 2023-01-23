@@ -40,7 +40,7 @@ def loadParamINI(ini_filename, section_name, param_name):
     try:
         param_value = None
         ini_parser = configparser.ConfigParser()
-        ini_parser.read(ini_filename)
+        ini_parser.read(ini_filename, encoding=DEFAULT_ENCODE)
         if ini_parser.has_section(section_name) and ini_parser.has_option(section_name, param_name):
             param_value = ini_parser.get(section_name, param_name)
         log_func.debug(u'\t%s.%s = %s' % (section_name, param_name, param_value))
