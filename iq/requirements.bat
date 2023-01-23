@@ -12,7 +12,7 @@ C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install te
 
 REM wxPython
 
-C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install -U wxPython==4.1.1
+C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install -U wxPython==4.2.0
 C:\Users\user\AppData\Local\Programs\Python\Python38\Scripts\pip3.exe install pysvg-py3
 
 REM Additionally
