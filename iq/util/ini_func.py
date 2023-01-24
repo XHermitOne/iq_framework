@@ -12,16 +12,17 @@ import os
 import os.path
 
 from . import log_func
+from . import file_func
 
 try:
     import configparser
 except ImportError:
     log_func.warning('Import error configparser', is_force_print=True)
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 2, 1)
 
 INI_FILE_EXT = '.ini'
-DEFAULT_ENCODE = 'utf-8'
+DEFAULT_ENCODING = 'utf-8'
 
 
 def loadParamINI(ini_filename, section_name, param_name):
@@ -39,8 +40,8 @@ def loadParamINI(ini_filename, section_name, param_name):
     try:
         param_value = None
         ini_parser = configparser.ConfigParser()
-        # ini_parser.read(ini_filename, encoding=DEFAULT_ENCODE)
-        ini_parser.read_file(open(ini_filename, 'rt', encoding=DEFAULT_ENCODE))
+        # ini_parser.read(ini_filename, encoding=DEFAULT_ENCODING)
+        ini_parser.read_file(open(ini_filename, 'rt', encoding=DEFAULT_ENCODING))
         if ini_parser.has_section(section_name) and ini_parser.has_option(section_name, param_name):
             param_value = ini_parser.get(section_name, param_name)
         # log_func.debug(u'INI <%s : %s>\t%s.%s = %s' % (ini_filename, global_func.getDefaultEncoding(), section_name, param_name, param_value))
@@ -92,10 +93,11 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
             ini_file = open(ini_filename, 'wt')
             ini_file.write('')
             ini_file.close()
-            
+            file_func.setChmod(ini_filename)
+
         # Create configuration object
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODING)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -108,9 +110,10 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
         ini_parser.set(section_name, param_name, param_value)
 
         # Save and close file
-        ini_file = open(ini_filename, 'wt')
+        ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
         ini_parser.write(ini_file)
         ini_file.close()
+        file_func.setChmod(ini_filename)
         return True
     except:
         if ini_file:
@@ -139,7 +142,7 @@ def delParamINI(ini_filename, section_name, param_name):
             
         # Create configuration object
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODING)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -151,9 +154,10 @@ def delParamINI(ini_filename, section_name, param_name):
         ini_parser.remove_option(section_name, param_name)
 
         # Save and close file
-        ini_file = open(ini_filename, 'wt')
+        ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
         ini_parser.write(ini_file)
         ini_file.close()
+        file_func.setChmod(ini_filename)
 
         return True
     except:
@@ -180,7 +184,7 @@ def getParamCountINI(ini_filename, section_name):
             return 0
             
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODING)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -212,7 +216,7 @@ def getParamNamesINI(ini_filename, section_name):
             return None
             
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODING)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -242,7 +246,7 @@ def INI2Dict(ini_filename):
             return None
             
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODING)
         ini_parser.read_file(ini_file)
         ini_file.close()
         
@@ -295,12 +299,13 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
             os.makedirs(path)
 
         if not os.path.exists(ini_filename) or rewrite:
-            ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODE)
+            ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
             ini_file.write('')
             ini_file.close()
+            file_func.setChmod(ini_filename)
 
         ini_parser = configparser.ConfigParser()
-        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODE)
+        ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODING)
         ini_parser.read_file(ini_file)
         ini_file.close()
 
@@ -315,7 +320,8 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
         ini_file = open(ini_filename, 'wt')
         ini_parser.write(ini_file)
         ini_file.close()
-        
+        file_func.setChmod(ini_filename)
+
         return True
     except:
         if ini_file:

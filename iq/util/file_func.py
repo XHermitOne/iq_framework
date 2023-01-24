@@ -5,6 +5,7 @@
 File functions module.
 """
 
+import stat
 import os
 import os.path
 import tempfile
@@ -18,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 6, 1)
+__version__ = (0, 0, 7, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -663,3 +664,24 @@ def isEmptyFolder(path):
     :return: True/False.
     """
     return not bool(os.listdir(path))
+
+
+def setChmod(filename, mode=None):
+    """
+    Set chmod.
+
+    :param filename: File name.
+    :param mode: File mode bits. If None then set 777 mode.
+    :return: True/False.
+    """
+    if mode is None:
+        mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH
+
+    if os.path.exists(filename):
+        try:
+            os.chmod(filename, mode=mode)
+            log_func.info(u'Set file <%s> mode [%o]' % (filename, mode))
+            return True
+        except:
+            log_func.fatal(u'Error set chmod as 777 file <%s>' % filename)
+    return False
