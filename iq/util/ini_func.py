@@ -90,7 +90,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
 
         # If there is no ini file, then create it
         if not os.path.isfile(ini_filename):
-            ini_file = open(ini_filename, 'wt')
+            ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
             ini_file.write('')
             ini_file.close()
             file_func.setChmod(ini_filename)
@@ -317,7 +317,7 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
             for param in src_dictionary[section].keys():
                 ini_parser.set(section_str, str(param), str(src_dictionary[section][param]))
 
-        ini_file = open(ini_filename, 'wt')
+        ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
         ini_parser.write(ini_file)
         ini_file.close()
         file_func.setChmod(ini_filename)

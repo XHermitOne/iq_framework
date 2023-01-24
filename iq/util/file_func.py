@@ -33,6 +33,8 @@ ALTER_PARENT_DIRNAME_SEP = ALTER_PARENT_DIRNAME + os.sep
 
 BACKUP_FILENAME_EXT = '.bak'
 
+FILE_MODE777 = stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH
+
 
 def getDirectoryNames(path):
     """
@@ -675,7 +677,7 @@ def setChmod(filename, mode=None):
     :return: True/False.
     """
     if mode is None:
-        mode = stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH
+        mode = FILE_MODE777
 
     if os.path.exists(filename):
         try:
