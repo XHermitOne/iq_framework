@@ -25,16 +25,21 @@ from . import file_func
 from . import exec_func
 from . import net_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 NFS_URL_TYPE = 'nfs://'
 DEFAULT_WORKGROUP = 'WORKGROUP'
 ANONYMOUS_USERNAME = 'guest'
 
-NFS_MOUNT_CMD_FMT = 'echo "%s" | sudo --stdin mount --verbose --types nfs %s %s:/%s %s'
-NFS_UMOUNT_CMD_FMT = 'echo "%s" | sudo --stdin umount --verbose %s'
+LINUX_NFS_MOUNT_CMD_FMT = 'echo "%s" | sudo --stdin mount --verbose --types nfs %s %s:/%s %s'
+LINUX_NFS_UMOUNT_CMD_FMT = 'echo "%s" | sudo --stdin umount --verbose %s'
+
+WINDOWS_NFS_MOUNT_CMD_FMT = 'mount -o anon %s \\\\%s%s %s'
+WINDOWS_NFS_UMOUNT_CMD_FMT = 'umount %s'
 
 DEFAULT_AUTO_DELETE_DELAY = 0
+
+DEFAULT_WINDOWS_NFS_DRIVE_NAME = 'Z:'
 
 
 def splitNfsUrlPath(url):
@@ -80,9 +85,9 @@ def getNfsHostFromUrl(url):
     return host.replace(':', '')
 
 
-def mountNfsResource(url, dst_path=None, options=None, root_password=None):
+def mountNfsResourceLinux(url, dst_path=None, options=None, root_password=None):
     """
-    Mount NFS resource to destination path.
+    Linux. Mount NFS resource to destination path.
 
     :param url: Nfs resource URL.
     :param dst_path: Destination path. If not defined then create template destination path.
@@ -114,7 +119,7 @@ def mountNfsResource(url, dst_path=None, options=None, root_password=None):
             return False
 
         nfs_path = getNfsPathFromUrl(url)
-        mount_cmd = NFS_MOUNT_CMD_FMT % (root_password, options, nfs_host, nfs_path, dst_path)
+        mount_cmd = LINUX_NFS_MOUNT_CMD_FMT % (root_password, options, nfs_host, nfs_path, dst_path)
         result = exec_func.execSystemCommand(mount_cmd)
         if result:
             log_func.info(u'NFS resource <%s> mounted to <%s>' % (url, dst_path))
@@ -124,9 +129,9 @@ def mountNfsResource(url, dst_path=None, options=None, root_password=None):
     return False
 
 
-def umountNfsResource(mnt_path, root_password=None, auto_delete=False):
+def umountNfsResourceLinux(mnt_path, root_password=None, auto_delete=False):
     """
-    Umount NFS resource.
+    Linux. Umount NFS resource.
 
     :param mnt_path: Mount resource path.
     :param root_password: Root user password.
@@ -141,7 +146,7 @@ def umountNfsResource(mnt_path, root_password=None, auto_delete=False):
         root_password = sys_func.getSysRootPassword()
 
     try:
-        umount_cmd = NFS_UMOUNT_CMD_FMT % (root_password, mnt_path)
+        umount_cmd = LINUX_NFS_UMOUNT_CMD_FMT % (root_password, mnt_path)
         result = exec_func.execSystemCommand(umount_cmd)
         if result:
             if auto_delete:
@@ -159,6 +164,105 @@ def umountNfsResource(mnt_path, root_password=None, auto_delete=False):
         return result
     except:
         log_func.fatal(u'Error umount NFS resource <%s>' % mnt_path)
+    return False
+
+
+def mountNfsResourceWindows(url, dst_drive=None, options=None):
+    """
+    Windows. Mount NFS resource to destination path.
+    The Service components for NFS must be installed.
+
+    :param url: Nfs resource URL.
+    :param dst_drive: Destination drive name. If not defined then get Z:.
+    :param options: Additional mount options.
+    :return: True/False.
+    """
+    if dst_drive is None:
+        dst_drive = DEFAULT_WINDOWS_NFS_DRIVE_NAME
+
+    if options is None:
+        options = ''
+    elif isinstance(options, str):
+        options = '-o %s' % options.replace(' ', '')
+    elif isinstance(options, (tuple, list)):
+        options = '-o %s' % ' '.join([str(item) for item in options])
+    elif isinstance(options, dict):
+        options = '-o %s' % ' '.join(['%s=%s' % (str(opt_name), str(opt_value)) for opt_name, opt_value in options.items()])
+    else:
+        options = ''
+
+    try:
+        nfs_host = getNfsHostFromUrl(url)
+        if not net_func.validPingHost(nfs_host):
+            log_func.warning(u'NFS resource host <%s> not found' % nfs_host)
+            return False
+
+        nfs_path = getNfsPathFromUrl(url)
+        nfs_path = nfs_path.replace('/', os.path.sep)
+        mount_cmd = WINDOWS_NFS_MOUNT_CMD_FMT % (options, nfs_host, nfs_path, dst_drive)
+        result = exec_func.execSystemCommand(mount_cmd)
+        if result:
+            log_func.info(u'NFS resource <%s> mounted to <%s>' % (url, dst_drive))
+        return result
+    except:
+        log_func.fatal(u'Error mount NFS resource <%s>' % url)
+    return False
+
+
+def umountNfsResourceWindows(mnt_drive):
+    """
+    Windows. Umount NFS resource.
+    The Service components for NFS must be installed.
+
+    :param mnt_drive: Mount resource drive name.
+    :return: True/False.
+    """
+    if not mnt_drive or not os.path.exists(mnt_drive):
+        log_func.warning(u'NFS resource mount drive <%s> not found' % mnt_drive)
+        return False
+
+    try:
+        umount_cmd = WINDOWS_NFS_UMOUNT_CMD_FMT % mnt_drive
+        result = exec_func.execSystemCommand(umount_cmd)
+        if result:
+            log_func.info(u'NFS resource umounted from <%s>' % mnt_drive)
+        return result
+    except:
+        log_func.fatal(u'Error umount NFS resource <%s>' % mnt_drive)
+    return False
+
+
+def mountNfsResource(url, mnt=None, options=None, *args, **kwargs):
+    """
+    Mount NFS resource to destination path.
+
+    :param url: Nfs resource URL.
+    :param mnt: Destination drive name or path.
+    :param options: Additional mount options.
+    :return: True/False.
+    """
+    if sys_func.isLinuxPlatform():
+        return mountNfsResourceLinux(url=url, dst_path=mnt, options=options, *args, **kwargs)
+    elif sys_func.isWindowsPlatform():
+        return mountNfsResourceWindows(url=url, dst_drive=mnt, options=options)
+    else:
+        log_func.warning(u'Mounting to an NFS network resource is not supported on this system')
+    return False
+
+
+def umountNfsResource(mnt, *args, **kwargs):
+    """
+    Umount NFS resource.
+
+    :param mnt: Mount resource drive name or path.
+    :return: True/False.
+    """
+    if sys_func.isLinuxPlatform():
+        return umountNfsResourceLinux(mnt_path=mnt, *args, **kwargs)
+    elif sys_func.isWindowsPlatform():
+        return umountNfsResourceWindows(mnt_drive=mnt)
+    else:
+        log_func.warning(u'Unmounting to an NFS network resource is not supported on this system')
     return False
 
 
@@ -181,7 +285,7 @@ def downloadNfsFile(download_url=None, filename=None, dst_path=None, rewrite=Tru
 
     if mnt_path is None:
         mnt_path = file_func.getTempDirname(auto_create=True)
-        mount_result = mountNfsResource(url=download_url, dst_path=mnt_path, *args, **kwargs)
+        mount_result = mountNfsResource(url=download_url, mnt=mnt_path, *args, **kwargs)
         mounted = True
     else:
         mount_result = True
@@ -196,7 +300,7 @@ def downloadNfsFile(download_url=None, filename=None, dst_path=None, rewrite=Tru
             log_func.warning(u'NFS resource mount path <%s> not found' % mnt_path)
 
     if mounted:
-        umountNfsResource(mnt_path=mnt_path, auto_delete=True, *args, **kwargs)
+        umountNfsResource(mnt=mnt_path, auto_delete=True, *args, **kwargs)
     return result
 
 
@@ -223,7 +327,7 @@ def uploadNfsFile(upload_url=None, filename=None, dst_path=None, rewrite=True, m
 
     if mnt_path is None:
         mnt_path = file_func.getTempDirname(auto_create=True)
-        mount_result = mountNfsResource(url=upload_url, dst_path=mnt_path, *args, **kwargs)
+        mount_result = mountNfsResource(url=upload_url, mnt=mnt_path, *args, **kwargs)
         mounted = True
     else:
         mount_result = True
@@ -237,5 +341,5 @@ def uploadNfsFile(upload_url=None, filename=None, dst_path=None, rewrite=True, m
             log_func.warning(u'NFS resource mount path <%s> not found' % mnt_path)
 
     if mounted:
-        umountNfsResource(mnt_path=mnt_path, auto_delete=True, *args, **kwargs)
+        umountNfsResource(mnt=mnt_path, auto_delete=True, *args, **kwargs)
     return result

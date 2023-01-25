@@ -13,7 +13,7 @@ from . import zip_func
 from . import nfs_func
 from . import lang_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -69,7 +69,7 @@ def backupFileZipNfs(src_filename, backup_url, zip_filename=None, dst_path=None,
     try:
         if zip_func.zipFile(src_filename=src_filename, zip_filename=zip_filename):
             # Get Root password
-            root_password = sys_func.getSysRootPassword(parent_win=parent_win)
+            root_password = sys_func.getSysRootPassword(parent_win=parent_win) if sys_func.isLinuxPlatform() else None
 
             result = nfs_func.uploadNfsFile(upload_url=backup_url,
                                             filename=zip_filename,
@@ -78,7 +78,6 @@ def backupFileZipNfs(src_filename, backup_url, zip_filename=None, dst_path=None,
                                             mnt_path=kwargs.get('mnt_path', None),
                                             options=kwargs.get('options', None),
                                             root_password=root_password)
-
     except:
         log_func.fatal(u'Error backup file <%s> to NFS network resource <%s>' % (src_filename, backup_url))
 
