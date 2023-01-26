@@ -91,7 +91,7 @@ def zipFile(src_filename, zip_filename=None, overwrite=True, to_console=True, op
         if sys_func.isLinuxPlatform():
             zip_cmd = 'zip %s %s %s' % (zip_options, zip_filename, src_filename)
         elif sys_func.isWindowsPlatform():
-            zip_cmd = 'powershell compress-archive %s %s %s' % (zip_options, zip_filename, src_filename)
+            zip_cmd = 'powershell compress-archive %s %s %s' % (zip_options, src_filename, zip_filename)
         else:
             log_func.warning(u'Unsupported zip for this platform')
             return False
