@@ -12,8 +12,9 @@ import locale
 
 from . import log_func
 from . import file_func
+from . import sys_func
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 2, 1)
 
 ZIP_EXT = '.zip'
 
@@ -36,11 +37,19 @@ def unzipToDir(zip_filename, dst_dir=None, overwrite=True, to_console=True, opti
 
     unzip_cmd = ''
     try:
-        overwrite = ''
-        if overwrite:
-            overwrite = '-o'
-        unzip_options = ' '.join(options)
-        unzip_cmd = 'unzip %s %s %s -d %s' % (overwrite, unzip_options, zip_filename, dst_dir)
+        if sys_func.isLinuxPlatform():
+            overwrite = ''
+            if overwrite:
+                overwrite = '-o'
+            unzip_options = ' '.join(options)
+            unzip_cmd = 'unzip %s %s %s -d %s' % (overwrite, unzip_options, zip_filename, dst_dir)
+        elif sys_func.isWindowsPlatform():
+            unzip_options = ' '.join(options)
+            unzip_cmd = 'powershell expand-archive %s %s %s' % (unzip_options, zip_filename, dst_dir)
+        else:
+            log_func.warning(u'Unsupported unzip for this platform')
+            return False
+
         if to_console:
             os.system(unzip_cmd)
             return True
@@ -79,7 +88,14 @@ def zipFile(src_filename, zip_filename=None, overwrite=True, to_console=True, op
             file_func.removeFile(zip_filename)
 
         zip_options = ' '.join(options)
-        zip_cmd = 'zip %s %s %s' % (zip_options, zip_filename, src_filename)
+        if sys_func.isLinuxPlatform():
+            zip_cmd = 'zip %s %s %s' % (zip_options, zip_filename, src_filename)
+        elif sys_func.isWindowsPlatform():
+            zip_cmd = 'powershell compress-archive %s %s %s' % (zip_options, zip_filename, src_filename)
+        else:
+            log_func.warning(u'Unsupported zip for this platform')
+            return False
+
         if to_console:
             log_func.info(u'ZIP. Command <%s>' % zip_cmd)
             os.system(zip_cmd)
