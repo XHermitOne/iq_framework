@@ -25,7 +25,7 @@ from . import file_func
 from . import exec_func
 from . import net_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 NFS_URL_TYPE = 'nfs://'
 DEFAULT_WORKGROUP = 'WORKGROUP'
@@ -98,9 +98,7 @@ def mountNfsResourceLinux(url, dst_path=None, options=None, root_password=None):
     if dst_path is None:
         dst_path = file_func.getTempDirname(auto_create=True)
 
-    if options is None:
-        options = ''
-    elif isinstance(options, str):
+    if isinstance(options, str):
         options = '--options %s' % options.replace(' ', '')
     elif isinstance(options, (tuple, list)):
         options = '--options %s' % ','.join([str(item) for item in options])
@@ -180,9 +178,7 @@ def mountNfsResourceWindows(url, dst_drive=None, options=None):
     if dst_drive is None:
         dst_drive = DEFAULT_WINDOWS_NFS_DRIVE_NAME
 
-    if options is None:
-        options = ''
-    elif isinstance(options, str):
+    if isinstance(options, str):
         options = '-o %s' % options.replace(' ', '')
     elif isinstance(options, (tuple, list)):
         options = '-o %s' % ' '.join([str(item) for item in options])
@@ -293,8 +289,15 @@ def downloadNfsFile(download_url=None, filename=None, dst_path=None, rewrite=Tru
 
     if mount_result:
         if os.path.exists(mnt_path):
-            src_filename = os.path.join(mnt_path, filename)
-            dst_filename = os.path.join(dst_path, os.path.basename(filename))
+            mnt_res_path = mnt_path
+            if sys_func.isWindowsPlatform() and mnt_res_path.endswith(':'):
+                mnt_res_path += os.path.sep
+            src_filename = os.path.join(mnt_res_path, filename)
+
+            dst_file_path = dst_path
+            if sys_func.isWindowsPlatform() and dst_file_path.endswith(':'):
+                dst_file_path += os.path.sep
+            dst_filename = os.path.join(dst_file_path, os.path.basename(filename))
             result = file_func.copyFile(src_filename=src_filename, dst_filename=dst_filename, rewrite=rewrite)
         else:
             log_func.warning(u'NFS resource mount path <%s> not found' % mnt_path)
@@ -326,7 +329,7 @@ def uploadNfsFile(upload_url=None, filename=None, dst_path=None, rewrite=True, m
         return result
 
     if mnt_path is None:
-        mnt_path = file_func.getTempDirname(auto_create=True)
+        mnt_path = file_func.getTempDirname(auto_create=True) if sys_func.isLinuxPlatform() else DEFAULT_WINDOWS_NFS_DRIVE_NAME
         mount_result = mountNfsResource(url=upload_url, mnt=mnt_path, *args, **kwargs)
         mounted = True
     else:
@@ -335,7 +338,10 @@ def uploadNfsFile(upload_url=None, filename=None, dst_path=None, rewrite=True, m
 
     if mount_result:
         if os.path.exists(mnt_path):
-            dst_filename = os.path.join(mnt_path, dst_path, os.path.basename(filename))
+            mnt_res_path = mnt_path
+            if sys_func.isWindowsPlatform() and mnt_res_path.endswith(':'):
+                mnt_res_path += os.path.sep
+            dst_filename = os.path.join(mnt_res_path, dst_path, os.path.basename(filename))
             result = file_func.copyFile(src_filename=filename, dst_filename=dst_filename, rewrite=rewrite)
         else:
             log_func.warning(u'NFS resource mount path <%s> not found' % mnt_path)
