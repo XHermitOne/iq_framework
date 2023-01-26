@@ -12,7 +12,7 @@ import os
 import os.path
 
 from . import log_func
-from . import file_func
+# from . import file_func
 
 try:
     import configparser
@@ -93,7 +93,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
             ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
             ini_file.write('')
             ini_file.close()
-            file_func.setChmod(ini_filename)
+            # file_func.setChmod(ini_filename)
 
         # Create configuration object
         ini_parser = configparser.ConfigParser()
@@ -113,7 +113,7 @@ def saveParamINI(ini_filename, section_name, param_name, param_value):
         ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
         ini_parser.write(ini_file)
         ini_file.close()
-        file_func.setChmod(ini_filename)
+        # file_func.setChmod(ini_filename)
         return True
     except:
         if ini_file:
@@ -157,7 +157,7 @@ def delParamINI(ini_filename, section_name, param_name):
         ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
         ini_parser.write(ini_file)
         ini_file.close()
-        file_func.setChmod(ini_filename)
+        # file_func.setChmod(ini_filename)
 
         return True
     except:
@@ -302,7 +302,7 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
             ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
             ini_file.write('')
             ini_file.close()
-            file_func.setChmod(ini_filename)
+            # file_func.setChmod(ini_filename)
 
         ini_parser = configparser.ConfigParser()
         ini_file = open(ini_filename, 'rt', encoding=DEFAULT_ENCODING)
@@ -320,7 +320,7 @@ def Dict2INI(src_dictionary, ini_filename, rewrite=False):
         ini_file = open(ini_filename, 'wt', encoding=DEFAULT_ENCODING)
         ini_parser.write(ini_file)
         ini_file.close()
-        file_func.setChmod(ini_filename)
+        # file_func.setChmod(ini_filename)
 
         return True
     except:
