@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 0, 9, 2)
+__version__ = (0, 1, 1, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -448,6 +448,34 @@ def str2date(dt_str, fmt=DEFAULT_DATE_FMT):
     dt = str2datetime(dt_str=dt_str, fmt=fmt)
     return datetime2date(dt)
 
+
+def parseStrDatetime(dt_str, fmt=(DEFAULT_DATETIME_FMT, )):
+    """
+    Get datetime from string by several formats.
+
+    :param dt_str: Datetime as string.
+    :param fmt: Datetime string formats as tuple.
+    :return: DateTime.
+    """
+    for cur_fmt in fmt:
+        try:
+            return datetime.datetime.strptime(dt_str, cur_fmt)
+        except ValueError:
+            pass
+    log_func.warning(u'Not parse string <%s> as datetime by formats %s' % (dt_str, fmt))
+    return getMinDateTime()
+
+
+def parseStrDate(dt_str, fmt=(DEFAULT_DATE_FMT, )):
+    """
+    Get date from string by several format.
+
+    :param dt_str: Date as string.
+    :param fmt: Date string formats as tuple.
+    :return: Date.
+    """
+    dt = parseStrDatetime(dt_str=dt_str, fmt=fmt)
+    return datetime2date(dt)
 
 def datetime2str(dt, fmt=DEFAULT_DATETIME_FMT):
     """
