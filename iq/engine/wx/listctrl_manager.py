@@ -22,7 +22,7 @@ from .. import stored_ctrl_manager
 
 from .dlg import wxdlg_func
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 5, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -674,6 +674,15 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         except IndexError:
             log_func.warning(u'Inncorrect index [%d] ListCtrl records' % record_idx)
         return None
+
+    def getListCtrlSelectedItemRecord(self, listctrl):
+        """
+        Get selected item record.
+
+        :param listctrl: wx.ListCtrl object.
+        :return: Record dictionary or None if error.
+        """
+        return self.getListCtrlRecord(listctrl=listctrl)
 
     def getListCtrlSelectedRow(self, listctrl):
         """
