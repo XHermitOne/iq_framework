@@ -11,7 +11,7 @@ from ...engine.wx import wxbitmap_func
 
 from . import wx_refobjchoice_proto
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 DEFAULT_ENCODING = 'utf-8'
 
@@ -100,6 +100,12 @@ class iqRefObjChoiceProto(wx_refobjchoice_proto.iqWxRefObjChoicePanelProto):
     getCode = getSelectedCode
     getValue = getCode
     setValue = setCode
+
+    def clear(self):
+        """
+        Clear value.
+        """
+        return self.setValue(None)
 
     def isSelected(self):
         """

@@ -10,7 +10,7 @@ import wx
 from ...util import log_func
 from ...util import lang_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -249,6 +249,12 @@ class iqRefObjCodConstructorProto(wx.Panel):
 
     getValue = getCode
     setValue = setCode
+
+    def clear(self):
+        """
+        Clear value.
+        """
+        return self.setValue(None)
 
     def getChoiceSelectedCode(self, choice_ctrl, item=-1):
         """

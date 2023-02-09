@@ -13,6 +13,11 @@ except ImportError:
     pass
 
 try:
+    import urllib.parse
+except ImportError:
+    pass
+
+try:
     import webbrowser
 except ImportError:
     print(u'Error import webbrowser')
@@ -20,7 +25,7 @@ except ImportError:
 from . import log_func
 from . import exec_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 DEFAULT_WEBBROWSER_CMD_FMT = '%s %s &'
 
@@ -95,3 +100,30 @@ def openWebBrowserURL(url):
     web_vrowser_basename = getDefaultWebBrowserBaseName()
     cmd = DEFAULT_WEBBROWSER_CMD_FMT % (web_vrowser_basename, url)
     return exec_func.execSystemCommand(cmd)
+
+
+def splitURL(url):
+    """
+    Split URL to list.
+
+    :param url: URL. For example http://localhost:8080/path/to/resource.
+    :return: URL list. For example ['http', 'localhost:8080', 'path', 'to', 'resource'].
+    """
+    parse_result = urllib.parse.urlparse(url)
+    return [parse_result.scheme, parse_result.netloc] + parse_result.path.split('/')
+
+
+def joinURL(url_as_list):
+    """
+    Join list to URL.
+
+    :param url_as_list: URL list. For example ['http', 'localhost:8080', 'path', 'to', 'resource'].
+    :return: URL as string. For example http://localhost:8080/path/to/resource.
+    """
+    assert isinstance(url_as_list, (list, tuple)) or (len(url_as_list) < 2), u'Incorrect type url_as_list <%s>' % url_as_list.__class__.__name__
+
+    parse_result = urllib.parse.ParseResult(scheme=str(url_as_list[0]),
+                                            netloc=str(url_as_list[1]),
+                                            path='/'.join([str(item) for item in url_as_list[2:]]),
+                                            params='', query='', fragment='')
+    return parse_result.geturl()

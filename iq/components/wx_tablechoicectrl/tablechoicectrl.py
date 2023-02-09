@@ -13,7 +13,7 @@ from iq.util import str_func
 from .. import data_model
 from .. import data_query
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqTableChoiceCtrlProto(wx.ComboBox):
@@ -85,6 +85,7 @@ class iqTableChoiceCtrlProto(wx.ComboBox):
     getValue = getCode
     setValue = setCode
     clearValue = clearCode
+    clear = clearCode
 
     def setTableDataSource(self, tab_data_src, **kwargs):
         """

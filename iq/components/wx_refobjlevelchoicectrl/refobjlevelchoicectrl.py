@@ -9,7 +9,7 @@ import wx
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 DEFAULT_CODE_DELIMETER = u' '
 DEFAULT_ENCODING = 'utf-8'
@@ -170,6 +170,12 @@ class iqRefObjLevelChoiceCtrlProto(wx.StaticBox):
 
     getValue = getCode
     setValue = setCode
+
+    def clear(self):
+        """
+        Clear value.
+        """
+        return self.setValue(None)
 
     def getChoiceSelectedCode(self, choice_ctrl, item=-1):
         """
