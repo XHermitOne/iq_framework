@@ -10,7 +10,7 @@ import wx
 
 from ...util import log_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 DEFAULT_ENCODING = 'utf-8'
 
@@ -154,7 +154,7 @@ class iqRefObjMultipleChoiceComboCtrlProto(wx.ComboCtrl):
         return False
 
     getCodes = getSelectedCodes
-    getValue = getCodes
+    getValue = getSelectedCodes
     setValue = setCodes
 
     def clear(self):

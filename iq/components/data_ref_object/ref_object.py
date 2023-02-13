@@ -20,7 +20,7 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -112,6 +112,20 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             # for rec in records:
             #     print(rec[self.getCodColumnName()], rec[self.getNameColumnName()], rec)
         return result
+
+    def getCodByColValue(self, column_name=None, column_value=None):
+        """
+        Get first cod by column value.
+
+        :param column_name: Column name.
+            If None then get cod column name.
+        :param column_value: Column value.
+        :return: Record dictionary or None if error.
+        """
+        rec = self.getRecByColValue(column_name=column_name, column_value=column_value)
+        if rec:
+            return rec.get(self.getCodColumnName(), None)
+        return None
 
     def searchRecsByColValues(self, **column_values):
         """

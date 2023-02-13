@@ -22,7 +22,7 @@ from .. import stored_ctrl_manager
 
 from .dlg import wxdlg_func
 
-__version__ = (0, 0, 5, 1)
+__version__ = (0, 0, 5, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -195,7 +195,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             log_func.warning(u'Not select moving row')
         return False
 
-    def appendListCtrlColumn(self, listctrl, label=u'', width=-1, align='LEFT'):
+    def appendListCtrlColumn(self, listctrl, label=u'', width=-1, align='LEFT', hide=False):
         """
         Append column in wx.ListCtrl object.
 
@@ -203,6 +203,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         :param label: Column label string.
         :param width: Column width.
         :param align: Column text align LEFT/RIGHT/CENTRE.
+        :param hide: Hide column?
         :return: True/False.
         """
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
@@ -223,9 +224,12 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
                 col_format = wx.LIST_FORMAT_LEFT
             listctrl.InsertColumn(i, label, format=col_format, width=width)
 
+            if hide:
+                listctrl.SetColumnWidth(i, 0)
+
             if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME):
                 columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME)
-                columns.append(dict(label=label, width=width, align=col_align))
+                columns.append(dict(label=label, width=width, align=col_align, hide=hide))
             return True
         except:
             log_func.fatal(u'Append column in wx.ListCtrl object error')
@@ -241,7 +245,8 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             or as dictionary:
             {'label': 'Column title',
             'width': Column width,
-            'align': Column align}
+            'align': Column align,
+            'hide': Hide column?}
         :return: True/False.
         """
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
