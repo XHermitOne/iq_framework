@@ -7,6 +7,11 @@
 # command construction:
 # echo "password" | sudo --stdin command
 
+# Git
+sudo apt install --assume-yes git
+# [NOTE] For create files by git with access 777:
+umask 000
+
 sudo apt install --assume-yes python3-pip
 
 # Code analyzers
