@@ -231,6 +231,14 @@ def openDBF(tab_filename, *args, **kwargs):
     Open DBF table.
 
     :param tab_filename: DBF table filename.
+    :param read_only: if 'f' argument is a string file will
+           be opend in read-only mode; in other cases
+           this argument is ignored. This argument is ignored
+           even if 'new' argument is True.
+    :param new: True if new data table must be created. Assume
+           data table exists if this argument is False.
+    :param ignore_errors: if set, failing field value conversion will return
+           'INVALID_VALUE' instead of raising conversion error.
     :return: DBF table object.
     """
     tab_dbf = None
