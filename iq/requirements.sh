@@ -111,6 +111,7 @@ pip3 install jaydebeapi==1.2.3 jpype1==1.2.1
 # DBase
 # pip3 install dbfpy
 pip3 install dbfread
+pip3 install dbfpy3
 
 # xmltodict
 pip3 install xmltodict

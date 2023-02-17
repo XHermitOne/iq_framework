@@ -14,7 +14,7 @@ from ....util import str_func
 from ....util import py_func
 from ....util import txtfile_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 SHOW_MAINFORM_FUNC_BODY_FMT = u'''
 def show%s(parent=None):
@@ -76,7 +76,7 @@ __version__ = (0, 0, 0, 1)
 
 
 class %s(%s.%s, 
-        mainform_manager.iqMainFormManager):
+         mainform_manager.iqMainFormManager):
 
     \"\"\"
     Main form class.
@@ -94,6 +94,8 @@ class %s(%s.%s,
         \"\"\"
         Init frame.
         \"\"\"
+        # self.showMainFormSplash(splash_filename='project_name/splash')
+        
         self.initImages()
         self.initControls()
 

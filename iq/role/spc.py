@@ -14,11 +14,12 @@ from ..editor import property_editor_id
 
 from . import component
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 COMPONENT_TYPE = 'iqRole'
 
 ADMINISTRATORS_ROLE_NAME = 'admins'
+USERS_ROLE_NAME = 'users'
 
 
 def getPermissions(*args, **kwargs):

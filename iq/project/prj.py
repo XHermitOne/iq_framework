@@ -26,7 +26,7 @@ from .. import global_data
 
 from . import spc
 
-__version__ = (0, 0, 1, 4)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -233,19 +233,23 @@ class iqProjectManager(object):
             prj_resource['name'] = prj_name
             prj_resource['description'] = u'Application project'
 
-            user_resource = spc_func.clearResourceFromSpc(user.SPC)
-            user_resource['name'] = 'admin'
-            user_resource['description'] = u'Administrator'
-            user_resource['roles'] = [role.ADMINISTRATORS_ROLE_NAME]
-            if default_engine:
-                user_resource['engine'] = default_engine
-            user_resource['do_main'] = '''from %s.main_forms import main_form\nreturn main_form.startMainForm()''' % prj_name
+            prj_resource[spc_func.CHILDREN_ATTR_NAME] = list()
+            for item in (dict(name='admin', description=u'Administrator', role=role.ADMINISTRATORS_ROLE_NAME),
+                         dict(name='user', description=u'User', role=role.USERS_ROLE_NAME)):
+                user_resource = spc_func.clearResourceFromSpc(user.SPC)
+                user_resource['name'] = item['name']
+                user_resource['description'] = item['description']
+                user_resource['roles'] = [item['role']]
+                if default_engine:
+                    user_resource['engine'] = default_engine
+                user_resource['do_main'] = '''from %s.main_forms import main_form\nreturn main_form.startMainForm()''' % prj_name
 
-            role_resource = spc_func.clearResourceFromSpc(role.SPC)
-            role_resource['name'] = role.ADMINISTRATORS_ROLE_NAME
-            role_resource['description'] = u'Administrators'
+                role_resource = spc_func.clearResourceFromSpc(role.SPC)
+                role_resource['name'] = item['role']
+                role_resource['description'] = u'%ss' % item['description']
 
-            prj_resource[spc_func.CHILDREN_ATTR_NAME] = [user_resource, role_resource]
+                prj_resource[spc_func.CHILDREN_ATTR_NAME].append(role_resource)
+                prj_resource[spc_func.CHILDREN_ATTR_NAME].append(user_resource)
 
             return res_func.saveResourceText(prj_res_filename, prj_resource, rewrite=rewrite)
         except:

@@ -9,10 +9,12 @@ import os.path
 
 from ..util import file_func
 from ..util import py_func
+from ..util import spc_func
 
 from ..editor import property_editor_id
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
+
 
 def genModule(module_filename=None, resource=None):
     """
@@ -24,7 +26,8 @@ def genModule(module_filename=None, resource=None):
     """
     package_path = os.path.dirname(module_filename)
     py_modulename = file_func.setFilenameExt(os.path.basename(module_filename), '.py')
-    return py_func.createPyModule(package_path=package_path, py_modulename=py_modulename, rewrite=True)
+    module_doc = resource.get(spc_func.DESCRIPTION_ATTR_NAME, u'') if resource else u''
+    return py_func.createPyModule(package_path=package_path, py_modulename=py_modulename, rewrite=True, module_doc=module_doc)
 
 
 OBJECT_SPC = {

@@ -16,7 +16,7 @@ try:
 except ImportError:
     log_func.error(u'Import error dbfpy3.dbf')
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 #
 DBF_DB_URL_FMT = 'jdbc:dbf:///%s?charSet=%s'
@@ -223,4 +223,41 @@ def setDBFFieldValue(dbf_filename, field_name, value, field_type='C'):
         if dbf_connection:
             dbf_connection.close()
         log_func.fatal(u'Error set field value in DBF file <%s>' % dbf_filename)
+    return False
+
+
+def openDBF(tab_filename, *args, **kwargs):
+    """
+    Open DBF table.
+
+    :param tab_filename: DBF table filename.
+    :return: DBF table object.
+    """
+    tab_dbf = None
+    try:
+        log_func.info(u'Open dbf table <%s>' % tab_filename)
+        tab_dbf = dbfpy3.dbf.Dbf(tab_filename, *args, **kwargs)
+    except:
+        if tab_dbf:
+            tab_dbf.close()
+            tab_dbf = None
+        log_func.fatal(u'Error open DBF file <%s>' % tab_filename)
+    return tab_dbf
+
+
+def closeDBF(dbf_table):
+    """
+    Close DBF table.
+
+    :param dbf_table: DBF table object.
+    :return: True/False.
+    """
+    if isinstance(dbf_table, dbfpy3.dbf.Dbf):
+        try:
+            dbf_table.close()
+            return True
+        except:
+            log_func.fatal(u'Error close DBF file <%s>' % dbf_table.name)
+    else:
+        log_func.warning(u'Not supported DBF table type <%s>' % dbf_table.__class__.__name__)
     return False
