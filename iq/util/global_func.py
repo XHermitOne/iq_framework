@@ -7,7 +7,7 @@ Global functions module.
 
 from .. import global_data
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 
 def isRuntimeMode():
@@ -245,6 +245,30 @@ def getApplication():
     """
     app = global_data.getGlobal('APPLICATION')
     return app
+
+
+def closeAppForce():
+    """
+    Forcibly closing the application.
+    Attention! Use only at the beginning of the handler
+        initialization of the main window.
+        Otherwise, the consequences may be unpredictable.
+
+    :return: True/False.
+    """
+    from . import log_func
+    log_func.info(u'Forcibly closing the application')
+    app = getApplication()
+    if app and isWXEngine():
+        try:
+            app.ExitMainLoop()
+            app.Destroy()
+            return True
+        except:
+            log_func.fatal(u'Error forcibly closing the application')
+    else:
+        log_func.warning(u'Not support forcibly closing the application')
+    return False
 
 
 def getMainWin():

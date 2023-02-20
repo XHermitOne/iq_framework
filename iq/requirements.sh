@@ -106,7 +106,7 @@ sudo apt install --assume-yes sqlitebrowser
 # For Ubuntu 18.04
 # pip3 install JayDeBeApi3
 # For Ubuntu 20.04
-pip3 install jaydebeapi==1.2.3 jpype1==1.2.1
+pip3 install jaydebeapi jpype1
 
 # DBase
 # pip3 install dbfpy

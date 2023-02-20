@@ -7,14 +7,23 @@
 
 import os
 import os.path
-import jaydebeapi
 
 from . import log_func
 
 try:
+    import jaydebeapi
+except ImportError:
+    log_func.error(u'Import error jaydebeapi. Install <pip3 install jaydebeapi jpype1>')
+
+try:
     import dbfpy3.dbf
 except ImportError:
-    log_func.error(u'Import error dbfpy3.dbf')
+    log_func.error(u'Import error dbfpy3. Install <pip3 install dbfpy3>')
+
+try:
+    import dbfread
+except ImportError:
+    log_func.error(u'Import error dbfread. Install <pip3 install dbfread>')
 
 __version__ = (0, 0, 1, 1)
 
@@ -269,3 +278,63 @@ def closeDBF(dbf_table):
     else:
         log_func.warning(u'Not supported DBF table type <%s>' % dbf_table.__class__.__name__)
     return False
+
+
+def openDBFReadonly(tab_filename, *args, **kwargs):
+    """
+    Open DBF table in readonly mode.
+
+    :param tab_filename: DBF table filename.
+    :param load: By default records will streamed directly from disk.
+        If you pass load=True they will instead be loaded into lists
+        and made available as the records and deleted attributes.
+        You can load and unload records at any time with the load() and unload() methods.
+    :param encoding: Specify character encoding to use.
+        By default dbfread will try to guess character encoding from
+        the language_driver byte. If this fails it falls back on ASCII.
+
+    :param char_decode_errors: The error handling scheme to use for the
+        handling of decoding errors. This is passed as the errors option
+        to the bytes.decode() method. From the documentation of that method:
+        The default is 'strict' meaning that decoding errors
+        raise a UnicodeDecodeError.
+        Other possible values are 'ignore' and 'replace' as well as any
+        other name registered with codecs.register_error that
+        can handle UnicodeDecodeErrors.
+
+    :param lowernames: Field names are typically uppercase.
+        If you pass True all field names will be converted to lowercase.
+
+    :param recfactory: Takes a function that will be used to produce new records.
+        The function will be called with a list of (name, value) pairs.
+        If you pass recfactory=None you will get the original (name, value) list.
+
+    :param ignorecase:  Windows uses a case preserving file system which means
+        people.dbf and PEOPLE.DBF are the same file.
+        This causes problems in for example Linux where case is significant.
+        To get around this dbfread ignores case in file names.
+        You can turn this off by passing ignorecase=False.
+
+    :param parserclass: The parser to use when parsing field values.
+        You can use this to add new field types or do custom parsing
+        by subclassing dbfread.FieldParser. (See Field Types.)
+
+    :param ignore_missing_memofile: If you don’t have the memo field you can pass
+        ignore_missing_memofile=True. All memo fields will then be returned as None,
+        so you at least get the rest of the data.
+
+    :param raw: Returns all data values as byte strings. This can be used for
+        debugging or for doing your own decoding.
+
+    :return: DBF table object.
+    """
+    tab_dbf = None
+    try:
+        log_func.info(u'Open READONLY dbf table <%s>' % tab_filename)
+        tab_dbf = dbfread.DBF(tab_filename, *args, **kwargs)
+    except:
+        if tab_dbf:
+            # tab_dbf.close()
+            tab_dbf = None
+        log_func.fatal(u'Error open READONLY DBF file <%s>' % tab_filename)
+    return tab_dbf
