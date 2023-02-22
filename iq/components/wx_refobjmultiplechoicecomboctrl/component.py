@@ -16,7 +16,7 @@ from ...util import exec_func
 
 from . import refobjmultiplechoicecomboctrl
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqWxRefObjMultipleChoiceComboCtrl(refobjmultiplechoicecomboctrl.iqRefObjMultipleChoiceComboCtrlProto,
@@ -71,15 +71,18 @@ class iqWxRefObjMultipleChoiceComboCtrl(refobjmultiplechoicecomboctrl.iqRefObjMu
         """
         Combobox change handler.
         """
-        context = self.getContext()
-        context['self'] = self
-        context['event'] = event
-        context['REF_OBJ'] = self.getRefObj()
-        context['SELECTED_CODES'] = self.getCodes()
+        try:
+            context = self.getContext()
+            context['self'] = self
+            context['event'] = event
+            context['REF_OBJ'] = self.getRefObj()
+            context['SELECTED_CODES'] = self.getCodes()
 
-        function_body = self.getAttribute('on_select')
-        if function_body:
-            exec_func.execTxtFunction(function=function_body, context=context)
+            function_body = self.getAttribute('on_select')
+            if function_body:
+                exec_func.execTxtFunction(function=function_body, context=context)
+        except:
+            log_func.fatal(u'Error')
 
         if event:
             event.Skip()
@@ -88,10 +91,14 @@ class iqWxRefObjMultipleChoiceComboCtrl(refobjmultiplechoicecomboctrl.iqRefObjMu
         """
         Overridden from ComboCtrl, called when the combo button is clicked.
         """
-        prev_selected_codes = self.getCodes()
-        selected_code = self.choice()
-        if selected_code not in prev_selected_codes:
-            self.onSelect(event=None)
+        try:
+            prev_selected_codes = self.getCodes()
+            selected_code = self.choice()
+            if prev_selected_codes:
+                if selected_code not in prev_selected_codes:
+                    self.onSelect(event=None)
+        except:
+            log_func.fatal(u'Error')
 
 
 COMPONENT = iqWxRefObjMultipleChoiceComboCtrl

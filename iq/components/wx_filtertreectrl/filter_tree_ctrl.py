@@ -16,7 +16,7 @@ from iq.util import file_func
 from iq.util import spc_func
 
 from iq.engine.wx import treectrl_manager
-from iq.engine import stored_ctrl_manager
+from iq.engine import stored_manager
 
 from ..wx_filterchoicectrl import filter_choicectrl
 from .tree_item_indicator import *
@@ -166,7 +166,7 @@ def findLabel(filter_tree_data, label=u''):
 class iqFilterTreeCtrlProto(wx.TreeCtrl,
                             iqTreeItemIndicator,
                             treectrl_manager.iqTreeCtrlManager,
-                            stored_ctrl_manager.iqStoredCtrlManager):
+                            stored_manager.iqStoredManager):
     """
     Controlling the tree view of filters with node indicators.
     Abstract class.

@@ -10,14 +10,14 @@ import gi
 gi.require_version('Gtk', '3.0')
 import gi.repository.Gtk
 
-from .. import stored_ctrl_manager
+from .. import stored_manager
 
 from ...util import log_func
 
 __version__ = (0, 0, 1, 1)
 
 
-class iqStoredGtkFormsManager(stored_ctrl_manager.iqStoredCtrlManager):
+class iqStoredGtkFormsManager(stored_manager.iqStoredManager):
     """
     Manager for storing properties of GTK forms.
     """

@@ -13,10 +13,10 @@ from ..util import file_func
 from ..util import global_func
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
-class iqStoredCtrlManager(object):
+class iqStoredManager(object):
     """
     Manager for storing properties of controls.
     """

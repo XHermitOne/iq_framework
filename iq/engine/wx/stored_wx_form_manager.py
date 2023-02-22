@@ -7,12 +7,12 @@ Manager for storing properties of wxPython forms.
 
 import wx
 
-from .. import stored_ctrl_manager
+from .. import stored_manager
 
 __version__ = (0, 0, 1, 2)
 
 
-class iqStoredWxFormsManager(stored_ctrl_manager.iqStoredCtrlManager):
+class iqStoredWxFormsManager(stored_manager.iqStoredManager):
     """
     Manager for storing properties of wxPython forms.
     """

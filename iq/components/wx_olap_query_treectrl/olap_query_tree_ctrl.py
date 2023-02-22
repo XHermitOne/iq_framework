@@ -18,7 +18,7 @@ from ...dialog import dlg_func
 
 from ...engine.wx import wxbitmap_func
 from ...engine.wx import treectrl_manager
-from ...engine import stored_ctrl_manager
+from ...engine import stored_manager
 
 from ..wx_filtertreectrl import tree_item_indicator
 from . import edit_cubes_pivot_table_request_dlg
@@ -38,7 +38,7 @@ EMPTY_NODE_RECORD = {'__request__': None, '__indicator__': None, 'label': u''}
 class iqOLAPQueryTreeCtrlProto(wx.TreeCtrl,
                                tree_item_indicator.iqTreeItemIndicator,
                                treectrl_manager.iqTreeCtrlManager,
-                               stored_ctrl_manager.iqStoredCtrlManager):
+                               stored_manager.iqStoredManager):
     """
     OLAP cubes query tree control prototype class.
     """

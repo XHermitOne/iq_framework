@@ -13,14 +13,14 @@ from ...util import global_func
 from ...util import res_func
 
 from . import panel_manager
-from .. import stored_ctrl_manager
+from .. import stored_manager
 
 from . import wxcolour_func
 
 __version__ = (0, 0, 0, 1)
 
 
-class iqFormManager(stored_ctrl_manager.iqStoredCtrlManager):
+class iqFormManager(stored_manager.iqStoredManager):
     """
     Frame and dialog manager.
     """

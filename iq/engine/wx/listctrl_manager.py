@@ -18,7 +18,7 @@ from . import wxcolour_func
 from . import base_manager
 from . import imglib_manager
 
-from .. import stored_ctrl_manager
+from .. import stored_manager
 
 from .dlg import wxdlg_func
 
@@ -31,7 +31,7 @@ LISTCTR_COLUMNS_ATTR_NAME = '__listctrl_columns'
 LISTCTR_RECORDS_ATTR_NAME = '__listctrl_records'
 
 
-class iqStoredListCtrlManager(stored_ctrl_manager.iqStoredCtrlManager):
+class iqStoredListCtrlManager(stored_manager.iqStoredManager):
     """
     Manager for storing properties of wxPython ListCtrl objects.
     """
