@@ -11,7 +11,7 @@ import wx
 from ...util import log_func
 from ...util import icon_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 DEFAULT_ICON_WIDTH = 16
 DEFAULT_ICON_HEIGHT = 16
@@ -125,4 +125,18 @@ def createEmptyBitmap(width, height, background_colour=None):
         return bmp
     except:
         log_func.fatal(u'Error create empty wx.Bitmap. Size <%s x %s>' % (width, height))
+    return None
+
+
+def findBitmap(*img_filenames):
+    """
+    Search and create a Bitmap object by the list of image file names.
+
+    :param img_filenames: The names of the files to be found.
+    :return: Returns the created Bitmap object or
+        None if none of the suggested files exists.
+    """
+    for img_filename in img_filenames:
+        if os.path.exists(img_filename):
+            return createBitmap(img_filename)
     return None

@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 7, 1)
+__version__ = (0, 0, 8, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -667,6 +667,26 @@ def isEmptyFolder(path):
     """
     return not bool(os.listdir(path))
 
+
+def clearFolder(folder, del_subfolders=False):
+    """
+    Deleting all files from a folder. Deletion is recursive by subdirectories.
+
+    :param folder: Source folder.
+    :param del_subfolders: Delete subfolders?
+    :return: True/False.
+    """
+    try:
+        result = delFilesByMask(folder, '*.*')
+        if del_subfolders:
+            subdirs = getSubDirs(folder)
+            if subdirs:
+                for subdir in subdirs:
+                    shutil.rmtree(subdir, ignore_errors=True)
+    except:
+        log_func.fatal(u'Error clear folder <%s>' % folder)
+        result = False
+    return result
 
 def setChmod(filename, mode=None):
     """

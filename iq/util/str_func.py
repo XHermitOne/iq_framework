@@ -11,7 +11,7 @@ from . import log_func
 
 from .. import global_data
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def getEncodings():
@@ -547,4 +547,31 @@ def parseWiseTypeStr(text):
     elif isFloatStr(text):
         return float(text)
     # String
+    return text
+
+
+def limitTextLen(text, length, filler=u' '):
+    """
+    Limit the text to length.
+        If the text is larger, then the last characters are cut off.
+        If the text is smaller, then characters are added to the end of the text
+        filling up to the specified length.
+
+    :param text: Source text.
+    :param length: The length of the resulting text.
+    :param filler: The filler symbol.
+    :return: Edited text of a certain length.
+    """
+    if not isinstance(text, str):
+        text = str(text)
+
+    if len(filler) > 1:
+        filler = filler[0]
+    elif len(filler) == 0:
+        filler = u' '
+
+    if len(text) > length:
+        return text[:length]
+    else:
+        text += filler * (length - len(text))
     return text
