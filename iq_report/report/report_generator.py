@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 3, 2)
+__version__ = (0, 0, 3, 3)
 
 # Report cell tags:
 # query table field values
