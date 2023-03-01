@@ -13,7 +13,7 @@ from . import zip_func
 from . import nfs_func
 from . import lang_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -63,11 +63,17 @@ def backupFileZipNfs(src_filename, backup_url, zip_filename=None, dst_path=None,
         log_func.warning(u'Backup file <%s> not found' % src_filename)
         return False
 
+    do_zip = os.path.splitext(src_filename)[1] != zip_func.ZIP_EXT
+
     if zip_filename is None:
         zip_filename = os.path.splitext(src_filename)[0] + zip_func.ZIP_EXT
 
     try:
-        if zip_func.zipFile(src_filename=src_filename, zip_filename=zip_filename):
+        zip_result = True
+        if do_zip:
+            zip_result = zip_func.zipFile(src_filename=src_filename, zip_filename=zip_filename)
+
+        if zip_result:
             # Get Root password
             root_password = sys_func.getSysRootPassword(parent_win=parent_win) if sys_func.isLinuxPlatform() else None
 
