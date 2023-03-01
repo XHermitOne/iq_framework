@@ -12,14 +12,19 @@ from . import log_func
 from . import global_func
 from . import str_func
 from . import file_func
+from . import exec_func
+from . import sys_func
 
-__version__ = (0, 0, 4, 2)
+__version__ = (0, 0, 5, 1)
 
 DEFAULT_ENCODING = global_func.getDefaultEncoding()
 DEFAULT_REPLACEMENTS = {u'"': u'\''}
 
 DEFAULT_CSV_DELITEMER = u','
 ALTER_CSV_DELIMETER = u';'
+
+OPEN_LINUX_EDITOR_FMT = 'gedit \"%s\" &'
+OPEN_WINDOWS_EDITOR_FMT = 'notepad.exe \"%s\"'
 
 
 def saveTextFile(txt_filename, txt='', rewrite=True):
@@ -343,3 +348,57 @@ def loadCSVFile(csv_filename, delim=u','):
         except:
             log_func.fatal(u'Error convert CSV file <%s> to record list' % csv_filename)
     return None
+
+
+def openEditorTxtFileLinux(txt_filename):
+    """
+    Open text file in editor. Linux OS.
+
+    :param txt_filename: Text file name.
+    :return: True/False.
+    """
+    try:
+        if not os.path.exists(txt_filename):
+            log_func.warning(u'Open in editor text file <%s> not found' % txt_filename)
+            return False
+
+        cmd = OPEN_LINUX_EDITOR_FMT % txt_filename
+        return exec_func.execSystemCommand(cmd)
+    except:
+        log_func.fatal(u'Error open text file <%s> in editor' % txt_filename)
+    return False
+
+
+def openEditorTxtFileWindows(txt_filename):
+    """
+    Open text file in editor. Windows OS.
+
+    :param txt_filename: Text file name.
+    :return: True/False.
+    """
+    try:
+        if not os.path.exists(txt_filename):
+            log_func.warning(u'Open in editor text file <%s> not found' % txt_filename)
+            return False
+
+        cmd = OPEN_WINDOWS_EDITOR_FMT % txt_filename
+        return exec_func.execSystemCommand(cmd)
+    except:
+        log_func.fatal(u'Error open text file <%s> in editor' % txt_filename)
+    return False
+
+
+def openEditorTxtFile(txt_filename):
+    """
+    Open text file in editor.
+
+    :param txt_filename: Text file name.
+    :return: True/False.
+    """
+    if sys_func.isLinuxPlatform():
+        return openEditorTxtFileLinux(txt_filename)
+    elif sys_func.isWindowsPlatform():
+        return openEditorTxtFileWindows(txt_filename)
+    else:
+        log_func.warning(u'Open text file in editor. Not supported platform')
+    return False
