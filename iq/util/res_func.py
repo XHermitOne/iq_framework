@@ -12,7 +12,7 @@ import pickle
 from . import log_func
 from . import file_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 # Resource file extension
 RESOURCE_FILE_EXT = '.res'
@@ -74,6 +74,7 @@ def loadResourcePickle(res_filename):
             f = open(res_filename, 'rb')
             struct = pickle.load(f)
             f.close()
+            log_func.info(u'Pickle resource file <%s> loaded' % res_filename)
             return struct
         except:
             if f:
