@@ -14,7 +14,7 @@ from ...dialog import dlg_func
 
 from ..wx_filterchoicectrl import filter_convert
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -244,6 +244,24 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         # log_func.debug(u'Save unic object <%s>' % guid)
         return self.saveRec(id=guid, record=save_record,
                             id_field=DEFAULT_GUID_COL_NAME)
+
+    def update(self, guid=None, record=None):
+        """
+        Update object by GUID. If not exists GUID then add record in model.
+
+        :param guid: GUID object.
+        :param record: Save record dictionary.
+        :return: True/False.
+        """
+        if guid is None:
+            log_func.warning(u'Not define unic object GUID for update')
+            return False
+
+        if self.hasGuid(guid=guid):
+            return self.save(guid=guid, save_record=record)
+        else:
+            record[DEFAULT_GUID_COL_NAME] = guid
+            return self.add(record)
 
     def delete(self, guid=None, ask=True):
         """
