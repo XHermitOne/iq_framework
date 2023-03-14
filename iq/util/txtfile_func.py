@@ -15,7 +15,7 @@ from . import file_func
 from . import exec_func
 from . import sys_func
 
-__version__ = (0, 0, 5, 1)
+__version__ = (0, 0, 5, 2)
 
 DEFAULT_ENCODING = global_func.getDefaultEncoding()
 DEFAULT_REPLACEMENTS = {u'"': u'\''}
@@ -26,14 +26,17 @@ ALTER_CSV_DELIMETER = u';'
 OPEN_LINUX_EDITOR_FMT = 'gedit \"%s\" &'
 OPEN_WINDOWS_EDITOR_FMT = 'notepad.exe \"%s\"'
 
+DEFAULT_TXT_FILE_ENCODING = 'utf-8'
 
-def saveTextFile(txt_filename, txt='', rewrite=True):
+
+def saveTextFile(txt_filename, txt='', rewrite=True, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Save text file.
 
     :param txt_filename: Text file name.
     :param txt: Body text file as unicode.
     :param rewrite: Rewrite file if it exists?
+    :param encoding: Text file code page.
     :return: True/False.
     """
     if not isinstance(txt, str):
@@ -53,7 +56,7 @@ def saveTextFile(txt_filename, txt='', rewrite=True):
         if not os.path.exists(txt_dirname):
             file_func.createDir(txt_dirname)
 
-        file_obj = open(txt_filename, 'wt')
+        file_obj = open(txt_filename, 'wt', encoding=encoding)
         file_obj.write(txt)
         file_obj.close()
         return True
@@ -64,11 +67,12 @@ def saveTextFile(txt_filename, txt='', rewrite=True):
     return False
 
 
-def loadTextFile(txt_filename):
+def loadTextFile(txt_filename, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Load from text file.
 
     :param txt_filename: Text file name.
+    :param encoding: Text file code page.
     :return: File text or empty text if error.
     """
     if not os.path.exists(txt_filename):
@@ -77,7 +81,7 @@ def loadTextFile(txt_filename):
 
     file_obj = None
     try:
-        file_obj = open(txt_filename, 'rt')
+        file_obj = open(txt_filename, 'rt', encoding=encoding)
         txt = file_obj.read()
         file_obj.close()
     except:
@@ -89,7 +93,7 @@ def loadTextFile(txt_filename):
     return txt
 
 
-def appendTextFile(txt_filename, txt, cr=None):
+def appendTextFile(txt_filename, txt, cr=None, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Add lines to text file.
     If the file does not exist, then the file is created.
@@ -97,6 +101,7 @@ def appendTextFile(txt_filename, txt, cr=None):
     :param txt_filename: Text filename.
     :param txt: Added text.
     :param cr: Carriage return character.
+    :param encoding: Text file code page.
     :return: True/False.
     """
     if cr is None:
@@ -117,7 +122,7 @@ def appendTextFile(txt_filename, txt, cr=None):
         if not os.path.exists(txt_dirname):
             file_func.createDir(txt_dirname)
 
-        file_obj = open(txt_filename, 'at')
+        file_obj = open(txt_filename, 'at', encoding=encoding)
         file_obj.write(cr)
         file_obj.write(txt)
         file_obj.close()
@@ -129,7 +134,7 @@ def appendTextFile(txt_filename, txt, cr=None):
     return False
 
 
-def replaceTextFile(txt_filename, src_text, dst_text, auto_add=True, cr=None):
+def replaceTextFile(txt_filename, src_text, dst_text, auto_add=True, cr=None, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Replacing a text in a text file.
 
@@ -138,6 +143,7 @@ def replaceTextFile(txt_filename, src_text, dst_text, auto_add=True, cr=None):
     :param dst_text: Destination text.
     :param auto_add: A flag to automatically add a new line.
     :param cr: Carriage return character.
+    :param encoding: Text file code page.
     :return: True/False.
     """
     if cr is None:
@@ -148,7 +154,7 @@ def replaceTextFile(txt_filename, src_text, dst_text, auto_add=True, cr=None):
     if os.path.exists(txt_filename):
         file_obj = None
         try:
-            file_obj = open(txt_filename, 'rt')
+            file_obj = open(txt_filename, 'rt', encoding=encoding)
             txt = file_obj.read()
             file_obj.close()
             txt = txt.replace(src_text, dst_text)
@@ -157,7 +163,7 @@ def replaceTextFile(txt_filename, src_text, dst_text, auto_add=True, cr=None):
                 txt += dst_text
                 log_func.info('Text file append <%s> in <%s>' % (dst_text, txt_filename))
             file_obj = None
-            file_obj = open(txt_filename, 'wt')
+            file_obj = open(txt_filename, 'wt', encoding=encoding)
             file_obj.write(txt)
             file_obj.close()
             file_obj = None
@@ -171,12 +177,13 @@ def replaceTextFile(txt_filename, src_text, dst_text, auto_add=True, cr=None):
     return False
 
 
-def isInTextFile(txt_filename, find_text):
+def isInTextFile(txt_filename, find_text, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Is there text in a text file?
 
     :param txt_filename: Text filename.
     :param find_text: Find text.
+    :param encoding: Text file code page.
     :return: True/False.
     """
     txt_filename = os.path.normpath(txt_filename)
@@ -184,7 +191,7 @@ def isInTextFile(txt_filename, find_text):
     if os.path.exists(txt_filename):
         file_obj = None
         try:
-            file_obj = open(txt_filename, 'rt')
+            file_obj = open(txt_filename, 'rt', encoding=encoding)
             txt = file_obj.read()
             result = find_text in txt
             file_obj.close()
@@ -199,13 +206,14 @@ def isInTextFile(txt_filename, find_text):
     return False
 
 
-def searchLinesInTextFile(txt_filename, search_text):
+def searchLinesInTextFile(txt_filename, search_text, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Search lines in text file by text.
     Is there text in a text file?
 
     :param txt_filename: Text filename.
     :param search_text: Search text.
+    :param encoding: Text file code page.
     :return: Lines list or None if error.
     """
     txt_filename = os.path.normpath(txt_filename)
@@ -213,7 +221,7 @@ def searchLinesInTextFile(txt_filename, search_text):
     if os.path.exists(txt_filename):
         file_obj = None
         try:
-            file_obj = open(txt_filename, 'rt')
+            file_obj = open(txt_filename, 'rt', encoding=encoding)
             lines = file_obj.readlines()
             file_obj.close()
             result = [line for line in lines if search_text in line]
@@ -228,12 +236,13 @@ def searchLinesInTextFile(txt_filename, search_text):
     return None
 
 
-def readTextFileLines(txt_filename, auto_strip_line=True):
+def readTextFileLines(txt_filename, auto_strip_line=True, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Read text file as lines.
 
     :param txt_filename: Text filename.
     :param auto_strip_line: Strip text file lines automatic?
+    :param encoding: Text file code page.
     :return: Text file lines.
     """
     file_obj = None
@@ -244,7 +253,7 @@ def readTextFileLines(txt_filename, auto_strip_line=True):
         log_func.warning(u'File <%s> not found' % txt_filename)
 
         try:
-            file_obj = open(txt_filename, 'wt')
+            file_obj = open(txt_filename, 'wt', encoding=encoding)
             file_obj.close()
             log_func.info(u'Create text file <%s>' % txt_filename)
         except:
@@ -254,7 +263,7 @@ def readTextFileLines(txt_filename, auto_strip_line=True):
         return lines
 
     try:
-        file_obj = open(txt_filename, 'rt')
+        file_obj = open(txt_filename, 'rt', encoding=encoding)
         lines = file_obj.readlines()
         if auto_strip_line:
             lines = [filename.strip() for filename in lines]
@@ -267,13 +276,14 @@ def readTextFileLines(txt_filename, auto_strip_line=True):
     return list(lines)
 
 
-def appendTextFileLine(line, txt_filename=None, add_linesep=True):
+def appendTextFileLine(line, txt_filename=None, add_linesep=True, encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Add new line in text file.
 
     :param line: Line as string.
     :param txt_filename: Text filename.
     :param add_linesep: Add line separator / carriage return?
+    :param encoding: Text file code page.
     :return: True/False.
     """
     file_obj = None
@@ -283,7 +293,7 @@ def appendTextFileLine(line, txt_filename=None, add_linesep=True):
         if not os.path.exists(txt_dirname):
             file_func.createDir(txt_dirname)
 
-        file_obj = open(txt_filename, 'at+')
+        file_obj = open(txt_filename, 'at+', encoding=encoding)
         file_obj.write(str(line))
         if add_linesep:
             file_obj.write(os.linesep)
@@ -297,7 +307,7 @@ def appendTextFileLine(line, txt_filename=None, add_linesep=True):
 
 
 def saveCSVFile(csv_filename, records=(),
-                delim=DEFAULT_CSV_DELITEMER, encoding=DEFAULT_ENCODING,
+                delim=DEFAULT_CSV_DELITEMER, encoding=DEFAULT_TXT_FILE_ENCODING,
                 replacements=None):
     """
     Save CSV file.
@@ -320,12 +330,13 @@ def saveCSVFile(csv_filename, records=(),
     return saveTextFile(csv_filename, txt)
 
 
-def loadCSVFile(csv_filename, delim=u','):
+def loadCSVFile(csv_filename, delim=u',', encoding=DEFAULT_TXT_FILE_ENCODING):
     """
     Load CSV file as record list.
 
     :param csv_filename: CSV filename.
     :param delim: Separator character.
+    :param encoding: Text file code page.
     :return: Record list.
         Each record is a list of field values.
         Or None if error.
@@ -334,7 +345,7 @@ def loadCSVFile(csv_filename, delim=u','):
         log_func.warning(u'File <%s> not found' % csv_filename)
         return None
 
-    txt = loadTextFile(csv_filename)
+    txt = loadTextFile(csv_filename, encoding=encoding)
     if txt:
         txt = txt.strip()
 

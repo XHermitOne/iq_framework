@@ -280,3 +280,18 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         if can_delete:
             return self.deleteRec(id=guid, id_field=self.getGuidColumnName())
         return False
+
+    def findGuidWhere(self, *find_args, **find_kwargs):
+        """
+        Find object GUID in model.
+
+        :param find_args: Search options.
+        :param find_kwargs: Search options.
+        :return: GUID object or None if record not found.
+        """
+        find_rec = self.findRec(*find_args, **find_kwargs)
+        if find_rec is not None:
+            return find_rec.get(DEFAULT_GUID_COL_NAME, None)
+        else:
+            log_func.warning(u'Unic object by %s %s not found' % (str(find_args), str(find_kwargs)))
+        return None
