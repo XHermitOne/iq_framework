@@ -15,7 +15,7 @@ from . import file_func
 from . import exec_func
 from . import sys_func
 
-__version__ = (0, 0, 5, 2)
+__version__ = (0, 0, 5, 3)
 
 DEFAULT_ENCODING = global_func.getDefaultEncoding()
 DEFAULT_REPLACEMENTS = {u'"': u'\''}
@@ -27,6 +27,8 @@ OPEN_LINUX_EDITOR_FMT = 'gedit \"%s\" &'
 OPEN_WINDOWS_EDITOR_FMT = 'notepad.exe \"%s\"'
 
 DEFAULT_TXT_FILE_ENCODING = 'utf-8'
+
+BYTE_ORDER_MARK = '\ufeff'
 
 
 def saveTextFile(txt_filename, txt='', rewrite=True, encoding=DEFAULT_TXT_FILE_ENCODING):
@@ -348,6 +350,9 @@ def loadCSVFile(csv_filename, delim=u',', encoding=DEFAULT_TXT_FILE_ENCODING):
     txt = loadTextFile(csv_filename, encoding=encoding)
     if txt:
         txt = txt.strip()
+        # Delete Byte Order Mark
+        if txt.startswith(BYTE_ORDER_MARK):
+            txt = txt.lstrip(BYTE_ORDER_MARK)
 
         try:
             records = list()

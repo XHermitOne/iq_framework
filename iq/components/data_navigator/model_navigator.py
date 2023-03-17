@@ -16,7 +16,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 2)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -65,6 +65,43 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             model = self.createModel()
             self.setModel(model)
         return self.__model__
+
+    def prepareModelRecord(self, model=None, record=None):
+        """
+        Prepare record as dictionary to model.
+
+        :param model: Model.
+        :param record: Record as dictionary.
+        :return: Record as prepared dictionary with cascade data.
+        """
+        if model is None:
+            model = self.getModel()
+        if record is None:
+            record = dict()
+
+        assert isinstance(record, dict), u'Model record type error'
+
+        model_rec = {col_name: value for col_name, value in record.items() if hasattr(model, col_name)}
+        for col_name, col_value in model_rec.items():
+            if isinstance(col_value, (list, tuple)):
+                model_property = getattr(model, col_name)
+                model_argument = model_property.prop.argument
+                model_rec[col_name] = [model_argument(**self.prepareModelRecord(model_argument, rec)) for rec in col_value]
+        return model_rec
+
+    def getQueryResultRecordAsDict(self, record):
+        """
+        Convert query result record to dict.
+
+        :param record: Query result record.
+        :return: Record as dictionary with cascade data.
+        """
+        result = vars(record)
+
+        cascade_attr_names = [attr_name for attr_name in dir(record) if not attr_name.startswith('_') and isinstance(getattr(record, attr_name), list)]
+        for cascade_attr_name in cascade_attr_names:
+            result[cascade_attr_name] = [self.getQueryResultRecordAsDict(rec) for rec in getattr(record, cascade_attr_name)]
+        return result
 
     def getTable(self):
         """
@@ -307,7 +344,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                         order_by = (order_by,)
                     order_by_columns = [getattr(model, fld_name) for fld_name in order_by]
                     query = query.order_by(*order_by_columns)
-                records = [vars(record) for record in query]
+                records = [self.getQueryResultRecordAsDict(record) for record in query]
                 self.stopTransaction(transaction)
                 return records
             else:
@@ -377,7 +414,10 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                 record = dict(record)
 
             model = self.getModel()
-            model_rec = {col_name: value for col_name, value in record.items() if hasattr(model, col_name)}
+
+            # Prepare record data
+            model_rec = self.prepareModelRecord(model=model, record=record)
+
             new_obj = model(**model_rec)
             return new_obj
         except:
