@@ -18,6 +18,7 @@ import fnmatch
 import shutil
 from smb.SMBConnection import SMBConnection
 import urllib.parse
+import urllib.request
 
 from . import log_func
 from . import file_func
@@ -25,7 +26,7 @@ from . import sys_func
 from . import net_func
 from . import dt_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 
 DEFAULT_WORKGROUP = 'WORKGROUP'
@@ -62,7 +63,8 @@ def getSmbPathFromUrl(url):
     path_list = splitSmbUrlPath(url)
     path_list = path_list[2:]
     try:
-        smb_path = URL_SEPARATOR.join(*path_list)
+        pathname = os.path.join(*path_list)
+        smb_path = urllib.request.pathname2url(pathname)
     except TypeError:
         log_func.fatal(u'Error get SMB path from url %s' % str(url))
         smb_path = ''
@@ -191,7 +193,8 @@ def getSmbSharedFile(url=None, filename=None, smb=None):
     smb_share = getSmbShareFromUrl(url)
     smb_path = getSmbPathFromUrl(url)
     try:
-        smb_path = os.path.join(smb_path, os.path.dirname(filename))
+        pathname = os.path.join(smb_path, os.path.dirname(filename))
+        smb_path = urllib.request.pathname2url(pathname)
         smb_base_filename = os.path.basename(filename)
         if smb is not None:
             # The resource is already open
@@ -261,7 +264,8 @@ def deleteSmbFile(url=None, filename=None, smb=None):
     smb_share = getSmbShareFromUrl(url)
     smb_path = getSmbPathFromUrl(url)
     try:
-        smb_path = os.path.join(smb_path, os.path.dirname(filename))
+        pathname = os.path.join(smb_path, os.path.dirname(filename))
+        smb_path = urllib.request.pathname2url(pathname)
         smb_base_filename = os.path.basename(filename)
         if smb is not None:
             # The resource is already open
@@ -322,7 +326,8 @@ def existsSmbPath(url=None, path=None, smb=None):
     smb_share = getSmbShareFromUrl(url)
     smb_path = getSmbPathFromUrl(url)
     try:
-        smb_path = os.path.join(smb_path, os.path.dirname(path))
+        pathname = os.path.join(smb_path, os.path.dirname(path))
+        smb_path = urllib.request.pathname2url(pathname)
         smb_base_filename = os.path.basename(path)
         if smb is not None:
             # The resource is already open
@@ -388,7 +393,8 @@ def downloadSmbFile(download_urls=None, filename=None, dst_path=None, rewrite=Tr
                 path_list = path_list[2:]
             else:
                 path_list = path_list[2:] + [filename]
-            download_filename = os.path.join(*path_list)
+            pathname = os.path.join(*path_list)
+            download_filename = urllib.request.pathname2url(pathname)
 
             log_func.info(u'Download file <%s>' % download_filename)
 
