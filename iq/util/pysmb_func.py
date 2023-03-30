@@ -30,6 +30,7 @@ __version__ = (0, 0, 1, 1)
 
 DEFAULT_WORKGROUP = 'WORKGROUP'
 ANONYMOUS_USERNAME = 'guest'
+URL_SEPARATOR = '/'
 
 
 def splitSmbUrlPath(smb_url):
@@ -42,9 +43,9 @@ def splitSmbUrlPath(smb_url):
     :param smb_url: urlparse.ParseResult object.
     :return: List of elements of the path to the SMB resource.
     """
-    path_list = smb_url.path.split(os.path.sep)
+    path_list = smb_url.path.split(URL_SEPARATOR)
     if smb_url.fragment:
-        fragment_path_list = smb_url.fragment.split(os.path.sep)
+        fragment_path_list = smb_url.fragment.split(URL_SEPARATOR)
         fragment_path_list[0] = u'#' + fragment_path_list[0]
         path_list += fragment_path_list
     return path_list
@@ -76,7 +77,7 @@ def getSmbShareFromUrl(url):
     :return: Samba resource path.
     """
     smb_url = urllib.parse.urlparse(url)
-    smb_share = smb_url.path.split(os.path.sep)[1]
+    smb_share = smb_url.path.split(URL_SEPARATOR)[1] if smb_url.path.split(URL_SEPARATOR) else ''
     return smb_share
 
 
@@ -96,7 +97,7 @@ def connectSmb(url):
             return None
         smb_server_ip = net_func.getIpByHostName(smb_server)
 
-        smb_share = smb_url.path.split(os.path.sep)[1]
+        smb_share = smb_url.path.split(URL_SEPARATOR)[1]
         # If the user is not specified, then we log in
         smb_username = smb_url.username if smb_url.username else ANONYMOUS_USERNAME
         smb_password = smb_url.password if smb_url.password is not None else ''
