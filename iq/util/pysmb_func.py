@@ -62,7 +62,7 @@ def getSmbPathFromUrl(url):
     path_list = splitSmbUrlPath(url)
     path_list = path_list[2:]
     try:
-        smb_path = os.path.join(*path_list)
+        smb_path = URL_SEPARATOR.join(*path_list)
     except TypeError:
         log_func.fatal(u'Error get SMB path from url %s' % str(url))
         smb_path = ''
