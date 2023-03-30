@@ -21,10 +21,12 @@ sudo apt install --assume-yes python3-pep8
 # Operating system
 sudo apt install --assume-yes smbfs-utils
 sudo apt install --assume-yes cifs-utils
-sudo apt install --assume-yes smbclient 
 sudo apt install --assume-yes indicator-applet-complete
 sudo apt install --assume-yes ttf-mscorefonts-installer
 sudo apt install --assume-yes python3-apt
+sudo apt install --assume-yes smbclient
+pip3 install pysmb
+
 # Net
 pip3 install ping3
 

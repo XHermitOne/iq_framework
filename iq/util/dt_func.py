@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -95,6 +95,27 @@ def datetime2date(dt):
         return dt
     log_func.warning(u'Unsupported type <%s> for convert datetime.datetime -> datetime.date' % type(dt))
     return None
+
+
+def time2datetime(unix_time):
+    """
+    Convert UNIX time to datetime.datetime.
+
+    :param unix_time: UNIX time as float. For example: 1680146855.7007616
+    :return: Time as datetime.datetime.
+    """
+    return datetime.datetime.utcfromtimestamp(unix_time)
+
+
+def datetime2time(dt):
+    """
+    Convert datetime.datetime to UNIX time.
+
+    :param dt: Time as datetime.datetime.
+    :return: UNIX time as float.
+    """
+    unix_time = time.mktime(dt.timetuple())
+    return unix_time
 
 
 def getNowYear():

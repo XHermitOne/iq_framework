@@ -3,6 +3,7 @@
 
 """
 Functions of working with files on shared SAMBA resources.
+Only Linux!!!
 
 URL SMB resource format:
 smb://[[<domain>;]<username>[:<password>]@]<server>[:<port>][/[<share>[/[<path>]]]
@@ -24,7 +25,7 @@ import datetime
 from . import log_func
 from . import file_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 DEFAULT_WORKGROUP = 'WORKGROUP'
@@ -421,3 +422,32 @@ def isSmbFile(url=None, path=None, smb=None):
         log_func.fatal(u'Error check samba file <%s>' % path)
 
     return is_file
+
+
+def existsSmbPath(url=None, path=None, smb=None):
+    """
+    Checking that the exists path.
+
+    :param url: Samba resource URL.
+    :param path: Name of the file object. For example: /2019/TEST.DBF
+    :param smb: The samba object of the resource in the case of an already open resource.
+    :return: True/False.
+    """
+    exists = False
+    try:
+        if smb is not None:
+            # The resource is already open
+            exists = smb.exists(path)
+        else:
+            try:
+                smb = connectSmb(url)
+                exists = smb.exists(path)
+                disconnectSmb(smb)
+            except:
+                disconnectSmb(smb)
+                log_func.fatal(u'Error check samba file <%s>. URL <%s>' % (path, url))
+    except:
+        log_func.fatal(u'Error check samba exists path <%s>' % path)
+
+    return exists
+

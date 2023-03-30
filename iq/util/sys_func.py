@@ -24,7 +24,7 @@ from . import global_func
 
 import iq
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -421,3 +421,14 @@ def getSysRootPassword(parent_win=None):
     except:
         log_func.fatal(u'Error get root password')
     return None
+
+
+def getLocalhostName():
+    """
+    Get localhost name.
+    """
+    try:
+        return subprocess.Popen(['hostname'], stdout=subprocess.PIPE).communicate()[0].strip().decode()
+    except:
+        log_func.fatal(u'Error get localhost name')
+    return 'localhost'
