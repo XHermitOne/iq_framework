@@ -35,13 +35,13 @@ _ = lang_func.getTranslation().gettext
 TIME_FMT = '%H:%M:%S'
 
 LOG_TYPE_COLOUR_NAMES = {
-                         logfile_func.INFO_LOG_TYPE: 'DARKGREEN',
-                         logfile_func.WARNING_LOG_TYPE: 'GOLDENROD',
-                         logfile_func.ERROR_LOG_TYPE: 'RED4',
-                         logfile_func.FATAL_LOG_TYPE: 'RED3',
-                         logfile_func.DEBUG_LOG_TYPE: 'BLUE4',
-                         logfile_func.DEBUG_SERVICE_LOG_TYPE: 'CYAN4',
-                         logfile_func.SERVICE_LOG_TYPE: 'CYAN4',
+                         logfile_func.INFO_LOG_TYPE: 'DARK GREEN',
+                         logfile_func.WARNING_LOG_TYPE: 'GOLD',
+                         logfile_func.ERROR_LOG_TYPE: 'FIREBRICK',
+                         logfile_func.FATAL_LOG_TYPE: 'FIREBRICK',
+                         logfile_func.DEBUG_LOG_TYPE: 'BLUE',
+                         logfile_func.DEBUG_SERVICE_LOG_TYPE: 'CYAN',
+                         logfile_func.SERVICE_LOG_TYPE: 'CYAN',
                         }
 
 LOG_TYPE_LABELS = {

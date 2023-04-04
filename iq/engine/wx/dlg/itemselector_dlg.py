@@ -180,14 +180,14 @@ class icItemSelectorDialog(item_selector_dialog_proto.icItemSelectorDialogProto,
             self.browse_panel.on_checkList.SetForegroundColour(wx.GREEN)
             self.browse_panel.off_checkList.SetForegroundColour(wx.RED)
         else:
-            self.browse_panel.on_label_staticText.SetForegroundColour(wx.Colour('DARKGREEN'))
-            self.browse_panel.off_label_staticText.SetForegroundColour(wx.Colour('DARKRED'))
-            self.browse_panel.on_all_button.SetForegroundColour(wx.Colour('DARKGREEN'))
-            self.browse_panel.off_all_button.SetForegroundColour(wx.Colour('DARKRED'))
-            self.browse_panel.on_button.SetForegroundColour(wx.Colour('DARKGREEN'))
-            self.browse_panel.off_button.SetForegroundColour(wx.Colour('DARKRED'))
-            self.browse_panel.on_checkList.SetForegroundColour(wx.Colour('DARKGREEN'))
-            self.browse_panel.off_checkList.SetForegroundColour(wx.Colour('DARKRED'))
+            self.browse_panel.on_label_staticText.SetForegroundColour(wx.Colour('DARK GREEN'))
+            self.browse_panel.off_label_staticText.SetForegroundColour(wx.Colour('FIREBRICK'))
+            self.browse_panel.on_all_button.SetForegroundColour(wx.Colour('DARK GREEN'))
+            self.browse_panel.off_all_button.SetForegroundColour(wx.Colour('FIREBRICK'))
+            self.browse_panel.on_button.SetForegroundColour(wx.Colour('DARK GREEN'))
+            self.browse_panel.off_button.SetForegroundColour(wx.Colour('FIREBRICK'))
+            self.browse_panel.on_checkList.SetForegroundColour(wx.Colour('DARK GREEN'))
+            self.browse_panel.off_checkList.SetForegroundColour(wx.Colour('FIREBRICK'))
 
     def get_records(self):
         """
