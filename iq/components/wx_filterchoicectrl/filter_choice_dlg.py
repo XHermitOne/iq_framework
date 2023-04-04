@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Oct 26 2018)
+## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -30,7 +30,7 @@ class iqFilterChoiceDlgProto ( wx.Dialog ):
 
 		logicRadioBoxChoices = [ _(u"OR"), _(u"AND") ]
 		self.logicRadioBox = wx.RadioBox( self, wx.ID_ANY, _(u"Сondition"), wx.DefaultPosition, wx.DefaultSize, logicRadioBoxChoices, 1, wx.RA_SPECIFY_ROWS )
-		self.logicRadioBox.SetSelection( 0 )
+		self.logicRadioBox.SetSelection( 1 )
 		bSizer2.Add( self.logicRadioBox, 0, wx.ALL|wx.EXPAND, 5 )
 
 		self.ctrl_toolBar = wx.ToolBar( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL )
@@ -97,29 +97,29 @@ class iqFilterChoiceDlgProto ( wx.Dialog ):
 		pass
 
 
-	# Virtual event handlers, overide them in your derived class
-	def onSortToolClick( self, event ):
+	# Virtual event handlers, override them in your derived class
+	def onSortToolClick(self, event):
 		event.Skip()
 
-	def onSortReverseToolClick( self, event ):
+	def onSortReverseToolClick(self, event):
 		event.Skip()
 
-	def onMoveUpToolClick( self, event ):
+	def onMoveUpToolClick(self, event):
 		event.Skip()
 
-	def onMoveDownToolClick( self, event ):
+	def onMoveDownToolClick(self, event):
 		event.Skip()
 
-	def onAddButtonClick( self, event ):
+	def onAddButtonClick(self, event):
 		event.Skip()
 
-	def onDelButtonClick( self, event ):
+	def onDelButtonClick(self, event):
 		event.Skip()
 
-	def onCancelButtonClick( self, event ):
+	def onCancelButtonClick(self, event):
 		event.Skip()
 
-	def onOkButtonClick( self, event ):
+	def onOkButtonClick(self, event):
 		event.Skip()
 
 
