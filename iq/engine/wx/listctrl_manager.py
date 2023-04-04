@@ -13,6 +13,7 @@ from ...util import log_func
 from ...util import file_func
 from ...util import res_func
 from ...util import lang_func
+from ...util import sys_func
 
 from . import wxcolour_func
 from . import base_manager
@@ -22,7 +23,7 @@ from .. import stored_manager
 
 from .dlg import wxdlg_func
 
-__version__ = (0, 0, 5, 2)
+__version__ = (0, 0, 5, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -568,7 +569,12 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
 
         try:
             colour = colour if not wxcolour_func.isDefaultColour(colour) else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOXTEXT)
-            listctrl.SetItemTextColour(item, colour)
+            if sys_func.isLinuxPlatform():
+                listctrl.SetItemTextColour(item, colour)
+            else:
+                listctrl_item = listctrl.GetItem(item)
+                listctrl_item.SetTextColour(colour)
+                listctrl.SetItem(listctrl_item)
             return True
         except:
             log_func.fatal(u'Set row [%s] foreground colour error' % item)
@@ -590,7 +596,12 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
 
         try:
             colour = colour if not wxcolour_func.isDefaultColour(colour) else wx.SystemSettings.GetColour(wx.SYS_COLOUR_LISTBOX)
-            listctrl.SetItemBackgroundColour(item, colour)
+            if sys_func.isLinuxPlatform():
+                listctrl.SetItemBackgroundColour(item, colour)
+            else:
+                listctrl_item = listctrl.GetItem(item)
+                listctrl_item.SetBackgroundColour(colour)
+                listctrl.SetItem(listctrl_item)
             return True
         except:
             log_func.warning(u'Set row [%s] background colour error' % item)
