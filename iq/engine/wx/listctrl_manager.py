@@ -547,6 +547,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
 
         for i, row in enumerate(rows):
             colorize = expression(i, row)
+            print('>>>>', colorize, foreground_colour)
             if foreground_colour and colorize:
                 self.setListCtrlRowForegroundColour(listctrl, i, foreground_colour)
             if background_colour and colorize:
