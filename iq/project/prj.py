@@ -18,6 +18,7 @@ from ..util import exec_func
 from ..util import global_func
 from ..util import lang_func
 from ..util import txtfile_func
+from ..util import ini_func
 
 from ..passport import passport
 from .. import user
@@ -26,7 +27,7 @@ from .. import global_data
 
 from . import spc
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -114,7 +115,8 @@ class iqProjectManager(object):
             return all([save_ok,
                         self.createDefaultMenubarResource(engine=selected_engine, prj_name=prj_name),
                         self.createDefaultMainFormResource(engine=selected_engine, prj_name=prj_name),
-                        self.createDefaultReportsFolder(engine=selected_engine, prj_name=prj_name)])
+                        self.createDefaultReportsFolder(engine=selected_engine, prj_name=prj_name),
+                        self.createDefaultSettingsINI(prj_path=prj_path, prj_name=prj_name)])
 
         return False
 
@@ -203,6 +205,29 @@ class iqProjectManager(object):
                     py_func.createInitModule(reports_folder),
                     txtfile_func.saveTextFile(txt_filename=description_filename,
                                               txt=u'%s <%s>' % (_('Reports folder'), prj_name))])
+
+    def createDefaultSettingsINI(self, prj_path=None, prj_name=None):
+        """
+        Create default project settings INI file.
+
+        :param prj_path: Project path.
+        :param prj_name: Project name.
+        :return: True/False.
+        """
+        if not prj_path:
+            log_func.warning(u'Not define project path for save default project settings ini file')
+            return False
+
+        if not os.path.exists(prj_path):
+            log_func.warning(u'Project path <%s> not found for save default project settings ini file')
+            return False
+
+        if not prj_name:
+            prj_name = os.path.splitext(os.path.basename(prj_path))[0]
+
+        ini_filename = os.path.join(prj_path, prj_name + ini_func.INI_FILE_EXT)
+        # Save empty settings INI file if not exists
+        return txtfile_func.saveTextFile(ini_filename, rewrite=False)
 
     def saveDefaultPrjResource(self, prj_path=None, prj_name=None, rewrite=False,
                                default_engine=global_data.WX_ENGINE_TYPE):
