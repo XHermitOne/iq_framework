@@ -26,7 +26,7 @@ from . import sys_func
 from . import net_func
 from . import dt_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 
 DEFAULT_WORKGROUP = 'WORKGROUP'
@@ -274,7 +274,9 @@ def deleteSmbFile(url=None, filename=None, smb=None):
         else:
             try:
                 smb = connectSmb(url)
-                smb.deleteFiles(smb_share, smb_path + smb_base_filename)
+                smb_filename = smb_path + smb_base_filename
+                smb.deleteFiles(smb_share, smb_filename)
+                log_func.debug(u'SMB. Delete <%s> file' % smb_filename)
                 result = True
                 disconnectSmb(smb)
             except:
