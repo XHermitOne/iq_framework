@@ -100,6 +100,7 @@ sudo apt install python3-jsonrpclib-pelix
 sudo apt install --assume-yes python3-psycopg2
 sudo apt install --assume-yes python3-sqlalchemy
 sudo apt install --assume-yes unixodbc unixodbc-dev freetds-bin freetds-dev tdsodbc python3-pyodbc
+sudo apt install --assume-yes python3-pymysql
 sudo apt install --assume-yes sqlite3
 sudo apt install --assume-yes sqlitebrowser
 

@@ -23,7 +23,7 @@ from .. import stored_manager
 
 from .dlg import wxdlg_func
 
-__version__ = (0, 0, 5, 3)
+__version__ = (0, 0, 5, 4)
 
 _ = lang_func.getTranslation().gettext
 
@@ -196,7 +196,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             log_func.warning(u'Not select moving row')
         return False
 
-    def appendListCtrlColumn(self, listctrl, label=u'', width=-1, align='LEFT', hide=False):
+    def appendListCtrlColumn(self, listctrl, label=u'', width=-1, align='LEFT', hide=False, has_image=False):
         """
         Append column in wx.ListCtrl object.
 
@@ -205,6 +205,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         :param width: Column width.
         :param align: Column text align LEFT/RIGHT/CENTRE.
         :param hide: Hide column?
+        :param has_image: Has image?
         :return: True/False.
         """
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
@@ -214,23 +215,34 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             if width <= 0:
                 width = wx.LIST_AUTOSIZE
 
+            info = wx.ListItem()
+            info.Mask = wx.LIST_MASK_TEXT | wx.LIST_MASK_FORMAT
+            if has_image:
+                info.Mask |= wx.LIST_MASK_IMAGE
+            info.Image = -1
+            info.Align = 0
+            info.Text = label
+
             col_align = str(align).strip().upper()
             if col_align == 'RIGHT':
-                col_format = wx.LIST_FORMAT_RIGHT
+                info.Align = wx.LIST_FORMAT_RIGHT
             elif col_align == 'CENTRE':
-                col_format = wx.LIST_FORMAT_CENTRE
+                info.Align = wx.LIST_FORMAT_CENTRE
             elif col_align == 'CENTER':
-                col_format = wx.LIST_FORMAT_CENTER
+                info.Align = wx.LIST_FORMAT_CENTER
             else:
-                col_format = wx.LIST_FORMAT_LEFT
-            listctrl.InsertColumn(i, label, format=col_format, width=width)
+                info.Align = wx.LIST_FORMAT_LEFT
+            listctrl.InsertColumn(i, info)
+            # listctrl.InsertColumn(i, label, format=col_format, width=width)
 
             if hide:
                 listctrl.SetColumnWidth(i, 0)
+            else:
+                listctrl.SetColumnWidth(i, width)
 
             if hasattr(self, LISTCTR_COLUMNS_ATTR_NAME):
                 columns = getattr(self, LISTCTR_COLUMNS_ATTR_NAME)
-                columns.append(dict(label=label, width=width, align=col_align, hide=hide))
+                columns.append(dict(label=label, width=width, align=col_align, hide=hide, has_image=has_image))
             return True
         except:
             log_func.fatal(u'Append column in wx.ListCtrl object error')
@@ -247,7 +259,8 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             {'label': 'Column title',
             'width': Column width,
             'align': Column align,
-            'hide': Hide column?}
+            'hide': Hide column?,
+            'has_image': Has image?}
         :return: True/False.
         """
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
@@ -996,7 +1009,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         """
         return self.findListCtrlRowIdxExpression(listctrl=listctrl, rows=rows, expression=expression)
 
-    def setListCtrlItemImage(self, listctrl=None, item=None, image=None):
+    def setListCtrlItemImage(self, listctrl=None, item=None, img_name=None):
         """
         Set a icon of a list item.
 
@@ -1004,7 +1017,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         :param item: List item.
             A list item can be specified by either an index or a wx.ListItem object.
             If None, then there is the currently selected item.
-        :param image: Icon name.
+        :param img_name: Icon name.
         :return: True/False.
         """
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
@@ -1012,23 +1025,21 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         item_idx = -1
         if item is None:
             item_idx = self.getListCtrlSelectedRowIdx(listctrl)
-            item = listctrl.GetItem(item_idx)
         elif isinstance(item, wx.ListItem):
             item_idx = item.GetId()
         elif isinstance(item, int):
-            item_idx = item
-            item = listctrl.GetItem(item_idx)
+            item_idx = listctrl.GetItem(item).GetId()
 
-        if image is None:
+        if img_name is None:
             listctrl.SetItemImage(item, None)
         else:
             if item_idx >= 0:
                 img_idx = None
                 try:
-                    img_idx = self.getImageLibImageBmp(image)
-                    listctrl.SetItemImage(item_idx, img_idx, selImage=wx.TreeItemIcon_Normal)
+                    img_idx = self.getImageLibImageIdx(img_name)
+                    listctrl.SetItemImage(item_idx, img_idx, selImage=-1)
                 except:
-                    log_func.fatal(u'Icon set error [%d] for item <%s>' % (img_idx, item))
+                    log_func.fatal(u'Icon set error [%s] for item <%s>' % (img_idx, item_idx))
             else:
                 log_func.warning(u'Invalid row index [%s]' % str(item_idx))
         return True

@@ -12,28 +12,46 @@ from . import wxbitmap_func
 
 from . import base_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqImageLibManager(base_manager.iqBaseManager):
     """
     Image library manager class.
     """
-    def initImageLib(self):
+    def initImageLib(self, img_width=None, img_height=None, assign_ctrl=None):
         """
         Initialization component icon image list object.
 
+        :param img_width: Image width.
+        :param img_height: Image height.
+        :param assign_ctrl: Sets the image list associated with the control and takes ownership of it.
         :return: Image list.
         """
         self.__img_idx = dict()
-        
-        self._imagelist = wx.ImageList(wxbitmap_func.DEFAULT_ICON_WIDTH,
-                                       wxbitmap_func.DEFAULT_ICON_HEIGHT)
 
-        empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+        if img_width is None:
+            img_width = wxbitmap_func.DEFAULT_ICON_WIDTH
+        if img_height is None:
+            img_height = wxbitmap_func.DEFAULT_ICON_HEIGHT
+
+        self._imagelist = wx.ImageList(img_width, img_height)
+
+        if img_width == wxbitmap_func.DEFAULT_ICON_WIDTH and img_height == wxbitmap_func.DEFAULT_ICON_HEIGHT:
+            img_size = wx.DefaultSize
+        else:
+            img_size = wx.Size(img_width, img_height)
+
+        empty_bmp = wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU, size=img_size)
         # log_func.debug(u'Bitmap size %s' % str(empty_bmp.GetSize()))
         empty_icon_idx = self._imagelist.Add(empty_bmp)
         self.__img_idx[None] = empty_icon_idx
+
+        if assign_ctrl:
+            try:
+                assign_ctrl.AssignImageList(self._imagelist, wx.IMAGE_LIST_NORMAL)
+            except:
+                log_func.fatal(u'Error assign image list to <%s>' % str(assign_ctrl))
 
         return self._imagelist
 

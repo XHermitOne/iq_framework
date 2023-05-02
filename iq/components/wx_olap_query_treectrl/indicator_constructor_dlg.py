@@ -291,7 +291,7 @@ class iqIndicatorConstructorDlg(indicator_constructor_dlg_proto.iqIndicatorConst
                             row=(name, line))
         if image:
             # self.indicator_listCtrl.SetItemImage(state_idx, image)
-            self.setListCtrlItemImage(listctrl=self.indicator_listCtrl, item=state_idx, image=image)
+            self.setListCtrlItemImage(listctrl=self.indicator_listCtrl, item=state_idx, img_name=image)
 
         if text_color:
             log_func.debug(u'Text color %s' % str(text_color))

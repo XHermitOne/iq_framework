@@ -11,7 +11,7 @@ import wx
 from ...util import log_func
 from ...util import icon_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 DEFAULT_ICON_WIDTH = 16
 DEFAULT_ICON_HEIGHT = 16
@@ -140,3 +140,26 @@ def findBitmap(*img_filenames):
         if os.path.exists(img_filename):
             return createBitmap(img_filename)
     return None
+
+
+def createArtProviderBitmap(image_id=None, image_client_id=None, img_size=None):
+    """
+    Create bitmap object by wx art provider.
+
+    :param image_id: Unique identifier of the bitmap.
+    :param image_client_id:  ArtClient identifier of the client (i.e. who is asking for the bitmap).
+    :param img_size: Size of the returned bitmap or DefaultSize if size doesn’t matter.
+    """
+    if image_id is None:
+        image_id = wx.ART_MISSING_IMAGE
+    if image_client_id is None:
+        image_client_id = wx.ART_MENU
+    if img_size is None:
+        img_size = wx.DefaultSize
+    try:
+        if not isinstance(img_size, wx.Size):
+            img_size = wx.Size(*img_size)
+        return wx.ArtProvider.GetBitmap(image_id, client=image_client_id, size=img_size)
+    except:
+        log_func.fatal(u'Error create bitmap object by wx art provider')
+    return wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
