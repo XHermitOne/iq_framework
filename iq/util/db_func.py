@@ -24,7 +24,7 @@ except:
     pass
 
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 
 def createDBURL(db_type='postgresql', db_driver='',
@@ -374,3 +374,50 @@ def executeSQL(db_url=None, sql=None, echo=False):
     if result is not None:
         records = [dict(record) for record in result]
     return records
+
+
+def existsSQL(db_url=None, sql=None, echo=False):
+    """
+    Open connection. Check exists SQL results. Close connection.
+
+    :param db_url: Connection string/Database URL for connection.
+    :param sql: SQL expression.
+    :param echo: The echo flag is a shortcut to setting up SQLAlchemy logging.
+    :return: Result SQL as list of dictionaries or None if error.
+    """
+    if not db_url:
+        print(u'Not define connection string')
+        return None
+
+    if not sql:
+        print(u'Not define SQL expression')
+        return None
+
+    try:
+        engine = sqlalchemy.create_engine(db_url, echo=echo)
+    except:
+        err_msg = u'Error connect with database server\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
+        print(err_msg)
+        return None
+
+    result = None
+    if engine:
+        connection = None
+        try:
+            connection = engine.connect()
+
+            rowcount = connection.execute(sql).rowcount
+            result = rowcount > 0
+            if not result:
+                print(u'Result not exists\nDatabase <%s>' % db_url)
+        except:
+            print(u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc()))
+
+        if connection is not None:
+            connection.close()
+    else:
+        print(u'Not define connection object\nDatabase <%s>' % db_url)
+
+    engine.dispose()
+
+    return result
