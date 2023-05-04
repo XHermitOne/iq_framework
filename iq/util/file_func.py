@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 8, 1)
+__version__ = (0, 0, 8, 2)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -318,6 +318,7 @@ def copyFile(src_filename, dst_filename, rewrite=True):
         try:
             if not os.path.exists(dst_dirname):
                 os.makedirs(dst_dirname)
+                log_func.info(u'Create folder <%s>' % dst_dirname)
         except OSError:
             log_func.fatal(u'Error make directory <%s>' % dst_dirname)
 
@@ -328,11 +329,13 @@ def copyFile(src_filename, dst_filename, rewrite=True):
         else:
             if os.path.exists(dst_filename):
                 os.remove(dst_filename)
+                log_func.info(u'Remove file <%s>' % dst_filename)
 
         if os.path.exists(src_filename) and os.path.exists(dst_filename) and os.path.samefile(src_filename, dst_filename):
             log_func.warning(u'Attempting to copy a file to itself <%s>' % src_filename)
         else:
             shutil.copyfile(src_filename, dst_filename)
+            log_func.info(u'Copy file <%s> to <%s>' % (src_filename, dst_filename))
         return True
     except:
         log_func.fatal(u'Error copy file <%s> -> <%s>' % (src_filename, dst_filename))

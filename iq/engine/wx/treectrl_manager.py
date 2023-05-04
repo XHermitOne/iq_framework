@@ -16,7 +16,7 @@ from .dlg import wxdlg_func
 from . import base_manager
 from . import wxbitmap_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 DEFAULT_ITEM_IMAGE_WIDTH = wxbitmap_func.DEFAULT_ICON_WIDTH
 DEFAULT_ITEM_IMAGE_HEIGHT = wxbitmap_func.DEFAULT_ICON_HEIGHT
@@ -177,6 +177,18 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
             return None
 
         return treectrl.GetItemData(item)
+
+    def getTreeCtrlSelectedItem(self, treectrl=None):
+        """
+        Get selected item.
+
+        :param treectrl: wx.TreeCtrl control.
+        :return: Selected item or None if error.
+        """
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        selected_item = treectrl.GetSelection()
+        return selected_item
 
     def getTreeCtrlSelectedItemData(self, treectrl=None):
         """
@@ -372,26 +384,65 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
             log_func.warning(u'Not define wx.TreeCtrl object')
             return None
 
+        if item is None:
+            # The root element has an empty path
+            return list()
+
+        if cur_path is None:
+            cur_path = list()
+
         try:
-            if item is None:
-                # The root element has an empty path
-                return []
+            label = treectrl.GetItemText(item)
+            cur_path.insert(0, label)
 
-            parent = treectrl.GetItemParent(item)
-            # If there is a parent item, then call recursively
-            if parent and parent.IsOk():
-                if cur_path is None:
-                    cur_path = []
-                cur_path.insert(-1, treectrl.GetItemText(item))
+            if item is not None and item.IsOk():
+                parent = treectrl.GetItemParent(item)
+                if not parent.IsOk():
+                    # [NOTE] GetItemParent return not None.
+                    # Need to check for IsOk
+                    return cur_path
+                elif self.isTreeCtrlRootItem(treectrl=treectrl, item=parent):
+                    return cur_path
+                # If there is a parent element, then call recursively
                 return self.getTreeCtrlItemPathLabel(treectrl=treectrl, item=parent, cur_path=cur_path)
-
-            if cur_path is None:
-                # This is the root item.
-                cur_path = []
             return cur_path
         except:
             log_func.fatal(u'Error get level path in <%s>' % str(treectrl))
         return None
+
+    def selectTreeCtrlItemPathLabel(self, treectrl=None, label_path=None, item=None):
+        """
+        Select item by item label path.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param label_path: Filled item label path.
+        :param item: Current parent item.
+        :return: True/False.
+        """
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        if label_path is None:
+            treectrl.SelectItem(item)
+            return True
+
+        try:
+            if label_path:
+                label = label_path[0]
+                child_item = self.findTreeCtrlChildItemByLabel(treectrl=treectrl, item=item, label=label, casesensitive=True)
+                if child_item:
+                    treectrl.SelectItem(child_item)
+                    if self.hasTreeCtrlItemChildren(treectrl=treectrl, item=child_item) and label_path[1:]:
+                        return self.selectTreeCtrlItemPathLabel(treectrl=treectrl,
+                                                                label_path=label_path[1:],
+                                                                item=child_item)
+            return True
+        except:
+            log_func.fatal(u'Error select TreeCtrl item by label path %s' % label_path)
+
+        return False
 
     def setTreeCtrlItemText(self, treectrl=None, item=None, label=u''):
         """
@@ -971,3 +1022,65 @@ class iqTreeCtrlManager(base_manager.iqBaseManager):
         except:
             log_func.fatal(u'Error get tree data <%s>' % str(treectrl))
         return False
+
+    def findTreeCtrlChildItemByLabel(self, treectrl=None, item=None, label=None, casesensitive=False):
+        """
+        Find child item by label.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :param label: Find child label.
+        :param casesensitive: Casesensitive?
+        :return: Item or None if not found.
+        """
+        if treectrl is None:
+            log_func.warning(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        try:
+            find_item = None
+            child_item, cookie = treectrl.GetFirstChild(item)
+            while child_item and child_item.IsOk():
+                child_label = treectrl.GetItemText(child_item)
+                if casesensitive:
+                    if child_label == label:
+                        find_item = child_item
+                        break
+                else:
+                    if child_label.upper() == label.upper():
+                        find_item = child_item
+                        break
+                child_item, cookie = treectrl.GetNextChild(item, cookie=cookie)
+
+            if find_item is None:
+                log_func.warning(u'Not found child item by label <%s>' % label)
+            return find_item
+        except:
+            log_func.fatal(u'Error find TreeCtrl child item by label <%s>' % label)
+        return None
+
+    def hasTreeCtrlItemChildren(self, treectrl=None, item=None):
+        """
+        Has item children?.
+
+        :param treectrl: wx.TreeCtrl control.
+        :param item: Tree item.
+            If not specified, it is considered to be the root element.
+        :return: True/False.
+        """
+        if treectrl is None:
+            log_func.warning(u'Not define wx.TreeCtrl object')
+            return False
+
+        assert issubclass(treectrl.__class__, wx.TreeCtrl), u'TreeCtrl manager type error'
+
+        if item is None:
+            item = treectrl.GetRootItem()
+
+        return bool(treectrl.GetChildrenCount(item, recursively=False))

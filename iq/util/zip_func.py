@@ -9,12 +9,13 @@ import os
 import os.path
 import subprocess
 import locale
+import zipfile
 
 from . import log_func
 from . import file_func
 from . import sys_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 ZIP_EXT = '.zip'
 
@@ -51,6 +52,7 @@ def unzipToDir(zip_filename, dst_dir=None, overwrite=True, to_console=True, opti
             return False
 
         if to_console:
+            log_func.info(u'Unzip command <%s>' % unzip_cmd)
             os.system(unzip_cmd)
             return True
         else:
@@ -108,4 +110,66 @@ def zipFile(src_filename, zip_filename=None, overwrite=True, to_console=True, op
             return lines
     except:
         log_func.fatal(u'Error zip <%s>' % zip_cmd)
+    return False
+
+
+def isZipFile(zip_filename):
+    """
+    Check is zip file.
+
+    :param zip_filename: Zip file name.
+    :return: True/False.
+    """
+    if not zip_filename:
+        log_func.warning(u'Zip file not defined')
+        return False
+
+    if not os.path.exists(zip_filename):
+        log_func.warning(u'Zip file <%s> not found' % zip_filename)
+        return False
+
+    try:
+        result = zipfile.is_zipfile(zip_filename)
+        if result:
+            log_func.info(u'<%s> is ZIP file' % zip_filename)
+        else:
+            log_func.warning(u'<%s> is not ZIP file' % zip_filename)
+        return result
+    except:
+        log_func.fatal(u'Error check is zip file <%s>' % zip_filename)
+    return None
+
+
+def openZipFile(zip_filename):
+    """
+    Open zip file in archive manager.
+
+    :param zip_filename: Zip file name.
+    :return: True/False.
+    """
+    if not zip_filename:
+        log_func.warning(u'Zip file not defined')
+        return False
+
+    if not os.path.exists(zip_filename):
+        log_func.warning(u'Zip file <%s> not found' % zip_filename)
+        return False
+
+    try:
+        if sys_func.isLinuxPlatform():
+            open_zip_cmd = 'file-roller %s &' % zip_filename
+        elif sys_func.isWindowsPlatform():
+            if not file_func.isFilenameExt(zip_filename, ZIP_EXT):
+                if file_func.changeFileExt(zip_filename, ZIP_EXT):
+                    zip_filename = file_func.setFilenameExt(zip_filename, ZIP_EXT)
+            open_zip_cmd = 'explorer %s &' % zip_filename
+        else:
+            log_func.warning(u'Unsupported open zip for this platform')
+            return False
+
+        log_func.info(u'Open ZIP. Command <%s>' % open_zip_cmd)
+        os.system(open_zip_cmd)
+        return True
+    except:
+        log_func.fatal(u'Error open zip file <%s> in archive manager' % zip_filename)
     return False
