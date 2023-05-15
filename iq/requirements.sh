@@ -21,6 +21,7 @@ sudo apt install --assume-yes python3-pep8
 # Operating system
 sudo apt install --assume-yes smbfs-utils
 sudo apt install --assume-yes cifs-utils
+sudo apt install --assume-yes nfs-common
 sudo apt install --assume-yes indicator-applet-complete
 sudo apt install --assume-yes ttf-mscorefonts-installer
 sudo apt install --assume-yes python3-apt
@@ -33,8 +34,12 @@ pip3 install ping3
 # Work with the console
 sudo apt install --assume-yes python3-dialog
 sudo apt install --assume-yes python3-urwid
-sudo apt install --assume-yes python3-termcolor
 sudo apt install --assume-yes curl
+
+# Color console
+sudo apt install --assume-yes python3-termcolor
+sudo apt install --assume-yes python3-colorama
+pip3 install rich
 
 # wxPython
 

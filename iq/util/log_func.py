@@ -13,10 +13,9 @@ import tempfile
 import stat
 import traceback
 
-
 try:
     import termcolor
-except IndexError:
+except ImportError:
     print(u'Import error termcolor. Install: pip3 install termcolor')
 
 if sys.platform.startswith('win'):
@@ -28,7 +27,7 @@ if sys.platform.startswith('win'):
 
 from . import global_func
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 2, 3)
 
 # Shell text colors
 RED_COLOR_TEXT = 'red'

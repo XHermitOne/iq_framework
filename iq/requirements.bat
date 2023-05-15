@@ -10,6 +10,7 @@ C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install p
 REM Work with the console
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install colorama
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install termcolor
+C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install rich
 
 REM wxPython
 
