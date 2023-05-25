@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 1, 3, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -104,7 +104,7 @@ def time2datetime(unix_time):
     :param unix_time: UNIX time as float. For example: 1680146855.7007616
     :return: Time as datetime.datetime.
     """
-    return datetime.datetime.utcfromtimestamp(unix_time)
+    return datetime.datetime.fromtimestamp(unix_time)
 
 
 def datetime2time(dt):
@@ -283,6 +283,50 @@ def getLastMonthDay(month=1, year=None):
     if month == 0:
         n_month = 1
     return calendar.monthrange(year=year, month=month)[1]
+
+
+def getPeriodDays(start_day=None, stop_day=None):
+    """
+    Get days of period.
+
+    :param start_day: The start date of the period.
+        If not defined, then the beginning of the current month is taken.
+    :param stop_day: The end date of the period.
+        If not defined, then the ending of the current month is taken.
+    :return: Date list.
+    """
+    if start_day is None:
+        start_day = getStartMonthDT()
+    if stop_day is None:
+        stop_day = getStopMonthDT()
+
+    result = list()
+    day = start_day
+    while day <= stop_day:
+        result.append(day)
+        day += datetime.timedelta(days=1)
+    return result
+
+
+def getMonthDays(month=None, year=None):
+    """
+    Get days of month.
+
+    :param month: Month number (1-12).
+    :param year: Year.
+    :return: Day list as [datetime.datetime, ...].
+    """
+    now = datetime.datetime.now()
+
+    if year is None:
+        year = now.year
+    if month is None:
+        month = now.month
+
+    first_day = now.replace(year=year, month=month, day=1, hour=0, minute=0, second=0, microsecond=0)
+    start_day = getStartMonthDT(first_day)
+    stop_day = getStopMonthDT(first_day)
+    return getPeriodDays(start_day=start_day, stop_day=stop_day)
 
 
 def getOperateYear():
