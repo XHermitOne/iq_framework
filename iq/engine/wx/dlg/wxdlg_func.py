@@ -168,7 +168,7 @@ def getTextEntryDlg(parent=None, title='', prompt_text='', default_value=''):
     return None
 
 
-def getAskDlg(title='', prompt_text='', style=wx.YES_NO | wx.ICON_QUESTION):
+def getAskDlg(title='', prompt_text='', style=wx.YES_NO | wx.ICON_QUESTION, **kwargs):
     """
     Open ask dialog.
 
@@ -178,7 +178,7 @@ def getAskDlg(title='', prompt_text='', style=wx.YES_NO | wx.ICON_QUESTION):
     :return: wx.YES or wx.NO or None if error.
     """
     try:
-        return wx.MessageBox(prompt_text, title, style=style)
+        return wx.MessageBox(prompt_text, title, style=style, **kwargs)
     except:
         log_func.fatal(u'Error ask dialog')
     return None
