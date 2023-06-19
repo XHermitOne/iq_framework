@@ -19,7 +19,7 @@ from .. import wxbitmap_func
 
 from . import login_dialog_proto
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -361,7 +361,8 @@ class iqProgressDlg(wx.ProgressDialog):
     The progress bar dialog box class.
     """
     def __init__(self, parent=None, title='', prompt_text='',
-                 min_value=0, max_value=100, style=wx.PD_AUTO_HIDE):
+                 min_value=0, max_value=100,
+                 style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE | wx.PD_SMOOTH):
         """
         Constructor.
 
@@ -387,14 +388,14 @@ class iqProgressDlg(wx.ProgressDialog):
         self._current_value = 0
         try:
             if style is None:
-                style = wx.PD_AUTO_HIDE
+                style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE | wx.PD_SMOOTH
 
             wx.ProgressDialog.__init__(self,
                                        title=title,
                                        message=prompt_text,
                                        maximum=self._ProgressMAX - self._ProgressMIN,
                                        parent=self._ProgressFrame,
-                                       style=style | wx.PD_APP_MODAL | wx.PD_SMOOTH)
+                                       style=style)
 
             self.SetSize(wx.Size(500, 130))
             self.CenterOnScreen()
@@ -449,7 +450,8 @@ PROGRESS_DLG = None
 
 
 def openProgressDlg(parent=None, title='', prompt_text='',
-                    min_value=0, max_value=100, style=wx.PD_AUTO_HIDE):
+                    min_value=0, max_value=100,
+                    style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE | wx.PD_SMOOTH):
     """
     Open progress bar dialog.
 
