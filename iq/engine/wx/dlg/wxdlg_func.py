@@ -19,7 +19,7 @@ from .. import wxbitmap_func
 
 from . import login_dialog_proto
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -168,7 +168,7 @@ def getTextEntryDlg(parent=None, title='', prompt_text='', default_value=''):
     return None
 
 
-def getAskDlg(title='', prompt_text='', style=wx.YES_NO | wx.ICON_QUESTION, **kwargs):
+def getAskDlg(title='', prompt_text='', style=wx.STAY_ON_TOP | wx.YES_NO | wx.ICON_QUESTION, **kwargs):
     """
     Open ask dialog.
 
@@ -202,7 +202,7 @@ def openMsgBox(title='', prompt_text='', **kwargs):
     :return: Pressed button code wx.YES or wx.NO or None if error.
     """
     try:
-        return wx.MessageBox(prompt_text, title, style=wx.OK, **kwargs)
+        return wx.MessageBox(prompt_text, title, style=wx.STAY_ON_TOP | wx.OK, **kwargs)
     except:
         log_func.fatal(u'Error open message box')
     return None
@@ -217,7 +217,7 @@ def openErrBox(title='', prompt_text='', **kwargs):
     :return: Pressed button code wx.YES or wx.NO or None if error.
     """
     try:
-        return wx.MessageBox(prompt_text, title, style=wx.OK | wx.ICON_ERROR, **kwargs)
+        return wx.MessageBox(prompt_text, title, style=wx.STAY_ON_TOP | wx.OK | wx.ICON_ERROR, **kwargs)
     except:
         log_func.fatal(u'Open error message box')
     return None
@@ -245,7 +245,7 @@ def openWarningBox(title='', prompt_text='', **kwargs):
     :return: Pressed button code wx.YES or wx.NO or None if error.
     """
     try:
-        return wx.MessageBox(prompt_text, title, style=wx.OK | wx.ICON_WARNING, **kwargs)
+        return wx.MessageBox(prompt_text, title, style=wx.STAY_ON_TOP | wx.OK | wx.ICON_WARNING, **kwargs)
     except:
         log_func.fatal(u'Error open warning message box')
     return None
