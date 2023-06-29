@@ -16,7 +16,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 4, 2)
+__version__ = (0, 0, 4, 3)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -644,9 +644,11 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                 # log_func.debug(u'Has record by where %s %s' % (str(where_args), str(where_kwargs)))
                 model = self.getModel()
                 transaction = self.startTransaction()
-                query = transaction.query(model).filter(*where_args, **where_kwargs).delete(synchronize_session=False)
+                query = transaction.query(model).filter(*where_args, **where_kwargs)
+                one_rec = query.one()
                 transaction.commit()
                 self.stopTransaction(transaction)
+                return bool(one_rec) and (one_rec.rowcount > 0)
             else:
                 # log_func.debug(u'Delete by record filter %s' % str(rec_filter))
                 table = self.getTable()

@@ -14,7 +14,7 @@ from ...dialog import dlg_func
 
 from ..wx_filterchoicectrl import filter_convert
 
-__version__ = (0, 0, 3, 2)
+__version__ = (0, 0, 3, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -243,6 +243,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
             return False
         if not self.hasGuid(guid=guid):
             log_func.warning(u'Save unic object <%s> not found. Not saved. Use <update> method for add' % guid)
+            return False
         return self.saveRec(id=guid, record=save_record,
                             id_field=DEFAULT_GUID_COL_NAME)
 
