@@ -6,6 +6,8 @@ Data model navigator manager.
 """
 
 import sys
+import sqlalchemy
+import sqlalchemy.orm
 import sqlalchemy.sql.functions
 
 from ...util import log_func
@@ -16,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 4, 4)
+__version__ = (0, 0, 5, 2)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -516,14 +518,41 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         model = self.getModel()
         transaction = self.startTransaction()
         try:
+            result = False
             query = transaction.query(model)
-            save_record = [(col_name, value) for col_name, value in record.items() if hasattr(model, col_name)]
-            values = {getattr(model, col_name): value for col_name, value in save_record}
-            query.filter(getattr(model, id_field) == id).update(values=values, synchronize_session=False)
+            child_relationships = [(col_name, value) for col_name, value in record.items() if
+                                   hasattr(model, col_name) and not isinstance(getattr(model, col_name), sqlalchemy.Column)]
+            # Cascade save?
+            has_cascade_save = bool(child_relationships)
+            if not has_cascade_save:
+                try:
+                    save_record = [(col_name, value) for col_name, value in record.items() if
+                                   hasattr(model, col_name) and isinstance(getattr(model, col_name), sqlalchemy.Column)]
+                    values = {getattr(model, col_name): value for col_name, value in save_record}
+                    query.filter(getattr(model, id_field) == id).update(values=values, synchronize_session=False)
+                    result = True
+                except:
+                    log_func.fatal(u'Error update record %s' % str(record))
+            else:
+                try:
+                    # For cascade delete all data and add all data
+                    src_record = self.loadRec(id=id, id_field=id_field)
+                    get_by_id_dict = {id_field: id}
+                    del_record = transaction.query(model).filter_by(**get_by_id_dict).first()
+                    if del_record:
+                        transaction.delete(del_record)
+                    src_record.update(record)
+                    save_record = self.prepareModelRecord(model=model, record=src_record)
+                    new_obj = model(**save_record)
+                    transaction.add(new_obj)
+                    result = True
+                except:
+                    log_func.fatal(u'Error delete and create record %s' % str(record))
+
             if transaction:
                 transaction.commit()
             self.stopTransaction(transaction)
-            return True
+            return result
         except:
             if transaction:
                 transaction.rollback()
@@ -561,8 +590,10 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         model = self.getModel()
         transaction = self.startTransaction()
         try:
-            query = transaction.query(model)
-            query.filter(getattr(model, id_field) == id).delete()
+            get_by_id_dict = {id_field: id}
+            del_record = transaction.query(model).filter_by(**get_by_id_dict).first()
+            if del_record:
+                transaction.delete(del_record)
             if transaction:
                 transaction.commit()
             self.stopTransaction(transaction)
@@ -695,7 +726,28 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         :param id_field: Identifier field name.
         :return: Record dictionary or None if error.
         """
-        pass
+        if id_field is None:
+            id_field = 'id'
+
+        model = self.getModel()
+        transaction = self.startTransaction()
+        try:
+            query = transaction.query(model)
+            # Get record as dictionary
+            record = query.filter(getattr(model, id_field) == id).first().__dict__
+            # Get only columns and relationships
+            record = {col_name: value for col_name, value in record.items() if hasattr(model, col_name)}
+
+            if transaction:
+                transaction.commit()
+            self.stopTransaction(transaction)
+            return record
+        except:
+            if transaction:
+                transaction.rollback()
+            log_func.fatal(u'Error delete record [%s]' % str(id))
+        self.stopTransaction(transaction)
+        return None
 
     def loadDatasetRecs(self, id_field=None):
         """

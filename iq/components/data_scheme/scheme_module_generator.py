@@ -17,7 +17,7 @@ from ...dialog import dlg_func
 from ...components.data_column import spc as data_column_spc
 from ...components.data_model import spc as data_model_spc
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 SCHEME_TEXT_FMT = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -164,8 +164,12 @@ class iqSchemeModuleGenerator(object):
 
         # Gen relationships
         foreignkey_txt = self.genForeignKeyTxt(resource=parent_model_resource) if parent_model_resource else u''
-        parent_relationship_txt = self.genRelationshipTxt(resource=parent_model_resource, link_name=name.lower()) if parent_model_resource else u''
-        relationships_txt = [self.genRelationshipTxt(model, link_name=name, by_name=bool(parent_model_resource)) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if model.get('type', None) == data_model_spc.COMPONENT_TYPE]
+        parent_relationship_txt = self.genRelationshipTxt(resource=parent_model_resource,
+                                                          link_name=name.lower()) if parent_model_resource else u''
+        relationships_txt = [self.genRelationshipTxt(model,
+                                                     link_name=name,
+                                                     by_name=bool(parent_model_resource),
+                                                     cascade='all, delete') for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if model.get('type', None) == data_model_spc.COMPONENT_TYPE]
 
         # Gen modeles
         modeles_txt = [self.genModelTxt(model, parent_model_resource=resource) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if model.get('type', None) == data_model_spc.COMPONENT_TYPE]
@@ -255,13 +259,14 @@ class iqSchemeModuleGenerator(object):
 
         return COLUMN_TEXT_FMT % (name, ', '.join(column_attrs))
 
-    def genRelationshipTxt(self, resource, link_name=None, by_name=True):
+    def genRelationshipTxt(self, resource, link_name=None, by_name=True, **attributes):
         """
         Generate relationship text.
 
         :param resource: Model resource.
         :param link_name: Linked model name.
         :param by_name: Link by name.
+        :param attributes: Additional relationship attributes.
         :return: Relationship text.
         """
         model_name = resource.get('name', 'Unknown')
@@ -272,6 +277,11 @@ class iqSchemeModuleGenerator(object):
             relationship_attrs.append('\'%s\'' % model_name)
         else:
             relationship_attrs.append(model_name)
+
+        if attributes:
+            for attribute_name, attribute_value in attributes.items():
+                str_attribute_value = '\'%s\'' % attribute_value if isinstance(attribute_value, str) else str(attribute_value)
+                relationship_attrs.append('%s=%s' % (attribute_name, str_attribute_value))
 
         if link_name:
             relationship_attrs.append('back_populates=\'%s\'' % link_name.lower())
