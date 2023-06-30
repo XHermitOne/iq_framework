@@ -26,7 +26,7 @@ from . import sys_func
 from . import net_func
 from . import dt_func
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 
 DEFAULT_WORKGROUP = 'WORKGROUP'
@@ -63,10 +63,10 @@ def getSmbPathFromUrl(url):
     path_list = splitSmbUrlPath(url)
     path_list = path_list[2:]
     try:
-        pathname = os.path.join(*path_list)
+        pathname = os.path.join(*path_list) if path_list else ''
         smb_path = urllib.request.pathname2url(pathname)
     except TypeError:
-        log_func.fatal(u'Error get SMB path from url %s' % str(url))
+        log_func.fatal(u'Error get SMB path from url %s. Path list %s' % (str(url), str(path_list)))
         smb_path = ''
     return smb_path
 

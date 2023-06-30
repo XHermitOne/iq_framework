@@ -16,7 +16,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 4, 3)
+__version__ = (0, 0, 4, 4)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -627,7 +627,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
 
         :param where_args: Where options.
         :param where_kwargs: Where options.
-        :return: True/False.
+        :return: True/False or None if error.
         """
         if self.getReadOnly():
             log_func.error(
@@ -645,21 +645,21 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                 model = self.getModel()
                 transaction = self.startTransaction()
                 query = transaction.query(model).filter(*where_args, **where_kwargs)
-                one_rec = query.one()
+                result = transaction.query(query.exists()).scalar()
                 transaction.commit()
                 self.stopTransaction(transaction)
-                return bool(one_rec) and (one_rec.rowcount > 0)
+                return result
             else:
-                # log_func.debug(u'Delete by record filter %s' % str(rec_filter))
+                # log_func.debug(u'Has record filter %s' % str(rec_filter))
                 table = self.getTable()
                 if table is not None:
                     select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
                                                                            table=table)
                     transaction = self.startTransaction()
-                    one_rec = transaction.execute(select).one()
+                    first_rec = transaction.execute(select).first()
                     transaction.commit()
                     self.stopTransaction(transaction)
-                    return bool(one_rec) and (one_rec.rowcount > 0)
+                    return bool(first_rec)
                 else:
                     log_func.error(u'<%s> method. <%s> object. <%s> class. Not define table object' % (sys._getframe().f_code.co_name,
                                                                                                        self.getName(),
@@ -668,7 +668,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             if transaction:
                 transaction.rollback()
             log_func.fatal(u'Error has records by filter %s %s' % (str(where_args), str(where_kwargs)))
-        return False
+        return None
 
     def existsQuery(self, query):
         """
