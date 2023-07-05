@@ -19,7 +19,7 @@ from .. import wxbitmap_func
 
 from . import login_dialog_proto
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 3, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -36,11 +36,9 @@ def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):
     :return: full name of the selected file or None в случае ошибки.
     """
     dlg = None
-    win_clear = False
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         all_files_wildcard = 'All Files (*.*)|*.*'
         wildcard = wildcard_filter + '|' + all_files_wildcard if wildcard_filter else all_files_wildcard
@@ -60,8 +58,6 @@ def getFileDlg(parent=None, title='', wildcard_filter='', default_path=''):
         if dlg:
             dlg.Destroy()
 
-        if win_clear:
-           parent.Destroy()
     return None
 
 
@@ -76,11 +72,9 @@ def getDirDlg(parent=None, title='', default_path=''):
     """
     result = ''
     dlg = None
-    win_clear = False
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         dlg = wx.DirDialog(parent, title,
                            style=wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
@@ -97,9 +91,6 @@ def getDirDlg(parent=None, title='', default_path=''):
         dlg.Destroy()
         dlg = None
 
-    if win_clear:
-        parent.Destroy()
-
     return result
 
 
@@ -113,12 +104,10 @@ def getColorDlg(parent=None, title='', default_colour=wx.BLACK):
     :return: Selected colour or default_colour.
     """
     dlg = None
-    win_clear = False
     colour = default_colour
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         dlg = wx.ColourDialog(parent, wx.ColourData().SetColour(default_colour))
         dlg.SetTitle(title)
@@ -129,9 +118,6 @@ def getColorDlg(parent=None, title='', default_colour=wx.BLACK):
     finally:
         if dlg:
             dlg.Destroy()
-
-        if win_clear:
-           parent.Destroy()
     return colour
 
 
@@ -146,11 +132,9 @@ def getTextEntryDlg(parent=None, title='', prompt_text='', default_value=''):
     :return: Input text value or None if pressed cancel.
     """
     dlg = None
-    win_clear = False
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         dlg = wx.TextEntryDialog(parent, prompt_text, title)
         if default_value is None:
@@ -162,9 +146,6 @@ def getTextEntryDlg(parent=None, title='', prompt_text='', default_value=''):
     finally:
         if dlg:
             dlg.Destroy()
-
-        if win_clear:
-            parent.Destroy()
     return None
 
 
@@ -264,11 +245,9 @@ def getSingleChoiceDlg(parent=None, title='', prompt_text='', choices=(),
     :return: Selected text or None if pressed cancel.
     """
     dlg = None
-    win_clear = False
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         dlg = wx.SingleChoiceDialog(parent, prompt_text, title, choices, wx.CHOICEDLG_STYLE)
         if default_idx >= 0:
@@ -279,8 +258,6 @@ def getSingleChoiceDlg(parent=None, title='', prompt_text='', choices=(),
     finally:
         if dlg:
             dlg.Destroy()
-        if win_clear:
-            parent.Destroy()
     return None
 
 
@@ -298,11 +275,9 @@ def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=[],
     """
     idx = -1
     dlg = None
-    win_clear = False
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         dlg = wx.SingleChoiceDialog(parent, prompt_text, title,
                                     choices, wx.CHOICEDLG_STYLE)
@@ -314,8 +289,6 @@ def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=[],
     finally:
         if dlg:
             dlg.Destroy()
-        if win_clear:
-            parent.Destroy()
     return idx
 
 
@@ -331,13 +304,11 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=(), pos=Non
     :return: Selected chices as tuple ((True/False, 'line text'),...).
     """
     dlg = None
-    win_clear = False
     if pos is None:
         pos = wx.DefaultPosition
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         choice_list = [row[1] for row in choices]
         dlg = wx.MultiChoiceDialog(parent, prompt_text, title, choice_list, pos=pos)
@@ -351,8 +322,6 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=(), pos=Non
     finally:
         if dlg:
             dlg.Destroy()
-        if win_clear:
-            parent.Destroy()
     return None
 
 
@@ -544,14 +513,12 @@ def getStrComboBoxDlg(parent=None, title='', prompt_text='', choices=None, defau
     :return: Selected or input string or None if error.
     """
     dlg = None
-    win_clear = False
     try:
         if choices is None:
             choices = []
 
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         result = default
         dlg = iqStrComboBoxDialog(parent, title, prompt_text, choices, default)
@@ -561,16 +528,10 @@ def getStrComboBoxDlg(parent=None, title='', prompt_text='', choices=None, defau
         if dlg:
             dlg.Destroy()
 
-        if win_clear:
-            parent.Destroy()
-
         return result
     except:
         if dlg:
             dlg.Destroy()
-
-        if win_clear:
-            parent.Destroy()
         log_func.fatal(u'Open select/edit string dialog error')
     return None
 
@@ -646,11 +607,9 @@ def openAboutDlg(parent=None, title='', prompt_text='', logo_bitmap=None):
     :param logo_bitmap: Logo as wx.Bitmap object.
     """
     dlg = None
-    win_clear = False
     try:
         if parent is None:
-           parent = wx.Frame(None, -1, '')
-           win_clear = True
+           parent = wx.GetApp().GetTopWindow()
 
         dlg = iqAboutDialog(parent, title, prompt_text, logo_bitmap)
         dlg.ShowModal()
@@ -658,14 +617,9 @@ def openAboutDlg(parent=None, title='', prompt_text='', logo_bitmap=None):
         if dlg:
             dlg.Destroy()
 
-        if win_clear:
-            parent.Destroy()
     except:
         if dlg:
             dlg.Destroy()
-
-        if win_clear:
-           parent.Destroy()
 
 
 class iqAboutDialog(wx.Dialog):

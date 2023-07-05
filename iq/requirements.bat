@@ -26,7 +26,7 @@ C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install j
 
 REM Database
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install psycopg2
-C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install sqlalchemy==1.3.24
+C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install sqlalchemy==1.4.31
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install pymysql
 
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install jaydebeapi==1.2.3 jpype1==1.2.1
