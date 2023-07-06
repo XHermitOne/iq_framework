@@ -185,6 +185,9 @@ class iqCryptoProManagerProto(object):
         """
         certificates = self.getCertificateList()
 
+        for certificate in certificates:
+            print(certificate)
+
         choices = [' '.join((certificate.get('Subject', dict()).get('SN', ''),
                              certificate.get('Subject', dict()).get('G', ''),
                              certificate.get('Subject', dict()).get('O', ''),
