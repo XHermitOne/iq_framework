@@ -24,7 +24,7 @@ from . import global_func
 
 import iq
 
-__version__ = (0, 0, 5, 1)
+__version__ = (0, 0, 5, 2)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -442,7 +442,7 @@ def getWindowsOEMEncoding():
         try:
             import ctypes
             oem_cp = ctypes.windll.kernel32.GetOEMCP()
-            return 'cp' + oem_cp
+            return 'cp%d' % oem_cp
         except:
             log_func.fatal(u'Error get windows console encoding')
     return None
