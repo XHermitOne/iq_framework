@@ -231,23 +231,23 @@ class iqCryptoProManagerProto(object):
             log_func.warning(u'Not [SHA1 Hash] in certificate')
         return None
 
-    def getOwner(self, certificate=None, parent=None):
-        """
-        Get certificate token owner.
-
-        :param certificate: Certificate dictionary.
-            If not define then open select certificate dialog.
-        :param parent: Parent window.
-        :return: Certificate token owner.
-        """
-        if certificate is None:
-            certificate = self.selectCertificate(parent=parent)
-
-        if certificate is not None:
-            if 'Subject' in certificate and 'CN' in certificate['Subject']:
-                return certificate['Subject']['CN']
-            log_func.warning(u'Not [Subject][CN] in certificate')
-        return None
+    # def getOwner(self, certificate=None, parent=None):
+    #     """
+    #     Get certificate token owner.
+    #
+    #     :param certificate: Certificate dictionary.
+    #         If not define then open select certificate dialog.
+    #     :param parent: Parent window.
+    #     :return: Certificate token owner.
+    #     """
+    #     if certificate is None:
+    #         certificate = self.selectCertificate(parent=parent)
+    #
+    #     if certificate is not None:
+    #         if 'Subject' in certificate and 'CN' in certificate['Subject']:
+    #             return certificate['Subject']['CN']
+    #         log_func.warning(u'Not [Subject][CN] in certificate')
+    #     return None
 
     def signFile(self, src_filename, dst_filename, certificate=None, parent=None, cmd_fmt=None):
         """
@@ -320,12 +320,11 @@ class iqCryptoProManagerProto(object):
             folder = self.getFolder()
             if cmd_fmt == WINDOWS_SIGN_CSPTEST_CMD_FMT:
                 csptest = os.path.join(folder, 'csptest.exe')
-                owner = self.getOwner(certificate=certificate, parent=parent)
+                thumbprint = self.getThumbprint(certificate=certificate, parent=parent)
                 csptest = '"%s"' % csptest.replace('\\', '/') if ' ' in csptest else csptest.replace('\\', '/')
                 src_filename = '"%s"' % src_filename.replace('\\', '/') if ' ' in src_filename else src_filename.replace('\\', '/')
                 dst_filename = '"%s"' % dst_filename.replace('\\', '/') if ' ' in dst_filename else dst_filename.replace('\\', '/')
-                owner = '\'%s\'' % owner if '"' in owner else owner
-                cmd = cmd_fmt % (csptest, owner, src_filename, dst_filename)
+                cmd = cmd_fmt % (csptest, thumbprint, src_filename, dst_filename)
                 return exec_func.execSystemCommand(cmd)
             log_func.warning(u'Not supported sign method Crypto Pro' % cmd_fmt)
         except:
