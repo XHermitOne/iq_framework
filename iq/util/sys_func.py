@@ -24,7 +24,7 @@ from . import global_func
 
 import iq
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 5, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -432,3 +432,17 @@ def getLocalhostName():
     except:
         log_func.fatal(u'Error get localhost name')
     return 'localhost'
+
+
+def getWindowsOEMEncoding():
+    """
+    Get windows OEM code page.
+    """
+    if isWindowsPlatform():
+        try:
+            import ctypes
+            oem_cp = ctypes.windll.kernel32.GetOEMCP()
+            return 'cp' + oem_cp
+        except:
+            log_func.fatal(u'Error get windows console encoding')
+    return None

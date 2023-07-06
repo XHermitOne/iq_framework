@@ -51,6 +51,8 @@ def getLinesExecutedCommand(cmd='', console_encoding=None):
     """
     if console_encoding is None:
         console_encoding = locale.getpreferredencoding()
+        if sys_func.isWindowsPlatform():
+            console_encoding = sys_func.getWindowsOEMEncoding()
 
     if cmd:
         try:
@@ -63,7 +65,8 @@ def getLinesExecutedCommand(cmd='', console_encoding=None):
             lines = list()
             for i, line in enumerate(b_lines):
                 try:
-                    lines.append(line.decode(console_encoding).strip())
+                    str_line = line.decode(console_encoding).strip()
+                    lines.append(str_line)
                 except UnicodeDecodeError:
                     log_func.fatal(u'Error decode line [%d]' % i)
                     lines.append('')
