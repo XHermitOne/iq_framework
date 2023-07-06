@@ -51,7 +51,7 @@ CERT_OPTION_NAME_REPLACEMENT = {
 }
 
 LINUX_SIGN_CRYPTCP_CMD_FMT = '%s -sign -thumbprint %s \"%s\" \"%s\" -nochain -norev'
-WINDOWS_SIGN_CSPTEST_CMD_FMT = '\"%s\" -sfsign -sign -my \'%s\' -in \"%s\" -out \"%s\" -addsigtime -add'
+WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in %s -out %s -addsigtime -add'
 
 
 class iqCryptoProManagerProto(object):
@@ -321,9 +321,10 @@ class iqCryptoProManagerProto(object):
             if cmd_fmt == WINDOWS_SIGN_CSPTEST_CMD_FMT:
                 csptest = os.path.join(folder, 'csptest.exe')
                 owner = self.getOwner(certificate=certificate, parent=parent)
-                csptest = csptest.replace('\\', '/')
-                src_filename = src_filename.replace('\\', '/')
-                dst_filename = dst_filename.replace('\\', '/')
+                csptest = '"%s"' % csptest.replace('\\', '/') if ' ' in csptest else csptest.replace('\\', '/')
+                src_filename = '"%s"' % src_filename.replace('\\', '/') if ' ' in src_filename else src_filename.replace('\\', '/')
+                dst_filename = '"%s"' % dst_filename.replace('\\', '/') if ' ' in dst_filename else dst_filename.replace('\\', '/')
+                owner = '\'%s\'' % owner if '"' in owner else owner
                 cmd = cmd_fmt % (csptest, owner, src_filename, dst_filename)
                 return exec_func.execSystemCommand(cmd)
             log_func.warning(u'Not supported sign method Crypto Pro' % cmd_fmt)
