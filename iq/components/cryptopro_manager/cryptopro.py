@@ -16,7 +16,7 @@ from ...util import lang_func
 
 from ...dialog import dlg_func
 
-__version__ = (0, 0, 1, 5)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -51,7 +51,7 @@ CERT_OPTION_NAME_REPLACEMENT = {
 }
 
 LINUX_SIGN_CRYPTCP_CMD_FMT = '%s -sign -thumbprint %s \"%s\" \"%s\" -nochain -norev'
-WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in \"%s\" -out \"%s\" -addsigtime -add'
+WINDOWS_SIGN_CSPTEST_CMD_FMT = '\"%s\" -sfsign -sign -my %s -in \"%s\" -out \"%s\" -addsigtime -add'
 
 
 class iqCryptoProManagerProto(object):
@@ -207,7 +207,7 @@ class iqCryptoProManagerProto(object):
         choices = [' '.join((certificate.get('Subject', dict()).get('SN', ''),
                              certificate.get('Subject', dict()).get('G', ''),
                              certificate.get('Subject', dict()).get('O', ''),
-                             certificate.get('Subject', dict()).get('T', ''))) for certificate in certificates]
+                             certificate.get('Subject', dict()).get('T', ''))).strip() for certificate in certificates]
         i_selection = dlg_func.getSingleChoiceIdxDlg(parent=parent,
                                                      title=_('CRYPTO PRO'),
                                                      prompt_text=_('Select certificate'),
