@@ -41,20 +41,23 @@ def execSystemCommand(cmd=''):
     return False
 
 
-def getLinesExecutedCommand(cmd=''):
+def getLinesExecutedCommand(cmd='', console_encoding=None):
     """
     Execute command and get output lines.
 
     :param cmd: Command string. May be as string and list of string.
+    :param console_encoding: Console/Shell code page.
     :return: Tuple of string.
     """
+    if console_encoding is None:
+        console_encoding = global_func.getDefaultShellEncoding()
+
     if cmd:
         try:
             log_func.info(u'Run command <%s> and get lines' % str(cmd))
             cmd_list = cmd if isinstance(cmd, (list, tuple)) else cmd.split(' ')
             process = subprocess.Popen(cmd_list, stdout=subprocess.PIPE)
             b_lines = process.stdout.readlines()
-            console_encoding = locale.getpreferredencoding()
 
             # Decode lines
             lines = list()
