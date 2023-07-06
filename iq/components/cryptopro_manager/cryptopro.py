@@ -15,12 +15,12 @@ from ...util import lang_func
 
 from ...dialog import dlg_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
-WINDOWS_FIND_FOLDER_PATHS = (u'"C:\\Program Files\\Crypto Pro\\CSP"',
-                             u'"C:\\Program Files (x86)\\Crypto Pro\\CSP"')
+WINDOWS_FIND_FOLDER_PATHS = (u'C:\\Program Files\\Crypto Pro\\CSP',
+                             u'C:\\Program Files (x86)\\Crypto Pro\\CSP')
 
 LINUX_FIND_FOLDER_PATHS = (u'/opt/cprocsp/bin/amd64/',
                            u'/opt/cprocsp/bin/i386/')
