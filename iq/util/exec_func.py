@@ -63,10 +63,10 @@ def getLinesExecutedCommand(cmd='', console_encoding=None):
 
             # Decode lines
             lines = list()
-            for i, line in enumerate(b_lines):
+            for i, b_line in enumerate(b_lines):
                 try:
-                    str_line = line.decode(console_encoding).strip()
-                    lines.append(str_line)
+                    line = b_line.decode(console_encoding).strip()
+                    lines.append(line)
                 except UnicodeDecodeError:
                     log_func.fatal(u'Error decode line [%d]' % i)
                     lines.append('')

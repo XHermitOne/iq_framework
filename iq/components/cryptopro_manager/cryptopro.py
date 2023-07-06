@@ -15,7 +15,7 @@ from ...util import lang_func
 
 from ...dialog import dlg_func
 
-__version__ = (0, 0, 1, 4)
+__version__ = (0, 0, 1, 5)
 
 _ = lang_func.getTranslation().gettext
 
@@ -170,8 +170,8 @@ class iqCryptoProManagerProto(object):
                 options.append(item)
             else:
                 options[-1] += ', ' + item
-        options = [item.split('=') for item in options]
-        option_list = [[name, val.strip()] for name, val in options]
+        options = [item.patittion('=') for item in options]
+        option_list = [[name, val.strip()] for name, delim, val in options]
         option_list = [[name, val[1:-1] if val.startswith('"') and val.endswith('"') else val] for name, val in option_list]
         options_dict = dict(option_list)
         return options_dict
