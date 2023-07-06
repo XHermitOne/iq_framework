@@ -15,7 +15,7 @@ from ...util import lang_func
 
 from ...dialog import dlg_func
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 _ = lang_func.getTranslation().gettext
 
@@ -185,10 +185,10 @@ class iqCryptoProManagerProto(object):
         """
         certificates = self.getCertificateList()
 
-        choices = [' '.join((certificate['Subject'].get('SN', ''),
-                             certificate['Subject'].get('G', ''),
-                             certificate['Subject'].get('O', ''),
-                             certificate['Subject'].get('T', ''))) for certificate in certificates]
+        choices = [' '.join((certificate.get('Subject', dict()).get('SN', ''),
+                             certificate.get('Subject', dict()).get('G', ''),
+                             certificate.get('Subject', dict()).get('O', ''),
+                             certificate.get('Subject', dict()).get('T', ''))) for certificate in certificates]
         i_selection = dlg_func.getSingleChoiceIdxDlg(parent=parent,
                                                      title=_('CRYPTO PRO'),
                                                      prompt_text=_('Select certificate'),
