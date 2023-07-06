@@ -50,7 +50,7 @@ def getLinesExecutedCommand(cmd='', console_encoding=None):
     :return: Tuple of string.
     """
     if console_encoding is None:
-        console_encoding = global_func.getDefaultShellEncoding()
+        console_encoding = locale.getpreferredencoding()
 
     if cmd:
         try:
