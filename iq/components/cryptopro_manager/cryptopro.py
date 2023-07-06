@@ -7,6 +7,7 @@ CryptoPro manager class.
 
 import os
 import os.path
+import re
 
 from ...util import log_func
 from ...util import sys_func
@@ -163,19 +164,33 @@ class iqCryptoProManagerProto(object):
         :param value: Value string.
         :return: Options dictionary.
         """
-        blocks = value.split(', ')
-        options = list()
-        for item in blocks:
-            if '=' in item:
-                options.append(item)
-            else:
-                options[-1] += ', ' + item
-        options = [item.split('=') for item in options]
-        print(options)
-        option_list = [[name, val.strip()] for name, val in options]
-        option_list = [[name, val[1:-1] if val.startswith('"') and val.endswith('"') else val] for name, val in option_list]
-        options_dict = dict(option_list)
-        return options_dict
+        options = dict()
+        # 1. Replace ""
+        value = value.replace('""', '\'')
+
+        def _parseCertificateOption(cur_value, re_pattern, strip_symbols):
+            """
+            Parse option item.
+            """
+            items = re.finditer(re_pattern, cur_value)
+            for item in items:
+                item_txt = item[0]
+                partitions = item_txt.partition('=')
+                option_name = partitions[0]
+                option_value = partitions[2].strip(strip_symbols).replace('\'', '""')
+                options[option_name] = option_value
+                cur_value = cur_value.replace(item_txt, '')
+            return cur_value
+
+        # 2. Get "..." values
+        value = _parseCertificateOption(value, r'([a-zA-Z0-9а-яА-Я.]+)=["].*?["], ', ' ",')
+        # 3. Get ... values
+        value = _parseCertificateOption(value, r'([a-zA-Z0-9а-яА-Я.]+)=.*?, ', ' ,')
+        # 4. Get last "..." value
+        value = _parseCertificateOption(value, r'([a-zA-Z0-9а-яА-Я.]+)=["].*?["]', ' "')
+        # 5. Get last ... value
+        value = _parseCertificateOption(value, r'([a-zA-Z0-9а-яА-Я.]+)=.*?', ' ')
+        return options
 
     def selectCertificate(self, parent=None):
         """
