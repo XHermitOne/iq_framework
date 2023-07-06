@@ -18,7 +18,7 @@ from . import file_func
 from . import global_func
 from . import txtfile_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 
 def execSystemCommand(cmd=''):
@@ -44,13 +44,13 @@ def getLinesExecutedCommand(cmd=''):
     """
     Execute command and get output lines.
 
-    :param cmd: Command string.
+    :param cmd: Command string. May be as string and list of string.
     :return: Tuple of string.
     """
     if cmd:
         try:
-            log_func.info(u'Run command <%s> and get lines' % cmd)
-            cmd_list = cmd.split(' ')
+            log_func.info(u'Run command <%s> and get lines' % str(cmd))
+            cmd_list = cmd if isinstance(cmd, (list, tuple)) else cmd.split(' ')
             process = subprocess.Popen(cmd_list, stdout=subprocess.PIPE)
             b_lines = process.stdout.readlines()
             console_encoding = locale.getpreferredencoding()

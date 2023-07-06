@@ -15,7 +15,7 @@ from ...util import lang_func
 
 from ...dialog import dlg_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -51,6 +51,7 @@ CERT_OPTION_NAME_REPLACEMENT = {
 
 LINUX_SIGN_CRYPTCP_CMD_FMT = '%s -sign -thumbprint %s \"%s\" \"%s\" -nochain -norev'
 WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in \"%s\" -out \"%s\" -addsigtime -add'
+
 
 class iqCryptoProManagerProto(object):
     """
@@ -103,7 +104,10 @@ class iqCryptoProManagerProto(object):
         folder = self.getFolder()
         if folder and os.path.exists(folder):
             certmgr = CERTMGR_WINDOWS if sys_func.isWindowsPlatform() else CERTMGR_LINUX
-            cmd = '%s -list' % os.path.join(folder, certmgr)
+            certmgr = os.path.join(folder, certmgr)
+            # if sys_func.isWindowsPlatform():
+            #     certmgr = '"%s"' % certmgr
+            cmd = (certmgr, '-list')
             lines = exec_func.getLinesExecutedCommand(cmd)
 
             # Parsing lines
