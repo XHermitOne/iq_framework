@@ -51,7 +51,7 @@ CERT_OPTION_NAME_REPLACEMENT = {
 }
 
 LINUX_SIGN_CRYPTCP_CMD_FMT = '%s -sign -thumbprint %s \"%s\" \"%s\" -nochain -norev'
-WINDOWS_SIGN_CSPTEST_CMD_FMT = '\"%s\" -sfsign -sign -my %s -in \"%s\" -out \"%s\" -addsigtime -add'
+WINDOWS_SIGN_CSPTEST_CMD_FMT = '\"%s\" -sfsign -sign -my \"%s\" -in \"%s\" -out \"%s\" -addsigtime -add'
 
 
 class iqCryptoProManagerProto(object):
@@ -201,9 +201,6 @@ class iqCryptoProManagerProto(object):
         """
         certificates = self.getCertificateList()
 
-        for certificate in certificates:
-            print(certificate)
-
         choices = [' '.join((certificate.get('Subject', dict()).get('SN', ''),
                              certificate.get('Subject', dict()).get('G', ''),
                              certificate.get('Subject', dict()).get('O', ''),
@@ -324,6 +321,7 @@ class iqCryptoProManagerProto(object):
             if cmd_fmt == WINDOWS_SIGN_CSPTEST_CMD_FMT:
                 csptest = os.path.join(folder, 'csptest.exe')
                 owner = self.getOwner(certificate=certificate, parent=parent)
+                cmd_fmt = cmd_fmt.replace('\\', '\\\\')
                 cmd = cmd_fmt % (csptest, owner, src_filename, dst_filename)
                 return exec_func.execSystemCommand(cmd)
             log_func.warning(u'Not supported sign method Crypto Pro' % cmd_fmt)
