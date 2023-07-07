@@ -24,7 +24,7 @@ from . import global_func
 
 import iq
 
-__version__ = (0, 0, 5, 3)
+__version__ = (0, 0, 6, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -264,6 +264,17 @@ def getCPUSpec():
         return platform.processor()
     except:
         log_func.fatal(u'Error get CPU specification')
+    return None
+
+
+def getArchitecture():
+    """
+    Get architecture.
+    """
+    try:
+        return platform.architecture()[0]
+    except:
+        log_func.fatal(u'Error get architecture')
     return None
 
 

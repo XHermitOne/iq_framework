@@ -51,7 +51,7 @@ CERT_OPTION_NAME_REPLACEMENT = {
 }
 
 LINUX_SIGN_CRYPTCP_CMD_FMT = '%s -sign -thumbprint %s \"%s\" \"%s\" -nochain -norev'
-WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in %s -out %s -detached -base64 –add'
+WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sign -thumbprint %s %s %s -nochain -norev'
 
 
 class iqCryptoProManagerProto(object):
@@ -319,9 +319,14 @@ class iqCryptoProManagerProto(object):
         try:
             folder = self.getFolder()
             if cmd_fmt == WINDOWS_SIGN_CSPTEST_CMD_FMT:
-                csptest = os.path.join(folder, 'csptest.exe')
+                architecture = 'x64' if sys_func.getArchitecture().startswith('64') else 'x86'
+                cryptcp_basename = 'cryptcp.%s.exe' % architecture
+                cryptcp = os.path.join(folder, cryptcp_basename)
+                if not os.path.exists(cryptcp):
+                    log_func.warning(u'Not fount <%s> tool. Install it to <%s>' % (cryptcp_basename, folder))
+                    return False
                 thumbprint = self.getThumbprint(certificate=certificate, parent=parent)
-                csptest = '"%s"' % csptest.replace('\\', '/') if ' ' in csptest else csptest.replace('\\', '/')
+                csptest = '"%s"' % cryptcp.replace('\\', '/') if ' ' in cryptcp else cryptcp.replace('\\', '/')
                 src_filename = '"%s"' % src_filename.replace('\\', '/') if ' ' in src_filename else src_filename.replace('\\', '/')
                 dst_filename = '"%s"' % dst_filename.replace('\\', '/') if ' ' in dst_filename else dst_filename.replace('\\', '/')
                 cmd = cmd_fmt % (csptest, thumbprint, src_filename, dst_filename)
