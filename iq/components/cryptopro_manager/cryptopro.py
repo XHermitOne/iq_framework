@@ -51,7 +51,7 @@ CERT_OPTION_NAME_REPLACEMENT = {
 }
 
 LINUX_SIGN_CRYPTCP_CMD_FMT = '%s -sign -thumbprint %s \"%s\" \"%s\" -nochain -norev'
-WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in %s -out %s -base64'
+WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in %s -out %s -base64 -detached'
 
 
 class iqCryptoProManagerProto(object):
