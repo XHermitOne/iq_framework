@@ -16,7 +16,7 @@ from ...util import lang_func
 
 from ...dialog import dlg_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -51,7 +51,7 @@ CERT_OPTION_NAME_REPLACEMENT = {
 }
 
 LINUX_SIGN_CRYPTCP_CMD_FMT = '%s -sign -thumbprint %s \"%s\" \"%s\" -nochain -norev'
-WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in %s -out %s -addsigtime -add'
+WINDOWS_SIGN_CSPTEST_CMD_FMT = '%s -sfsign -sign -my %s -in %s -out %s -base64'
 
 
 class iqCryptoProManagerProto(object):
