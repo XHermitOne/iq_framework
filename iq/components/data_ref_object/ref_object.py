@@ -20,7 +20,7 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -111,6 +111,8 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.warning(u'Found several records by column <%s> value <%s>' % (column_name, str(column_value)))
             # for rec in records:
             #     print(rec[self.getCodColumnName()], rec[self.getNameColumnName()], rec)
+        if result is None:
+            log_func.warning(u'Not found record by column <%s> value <%s>' % (column_name, str(column_value)))
         return result
 
     def getCodByColValue(self, column_name=None, column_value=None):
