@@ -8,7 +8,7 @@ Standart dialogs functions module.
 from ..util import global_func
 from ..util import log_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 3, 2)
 
 DIALOG_FUNCTION_MODULE = None
 
@@ -243,7 +243,8 @@ def getCheckBoxDlg(parent=None, title=None, label=None, choices=(), defaults=())
     _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getCheckBoxDlg(parent=parent, title=title,
-                                       label=label, choices=choices)
+                                       label=label,
+                                       choices=choices, defaults=defaults)
     return None
 
 
