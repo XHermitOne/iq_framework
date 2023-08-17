@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 1, 4, 1)
+__version__ = (0, 1, 5, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -750,3 +750,58 @@ def sleep(seconds=1):
     Sleep.
     """
     return time.sleep(seconds)
+
+
+def calcAge(dt_birth, now=None):
+    """
+    Calculate age.
+
+    @param dt_birth. Birth datetime or date.
+    @param now: Now datetime. If not defined then get system datetime.
+    @return: Age timedelta.
+    """
+    if isinstance(dt_birth, datetime.date):
+        dt_birth = date2datetime(dt_birth)
+    if now is None:
+        now = datetime.datetime.now()
+
+    return now - dt_birth
+
+
+def calcYearAge(dt_birth, today=None):
+    """
+    Calculate age in years.
+
+    @param dt_birth. Birth datetime or date.
+    @param today: Today. If not defined then get system date.
+    @return: Age years.
+    """
+    if isinstance(dt_birth, datetime.date):
+        dt_birth = date2datetime(dt_birth)
+    if today is None:
+        today = datetime.date.today()
+
+    years = today.year - dt_birth.year
+
+    def get_leap_birthday(year):
+        country = locale.getlocale()[0].split('_')[1]
+        if country in ('US', 'RU'):
+            return datetime.date(year, 2, 28)
+        elif country in ('GB', 'HK'):
+            return datetime.date(year, 3, 1)
+        else:
+            raise Exception('It is unknown whether your country treats leap year '
+                            + 'birthdays as being on the 28th of February or '
+                            + 'the 1st of March. Please consult your country\'s '
+                            + 'legal code for in order to ascertain an answer.')
+    try:
+        birthday = datetime.date(today.year, dt_birth.month, dt_birth.day)
+    except ValueError as e:
+        if dt_birth.month == 2 and dt_birth.day == 29:
+            birthday = get_leap_birthday(today.year)
+        else:
+            raise e
+
+    if today < birthday:
+        years -= 1
+    return years

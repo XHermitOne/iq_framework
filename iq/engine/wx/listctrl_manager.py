@@ -9,6 +9,7 @@ import sys
 import os.path
 import wx
 
+
 from ...util import log_func
 from ...util import file_func
 from ...util import res_func
@@ -23,7 +24,13 @@ from .. import stored_manager
 
 from .dlg import wxdlg_func
 
-__version__ = (0, 0, 5, 4)
+try:
+    import ObjectListView
+except ImportError:
+    ObjectListView = None
+    log_func.error(u'Import error ObjectListView. Install: pip3 install objectlistview')
+
+__version__ = (0, 0, 6, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -1223,3 +1230,59 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         except:
             log_func.fatal(u'Error select shown columns')
         return False
+
+    def setObjectListViewSortColumn(self, objectlistview, sort_column, reverse=False):
+        """
+        Set sort column for ObjectListView widgets.
+
+        @param objectlistview: ObjectListView control.
+        @param sort_column: Sort column valueGetter as string or index.
+        @param reverse: Reverse sort?
+        @return: True/False.
+        """
+        if ObjectListView:
+            assert issubclass(objectlistview.__class__, ObjectListView.ObjectListView), u'ObjectListView widget type error'
+        else:
+            log_func.warning(u'Not installed ObjectListView. Install: pip3 install objectlistview')
+            return False
+
+        if sort_column is not None:
+            try:
+                column_count = len(objectlistview.columns)
+                if isinstance(sort_column, int) and (0 <= sort_column < column_count):
+                    sort_column_idx = sort_column
+                elif isinstance(sort_column, str):
+                    column_names = [column.valueGetter for column in objectlistview.columns]
+                    sort_column_idx = column_names.index(sort_column) if sort_column in column_names else -1
+                else:
+                    log_func.warning(u'Not supported sort column indent for %s' % objectlistview.__class__)
+                    return False
+
+                if 0 <= sort_column_idx < column_count:
+                    objectlistview.SortBy(sort_column_idx, ascending=not reverse)
+                    log_func.debug(u'Set sort column <%s> for ObjectListView control' % sort_column)
+                    return True
+            except:
+                log_func.fatal(u'Error set sort column <%s> for ObjectListView control' % sort_column)
+        return False
+
+    def getObjectListViewSortColumn(self, objectlistview):
+        """
+        Get sort column for ObjectListView widgets as index or valueGetter if it string.
+
+        @param objectlistview: ObjectListView control.
+        @return: Index/Name valueGetter sort column or -1.
+        """
+        if ObjectListView:
+            assert issubclass(objectlistview.__class__, ObjectListView.ObjectListView), u'ObjectListView widget type error'
+        else:
+            log_func.warning(u'Not installed ObjectListView. Install: pip3 install objectlistview')
+            return -1
+
+        try:
+            sort_column = objectlistview.GetSortColumn()
+            sort_column = sort_column.valueGetter if isinstance(sort_column.valueGetter, str) else objectlistview.sortColumnIndex
+            return sort_column
+        except:
+            log_func.fatal(u'Error get sort column for ObjectListView control')
+        return -1

@@ -11,7 +11,7 @@ from ...util import log_func
 
 from ..data_model import data_object
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 
 class iqNavigatorManagerProto(data_object.iqDataObject):
@@ -208,44 +208,48 @@ class iqNavigatorManagerProto(data_object.iqDataObject):
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
         return None
 
-    def newRec(self, record):
+    def newRec(self, record, ignore_readonly=False):
         """
         Create new record (without commit).
 
         :param record: Record dictionary.
+        :param ignore_readonly: Ignore readonly option?
         :return: New model object or None if error.
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
         return None
 
-    def addRec(self, record, auto_commit=True):
+    def addRec(self, record, auto_commit=True, ignore_readonly=False):
         """
         Add record in model.
 
         :param record: Record dictionary.
         :param auto_commit: Automatic commit?
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
         return False
 
-    def addRecs(self, records):
+    def addRecs(self, records, ignore_readonly=False):
         """
         Add records in model.
 
         :param records: Record list.
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
         return False
 
-    def saveRec(self, id, record, id_field=None):
+    def saveRec(self, id, record, id_field=None, ignore_readonly=False):
         """
         Save record in model.
 
         :param id: Record identifier in model.
         :param record: Record dictionary.
         :param id_field: Identifier field name.
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
@@ -261,12 +265,13 @@ class iqNavigatorManagerProto(data_object.iqDataObject):
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
         pass
 
-    def deleteRec(self, id, id_field=None):
+    def deleteRec(self, id, id_field=None, ignore_readonly=False):
         """
         Delete record in model.
 
         :param id: Record identifier in model.
         :param id_field: Identifier field name.
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
@@ -409,10 +414,11 @@ class iqNavigatorManagerProto(data_object.iqDataObject):
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
 
-    def clear(self):
+    def clear(self, ignore_readonly=False):
         """
         Clear reference data object tables.
 
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))

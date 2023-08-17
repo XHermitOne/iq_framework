@@ -20,7 +20,7 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 3, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -420,7 +420,26 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
             query = transaction.query(model).filter(getattr(model, self.getCodColumnName()) == cod)
             result = self.existsQuery(query)
         except:
-            log_func.fatal(u'Error check code ref object <%s>' % self.getName())
+            log_func.fatal(u'Error check code <%s> ref object <%s>' % (cod, self.getName()))
+
+        self.stopTransaction(transaction)
+        return result
+
+    def hasName(self, name):
+        """
+        Is there such name in the ref object?
+
+        :param name: Name.
+        :return: True/False.
+        """
+        model = self.getModel()
+        transaction = self.startTransaction()
+        result = None
+        try:
+            query = transaction.query(model).filter(getattr(model, self.getNameColumnName()) == name)
+            result = self.existsQuery(query)
+        except:
+            log_func.fatal(u'Error check name <%s> ref object <%s>' % (name, self.getName()))
 
         self.stopTransaction(transaction)
         return result

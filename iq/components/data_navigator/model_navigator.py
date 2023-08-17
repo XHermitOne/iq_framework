@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 5, 2)
+__version__ = (0, 0, 6, 1)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -397,14 +397,15 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         """
         return self.__dataset__
 
-    def newRec(self, record):
+    def newRec(self, record, ignore_readonly=False):
         """
         Create new record (without commit).
 
         :param record: Record dictionary.
+        :param ignore_readonly: Ignore readonly option?
         :return: New model object or None if error.
         """
-        if self.getReadOnly():
+        if self.getReadOnly() and not ignore_readonly:
             log_func.error(u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
                                                                                             self.getName(),
                                                                                             self.__class__.__name__))
@@ -426,15 +427,16 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             log_func.fatal(u'<%s>. Error create new record %s' % (self.getName(), str(record)))
         return None
 
-    def addRec(self, record, auto_commit=True):
+    def addRec(self, record, auto_commit=True, ignore_readonly=False):
         """
         Add record in model.
 
         :param record: Record dictionary.
         :param auto_commit: Automatic commit?
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
-        if self.getReadOnly():
+        if self.getReadOnly() and not ignore_readonly:
             log_func.error(u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
                                                                                             self.getName(),
                                                                                             self.__class__.__name__))
@@ -458,14 +460,15 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         scheme.closeSession()
         return False
 
-    def addRecs(self, records):
+    def addRecs(self, records, ignore_readonly=False):
         """
         Add records in model.
 
         :param records: Record list.
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
-        if self.getReadOnly():
+        if self.getReadOnly() and not ignore_readonly:
             log_func.error(
                 u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
                                                                                  self.getName(),
@@ -496,16 +499,17 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         scheme.stopTransaction(transaction)
         return False
 
-    def saveRec(self, id, record, id_field=None):
+    def saveRec(self, id, record, id_field=None, ignore_readonly=False):
         """
         Save record in model.
 
         :param id: Record identifier in model.
         :param record: Record dictionary.
         :param id_field: Identifier field name.
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
-        if self.getReadOnly():
+        if self.getReadOnly() and not ignore_readonly:
             log_func.error(
                 u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
                                                                                  self.getName(),
@@ -569,15 +573,16 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         """
         pass
 
-    def deleteRec(self, id, id_field=None):
+    def deleteRec(self, id, id_field=None, ignore_readonly=False):
         """
         Delete record in model.
 
         :param id: Record identifier in model.
         :param id_field: Identifier field name.
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
-        if self.getReadOnly():
+        if self.getReadOnly() and not ignore_readonly:
             log_func.error(
                 u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
                                                                                  self.getName(),
@@ -758,13 +763,14 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         """
         pass
 
-    def clear(self):
+    def clear(self, ignore_readonly=False):
         """
         Clear reference data object tables.
 
+        :param ignore_readonly: Ignore readonly option?
         :return: True/False.
         """
-        if self.getReadOnly():
+        if self.getReadOnly() and not ignore_readonly:
             log_func.error(
                 u'<%s> method. <%s> object. <%s> class. Set readonly option.' % (sys._getframe().f_code.co_name,
                                                                                  self.getName(),
