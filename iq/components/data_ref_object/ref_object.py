@@ -20,7 +20,7 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -640,6 +640,48 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         return None
 
     choice = choiceRecord
+
+    def checkCodes(self, parent=None, view_fields=None, search_fields=None,
+                   clear_cache=False):
+        """
+        Check ref object items.
+
+        :param parent: Parent window.
+        :param view_fields: List of displayed fields.
+        :param search_fields: List of fields to search.
+        :param clear_cache: Clear cache?
+        :return: Selected codes.
+        """
+        selected_records = self.checkRecords(parent=parent,
+                                             view_fields=view_fields,
+                                             search_fields=search_fields)
+        return [selected_record.get(self.getCodColumnName(), None) for selected_record in selected_records] if isinstance(selected_records, (tuple, list)) else None
+
+    def checkRecords(self, parent=None, view_fields=None, search_fields=None,
+                     clear_cache=False):
+        """
+        Check ref object item records.
+
+        :param parent: Parent window.
+        :param view_fields: List of displayed fields.
+        :param search_fields: List of fields to search.
+        :param clear_cache: Clear cache?
+        :return: Selected records or None if error.
+        """
+        try:
+            if global_func.isWXEngine():
+                from ..wx_refobjmultiplecheckcomboctrl import wx_checktreedlg
+                selected_records = wx_checktreedlg.checkRefObjRecsDlg(parent=parent,
+                                                                      ref_obj=self,
+                                                                      fields=view_fields,
+                                                                      search_fields=search_fields,
+                                                                      clear_cache=clear_cache)
+                return selected_records
+            else:
+                log_func.warning(u'Not support check ref objects. Engine <%s>' % global_func.getEngineType())
+        except:
+            log_func.fatal(u'Error check ref objects item <%s>' % self.getName())
+        return None
 
     def isActive(self, cod):
         """

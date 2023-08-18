@@ -27,7 +27,7 @@ from . import key_combins
 from . import wxobj_func
 from . import wxdatetime_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 SKIP_ACCORD_NAMES = ('Handle', 'EventHandler', 'Parent', 'GrandParent')
 SKIP_FUNCTION_TYPES = (types.FunctionType, types.MethodType, types.BuiltinFunctionType, types.BuiltinMethodType)
@@ -50,18 +50,22 @@ class iqPanelManager(validate_manager.iqValidateManager):
             ctrl.setValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.CheckBox):
-            ctrl.SetValue(value)
+            if value is not None:
+                ctrl.SetValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.StaticText):
+            value = u'' if value is None else value
             value = value if isinstance(value, str) else str(value)
             ctrl.SetLabel(value)
             result = True
         elif issubclass(ctrl.__class__, wx.TextCtrl):
+            value = u'' if value is None else value
             value = value if isinstance(value, str) else str(value)
             ctrl.SetValue(value)
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
             try:
+                value = datetime.date.min() if value is None else value
                 wx_dt = None
                 if isinstance(value, datetime.datetime):
                     wx_dt = wxdatetime_func.datetime2wxDateTime(value)
@@ -86,16 +90,19 @@ class iqPanelManager(validate_manager.iqValidateManager):
                                                                                  value.__class__.__name__))
                 result = False
         elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
-            ctrl.SetPath(value)
+            if value is not None:
+                ctrl.SetPath(value)
             result = True
         elif issubclass(ctrl.__class__, wx.SpinCtrl):
+            value = 0 if value is None else value
             ctrl.SetValue(int(value))
             result = True
         elif issubclass(ctrl.__class__, wx.dataview.DataViewListCtrl):
             self._set_wxDataViewListCtrl_data(ctrl, value)
             result = True
         elif issubclass(ctrl.__class__, wx.RadioBox):
-            ctrl.SetSelection(int(value))
+            if value is not None:
+                ctrl.SetSelection(int(value))
             result = True
         else:
             log_func.warning(u'Panel manager. Control <%s> not support' % ctrl.__class__.__name__)

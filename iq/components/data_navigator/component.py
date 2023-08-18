@@ -13,7 +13,7 @@ from ..data_scheme import scheme as scheme_module
 
 from ...util import log_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 
 class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
@@ -103,6 +103,18 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         if columns is None:
             columns = self.getModelObj().getChildren()
         return model_navigator.iqModelNavigatorManager._updateLinkDataDataset(self, dataset=dataset, columns=columns)
+
+    def _updateLinkDataRecord(self, record, columns=None):
+        """
+        Update record by link object data
+
+        :param record: Record dictionary.
+        :param columns: Column object list.
+        :return: Updated record dictionary.
+        """
+        if columns is None:
+            columns = self.getModelObj().getChildren()
+        return model_navigator.iqModelNavigatorManager._updateLinkDataRecord(self, record=record, columns=columns)
 
 
 COMPONENT = iqDataNavigator

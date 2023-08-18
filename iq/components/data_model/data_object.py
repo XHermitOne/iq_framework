@@ -8,7 +8,7 @@ Data object interface class.
 from ...util import log_func
 from ...util import global_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 DATA_NAME_DELIMETER = '.'
 
@@ -105,6 +105,35 @@ class iqDataObject(iqDataObjectProto):
         except:
             log_func.fatal(u'Error update dataset by link object data')
         return dataset
+
+    def _updateLinkDataRecord(self, record, columns=None):
+        """
+        Update record by link object data
+
+        :param record: Record dictionary.
+        :param columns: Column object list.
+        :return: Updated record dictionary.
+        """
+        try:
+            for column in columns:
+                if column.isAttributeValue('link'):
+                    psp = column.getAttribute('link')
+                    link_obj = global_func.getKernel().getObject(psp=psp)
+                    if link_obj:
+                        # for i, record in enumerate(dataset):
+                        column_name = column.getName()
+                        value = record.get(column_name, None)
+                        link_rec = link_obj.getDataObjectRec(value)
+                        if isinstance(link_rec, dict):
+                            update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
+                            record.update(update_rec)
+                        else:
+                            log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
+                                                                                                        link_obj.getType(),
+                                                                                                        link_obj.getName()))
+        except:
+            log_func.fatal(u'Error update record by link object data')
+        return record
 
     def getDataset(self, *args, **kwargs):
         """

@@ -160,6 +160,8 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         except:
             log_func.fatal(u'Error get unique data object <%s> record by guid' % self.getName())
         self.stopTransaction(transaction)
+
+        record = self._updateLinkDataRecord(record)
         return record
 
     def getDataObjectRec(self, value):

@@ -14,7 +14,7 @@ from ...util import log_func
 
 from .. import data_column
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 REQUISITE_VAL_TYPE_TRANSLATE = dict(Text='text',
@@ -118,6 +118,18 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         if columns is None:
             columns = self.getChildren()
         return acc_registry.iqAccRegistry._updateLinkDataDataset(self, dataset=dataset, columns=columns)
+
+    def _updateLinkDataRecord(self, record, columns=None):
+        """
+        Update record by link object data
+
+        :param record: Record dictionary.
+        :param columns: Column object list.
+        :return: Updated record dictionary.
+        """
+        if columns is None:
+            columns = self.getChildren()
+        return acc_registry.iqAccRegistry._updateLinkDataRecord(self, record=record, columns=columns)
 
 
 COMPONENT = iqDataAccumulateRegistry
