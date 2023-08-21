@@ -27,7 +27,7 @@ from ...engine.wx import treelistctrl_manager
 
 from . import wx_editdlg
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -58,6 +58,10 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         refobj_dialogs_proto.iqChoiceTreeDlgProto.__init__(self, *args, **kwargs)
 
         self.ref_obj = ref_obj
+
+        # Set title as ref object description
+        self.SetTitle(self.ref_obj.getDescription() if self.ref_obj is not None else u'')
+
         # List of table field names displayed in the tree control as columns
         self.refobj_col_names = ['cod', 'name']
 
