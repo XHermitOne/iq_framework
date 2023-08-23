@@ -11,7 +11,7 @@ from ...engine.wx import wxbitmap_func
 
 from . import wx_refobjchoice_proto
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 DEFAULT_ENCODING = 'utf-8'
 
@@ -86,7 +86,7 @@ class iqRefObjChoiceProto(wx_refobjchoice_proto.iqWxRefObjChoicePanelProto):
             return True
 
         if self._ref_object is not None:
-            name = self._ref_object.getColumnNameValue(code)
+            name = self._ref_object.getColumnNameValue(code) if code else None
             if name:
                 self._selected_cod = code
                 self.choice_textCtrl.SetValue(name)

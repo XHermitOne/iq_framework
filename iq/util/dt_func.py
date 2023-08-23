@@ -756,9 +756,9 @@ def calcAge(dt_birth, now=None):
     """
     Calculate age.
 
-    @param dt_birth. Birth datetime or date.
-    @param now: Now datetime. If not defined then get system datetime.
-    @return: Age timedelta.
+    :param dt_birth. Birth datetime or date.
+    :param now: Now datetime. If not defined then get system datetime.
+    :return: Age timedelta.
     """
     if isinstance(dt_birth, datetime.date):
         dt_birth = date2datetime(dt_birth)
@@ -772,9 +772,9 @@ def calcYearAge(dt_birth, today=None):
     """
     Calculate age in years.
 
-    @param dt_birth. Birth datetime or date.
-    @param today: Today. If not defined then get system date.
-    @return: Age years.
+    :param dt_birth. Birth datetime or date.
+    :param today: Today. If not defined then get system date.
+    :return: Age years.
     """
     if isinstance(dt_birth, datetime.date):
         dt_birth = date2datetime(dt_birth)

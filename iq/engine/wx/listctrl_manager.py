@@ -1235,10 +1235,10 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         """
         Set sort column for ObjectListView widgets.
 
-        @param objectlistview: ObjectListView control.
-        @param sort_column: Sort column valueGetter as string or index.
-        @param reverse: Reverse sort?
-        @return: True/False.
+        :param objectlistview: ObjectListView control.
+        :param sort_column: Sort column valueGetter as string or index.
+        :param reverse: Reverse sort?
+        :return: True/False.
         """
         if ObjectListView:
             assert issubclass(objectlistview.__class__, ObjectListView.ObjectListView), u'ObjectListView widget type error'
@@ -1270,8 +1270,8 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         """
         Get sort column for ObjectListView widgets as index or valueGetter if it string.
 
-        @param objectlistview: ObjectListView control.
-        @return: Index/Name valueGetter sort column or -1.
+        :param objectlistview: ObjectListView control.
+        :return: Index/Name valueGetter sort column or -1.
         """
         if ObjectListView:
             assert issubclass(objectlistview.__class__, ObjectListView.ObjectListView), u'ObjectListView widget type error'

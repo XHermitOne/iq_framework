@@ -13,7 +13,7 @@ import wx.dataview
 from ...util import log_func
 from . import wxdatetime_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 VALIDATIONS_ATTR_NAME = '_validations'
 
@@ -179,14 +179,21 @@ class iqValidateManager(object):
                 value = ctrl.getValue()
             elif issubclass(ctrl.__class__, wx.CheckBox):
                 value = ctrl.IsChecked()
+            elif issubclass(ctrl.__class__, wx.RadioButton):
+                value = ctrl.GetValue()
             elif issubclass(ctrl.__class__, wx.TextCtrl):
                 value = ctrl.GetValue()
             elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
                 wx_dt = ctrl.GetValue()
                 value = wxdatetime_func.wxDateTime2datetime(wx_dt)
+            elif issubclass(ctrl.__class__, wx.adv.TimePickerCtrl):
+                wx_dt = ctrl.GetValue()
+                value = wxdatetime_func.wxDateTime2datetime(wx_dt)
             elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
                 value = ctrl.GetPath()
             elif issubclass(ctrl.__class__, wx.SpinCtrl):
+                value = ctrl.GetValue()
+            elif issubclass(ctrl.__class__, wx.SpinCtrlDouble):
                 value = ctrl.GetValue()
             elif issubclass(ctrl.__class__, wx.dataview.DataViewListCtrl):
                 value = self._get_wxDataViewListCtrl_data(ctrl)

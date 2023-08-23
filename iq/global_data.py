@@ -10,7 +10,7 @@ import locale
 import os.path
 import datetime
 
-VERSION = (0, 0, 2, 1)
+VERSION = (0, 0, 3, 1)
 
 DEBUG_MODE = True
 LOG_MODE = False
@@ -82,6 +82,7 @@ OPERATE_YEAR = datetime.datetime.now().year
 
 DEFAULT_STR_DATE_FMT = '%Y-%m-%d'
 DEFAULT_STR_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
+DEFAULT_STR_TIME_FMT = '%H:%M:%S'
 
 # System root/administrator password
 SYS_ROOT_PASSWORD = None

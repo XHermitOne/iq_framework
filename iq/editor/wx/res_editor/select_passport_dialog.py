@@ -20,7 +20,7 @@ from ....engine.wx import imglib_manager
 from .... import components
 # from .... import project
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
@@ -125,7 +125,8 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         # Add another projects
         dir_paths = file_func.getDirectoryPaths(root_path)
         dir_paths = [dir_path for dir_path in dir_paths if os.path.basename(dir_path) not in ('iq', prj_name)]
-        dir_paths.sort()
+        dir_paths.sort(key=lambda cur_path: os.path.basename(cur_path))
+
         for dir_path in dir_paths:
             if os.path.exists(dir_path):
                 dir_name = os.path.basename(dir_path)
@@ -151,6 +152,9 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         """
         folder_img_idx = self.component_icons['root']
         dir_paths = file_func.getDirectoryPaths(parent_path)
+        # Sorting
+        dir_paths.sort(key=lambda cur_path: os.path.basename(cur_path))
+
         for dir_path in dir_paths:
             if os.path.exists(dir_path):
                 dir_name = os.path.basename(dir_path)
@@ -163,6 +167,9 @@ class iqSelectPassportDialog(select_passport_dlg.iqSelectPassportDialogProto,
         res_filenames = file_func.getFilePaths(parent_path)
         res_filenames = [filename for filename in res_filenames if file_func.isFilenameExt(filename,
                                                                                            res_func.RESOURCE_FILE_EXT)]
+        # Sorting
+        res_filenames.sort(key=lambda cur_filename: os.path.basename(cur_filename))
+
         for res_filename in res_filenames:
             if os.path.exists(res_filename):
                 res_name = os.path.splitext(os.path.basename(res_filename))[0]

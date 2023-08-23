@@ -112,7 +112,7 @@ class iqRefObjCheckTreeDlg(wx_choicetreedlg.iqRefObjChoiceTreeDlg):
         """
         Get checked codes.
 
-        @return: Checked code list.
+        :return: Checked code list.
         """
         checked_records = self.getTreeListCtrlCheckedItemsDataList(treelistctrl=self.refobj_treeListCtrl)
         checked_codes = [record.get('cod', None) for record in checked_records]
@@ -122,7 +122,7 @@ class iqRefObjCheckTreeDlg(wx_choicetreedlg.iqRefObjChoiceTreeDlg):
         """
         Get checked records.
 
-        @return: Checked record list.
+        :return: Checked record list.
         """
         checked_records = self.getTreeListCtrlCheckedItemsDataList(treelistctrl=self.refobj_treeListCtrl)
         return checked_records

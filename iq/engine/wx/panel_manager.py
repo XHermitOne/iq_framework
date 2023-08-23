@@ -27,7 +27,7 @@ from . import key_combins
 from . import wxobj_func
 from . import wxdatetime_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 SKIP_ACCORD_NAMES = ('Handle', 'EventHandler', 'Parent', 'GrandParent')
 SKIP_FUNCTION_TYPES = (types.FunctionType, types.MethodType, types.BuiltinFunctionType, types.BuiltinMethodType)
@@ -53,6 +53,10 @@ class iqPanelManager(validate_manager.iqValidateManager):
             if value is not None:
                 ctrl.SetValue(value)
             result = True
+        elif issubclass(ctrl.__class__, wx.RadioButton):
+            if value is not None:
+                ctrl.SetValue(value)
+            result = True
         elif issubclass(ctrl.__class__, wx.StaticText):
             value = u'' if value is None else value
             value = value if isinstance(value, str) else str(value)
@@ -65,7 +69,7 @@ class iqPanelManager(validate_manager.iqValidateManager):
             result = True
         elif issubclass(ctrl.__class__, wx.adv.DatePickerCtrl):
             try:
-                value = datetime.date.min() if value is None else value
+                value = datetime.date.min if value is None else value
                 wx_dt = None
                 if isinstance(value, datetime.datetime):
                     wx_dt = wxdatetime_func.datetime2wxDateTime(value)
@@ -89,6 +93,33 @@ class iqPanelManager(validate_manager.iqValidateManager):
                 log_func.fatal(u'Error set value <%s : %s> in DatePickerCtrl' % (str(value),
                                                                                  value.__class__.__name__))
                 result = False
+        elif issubclass(ctrl.__class__, wx.adv.TimePickerCtrl):
+            try:
+                value = datetime.datetime.min if value is None else value
+                wx_dt = None
+                if isinstance(value, datetime.datetime):
+                    wx_dt = wxdatetime_func.datetime2wxDateTime(value)
+                elif isinstance(value, datetime.date):
+                    wx_dt = wxdatetime_func.date2wxDateTime(value)
+                elif isinstance(value, wx.DateTime):
+                    wx_dt = value
+                elif isinstance(value, str) and len(value) == 8:
+                    dt = datetime.datetime.strptime(value, global_func.getDefaultStrTimeFmt())
+                    wx_dt = wxdatetime_func.date2wxDateTime(dt)
+                elif isinstance(value, str) and len(value) == 18:
+                    dt = datetime.datetime.strptime(value, global_func.getDefaultStrDatetimeFmt())
+                    wx_dt = wxdatetime_func.date2wxDateTime(dt)
+                else:
+                    log_func.warning(u'Incorrect time type <%s : %s>' % (value.__class__.__name__, str(value)))
+                    result = False
+                if wx_dt is not None:
+                    ctrl.SetValue(wx_dt)
+                    result = True
+            except:
+                log_func.fatal(u'Error set value <%s : %s> in TimePickerCtrl' % (str(value),
+                                                                                 value.__class__.__name__))
+                result = False
+
         elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
             if value is not None:
                 ctrl.SetPath(value)
@@ -96,6 +127,10 @@ class iqPanelManager(validate_manager.iqValidateManager):
         elif issubclass(ctrl.__class__, wx.SpinCtrl):
             value = 0 if value is None else value
             ctrl.SetValue(int(value))
+            result = True
+        elif issubclass(ctrl.__class__, wx.SpinCtrlDouble):
+            value = 0.0 if value is None else value
+            ctrl.SetValue(float(value))
             result = True
         elif issubclass(ctrl.__class__, wx.dataview.DataViewListCtrl):
             self._set_wxDataViewListCtrl_data(ctrl, value)
@@ -317,9 +352,15 @@ class iqPanelManager(validate_manager.iqValidateManager):
                 accord[ctrl_name] = ctrl_name
             elif isinstance(ctrl, wx.SpinCtrl):
                 accord[ctrl_name] = ctrl_name
+            elif isinstance(ctrl, wx.SpinCtrlDouble):
+                accord[ctrl_name] = ctrl_name
             elif isinstance(ctrl, wx.CheckBox):
                 accord[ctrl_name] = ctrl_name
+            elif isinstance(ctrl, wx.RadioButton):
+                accord[ctrl_name] = ctrl_name
             elif isinstance(ctrl, wx.adv.DatePickerCtrl):
+                accord[ctrl_name] = ctrl_name
+            elif isinstance(ctrl, wx.adv.TimePickerCtrl):
                 accord[ctrl_name] = ctrl_name
             elif isinstance(ctrl, wx.DirPickerCtrl):
                 accord[ctrl_name] = ctrl_name
@@ -459,6 +500,9 @@ class iqPanelManager(validate_manager.iqValidateManager):
         elif issubclass(ctrl.__class__, wx.CheckBox):
             ctrl.SetValue(False)
             result = True
+        elif issubclass(ctrl.__class__, wx.RadioButton):
+            ctrl.SetValue(False)
+            result = True
         elif issubclass(ctrl.__class__, wx.TextCtrl):
             ctrl.SetValue('')
             result = True
@@ -469,11 +513,21 @@ class iqPanelManager(validate_manager.iqValidateManager):
                 wx_date = wxdatetime_func.date2wxDateTime(datetime.date.today())
                 ctrl.SetValue(wx_date)
             result = True
+        elif issubclass(ctrl.__class__, wx.adv.TimePickerCtrl):
+            if ctrl.GetExtraStyle() & wx.adv.DP_ALLOWNONE:
+                ctrl.SetValue(None)
+            else:
+                wx_date = wxdatetime_func.datetime2wxDateTime(datetime.datetime.now())
+                ctrl.SetValue(wx_date)
+            result = True
         elif issubclass(ctrl.__class__, wx.DirPickerCtrl):
             ctrl.SetPath('')
             result = True
         elif issubclass(ctrl.__class__, wx.SpinCtrl):
             ctrl.SetValue(0)
+            result = True
+        elif issubclass(ctrl.__class__, wx.SpinCtrlDouble):
+            ctrl.SetValue(0.0)
             result = True
         elif issubclass(ctrl.__class__, wx.dataview.DataViewListCtrl):
             self._set_wxDataViewListCtrl_data(ctrl, ())
