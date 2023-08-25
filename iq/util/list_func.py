@@ -8,7 +8,7 @@ Additional list processing functions.
 import operator
 import functools
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 def sortMultiKey(items, keys):
@@ -184,3 +184,19 @@ def queryTable2dataset(query_table):
 
     dataset = [{col_name: row[i] for i, col_name in enumerate(query_table.get('__fields__', list()))} for row in query_table.get('__data__', list())]
     return dataset
+
+
+def findKeyIdx(items, find_key, find_value):
+    """
+    Find index the list of dictionaries for the values of one key.
+
+    :param items: List of dictionaries.
+    :param find_key: Key.
+    :param find_value: Find value.
+    :return: Index or -1 if nothing is found.
+    """
+    try:
+        return [item.get(find_key) for item in items].index(find_value)
+    except IndexError:
+        pass
+    return -1
