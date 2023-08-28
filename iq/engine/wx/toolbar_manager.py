@@ -11,7 +11,7 @@ from ...util import log_func
 
 from .import imglib_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 class iqToolBarManager(imglib_manager.iqImageLibManager):
@@ -112,3 +112,33 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
             x_offset += prev_ctrl.GetSize()[0] if prev_ctrl else tool_size[0]
 
         return wx.Point(toolbar_pos[0] + x_offset, toolbar_pos[1] + toolbar_size[1])
+
+    def setToolBarToolHelp(self, toolbar, tool, short_help=u'', long_help=u''):
+        """
+        Set tool short and long help.
+        An application might use short help for identifying the tool purpose in a tooltip.
+        You might use the long help for displaying the tool purpose on the status line.
+
+        :param toolbar: wx.ToolBar object.
+        :param tool: wx.ToolBarToolBase toolbar tool object.
+        :param short_help: Shot help.
+        :param long_help: Long help.
+        :return: True/False.
+        """
+        assert issubclass(toolbar.__class__, wx.ToolBar), u'ToolBar manager type error'
+        if tool is None:
+            log_func.warning(u'Not define tool')
+            return False
+
+        if isinstance(tool, wx.ToolBarToolBase):
+            try:
+                if isinstance(short_help, str):
+                    toolbar.SetToolShortHelp(toolId=tool.GetId(), help_string=short_help)
+                if isinstance(long_help, str):
+                    toolbar.SetToolLongHelp(toolId=tool.GetId(), help_string=long_help)
+                return True
+            except:
+                log_func.fatal(u'Error set help tool')
+        else:
+            log_func.warning(u'Tool type error set help')
+        return False
