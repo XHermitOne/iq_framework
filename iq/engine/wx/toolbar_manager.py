@@ -11,7 +11,7 @@ from ...util import log_func
 
 from .import imglib_manager
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 
 class iqToolBarManager(imglib_manager.iqImageLibManager):
@@ -133,9 +133,9 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
         if isinstance(tool, wx.ToolBarToolBase):
             try:
                 if isinstance(short_help, str):
-                    toolbar.SetToolShortHelp(toolId=tool.GetId(), help_string=short_help)
+                    toolbar.SetToolShortHelp(toolId=tool.GetId(), helpString=short_help)
                 if isinstance(long_help, str):
-                    toolbar.SetToolLongHelp(toolId=tool.GetId(), help_string=long_help)
+                    toolbar.SetToolLongHelp(toolId=tool.GetId(), helpString=long_help)
                 return True
             except:
                 log_func.fatal(u'Error set help tool')
