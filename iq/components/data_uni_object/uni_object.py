@@ -14,7 +14,7 @@ from ...dialog import dlg_func
 
 from ..wx_filterchoicectrl import filter_convert
 
-__version__ = (0, 0, 3, 3)
+__version__ = (0, 0, 3, 4)
 
 _ = lang_func.getTranslation().gettext
 
@@ -154,7 +154,8 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
             query = transaction.query(model).filter(getattr(model, self.getGuidColumnName()) == guid)
             if self.existsQuery(query):
                 # Presentation of query result in the form of a dictionary
-                record = query.first().__dict__
+                # record = query.first().__dict__
+                record = self.getQueryResultRecordAsDict(query.first())
             else:
                 log_func.warning(u'Unique data guid <%s> not found in <%s>' % (guid, self.getName()))
         except:

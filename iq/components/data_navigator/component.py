@@ -13,7 +13,7 @@ from ..data_scheme import scheme as scheme_module
 
 from ...util import log_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 3, 2)
 
 
 class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):

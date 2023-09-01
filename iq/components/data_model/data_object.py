@@ -8,7 +8,10 @@ Data object interface class.
 from ...util import log_func
 from ...util import global_func
 
-__version__ = (0, 0, 2, 1)
+from ..data_column import COMPONENT as column_component
+from . import component
+
+__version__ = (0, 0, 2, 2)
 
 DATA_NAME_DELIMETER = '.'
 
@@ -87,21 +90,30 @@ class iqDataObject(iqDataObjectProto):
         """
         try:
             for column in columns:
-                if column.isAttributeValue('link'):
-                    psp = column.getAttribute('link')
-                    link_obj = global_func.getKernel().getObject(psp=psp)
-                    if link_obj:
-                        for i, record in enumerate(dataset):
-                            column_name = column.getName()
-                            value = record.get(column_name, None)
-                            link_rec = link_obj.getDataObjectRec(value)
-                            if isinstance(link_rec, dict):
-                                update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
-                                dataset[i].update(update_rec)
-                            else:
-                                log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
-                                                                                                          link_obj.getType(),
-                                                                                                          link_obj.getName()))
+                if issubclass(column.__class__, column_component):
+                    if column.isAttributeValue('link'):
+                        psp = column.getAttribute('link')
+                        link_obj = global_func.getKernel().getObject(psp=psp)
+                        if link_obj:
+                            for i, record in enumerate(dataset):
+                                column_name = column.getName()
+                                value = record.get(column_name, None)
+                                link_rec = link_obj.getDataObjectRec(value)
+                                if isinstance(link_rec, dict):
+                                    update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
+                                    dataset[i].update(update_rec)
+                                else:
+                                    log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
+                                                                                                                link_obj.getType(),
+                                                                                                                link_obj.getName()))
+                elif issubclass(column.__class__, component.iqDataModel):
+                    for i, record in enumerate(dataset):
+                        cascade_name = column.getName()
+                        dataset[i][cascade_name] = self._updateLinkDataDataset(dataset=record.get(cascade_name, list()),
+                                                                               columns=column.getChildren())
+                else:
+                    log_func.warning(u'Unsupported column type <%s : %s>' % (column.getName(),
+                                                                             column.__class__.__name__))
         except:
             log_func.fatal(u'Error update dataset by link object data')
         return dataset
@@ -116,21 +128,30 @@ class iqDataObject(iqDataObjectProto):
         """
         try:
             for column in columns:
-                if column.isAttributeValue('link'):
-                    psp = column.getAttribute('link')
-                    link_obj = global_func.getKernel().getObject(psp=psp)
-                    if link_obj:
-                        # for i, record in enumerate(dataset):
-                        column_name = column.getName()
-                        value = record.get(column_name, None)
-                        link_rec = link_obj.getDataObjectRec(value)
-                        if isinstance(link_rec, dict):
-                            update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
-                            record.update(update_rec)
-                        else:
-                            log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
-                                                                                                        link_obj.getType(),
-                                                                                                        link_obj.getName()))
+                if issubclass(column.__class__, column_component):
+                    if column.isAttributeValue('link'):
+                        psp = column.getAttribute('link')
+                        link_obj = global_func.getKernel().getObject(psp=psp)
+                        if link_obj:
+                            # for i, record in enumerate(dataset):
+                            column_name = column.getName()
+                            value = record.get(column_name, None)
+                            link_rec = link_obj.getDataObjectRec(value)
+                            if isinstance(link_rec, dict):
+                                update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
+                                record.update(update_rec)
+                            else:
+                                log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
+                                                                                                            link_obj.getType(),
+                                                                                                            link_obj.getName()))
+                elif issubclass(column.__class__, component.iqDataModel):
+                    cascade_name = column.getName()
+                    # log_func.debug(u'Cascade <%s>' % cascade_name)
+                    record[cascade_name] = self._updateLinkDataDataset(dataset=record.get(cascade_name, list()),
+                                                                       columns=column.getChildren())
+                else:
+                    log_func.warning(u'Unsupported column type <%s : %s>' % (column.getName(),
+                                                                             column.__class__.__name__))
         except:
             log_func.fatal(u'Error update record by link object data')
         return record
