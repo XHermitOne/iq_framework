@@ -27,7 +27,7 @@ from ...engine.wx import treelistctrl_manager
 
 from . import wx_editdlg
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -56,6 +56,13 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         :param default_selected_code: Selected default code.
         """
         refobj_dialogs_proto.iqChoiceTreeDlgProto.__init__(self, *args, **kwargs)
+
+        # Set labels
+        self.edit_button.SetLabel(_('Edit...'))
+        self.cancel_button.SetLabel(_('Cancel'))
+        self.find_staticText.SetLabel(_('Find:'))
+        self.search_toolBar.SetToolShortHelp(toolId=self.search_tool.GetId(), helpString=_('Find'))
+        self.search_toolBar.SetToolLongHelp(toolId=self.search_tool.GetId(), helpString=_('Find'))
 
         self.ref_obj = ref_obj
 

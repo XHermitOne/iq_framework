@@ -11,6 +11,7 @@ import wx
 
 from ...util import log_func
 from ...util import file_func
+from ...util import lang_func
 
 # from ...engine.wx import wxbitmap_func
 # from ...engine.wx.dlg import wxdlg_func
@@ -18,7 +19,9 @@ from ...engine.wx import wxobj_func
 
 from ..data_ref_object import wx_choicetreedlg
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
+
+_ = lang_func.getTranslation().gettext
 
 # Dialog cache to optimize call selection
 CHECK_DLG_CACHE = dict()
