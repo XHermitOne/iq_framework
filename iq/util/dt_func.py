@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 1, 5, 1)
+__version__ = (0, 1, 6, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -805,3 +805,21 @@ def calcYearAge(dt_birth, today=None):
     if today < birthday:
         years -= 1
     return years
+
+
+def calcDateAndTime(dt_date, dt_time):
+    """
+    Calculate datetime as date and time.
+
+    :param dt_date: Date as datetime.
+    :param dt_time: Time as datetime.
+    :return: Datetime.
+    """
+    if isinstance(dt_date, datetime.date):
+        dt_date = date2datetime(dt_date)
+    assert isinstance(dt_date, datetime.datetime), u'Type error datetime'
+    assert isinstance(dt_time, datetime.datetime), u'Type error datetime'
+
+    result = dt_date.replace(hour=dt_time.hour, minute=dt_time.minute,
+                             second=dt_time.second, microsecond=dt_time.microsecond)
+    return result

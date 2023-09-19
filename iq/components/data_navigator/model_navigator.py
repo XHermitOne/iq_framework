@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 6, 1)
+__version__ = (0, 0, 6, 2)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -88,7 +88,16 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             if isinstance(col_value, (list, tuple)):
                 model_property = getattr(model, col_name)
                 model_argument = model_property.prop.argument
-                model_rec[col_name] = [model_argument(**self.prepareModelRecord(model_argument, rec)) for rec in col_value]
+                # log_func.debug(u'Prepare model record <%s : %s : %s>' % (model.__name__, col_name, model_argument.__class__.__name__))
+                if isinstance(model_argument, sqlalchemy.orm.DeclarativeMeta):
+                    model_rec[col_name] = [model_argument(**self.prepareModelRecord(model_argument, rec)) for rec in col_value]
+                elif isinstance(model_argument, str):
+                    try:
+                        model_rec[col_name] = str(col_value)
+                    except:
+                        log_func.fatal(u'Error type prepare model record <%s : %s : %s>' % (model.__name__, col_name, model_argument.__class__.__name__))
+                else:
+                    log_func.warning(u'Error type Prepare model record <%s : %s : %s>' % (model.__name__, col_name, model_argument.__class__.__name__))
         return model_rec
 
     def getQueryResultRecordAsDict(self, record):

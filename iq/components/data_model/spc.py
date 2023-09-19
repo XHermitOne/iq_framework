@@ -13,7 +13,7 @@ from ...editor import property_editor_id
 
 from .. import data_column
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 COMPONENT_TYPE = 'iqDataModel'
 
@@ -42,7 +42,7 @@ DATAMODEL_SPC = {
     '__icon__': 'fatcow/table',
     '__parent__': object_spc.OBJECT_SPC,
     '__doc__': None,
-    '__content__': ('iqDataColumn', 'iqDataModel'),
+    '__content__': ('iqDataColumn', ),
     '__edit__': {
         'tablename': property_editor_id.STRING_EDITOR,
         'set_default': property_editor_id.METHOD_EDITOR,
