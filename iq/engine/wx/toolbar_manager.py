@@ -11,7 +11,7 @@ from ...util import log_func
 
 from .import imglib_manager
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 2, 1)
 
 
 class iqToolBarManager(imglib_manager.iqImageLibManager):
@@ -45,6 +45,27 @@ class iqToolBarManager(imglib_manager.iqImageLibManager):
                 result = result and False
 
         return result
+
+    def enableToolbarTool(self, toolbar, tool, enable):
+        """
+        Set on / off toolbar tool.
+
+        :param toolbar: wx.ToolBar object.
+        :param tool:  wx.ToolBarToolBase object.
+        :param enable: If True, enables the tool, otherwise disables it.
+        :return: True/False.
+        """
+        assert issubclass(toolbar.__class__, wx.ToolBar), u'ToolBar manager type error'
+
+        try:
+            if tool and isinstance(tool, wx.ToolBarToolBase):
+                toolbar.EnableTool(toolId=tool.GetId(), enable=enable)
+                return True
+            else:
+                log_func.warning(u'Tool not defined')
+        except:
+            log_func.fatal(u'Error enable/disable tool')
+        return False
 
     def setToolBarLibImages(self, toolbar=None, **tools):
         """

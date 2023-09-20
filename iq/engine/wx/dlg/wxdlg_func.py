@@ -18,8 +18,9 @@ from ....util import lang_func
 from .. import wxbitmap_func
 
 from . import login_dialog_proto
+from ... import stored_manager
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -675,7 +676,7 @@ LOGIN_PASSWORD_IDX = 1
 LOGIN_PASSWORD_MD5_IDX = 2
 
 
-def getLoginDlg(parent=None, title='', default_username='', reg_users=None, user_descriptions=None):
+def getLoginDlg(parent=None, title='', default_username=None, reg_users=None, user_descriptions=None):
     """
     Open login user dialog.
 
@@ -707,11 +708,12 @@ def getLoginDlg(parent=None, title='', default_username='', reg_users=None, user
 USER_ITEM_DELIMETER = '\t:\t'
 
 
-class iqLoginDialog(login_dialog_proto.iqLoginDialogProto):
+class iqLoginDialog(login_dialog_proto.iqLoginDialogProto,
+                    stored_manager.iqStoredManager):
     """
     Login user dialog.
     """
-    def __init__(self, parent, title='', default_username='', reg_users=None, user_descriptions=None):
+    def __init__(self, parent, title='', default_username=None, reg_users=None, user_descriptions=None):
         """
         Constructor.
 
@@ -732,10 +734,20 @@ class iqLoginDialog(login_dialog_proto.iqLoginDialogProto):
             self.SetIcon(icon)
 
         try:
+            login_data = self.loadCustomData()
+            if login_data:
+                size = login_data.get('size', None)
+                if size:
+                    self.SetSize(wx.Size(*size))
+                position = login_data.get('pos', None)
+                if position:
+                    self.SetPosition(wx.Point(*position))
+
             if reg_users is None:
                 reg_users = list()
-            if default_username is None:
-                default_username = ''
+            if not default_username:
+                last_login_username = login_data.get('last_login_username', '') if login_data else ''
+                default_username = last_login_username
 
             user_choices = reg_users
             if user_descriptions:
@@ -745,23 +757,43 @@ class iqLoginDialog(login_dialog_proto.iqLoginDialogProto):
 
             self.username_comboBox.SetItems(user_choices)
             if user_choices:
-                self.username_comboBox.Select(0)
+                selected = reg_users.index(default_username) if default_username and default_username in reg_users else 0
+                # log_func.debug(u'Default username <%s : %d>' % (default_username, selected))
+                self.username_comboBox.Select(selected)
 
-            self._user = default_username
+            self._username = default_username
             self._password = ''
 
             # self.username_comboBox.SetFocus()
             self.ok_button.SetFocus()
+
+            self.Bind(wx.EVT_CLOSE, self.onClose)
         except:
             log_func.fatal(u'Error init login dialog')
+
+    def onClose(self, event):
+        """
+        Close dialog.
+        """
+        data = dict(last_login_username=self._username,
+                    size=tuple(self.GetSize()),
+                    pos=tuple(self.GetPosition()))
+        self.saveCustomData(save_data=data)
+        event.Skip()
 
     def onOkButtonClick(self, event):
         """
         Button click handler <OK>.
         """
-        self._user = self._getSelectedUsername()
+        self._username = self._getSelectedUsername()
         self._password = self.password_textCtrl.GetValue()
         self.EndModal(wx.ID_OK)
+
+        data = dict(last_login_username=self._username,
+                    size=tuple(self.GetSize()),
+                    pos=tuple(self.GetPosition()))
+        self.saveCustomData(save_data=data)
+
         event.Skip()
 
     def onCancelButtonClick(self, event):
@@ -784,7 +816,7 @@ class iqLoginDialog(login_dialog_proto.iqLoginDialogProto):
         """
         Get username.
         """
-        return self._user
+        return self._username
 
     def getPassword(self):
         """

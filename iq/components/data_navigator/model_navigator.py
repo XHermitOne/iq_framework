@@ -8,6 +8,8 @@ Data model navigator manager.
 import sys
 import sqlalchemy
 import sqlalchemy.orm
+import sqlalchemy.orm.base
+import sqlalchemy.orm.exc
 import sqlalchemy.sql.functions
 
 from ...util import log_func
@@ -18,7 +20,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 6, 2)
+__version__ = (0, 0, 7, 1)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -68,6 +70,19 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             self.setModel(model)
         return self.__model__
 
+    def _isMapped(self, obj):
+        """
+        Check if object is an sqlalchemy model instance.
+
+        :param obj: Checked object.
+        :return: True/False.
+        """
+        try:
+            sqlalchemy.orm.base.object_mapper(obj)
+        except sqlalchemy.orm.exc.UnmappedInstanceError:
+            return False
+        return True
+
     def prepareModelRecord(self, model=None, record=None):
         """
         Prepare record as dictionary to model.
@@ -83,7 +98,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
 
         assert isinstance(record, dict), u'Model record type error'
 
-        model_rec = {col_name: value for col_name, value in record.items() if hasattr(model, col_name)}
+        model_rec = {col_name: value for col_name, value in record.items() if hasattr(model, col_name) and not self._isMapped(value)}
         for col_name, col_value in model_rec.items():
             if isinstance(col_value, (list, tuple)):
                 model_property = getattr(model, col_name)
@@ -91,11 +106,6 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                 # log_func.debug(u'Prepare model record <%s : %s : %s>' % (model.__name__, col_name, model_argument.__class__.__name__))
                 if isinstance(model_argument, sqlalchemy.orm.DeclarativeMeta):
                     model_rec[col_name] = [model_argument(**self.prepareModelRecord(model_argument, rec)) for rec in col_value]
-                elif isinstance(model_argument, str):
-                    try:
-                        model_rec[col_name] = str(col_value)
-                    except:
-                        log_func.fatal(u'Error type prepare model record <%s : %s : %s>' % (model.__name__, col_name, model_argument.__class__.__name__))
                 else:
                     log_func.warning(u'Error type Prepare model record <%s : %s : %s>' % (model.__name__, col_name, model_argument.__class__.__name__))
         return model_rec
