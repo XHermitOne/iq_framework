@@ -20,7 +20,7 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 5, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -783,3 +783,30 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         """
         cod_tuple = tuple([subcod for subcod in self.getCodAsTuple(cod) if subcod])
         return len(cod_tuple) < (self.getLevelCount() - 1)
+
+    def selectFavorites(self, parent=None, from_refobj=None):
+        """
+        Select favorites.
+
+        :param parent: Parent window.
+        :param from_refobj: Source ref-object.
+        :return: True/False.
+        """
+        try:
+            if global_func.isWXEngine():
+                if parent is None:
+                    import wx
+                    app = wx.GetApp()
+                    parent = app.GetTopWindow()
+
+                from . import select_favorites_dialog
+
+                result = select_favorites_dialog.openSelectFavoritesDialog(parent=parent,
+                                                                           from_refobj=from_refobj,
+                                                                           to_refobj=self)
+                return result
+            else:
+                log_func.warning(u'Not support select favorites ref-objects. Engine <%s>' % global_func.getEngineType())
+        except:
+            log_func.fatal(u'Error select favorites ref-objects <%s>' % self.getName())
+        return None
