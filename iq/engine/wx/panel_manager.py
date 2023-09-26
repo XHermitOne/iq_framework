@@ -27,7 +27,7 @@ from . import key_combins
 from . import wxobj_func
 from . import wxdatetime_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 2, 2)
 
 SKIP_ACCORD_NAMES = ('Handle', 'EventHandler', 'Parent', 'GrandParent')
 SKIP_FUNCTION_TYPES = (types.FunctionType, types.MethodType, types.BuiltinFunctionType, types.BuiltinMethodType)
@@ -167,26 +167,32 @@ class iqPanelManager(validate_manager.iqValidateManager):
         if not ctrl_names:
             ctrl_names = self.__accord.values()
 
-        for ctrlname in dir(panel):
-            if ctrlname in SKIP_ACCORD_NAMES:
-                continue
-            if ctrlname.startswith('__'):
-                continue
-            # if isinstance(getattr(panel, ctrlname), SKIP_FUNCTION_TYPES):
-            #     continue
-            if ctrl_names and ctrlname not in ctrl_names:
-                # log_func.warning(u'Not find control <%s> in %s' % (ctrlname, ctrl_names))
+        # Checking for the presence of a control with this name
+        panel_children_names = dir(panel)
+        not_find_ctrl_names = list()
+        for ctrl_name in ctrl_names:
+            if ctrl_name not in panel_children_names:
+                log_func.warning(u'Not find control <%s> in panel %s' % (ctrl_name, str(panel)))
+                not_find_ctrl_names.append(ctrl_names)
                 continue
 
-            ctrl = getattr(panel, ctrlname)
+            if ctrl_name in SKIP_ACCORD_NAMES:
+                continue
+            if ctrl_name.startswith('__'):
+                continue
+
+            ctrl = getattr(panel, ctrl_name)
             if issubclass(ctrl.__class__, wx.Window):
-                if issubclass(ctrl.__class__, wx.Panel):
-                    data = self.getPanelCtrlValues(panel=ctrl, data_dict=data_dict, *ctrl_names)
-                    result.update(data)
-                else:
-                    value = self.getPanelCtrlValue(ctrl)
-                    result[ctrlname] = value
-                    log_func.debug(u'Get control <%s> value <%s>' % (ctrlname, value))
+                value = self.getPanelCtrlValue(ctrl)
+                result[ctrl_name] = value
+                log_func.debug(u'Get control <%s> value <%s>' % (ctrl_name, value))
+
+        if not_find_ctrl_names:
+            # Find controls in children panels
+            children_panels = [getattr(panel, child_name) for child_name in panel_children_names if issubclass(getattr(panel, child_name).__class__, wx.Panel)]
+            for child_panel in children_panels:
+                data = self.getPanelCtrlValues(child_panel, data_dict, *not_find_ctrl_names)
+                result.update(data)
         return result
 
     def setPanelCtrlValues(self, panel, data_dict=None, *ctrl_names):
