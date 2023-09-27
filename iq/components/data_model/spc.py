@@ -13,7 +13,7 @@ from ...editor import property_editor_id
 
 from .. import data_column
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 COMPONENT_TYPE = 'iqDataModel'
 
@@ -38,6 +38,8 @@ DATAMODEL_SPC = {
 
     'set_default': None,
 
+    'methods': None,
+
     '__package__': u'Data',
     '__icon__': 'fatcow/table',
     '__parent__': object_spc.OBJECT_SPC,
@@ -46,10 +48,12 @@ DATAMODEL_SPC = {
     '__edit__': {
         'tablename': property_editor_id.STRING_EDITOR,
         'set_default': property_editor_id.METHOD_EDITOR,
+        'methods': property_editor_id.METHOD_EDITOR,
     },
     '__help__': {
         'tablename': u'Storage table name',
         'set_default': u'Function to set the model with default data',
+        'methods': u'Model methods',
     },
 }
 

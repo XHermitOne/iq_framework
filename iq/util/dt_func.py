@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 1, 6, 1)
+__version__ = (0, 1, 7, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -389,6 +389,30 @@ def getYesterdayFmt(fmt=DEFAULT_DATE_FMT):
     :return: Yesterday as string.
     """
     return getYesterdayDT().strftime(fmt)
+
+
+def getTomorrow():
+    """
+    Tomorrow as date.
+    """
+    return datetime.date.today() + datetime.timedelta(days=1)
+
+
+def getTomorrowDT():
+    """
+    Tomorrow as datetime.
+    """
+    return date2datetime(getTomorrow())
+
+
+def getTomorrowFmt(fmt=DEFAULT_DATE_FMT):
+    """
+    Tomorrow as string.
+
+    :param fmt: Tomorrow string format.
+    :return: Tomorrow as string.
+    """
+    return getTomorrowDT().strftime(fmt)
 
 
 def getDaysAgo(days=1):

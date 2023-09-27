@@ -5,10 +5,12 @@
 Additional list processing functions.
 """
 
+import copy
 import operator
 import functools
+import itertools
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 
 def sortMultiKey(items, keys):
@@ -200,3 +202,57 @@ def findKeyIdx(items, find_key, find_value):
     except IndexError:
         pass
     return -1
+
+
+def sumGroupKey(items, group_key, value_key):
+    """
+    Get sum values group by key items.
+
+    :param items: List of dictionaries.
+    :param group_key: Group key.
+    :param value_key: Sum value key.
+    :return: Items with sum values.
+    """
+    assert isinstance(items, list), u'List of dictionary type error'
+
+    copy_items = copy.deepcopy(items)
+    copy_items.sort(key=lambda item: item[group_key])
+
+    new_items = [{group_key: grp_name, value_key: sum([item[value_key] for item in grp])} for grp_name, grp in itertools.groupby(copy_items, lambda item: item[group_key])]
+    return new_items
+
+
+def maxGroupKey(items, group_key, value_key):
+    """
+    Get maximum values group by key items.
+
+    :param items: List of dictionaries.
+    :param group_key: Group key.
+    :param value_key: Maximum value key.
+    :return: Items with maximum values.
+    """
+    assert isinstance(items, list), u'List of dictionary type error'
+
+    copy_items = copy.deepcopy(items)
+    copy_items.sort(key=lambda item: item[group_key])
+
+    new_items = [{group_key: grp_name, value_key: max([item[value_key] for item in grp])} for grp_name, grp in itertools.groupby(copy_items, lambda item: item[group_key])]
+    return new_items
+
+
+def minGroupKey(items, group_key, value_key):
+    """
+    Get minimum values group by key items.
+
+    :param items: List of dictionaries.
+    :param group_key: Group key.
+    :param value_key: Minimum value key.
+    :return: Items with minimum values.
+    """
+    assert isinstance(items, list), u'List of dictionary type error'
+
+    copy_items = copy.deepcopy(items)
+    copy_items.sort(key=lambda item: item[group_key])
+
+    new_items = [{group_key: grp_name, value_key: min([item[value_key] for item in grp])} for grp_name, grp in itertools.groupby(copy_items, lambda item: item[group_key])]
+    return new_items

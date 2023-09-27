@@ -13,9 +13,10 @@ import iq
 from iq.util import log_func
 from iq.util import global_func
 
+from iq.engine.wx import wxbitmap_func
 from iq.engine.wx import form_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialogProto, form_manager.iqFormManager):
@@ -41,7 +42,9 @@ class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialog
         """
         Init images method.
         """
-        pass
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/broom')
+        if bmp:
+            self.clear_bpButton.SetBitmap(bitmap=bmp)
 
     def initControls(self):
         """
@@ -89,6 +92,7 @@ class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialog
         Add favorites button click handler.
         """
         self.addFavorites(add_codes=self.from_ref_obj_comboctrl.getSelectedCodes())
+        self.from_ref_obj_comboctrl.setValue(None)
         self.EndModal(wx.ID_OK)
         event.Skip()
 
@@ -97,6 +101,13 @@ class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialog
         Cancel button click handler.
         """
         self.EndModal(wx.ID_CANCEL)
+        event.Skip()
+
+    def onClearButtonClick(self, event):
+        """
+        Clear ref-object choice codes.
+        """
+        self.from_ref_obj_comboctrl.setValue(None)
         event.Skip()
 
 

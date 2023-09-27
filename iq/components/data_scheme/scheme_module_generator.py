@@ -17,7 +17,7 @@ from ...dialog import dlg_func
 from ...components.data_column import spc as data_column_spc
 from ...components.data_model import spc as data_model_spc
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 SCHEME_TEXT_FMT = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -55,6 +55,8 @@ class %s(Base):
 %s
 %s
 %s
+%s
+
 %s
 '''
 
@@ -173,12 +175,23 @@ class iqSchemeModuleGenerator(object):
 
         # Gen modeles
         modeles_txt = [self.genModelTxt(model, parent_model_resource=resource) for model in resource.get(spc_func.CHILDREN_ATTR_NAME, list()) if model.get('type', None) == data_model_spc.COMPONENT_TYPE]
+
+        # Methods
+        methods = resource.get('methods', '')
+        if methods:
+            lines = methods.split(os.linesep)
+            lines = ['    ' + line for line in lines]
+            methods = os.linesep.join(lines)
+        else:
+            methods = ''
+
         return MODEL_TEXT_FMT % (os.linesep.join(modeles_txt),
                                  name, description, tablename,
                                  os.linesep.join(columns_text),
                                  foreignkey_txt,
                                  parent_relationship_txt,
-                                 os.linesep.join(relationships_txt))
+                                 os.linesep.join(relationships_txt),
+                                 methods)
 
     def genColumnTxt(self, resource):
         """
