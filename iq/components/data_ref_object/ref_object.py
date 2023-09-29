@@ -784,12 +784,16 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         cod_tuple = tuple([subcod for subcod in self.getCodAsTuple(cod) if subcod])
         return len(cod_tuple) < (self.getLevelCount() - 1)
 
-    def selectFavorites(self, parent=None, from_refobj=None):
+    def selectFavorites(self, parent=None, from_refobj=None, view_fields=None, search_fields=None,
+                        clear_cache=False):
         """
         Select favorites.
 
         :param parent: Parent window.
         :param from_refobj: Source ref-object.
+        :param view_fields: List of displayed fields source ref-object.
+        :param search_fields: List of fields to search source ref-object.
+        :param clear_cache: Clear cache source ref-object?
         :return: True/False.
         """
         try:
@@ -803,7 +807,10 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
 
                 result = select_favorites_dialog.openSelectFavoritesDialog(parent=parent,
                                                                            from_refobj=from_refobj,
-                                                                           to_refobj=self)
+                                                                           to_refobj=self,
+                                                                           fields=view_fields,
+                                                                           search_fields=search_fields,
+                                                                           clear_cache=clear_cache)
                 return result
             else:
                 log_func.warning(u'Not support select favorites ref-objects. Engine <%s>' % global_func.getEngineType())

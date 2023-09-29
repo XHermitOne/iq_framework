@@ -13,10 +13,11 @@ import iq
 from iq.util import log_func
 from iq.util import global_func
 
+from iq.engine.wx import wxobj_func
 from iq.engine.wx import wxbitmap_func
 from iq.engine.wx import form_manager
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 
 class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialogProto, form_manager.iqFormManager):
@@ -31,12 +32,16 @@ class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialog
 
         self.to_refobj = None
 
-    def init(self):
+    def init(self, fields, search_fields):
         """
-        Init dialog.
+        Dialog initialization function.
+
+        :param fields: List of field names to be displayed in the tree control.
+            If no fields are specified, only <Code> and <Name> are displayed.
+        :param search_fields: Search fields.
         """
         self.initImages()
-        self.initControls()
+        self.initControls(fields, search_fields)
 
     def initImages(self):
         """
@@ -46,15 +51,33 @@ class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialog
         if bmp:
             self.clear_bpButton.SetBitmap(bitmap=bmp)
 
-    def initControls(self):
+    def initControls(self, fields, search_fields):
         """
         Init controls method.
+
+        :param fields: List of field names to be displayed in the tree control.
+            If no fields are specified, only <Code> and <Name> are displayed.
+        :param search_fields: Search fields.
         """
+        self.from_ref_obj_comboctrl.setViewFieldnames(fields)
+        self.from_ref_obj_comboctrl.setSearchFieldnames(search_fields)
+
         from_refobj = self.from_ref_obj_comboctrl.getRefObj()
         if from_refobj:
             self.from_staticText.SetLabel(from_refobj.getDescription())
         if self.to_refobj:
             self.to_staticText.SetLabel(self.to_refobj.getDescription())
+
+    def setDefaultCodes(self, default_codes=None):
+        """
+        Set default codes in source ref-object.
+
+        :param default_codes: Default_codes.
+        :return: True/False.
+        """
+        if default_codes:
+            return self.from_ref_obj_comboctrl.setCodes(default_codes)
+        return False
 
     def addFavorites(self, add_codes):
         """
@@ -111,16 +134,28 @@ class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialog
         event.Skip()
 
 
-def openSelectFavoritesDialog(parent=None, from_refobj=None, to_refobj=None):
+def openSelectFavoritesDialog(parent=None, from_refobj=None, to_refobj=None, fields=None,
+                              default_checked_codes=None, search_fields=None,
+                              clear_cache=False):
     """
     Open dialog select favorites ref-objects.
 
     :param parent: Parent window.
     :param from_refobj: Source ref-object.
     :param to_refobj: Destination ref_object.
+    :param fields: List of field names that
+         must be displayed in the tree control.
+         If no fields are specified, only
+         <Code> and <Name>.
+    :param default_checked_codes: The checked codes is the default.
+         If None, then nothing is checked.
+    :param search_fields: Fields to search for.
+         If not specified, then the displayed fields are taken.
+    :param clear_cache: Clear cache?
     :return: True/False.
     """
     dialog = None
+
     try:
         if parent is None:
             parent = global_func.getMainWin()
@@ -128,7 +163,9 @@ def openSelectFavoritesDialog(parent=None, from_refobj=None, to_refobj=None):
         dialog = iqSelectFavoritesDialog(parent)
         dialog.from_ref_obj_comboctrl.setRefObj(from_refobj)
         dialog.to_refobj = to_refobj
-        dialog.init()
+        dialog.init(fields, search_fields)
+        dialog.setDefaultCodes(default_checked_codes)
+
         result = dialog.ShowModal()
         dialog.Destroy()
         return result == wx.ID_OK
