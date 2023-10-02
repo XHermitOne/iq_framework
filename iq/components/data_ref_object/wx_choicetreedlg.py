@@ -27,7 +27,7 @@ from ...engine.wx import treelistctrl_manager
 
 from . import wx_editdlg
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 _ = lang_func.getTranslation().gettext
 
@@ -322,6 +322,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         len_level_data = len(level_data) if isinstance(level_data, list) else 0
         if is_progress:
             wxdlg_func.openProgressDlg(self, _(u'Ref object'), label, 0, len_level_data)
+        else:
+            wx.BeginBusyCursor()
 
         try:
             for i, record in enumerate(level_data):
@@ -338,6 +340,8 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
 
         if is_progress:
             wxdlg_func.closeProgressDlg()
+        else:
+            wx.EndBusyCursor()
 
     def getSortField(self, sort_column='name'):
         """
@@ -537,11 +541,11 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         if find_item:
             self.refobj_treeListCtrl.Delete(find_item)
 
-        # Заполнение пустого уровня
+        # Filling an empty level
         if not self.refobj_treeListCtrl.ItemHasChildren(item):
             record = self.getTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=item)
             code = record['cod']
-            self.setRefObjLevelTree(item, code)
+            self.setRefObjLevelTree(item, code, is_progress=False)
   
     def findRefObjTreeItem(self, parent_item, code=None):
         """
@@ -563,6 +567,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         while child_item and child_item.IsOk():
             record = self.getTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=child_item)
             if record:
+                # log_func.debug(u'Find child <%s = %s>' % (code, record['cod']))
                 if code == record['cod']:
                     find_result = child_item
                     break
