@@ -9,8 +9,11 @@ import datetime
 
 from ...dialog import std_dlg_func
 from ...util import dt_func
+from ...util import lang_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
+
+_ = lang_func.getTranslation().gettext
 
 DEFAULT_DATE_FMT = '%Y.%m.%d'
 
@@ -272,7 +275,72 @@ def getArgsChoiceMonthRangeDatetime():
     """
     choice_range = std_dlg_func.getMonthRangeDlg()
     if choice_range:
-        next_month = choice_range[1]+datetime.timedelta(35)
+        next_month = choice_range[1] + datetime.timedelta(35)
         last_date = datetime.datetime(year=next_month.year, month=next_month.month, day=1)
         return dict(arg_1=choice_range[0], arg_2=last_date)
+    return dict()
+
+
+def getArgsAgeYear():
+    """
+    Get argument age in years.
+
+    :return: Arguments dictionary.
+    """
+    age = std_dlg_func.getIntegerDlg(title=_(u'AGE'), label=_(u'Age (years):'),
+                                     min_value=1, max_value=100)
+    if age:
+        birth_date = dt_func.calcBirthDate(age)
+        return dict(arg_1=birth_date)
+    return dict()
+
+
+def getArgsAgeYearRange():
+    """
+    Get argument selected age in years range.
+
+    :return: Arguments dictionary.
+    """
+    age_range = std_dlg_func.getIntRangeDlg(title=_(u'AGE'),
+                                            label_begin=_(u'From age (years):'),
+                                            label_end=_(u'To age (years):'),
+                                            min_value=1, max_value=100)
+    if age_range:
+        birth_date_begin = dt_func.calcBirthDate(age_range[0])
+        birth_date_end = dt_func.calcBirthDate(age_range[1])
+        return dict(arg_1=birth_date_begin, arg_2=birth_date_end)
+    return dict()
+
+
+def getArgsAgeYearDT():
+    """
+    Get argument age in years.
+
+    :return: Arguments dictionary.
+    """
+    age = std_dlg_func.getIntegerDlg(title=_(u'AGE'), label=_(u'Age (years):'),
+                                     min_value=1, max_value=100)
+    if age:
+        birth_date = dt_func.calcBirthDate(age)
+        birth_dt = dt_func.date2datetime(birth_date)
+        return dict(arg_1=birth_dt)
+    return dict()
+
+
+def getArgsAgeYearRangeDT():
+    """
+    Get argument selected age in years range.
+
+    :return: Arguments dictionary.
+    """
+    age_range = std_dlg_func.getIntRangeDlg(title=_(u'AGE'),
+                                            label_begin=_(u'From age (years):'),
+                                            label_end=_(u'To age (years):'),
+                                            min_value=1, max_value=100)
+    if age_range:
+        birth_date_begin = dt_func.calcBirthDate(age_range[0])
+        birth_dt_begin = dt_func.date2datetime(birth_date_begin)
+        birth_date_end = dt_func.calcBirthDate(age_range[1])
+        birth_dt_end = dt_func.date2datetime(birth_date_end)
+        return dict(arg_1=birth_dt_begin, arg_2=birth_dt_end)
     return dict()

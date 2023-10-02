@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 1, 7, 1)
+__version__ = (0, 1, 8, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -780,7 +780,7 @@ def calcAge(dt_birth, now=None):
     """
     Calculate age.
 
-    :param dt_birth. Birth datetime or date.
+    :param dt_birth: Birth datetime or date.
     :param now: Now datetime. If not defined then get system datetime.
     :return: Age timedelta.
     """
@@ -796,7 +796,7 @@ def calcYearAge(dt_birth, today=None):
     """
     Calculate age in years.
 
-    :param dt_birth. Birth datetime or date.
+    :param dt_birth: Birth datetime or date.
     :param today: Today. If not defined then get system date.
     :return: Age years.
     """
@@ -829,6 +829,21 @@ def calcYearAge(dt_birth, today=None):
     if today < birthday:
         years -= 1
     return years
+
+
+def calcBirthDate(age_year, today=None):
+    """
+    Calculate birth date by age.
+
+    :param age_year: Age year.
+    :param today: Today. If not defined then get system date.
+    :return: Birth date.
+    """
+    if today is None:
+        today = datetime.date.today()
+
+    birth_date = today.replace(year=today.year - age_year)
+    return birth_date
 
 
 def calcDateAndTime(dt_date, dt_time):

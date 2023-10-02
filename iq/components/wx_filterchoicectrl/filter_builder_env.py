@@ -62,7 +62,7 @@ except ImportError:
     log_func.warning(u'Reference object choice component not found in filter constructor')
     iqWxRefObjTreeComboCtrl = None
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -1013,6 +1013,16 @@ DEFAULT_DATE_FUNCS = ('date_equal', 'date_not_equal', 'date_lesser', 'date_lesse
                       'choice_year',    # Year
                       'choice_date_range',    # Date range
                       'choice_month_range',   # Month range
+
+                      # Age functions
+                      'age_year_equal',
+                      'age_year_not_equal',
+                      'age_year_lesser',
+                      'age_year_lesser_or_equal',
+                      'age_year_great',
+                      'age_year_great_or_equal',
+                      'age_year_between',
+                      'age_year_not_between',
                       )
 
 PY_DATE_FUNCS = {
@@ -1048,6 +1058,16 @@ DEFAULT_DATETIME_FUNCS = ('datetime_equal', 'datetime_not_equal',
                           'datetime_choice_year',    # Year
                           'datetime_choice_date_range',    # Date range
                           'datetime_choice_month_range',   # Month range
+
+                          # Age functions
+                          'age_year_equal',
+                          'age_year_not_equal',
+                          'age_year_lesser',
+                          'age_year_lesser_or_equal',
+                          'age_year_great',
+                          'age_year_great_or_equal',
+                          'age_year_between',
+                          'age_year_not_between',
                           )
 
 PY_DATETIME_FUNCS = {
@@ -1212,7 +1232,6 @@ DEFAULT_ENV_DATE_FUNCS = {
         },
 
     # --- Additional functions ---
-
     'sys_date': {
         'name': 'equal',
         'function': getEqual,
@@ -1285,7 +1304,80 @@ DEFAULT_ENV_DATE_FUNCS = {
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
         },
 
-    }
+    # --- Age functions ---
+    'age_year_equal': {
+        'name': 'equal',
+        'function': getEqual,
+        'description': _(u'Age year equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYear,
+        'img': wxbitmap_func.createIconBitmap('logic_equal'),
+    },
+
+    'age_year_not_equal': {
+        'name': 'not_equal',
+        'function': getNotEqual,
+        'description': _(u'Age year not equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYear,
+        'img': wxbitmap_func.createIconBitmap('logic_not_equal'),
+    },
+
+    'age_year_great': {
+        'name': 'great',
+        'function': getGreat,
+        'description': _(u'Age year great'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYear,
+        'img': wxbitmap_func.createIconBitmap('logic_great'),
+    },
+
+    'age_year_great_or_equal': {
+        'name': 'great_or_equal',
+        'function': getGreatOrEqual,
+        'description': _(u'Age year great or equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYear,
+        'img': wxbitmap_func.createIconBitmap('logic_great_or_equal'),
+    },
+
+    'age_year_lesser': {
+        'name': 'lesser',
+        'function': getLesser,
+        'description': _(u'Age year lesser'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYear,
+        'img': wxbitmap_func.createIconBitmap('logic_lesser'),
+    },
+
+    'age_year_lesser_or_equal': {
+        'name': 'lesser_or_equal',
+        'function': getLesserOrEqual,
+        'description': _(u'Age year lesser or equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYear,
+        'img': wxbitmap_func.createIconBitmap('logic_lesser_or_equal'),
+    },
+
+    'age_year_between': {
+        'name': 'between',
+        'function': getBetween,
+        'description': _(u'Age year between'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearRange,
+        'img': wxbitmap_func.createIconBitmap('logic_between'),
+    },
+
+    'age_year_not_between': {
+        'name': 'not_between',
+        'function': getNotBetween,
+        'description': _(u'Age year not between'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearRange,
+        'img': wxbitmap_func.createIconBitmap('logic_not_between'),
+    },
+
+}
 
 DEFAULT_ENV_FUNCS.update(DEFAULT_ENV_DATE_FUNCS)
 
@@ -1408,7 +1500,6 @@ DEFAULT_ENV_DATETIME_FUNCS = {
     },
 
     # --- Additional functions ---
-
     'datetime_sys_date': {
         'name': 'between',
         'function': getBetween,
@@ -1508,6 +1599,78 @@ DEFAULT_ENV_DATETIME_FUNCS = {
         'img': wxbitmap_func.createIconBitmap('logic_equal'),
     },
 
+    # --- Age functions ---
+    'age_year_equal': {
+        'name': 'equal',
+        'function': getEqual,
+        'description': _(u'Age year equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearDT,
+        'img': wxbitmap_func.createIconBitmap('logic_equal'),
+    },
+
+    'age_year_not_equal': {
+        'name': 'not_equal',
+        'function': getNotEqual,
+        'description': _(u'Age year not equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearDT,
+        'img': wxbitmap_func.createIconBitmap('logic_not_equal'),
+    },
+
+    'age_year_great': {
+        'name': 'great',
+        'function': getGreat,
+        'description': _(u'Age year great'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearDT,
+        'img': wxbitmap_func.createIconBitmap('logic_great'),
+    },
+
+    'age_year_great_or_equal': {
+        'name': 'great_or_equal',
+        'function': getGreatOrEqual,
+        'description': _(u'Age year great or equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearDT,
+        'img': wxbitmap_func.createIconBitmap('logic_great_or_equal'),
+    },
+
+    'age_year_lesser': {
+        'name': 'lesser',
+        'function': getLesser,
+        'description': _(u'Age year lesser'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearDT,
+        'img': wxbitmap_func.createIconBitmap('logic_lesser'),
+    },
+
+    'age_year_lesser_or_equal': {
+        'name': 'lesser_or_equal',
+        'function': getLesserOrEqual,
+        'description': _(u'Age year lesser or equal'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearDT,
+        'img': wxbitmap_func.createIconBitmap('logic_lesser_or_equal'),
+    },
+
+    'age_year_between': {
+        'name': 'between',
+        'function': getBetween,
+        'description': _(u'Age year between'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearRangeDT,
+        'img': wxbitmap_func.createIconBitmap('logic_between'),
+    },
+
+    'age_year_not_between': {
+        'name': 'not_between',
+        'function': getNotBetween,
+        'description': _(u'Age year not between'),
+        'args': [],
+        'get_args': filter_ext_funcs.getArgsAgeYearRangeDT,
+        'img': wxbitmap_func.createIconBitmap('logic_not_between'),
+    },
 }
 
 DEFAULT_ENV_FUNCS.update(DEFAULT_ENV_DATETIME_FUNCS)
