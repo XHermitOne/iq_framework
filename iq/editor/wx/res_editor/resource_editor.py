@@ -39,7 +39,7 @@ from . import new_resource_dialog
 from ....engine.wx import stored_wx_form_manager
 from ....engine.wx import splitter_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -826,6 +826,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 parent_item = self.resource_treeListCtrl.GetMainWindow().GetItemParent(item)
                 if parent_item and parent_item.IsOk():
                     prev_item = self.resource_treeListCtrl.GetMainWindow().GetPrev(item)
+                    log_func.debug(u'Prev item <%s>' % prev_item.GetText())
                     resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(prev_item)
                     name = resource_item.get('name', 'Unknown')
                     description = resource_item.get('description', '')
@@ -860,6 +861,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
                 parent_item = self.resource_treeListCtrl.GetMainWindow().GetItemParent(item)
                 if parent_item and parent_item.IsOk():
                     next_item = self.resource_treeListCtrl.GetMainWindow().GetNext(item)
+                    log_func.debug(u'Next item <%s>' % next_item.GetText())
                     resource_item = self.resource_treeListCtrl.GetMainWindow().GetItemData(item)
                     name = resource_item.get('name', 'Unknown')
                     description = resource_item.get('description', '')
