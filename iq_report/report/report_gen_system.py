@@ -33,7 +33,7 @@ from iq.dialog import dlg_func
 
 from . import report_template
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 DEFAULT_REP_TMPL_FILE = os.path.join(os.path.dirname(__file__), 'new_report_template.ods')
 
@@ -325,6 +325,7 @@ class iqReportGeneratorSystem(object):
                 rep_template = template.read(tmpl_filename)
                 new_filename = os.path.splitext(filename)[0]+DEFAULT_REPORT_TEMPLATE_EXT
                 res_func.saveResourcePickle(new_filename, rep_template)
+                log_func.info(u'Report template resource saved')
             log_func.info(u'End convert')
             return new_filename
         else:

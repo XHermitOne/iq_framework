@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 3, 3)
+__version__ = (0, 0, 3, 4)
 
 # Report cell tags:
 # query table field values
@@ -783,6 +783,9 @@ class iqReportGenerator(object):
             cell_val = cell['value']
             if cell_val is not None and not isinstance(cell_val, str):
                 cell_val = str(cell_val)
+            elif cell_val in (None, 'None'):
+                cell_val = ''
+
             if cell_val not in self._cell_format:
                 parsed_fmt = self.parseFunctionText(cell_val)
                 self._cell_format[cell_val] = parsed_fmt
