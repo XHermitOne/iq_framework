@@ -20,7 +20,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 7, 1)
+__version__ = (0, 0, 7, 2)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -98,7 +98,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
 
         assert isinstance(record, dict), u'Model record type error'
 
-        model_rec = {col_name: value for col_name, value in record.items() if hasattr(model, col_name) and not self._isMapped(value)}
+        model_rec = {col_name: value for col_name, value in record.items() if hasattr(model, col_name) and not self._isMapped(value) and not callable(value)}
         for col_name, col_value in model_rec.items():
             if isinstance(col_value, (list, tuple)):
                 model_property = getattr(model, col_name)
