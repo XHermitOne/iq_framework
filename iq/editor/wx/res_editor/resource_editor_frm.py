@@ -45,11 +45,11 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 
 		self.editor_toolBar.AddSeparator()
 
-		self.design_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( u"gtk-preferences", wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Design"), _(u"Design"), None )
+		self.design_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Design"), _(u"Design"), None )
 
 		self.editor_toolBar.AddSeparator()
 
-		self.module_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( u"gtk-select-all", wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Generate resource module"), _(u"Generate resource module"), None )
+		self.module_tool = self.editor_toolBar.AddTool( wx.ID_ANY, _(u"tool"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Generate resource module"), _(u"Generate resource module"), None )
 
 		self.editor_toolBar.AddSeparator()
 
@@ -86,11 +86,11 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 
 		self.object_propertyGridManager = pg.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE|wx.propgrid.PG_TOOLBAR)
 
-		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Attributes"), wx.ArtProvider.GetBitmap( u"gtk-index", wx.ART_MENU ) );
+		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Attributes"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) );
 
-		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Methods"), wx.ArtProvider.GetBitmap( u"gtk-properties", wx.ART_MENU ) );
+		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Methods"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) );
 
-		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Events"), wx.ArtProvider.GetBitmap( u"gtk-about", wx.ART_MENU ) );
+		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Events"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) );
 		bSizer3.Add( self.object_propertyGridManager, 1, wx.ALL|wx.EXPAND, 5 )
 
 

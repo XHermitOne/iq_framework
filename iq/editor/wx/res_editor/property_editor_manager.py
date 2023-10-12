@@ -20,6 +20,7 @@ from ....util import lang_func
 
 from ... import property_editor_id
 
+from ....engine.wx import wxbitmap_func
 from ....engine.wx.dlg import wxdlg_func
 
 from . import passport_property_editor
@@ -29,7 +30,7 @@ from . import dir_property_editor
 from . import script_property_editor
 from . import single_choice_property
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -79,11 +80,14 @@ class iqPropertyEditorManager(object):
         """
         if property_editor:
             property_editor.Clear()
-            bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
+            # bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
+            bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/preferences')
             property_editor.AddPage(_(u'Properties'), bmp)
-            bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
+            # bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
+            bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/cog')
             property_editor.AddPage(_(u'Methods'), bmp)
-            bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
+            # bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
+            bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/star')
             property_editor.AddPage(_(u'Events'), bmp)
             return True
         else:
@@ -373,7 +377,8 @@ class iqPropertyEditorManager(object):
         # Set parent component specification
         self.setParentSpecification(parent_resource)
 
-        bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
+        # bmp = wx.ArtProvider.GetBitmap('gtk-index', wx.ART_MENU)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/preferences')
         prop_page = property_editor.AddPage(_(u'Properties'), bmp)
         # ---------------------------------------
         #   1 - Basic attributes
@@ -416,7 +421,8 @@ class iqPropertyEditorManager(object):
                 elif edt_type == property_editor_id.SCRIPT_EDITOR:
                     property_editor.SetPropertyEditor(attr_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
-        bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
+        # bmp = wx.ArtProvider.GetBitmap('gtk-execute', wx.ART_MENU)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/cog')
         methods_page = property_editor.AddPage(_(u'Methods'), bmp)
 
         # ----------------------------------------
@@ -430,7 +436,8 @@ class iqPropertyEditorManager(object):
                 methods_page.Append(wx_property)
                 property_editor.SetPropertyEditor(method_name, script_property_editor.iqScriptPropertyEditor.__name__)
 
-        bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
+        # bmp = wx.ArtProvider.GetBitmap('gtk-about', wx.ART_MENU)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/star')
         events_page = property_editor.AddPage(_(u'Events'), bmp)
 
         # ----------------------------------------

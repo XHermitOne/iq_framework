@@ -189,7 +189,7 @@
                             <property name="permission">protected</property>
                         </object>
                         <object class="tool" expanded="1">
-                            <property name="bitmap">Load From Art Provider; gtk-preferences; wxART_MENU</property>
+                            <property name="bitmap">Load From Art Provider; wxART_MISSING_IMAGE; wxART_MENU</property>
                             <property name="context_menu">0</property>
                             <property name="id">wxID_ANY</property>
                             <property name="kind">wxITEM_NORMAL</property>
@@ -204,7 +204,7 @@
                             <property name="permission">protected</property>
                         </object>
                         <object class="tool" expanded="1">
-                            <property name="bitmap">Load From Art Provider; gtk-select-all; wxART_MENU</property>
+                            <property name="bitmap">Load From Art Provider; wxART_MISSING_IMAGE; wxART_MENU</property>
                             <property name="context_menu">0</property>
                             <property name="id">wxID_ANY</property>
                             <property name="kind">wxITEM_NORMAL</property>
@@ -569,19 +569,19 @@
                                             <property name="window_style"></property>
                                             <event name="OnPropertyGridChanged">onObjPropertyGridChanged</event>
                                             <object class="propGridPage" expanded="1">
-                                                <property name="bitmap">Load From Art Provider; gtk-index; wxART_MENU</property>
+                                                <property name="bitmap">Load From Art Provider; wxART_MISSING_IMAGE; wxART_MENU</property>
                                                 <property name="label">Attributes</property>
                                                 <property name="name">attributes_propertyGridPage</property>
                                                 <property name="permission">protected</property>
                                             </object>
                                             <object class="propGridPage" expanded="1">
-                                                <property name="bitmap">Load From Art Provider; gtk-properties; wxART_MENU</property>
+                                                <property name="bitmap">Load From Art Provider; wxART_MISSING_IMAGE; wxART_MENU</property>
                                                 <property name="label">Methods</property>
                                                 <property name="name">methods_propertyGridPage</property>
                                                 <property name="permission">protected</property>
                                             </object>
                                             <object class="propGridPage" expanded="1">
-                                                <property name="bitmap">Load From Art Provider; gtk-about; wxART_MENU</property>
+                                                <property name="bitmap">Load From Art Provider; wxART_MISSING_IMAGE; wxART_MENU</property>
                                                 <property name="label">Events</property>
                                                 <property name="name">events_propertyGridPage</property>
                                                 <property name="permission">protected</property>

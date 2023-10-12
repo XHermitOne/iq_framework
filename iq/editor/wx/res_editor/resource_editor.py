@@ -39,7 +39,7 @@ from . import new_resource_dialog
 from ....engine.wx import stored_wx_form_manager
 from ....engine.wx import splitter_manager
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -140,7 +140,27 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         """
         Init control images.
         """
-        pass
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/page_white_add')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.new_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/folder_vertical_document')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.open_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/diskette')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.save_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/save_as')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.saveas_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/application_go')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.test_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/form_design')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.design_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/script_edit')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.module_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/help')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.help_tool.GetId(), bitmap=bmp)
+
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/bullet_arrow_down')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.collapse_tool.GetId(), bitmap=bmp)
+        bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/bullet_arrow_up')
+        self.editor_toolBar.SetToolNormalBitmap(id=self.expand_tool.GetId(), bitmap=bmp)
 
     def _loadResource(self, resource, parent_item=None):
         """
