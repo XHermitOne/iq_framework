@@ -10,7 +10,9 @@ import wx
 from ...util import log_func
 from ...util import lang_func
 
-__version__ = (0, 0, 1, 1)
+from ...engine.wx import wxbitmap_func
+
+__version__ = (0, 0, 1, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -129,8 +131,9 @@ class iqRefObjCodConstructorProto(wx.Panel):
 
                 # Clear button
                 button_id = wx.NewId()
-                clear_button = wx.BitmapButton(self.scrolled_win, button_id,
-                                               bitmap=wx.ArtProvider.GetBitmap('gtk-clear', wx.ART_MENU))
+                # bmp = wx.ArtProvider.GetBitmap('gtk-clear', wx.ART_MENU)
+                bmp = wxbitmap_func.createIconBitmap(icon_filename='fatcow/broom')
+                clear_button = wx.BitmapButton(self.scrolled_win, button_id, bitmap=bmp)
                 clear_button.level_index = i
                 clear_button.Bind(wx.EVT_BUTTON, self.onClearButtonClick, id=button_id)
                 self._clear_buttons.append(clear_button)
