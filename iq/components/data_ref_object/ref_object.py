@@ -20,7 +20,7 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 5, 1)
+__version__ = (0, 0, 5, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -518,7 +518,7 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
 
             recordset = [vars(record) for record in records]
         except:
-            log_func.fatal(u'Error get level data ref object <%s>' % self.getName())
+            log_func.fatal(u'Error get level data ref object <%s : %s : %s>' % (self.getName(), parent_cod, cod_len))
         self.stopTransaction(transaction)
         return recordset
 
@@ -771,8 +771,9 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         cod_tuple = tuple([subcod for subcod in self.getCodAsTuple(cod) if subcod])
-        # log_func.debug(u'Cod tuple %s' % str(cod_tuple))
-        return len(cod_tuple) < self.getLevelCount()
+        level_count = self.getLevelCount()
+        # log_func.debug(u'Cod tuple %s : %s' % (str(cod_tuple), level_count))
+        return len(cod_tuple) < level_count
 
     def isGrandParentLevelCod(self, cod):
         """

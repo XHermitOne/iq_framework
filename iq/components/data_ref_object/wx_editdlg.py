@@ -30,7 +30,7 @@ from . import wx_editlinkproperty
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -522,6 +522,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         """
         code = record['cod']
         if not self.ref_obj.isParentLevelCod(code):
+            # log_func.debug(u'Skip <%s>' % code)
             return
 
         name = str(record['name'])
@@ -771,6 +772,9 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param parent_item: Parent tree item.
         :param new_record: New record added.
         """
+        is_parent_level = self.ref_obj.isParentLevelCod(new_record[self.ref_obj.getCodColumnName()])
+        if not is_parent_level:
+            return
         item = self.refobj_treeCtrl.AppendItem(parent_item, new_record['name'])
         self.setTreeCtrlItemData(treectrl=self.refobj_treeCtrl, item=item, data=new_record)
 
