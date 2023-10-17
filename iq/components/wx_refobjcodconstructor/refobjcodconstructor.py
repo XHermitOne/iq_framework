@@ -12,7 +12,7 @@ from ...util import lang_func
 
 from ...engine.wx import wxbitmap_func
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 _ = lang_func.getTranslation().gettext
 
@@ -83,11 +83,12 @@ class iqRefObjCodConstructorProto(wx.Panel):
         # self.SetLabel(title)
         self.label.SetLabel(title)
 
-    def setRefObj(self, ref_obj):
+    def setRefObj(self, ref_obj, filter_active=True):
         """
         Set ref object.
 
         :param ref_obj: Reference object.
+        :param filter_active: Filter only active items.
         """
         self._ref_obj = ref_obj
 
@@ -107,7 +108,7 @@ class iqRefObjCodConstructorProto(wx.Panel):
                 level_choices = list()
                 if not i:
                     for rec in self._ref_obj.getLevelRecsByCod():
-                        if self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()]):
+                        if not filter_active or (filter_active and self._ref_obj.isActive(rec[self._ref_obj.getCodColumnName()])):
                             level_choice = (rec[self._ref_obj.getCodColumnName()],
                                             rec[self._ref_obj.getNameColumnName()])
                             level_choices.append(level_choice)
@@ -209,7 +210,7 @@ class iqRefObjCodConstructorProto(wx.Panel):
             # self._selected_code sets in selectLevelChoice method
             # Do not need to initialize it
             selected_code = self._ref_obj.getCodAsTuple(code)
-            log_func.debug(u'Selected code %s' % str(selected_code))
+            # log_func.debug(u'Selected code %s' % str(selected_code))
             for i, subcode in enumerate(selected_code):
                 item = self.findItemIdxByCode(i, subcode)
                 if item >= 0:
@@ -239,7 +240,7 @@ class iqRefObjCodConstructorProto(wx.Panel):
             # self._selected_code sets in selectLevelChoice method
             # Do not need to initialize it
             selected_code = self._ref_obj.getCodAsTuple(code)
-            log_func.debug(u'Selected code %s' % str(selected_code))
+            # log_func.debug(u'Selected code %s' % str(selected_code))
             for i, subcode in enumerate(selected_code):
                 item = self.findItemIdxByCode(i, subcode)
                 if item >= 0:
@@ -426,15 +427,18 @@ class iqRefObjCodConstructorProto(wx.Panel):
                 is_select = bool(choice_ctrl.GetSelection())
                 if is_select:
                     selected_cod = self.getChoiceSelectedCode(choice_ctrl=choice_ctrl)
+                    # log_func.debug(u'Init. Selected code <%s>' % selected_cod)
                     txt_ctrl.SetValue(selected_cod if selected_cod else u'')
                     self._selected_code[i] = selected_cod
                 elif not is_select and is_new:
                     # level_cod_len = self._ref_obj.getLevelCodLen(i)
                     # cod = (DEFAULT_COD_SIGN * level_cod_len) if level_cod_len > 0 else ''
                     cod = self.genAutoLevelCode(level=i, selected_code=self._selected_code)
-                    log_func.debug(u'New level code <%s>' % cod)
+                    # log_func.debug(u'Init. New level code <%s>' % cod)
                     txt_ctrl.SetValue(cod)
                     self._selected_code[i] = cod
+                else:
+                    log_func.warning(u'An unprocessed case of code initialization. Selected: %s. New: %s' % (is_select, is_new))
                 txt_ctrl.Enable(not is_last and not is_select and is_new)
                 txt_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
                 if is_last:

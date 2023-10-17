@@ -19,7 +19,7 @@ from ...engine.wx import wxobj_func
 
 from ..data_ref_object import wx_choicetreedlg
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -92,8 +92,10 @@ class iqRefObjCheckTreeDlg(wx_choicetreedlg.iqRefObjChoiceTreeDlg):
         """
         # item_level = self.getTreeListCtrlItemLevelIdx(treelistctrl=self.refobj_treeListCtrl, item=parent_item)
         code = record.get(self.ref_obj.getCodColumnName(), None)
+        is_activate = record['activate'] if record and 'activate' in record else self.ref_obj.isActive(code)
         # Code Activity Check
-        if self.ref_obj and self.ref_obj.isActive(code):
+        if is_activate:
+            # log_func.debug(u'Append item <%s>' % code)
             item = self.refobj_treeListCtrl.AppendItem(parent_item, code, ct_type=1)
             self.setTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=item, data=record)
             # Column filling
@@ -110,6 +112,9 @@ class iqRefObjCheckTreeDlg(wx_choicetreedlg.iqRefObjChoiceTreeDlg):
             if self.ref_obj.isChildrenCodes(code):
                 # There are subcodes. To display + in the tree control, you need to add a dummy element
                 self.refobj_treeListCtrl.AppendItem(item, wx_choicetreedlg.TREE_ITEM_LABEL)
+        else:
+            # log_func.warning(u'Cod <%s> not actived' % code)
+            pass
 
     def getCheckedCodes(self):
         """

@@ -27,7 +27,7 @@ from ...engine.wx import treelistctrl_manager
 
 from . import wx_editdlg
 
-__version__ = (0, 0, 1, 4)
+__version__ = (0, 0, 1, 5)
 
 _ = lang_func.getTranslation().gettext
 
@@ -70,10 +70,16 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         self.SetTitle(self.ref_obj.getDescription() if self.ref_obj is not None else u'')
 
         # List of table field names displayed in the tree control as columns
-        self.refobj_col_names = ['cod', 'name']
+        if self.ref_obj:
+            self.refobj_col_names = [self.ref_obj.getCodColumnName(), self.ref_obj.getNameColumnName()]
+        else:
+            self.refobj_col_names = ['cod', 'name']
 
         # List of table field names that can be searched
-        self.refobj_search_col_names = ['name', 'cod']
+        if self.ref_obj:
+            self.refobj_search_col_names = [self.ref_obj.getNameColumnName(), self.ref_obj.getCodColumnName()]
+        else:
+            self.refobj_search_col_names = ['name', 'cod']
 
         # Codes found matching search string
         self.search_codes = list()
@@ -179,7 +185,10 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         :param fields: List of field names to be displayed in the tree control.
             If no fields are specified, only <Code> and <Name> are displayed.
         """
-        field_names = ['cod', 'name']
+        if self.ref_obj:
+            field_names = [self.ref_obj.getCodColumnName(), self.ref_obj.getNameColumnName()]
+        else:
+            field_names = ['cod', 'name']
         if fields:
             field_names += fields
         self.refobj_col_names = field_names
@@ -213,7 +222,10 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
 
         :param search_fields: Search fields.
         """
-        field_names = ['name', 'cod']
+        if self.ref_obj:
+            field_names = [self.ref_obj.getNameColumnName(), self.ref_obj.getCodColumnName()]
+        else:
+            field_names = ['name', 'cod']
         if search_fields:
             field_names += search_fields
         self.refobj_search_col_names = field_names
@@ -316,7 +328,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
             log_func.warning(u'No data')
             return
 
-        # log_func.debug(u'Ref object level data %s' % str(level_data))
+        log_func.debug(u'Ref object level data %s' % str(level_data))
         title = self.ref_obj.getDescription() if self.ref_obj.getDescription() else self.ref_obj.getName()
         label = _(u'Open ref object') + ' <%s>' % title
         len_level_data = len(level_data) if isinstance(level_data, list) else 0
@@ -494,8 +506,10 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         """
         # item_level = self.getTreeListCtrlItemLevelIdx(treelistctrl=self.refobj_treeListCtrl, item=parent_item)
         code = record.get(self.ref_obj.getCodColumnName(), None)
+        is_activate = record['activate'] if record and 'activate' in record else self.ref_obj.isActive(code)
         # Code Activity Check
-        if self.ref_obj and self.ref_obj.isActive(code):
+        if is_activate:
+            # log_func.debug(u'Append item <%s>' % code)
             item = self.refobj_treeListCtrl.AppendItem(parent_item, code)
             self.setTreeListCtrlItemData(treelistctrl=self.refobj_treeListCtrl, item=item, data=record)
             # Column filling
@@ -506,12 +520,15 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                     value = u''
                 elif not isinstance(value, str):
                     value = str(value)
-                # log_func.debug(u'Value <%s>. Index %s' % (value, i))
+                log_func.debug(u'Value <%s>. Index %s' % (value, i))
                 self.refobj_treeListCtrl.SetItemText(item, value, i + 1)
         
             if self.ref_obj.isChildrenCodes(code):
                 # There are subcodes. To display + in the tree control, you need to add a dummy element
                 self.refobj_treeListCtrl.AppendItem(item, TREE_ITEM_LABEL)
+        else:
+            # log_func.warning(u'Cod <%s> not actived' % code)
+            pass
 
     def findTreeChildItem(self, item_text, cur_item=None):
         """
@@ -636,9 +653,10 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         """
         ok_edit = self.editRefObj()
         if ok_edit:
+            log_func.debug(u'Edit...OK')
             # If editing is successful, then update the tree
             self.refobj_treeListCtrl.DeleteAllItems()
-            self.setRefObjTree()
+            self.setRefObjTree(is_progress=False)
             # Delete search text
             self.search_textCtrl.SetValue(u'')            
             

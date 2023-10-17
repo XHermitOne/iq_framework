@@ -30,7 +30,7 @@ from . import wx_editlinkproperty
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 _ = lang_func.getTranslation().gettext
 
@@ -98,6 +98,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
                     default_value = str(default_value)
                 except:
                     default_value = u''
+                log_func.debug(u'Default cod <%s>' % default_value)
             property = wx_editcodeproperty.iqEditCodeProperty(label=label, name=field.name, value=default_value)
             property.setRefObj(self.ref_obj)
             property.setPropertyGrid(self.record_propertyGrid)
@@ -153,7 +154,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
             self.activate_checkBox.Enable(can_active)
 
         # Init cod constructor
-        self.cod_constructor.setRefObj(self.ref_obj)
+        self.cod_constructor.setRefObj(self.ref_obj, filter_active=False)
 
         # Init property editors
         model = self.ref_obj.getModel()
@@ -168,7 +169,7 @@ class iqRefObjRecEditDlg(refobj_dialogs_proto.iqRecEditDlgProto):
         self.activate_checkBox.SetValue(is_activate)
 
         cod = rec.get(self.ref_obj.getCodColumnName(), None)
-        log_func.debug(u'Edit Ref object. Init cod <%s>' % cod)
+        # log_func.debug(u'Edit Ref object. Init cod <%s>' % cod)
         self.cod_constructor.setCode(cod)
 
         for i, field in enumerate(fields):
@@ -364,7 +365,7 @@ class iqRefObjRecCreateDlg(iqRefObjRecEditDlg):
         self.activate_checkBox.SetValue(is_activate)
 
         cod = rec.get(self.ref_obj.getCodColumnName(), None)
-        log_func.debug(u'New Ref object. Init cod <%s>' % cod)
+        # log_func.debug(u'New Ref object. Init cod <%s>' % cod)
         self.cod_constructor.newCode(cod)
 
         for i, field in enumerate(fields):
@@ -731,7 +732,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
 
             fields = self.getEditableFields()
             for i, field in enumerate(fields):
-                log_func.debug(u'Record <%s : %s>' % (str(record), record.__class__.__name__))
+                # log_func.debug(u'Record <%s : %s>' % (str(record), record.__class__.__name__))
                 value = str(record[field.name])
                 self.recs_listCtrl.SetItem(find_idx, i, value)
 
@@ -950,7 +951,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         add_rec = createRefObjRecordDlg(parent=self, ref_obj=self.ref_obj,
                                         record=default_record)
 
-        log_func.debug(u'New ref obj record %s' % str(add_rec))
+        #  log_func.debug(u'New ref obj record %s' % str(add_rec))
         if add_rec:
             # Existing code control
             if not self.ref_obj.hasCod(add_rec['cod']):
@@ -1050,14 +1051,14 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
                     field_name = field['name'] if isinstance(field, dict) else field.name
                     value = str(row[field_name]).lower()
                     if find_word in value:
-                        log_func.debug(u'Found matching %s <%s> in <%s>' % (field_name, find_word, value))
+                        # log_func.debug(u'Found matching %s <%s> in <%s>' % (field_name, find_word, value))
                         return start_row+i_row, start_col+i_col
             else:
                 for i_col, field in enumerate(fields):
                     field_name = field['name'] if isinstance(field, dict) else field.name
                     value = str(row[field_name]).lower()
                     if find_word in value:
-                        log_func.debug(u'Found matching in field %s <%s> : <%s>' % (field_name, find_word, value))
+                        # log_func.debug(u'Found matching in field %s <%s> : <%s>' % (field_name, find_word, value))
                         return start_row+i_row, i_col
         log_func.warning(u'Not found <%s>. Search over.' % find_word)
         return None
@@ -1107,7 +1108,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         Search text modifier.
         """
         search_txt = event.GetString()
-        log_func.debug(u'Change search text <%s>' % search_txt)
+        # log_func.debug(u'Change search text <%s>' % search_txt)
         self.not_actual_search = True
         event.Skip()
         
