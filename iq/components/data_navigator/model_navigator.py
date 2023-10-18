@@ -10,6 +10,7 @@ import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.orm.base
 import sqlalchemy.orm.exc
+import sqlalchemy.orm.relationships
 import sqlalchemy.sql.functions
 
 from ...util import log_func
@@ -20,7 +21,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 7, 2)
+__version__ = (0, 0, 7, 3)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -543,14 +544,16 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         try:
             result = False
             query = transaction.query(model)
+
+            model_relationship_names = [relationship.argument.__name__ for relationship in model.__mapper__.relationships]
             child_relationships = [(col_name, value) for col_name, value in record.items() if
-                                   hasattr(model, col_name) and not isinstance(getattr(model, col_name), sqlalchemy.Column)]
+                                   col_name in model_relationship_names]
             # Cascade save?
             has_cascade_save = bool(child_relationships)
             if not has_cascade_save:
                 try:
-                    save_record = [(col_name, value) for col_name, value in record.items() if
-                                   hasattr(model, col_name) and isinstance(getattr(model, col_name), sqlalchemy.Column)]
+                    model_column_names = [col.name for col in model.__table__.columns]
+                    save_record = [(col_name, value) for col_name, value in record.items() if col_name in model_column_names]
                     values = {getattr(model, col_name): value for col_name, value in save_record}
                     query.filter(getattr(model, id_field) == id).update(values=values, synchronize_session=False)
                     result = True
@@ -558,12 +561,14 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                     log_func.fatal(u'Error update record %s' % str(record))
             else:
                 try:
+                    # log_func.debug(u'Cascade save %s' % str(child_relationships))
                     # For cascade delete all data and add all data
                     src_record = self.loadRec(id=id, id_field=id_field)
                     get_by_id_dict = {id_field: id}
                     del_record = transaction.query(model).filter_by(**get_by_id_dict).first()
                     if del_record:
                         transaction.delete(del_record)
+                    # log_func.debug(u'Debug update cascade save %s <- %s' % (src_record, record))
                     src_record.update(record)
                     save_record = self.prepareModelRecord(model=model, record=src_record)
                     new_obj = model(**save_record)
