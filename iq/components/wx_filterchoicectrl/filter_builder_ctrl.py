@@ -16,7 +16,7 @@ from ...util import log_func
 from ...util import lang_func
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -498,6 +498,34 @@ class iqStrArgEdit(iqArgEdit):
         :param arg: Argument data.
         """
         iqArgEdit.__init__(self, parent, arg)
+
+
+class iqBoolArgCheckBox(wx.CheckBox):
+    """
+    Boolean argument editor.
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        Constructor.
+        """
+        wx.CheckBox.__init__(self, *args, **kwargs)
+
+        self.Bind(wx.EVT_CHECKBOX, self.onBoolCheckBox)
+
+    def onBoolCheckBox(self, event):
+        """
+        Change label.
+        """
+        is_checked = event.IsChecked()
+        label = _('True') if is_checked else _('False')
+        self.SetLabel(label)
+        event.Skip()
+
+    def getValue(self, *args, **kwargs):
+        return self.GetValue(*args, **kwargs)
+
+    def setValue(self, *args, **kwargs):
+        return self.SetValue(*args, **kwargs)
 
 
 class iqCustomArgEdit(iqCustomComboCtrl):

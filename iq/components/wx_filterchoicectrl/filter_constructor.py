@@ -16,7 +16,7 @@ from . import label_event
 
 from . import filter_builder_ctrl
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -251,13 +251,14 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                         # Advanced editor not defined
                         arg_edit = filter_builder_ctrl.iqCustomArgEdit(self.GetMainWindow(), arg)
                     else:
-                        ext_args = ()
+                        ext_args = tuple()
                         if 'ext_args' in arg and arg['ext_args']:
                             ext_args = arg['ext_args']
-                        ext_kwargs = ()
+                        ext_kwargs = dict()
                         if 'ext_kwargs' in arg and arg['ext_kwargs']:
                             ext_kwargs = arg['ext_kwargs']
                         # The advanced editor is set explicitly
+                        log_func.debug(u'Args %s Kwargs %s' % (ext_args, ext_kwargs))
                         arg_edit = arg['ext_edit'](parent=self.GetMainWindow(),
                                                    id=wx.NewId(), *ext_args, **ext_kwargs)
 
@@ -270,6 +271,8 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                                 arg_edit.setRefObjByPsp(psp)
                             else:
                                 log_func.warning(u'Not define ref object passport in requisite <%s>' % requisite['requisite'])
+                        elif requisite.get('type', None) == filter_builder_env.REQUISITE_TYPE_BOOL:
+                            pass
                         else:
                             log_func.warning(u'Incorrect requisite type <%s : %s : %s : %s>' % (requisite.get('name', None), requisite.get('type', None), str(arg_edit), str(requisite_combobox)))
                 else:
@@ -282,6 +285,8 @@ class iqFilterConstructorTreeList(hypertreelist.HyperTreeList):
                                      filter_builder_env.REQUISITE_TYPE_FLOAT,
                                      filter_builder_env.REQUISITE_TYPE_NUM):
                     arg_edit = filter_builder_ctrl.iqNumArgEdit(self.GetMainWindow(), arg)
+                elif arg['type'] == filter_builder_env.REQUISITE_TYPE_BOOL:
+                    arg_edit = filter_builder_ctrl.iqBoolArgCheckBox(self.GetMainWindow(), arg)
                 else:
                     log_func.warning(u'Not define type <%s> of argument <%s>' % (arg['type'], arg))
                     return None

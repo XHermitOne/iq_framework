@@ -62,7 +62,7 @@ except ImportError:
     log_func.warning(u'Reference object choice component not found in filter constructor')
     iqWxRefObjTreeComboCtrl = None
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -70,6 +70,7 @@ REQUISITE_TYPE_STR = 'str'
 REQUISITE_TYPE_INT = 'int'
 REQUISITE_TYPE_FLOAT = 'float'
 REQUISITE_TYPE_NUM = 'number'
+REQUISITE_TYPE_BOOL = 'bool'
 REQUISITE_TYPE_D = 'd_text'  # Date as string
 REQUISITE_TYPE_DATETIME = 'datetime'
 REQUISITE_TYPE_REF = 'REF'  # Ref object
@@ -79,6 +80,7 @@ REQUISITE_TYPE_REF = 'REF'  # Ref object
 DB_FLD_TYPE2REQUISITE_TYPE = {'Text': REQUISITE_TYPE_STR,
                               'Int': REQUISITE_TYPE_INT,
                               'Float': REQUISITE_TYPE_FLOAT,
+                              'Boolean': REQUISITE_TYPE_BOOL,
                               'Date': REQUISITE_TYPE_D,
                               'DateTime': REQUISITE_TYPE_DATETIME,
                               'REF': REQUISITE_TYPE_REF,
@@ -142,7 +144,7 @@ def getEqual(requisite, value):
     :param value: Comparable value.
     """
     if 'type' in requisite and requisite['type']:
-        if requisite['type'] in (REQUISITE_TYPE_INT, REQUISITE_TYPE_FLOAT, REQUISITE_TYPE_NUM):
+        if requisite['type'] in (REQUISITE_TYPE_INT, REQUISITE_TYPE_FLOAT, REQUISITE_TYPE_NUM, REQUISITE_TYPE_BOOL):
             return getNumEqual(requisite, value)
         elif requisite['type'] == REQUISITE_TYPE_STR:
             return getStrEqual(requisite, value)
@@ -198,7 +200,7 @@ def getNotEqual(requisite, value):
     :param value: Comparable value.
     """
     if 'type' in requisite and requisite['type']:
-        if requisite['type'] in (REQUISITE_TYPE_INT, REQUISITE_TYPE_FLOAT, REQUISITE_TYPE_NUM):
+        if requisite['type'] in (REQUISITE_TYPE_INT, REQUISITE_TYPE_FLOAT, REQUISITE_TYPE_NUM, REQUISITE_TYPE_BOOL):
             return getNumNotEqual(requisite, value)
         elif requisite['type'] == REQUISITE_TYPE_STR:
             return getStrNotEqual(requisite, value)
@@ -1000,6 +1002,15 @@ PY_NUMBER_FUNCS = {
     'is_not_null': filter_py_funcs.pyNotNull,
     }
 
+DEFAULT_BOOL_FUNCS = ('bool_equal', 'bool_not_equal', 'is_null', 'is_not_null')
+
+PY_BOOL_FUNCS = {
+    'equal': filter_py_funcs.pyEqual,
+    'not_equal': filter_py_funcs.pyNotEqual,
+    'is_null': filter_py_funcs.pyIsNull,
+    'is_not_null': filter_py_funcs.pyNotNull,
+    }
+
 
 DEFAULT_DATE_FUNCS = ('date_equal', 'date_not_equal', 'date_lesser', 'date_lesser_or_equal',
                       'date_great', 'date_great_or_equal', 'date_between', 'date_not_between',
@@ -1099,6 +1110,7 @@ PY_FUNCS = {
     REQUISITE_TYPE_INT: PY_NUMBER_FUNCS,
     REQUISITE_TYPE_FLOAT: PY_NUMBER_FUNCS,
     REQUISITE_TYPE_NUM: PY_NUMBER_FUNCS,
+    REQUISITE_TYPE_BOOL: PY_BOOL_FUNCS,
     REQUISITE_TYPE_D: PY_DATE_FUNCS,
     REQUISITE_TYPE_DATETIME: PY_DATETIME_FUNCS,
     REQUISITE_TYPE_REF: PY_NSI_FUNCS,
@@ -1111,6 +1123,37 @@ FILTER_ENVIRONMENT = {
     'logic': DEFAULT_ENV_LOGIC_OPERATIONS,  # Standart logic operations
     'funcs': DEFAULT_ENV_FUNCS,  # Standart functions
     }
+
+# Standard functions used for boolean details
+DEFAULT_ENV_BOOL_FUNCS = {
+    'bool_equal': {
+        'name': 'equal',
+        'function': getEqual,
+        'description': _(u'Equal'),
+        'args': [
+            {'name': 'value',
+             'description': _(u'Value'),
+             'ext_edit': filter_builder_ctrl.iqBoolArgCheckBox,
+             'ext_kwargs': {}
+             }],
+        'img': wxbitmap_func.createIconBitmap('logic_equal'),
+    },
+
+    'bool_not_equal': {
+        'name': 'not_equal',
+        'function': getNotEqual,
+        'description': _(u'Not equal'),
+        'args': [
+            {'name': 'value',
+             'description': _(u'Value'),
+             'ext_edit': filter_builder_ctrl.iqBoolArgCheckBox,
+             'ext_kwargs': {}
+             }],
+        'img': wxbitmap_func.createIconBitmap('logic_not_equal'),
+    },
+}
+
+DEFAULT_ENV_FUNCS.update(DEFAULT_ENV_BOOL_FUNCS)
 
 
 # Standard functions used for date details
@@ -1723,6 +1766,7 @@ DEFAULT_FUNCS = {
     REQUISITE_TYPE_INT: DEFAULT_NUMBER_FUNCS,
     REQUISITE_TYPE_FLOAT: DEFAULT_NUMBER_FUNCS,
     REQUISITE_TYPE_NUM: DEFAULT_NUMBER_FUNCS,
+    REQUISITE_TYPE_BOOL: DEFAULT_BOOL_FUNCS,
     REQUISITE_TYPE_D: DEFAULT_DATE_FUNCS,
     REQUISITE_TYPE_DATETIME: DEFAULT_DATETIME_FUNCS,
     REQUISITE_TYPE_REF: DEFAULT_REF_FUNCS,
