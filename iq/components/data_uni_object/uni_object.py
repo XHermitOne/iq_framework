@@ -5,6 +5,8 @@
 Unique data object manager.
 """
 
+import sys
+
 from ..data_navigator import model_navigator
 
 from ...util import log_func
@@ -14,7 +16,9 @@ from ...dialog import dlg_func
 
 from ..wx_filterchoicectrl import filter_convert
 
-__version__ = (0, 0, 3, 4)
+from ..data_model import data_object
+
+__version__ = (0, 0, 4, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -87,7 +91,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
                     records = list()
 
                 self.__dataset__ = [vars(record) for record in records]
-                self.__dataset__ = self._updateLinkDataDataset(self.__dataset__)
+                self.__dataset__ = self.updateLinkDataDataset(self.__dataset__)
 
                 self.stopTransaction(transaction)
             return self.getDataset()
@@ -162,7 +166,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
             log_func.fatal(u'Error get unique data object <%s> record by guid' % self.getName())
         self.stopTransaction(transaction)
 
-        record = self._updateLinkDataRecord(record)
+        record = self.updateLinkDataRecord(record)
         return record
 
     def getDataObjectRec(self, value):
@@ -300,3 +304,28 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         else:
             log_func.warning(u'Unic object by %s %s not found' % (str(find_args), str(find_kwargs)))
         return None
+
+    def updateLinkRecordByColumn(self, record, column_name):
+        """
+        Update the record for column link.
+
+        :param record: Record dictionary.
+        :param column_name: Link column name.
+        :return: Record dictionary with link data.
+        """
+        if not isinstance(record, dict):
+            log_func.warning(u'Error record type. Method <%s> in <%s> class' % (sys._getframe().f_code.co_name,
+                                                                                self.__class__.__name__))
+            return record
+        if column_name not in record:
+            log_func.warning(u'Not find link column <%s> in record %s' % (column_name, str(record)))
+            return record
+
+        try:
+            guid = record[column_name]
+            uni_record = self.getRecByGuid(guid=guid)
+            uni_record = {column_name + data_object.DATA_NAME_DELIMETER + col_name: value for col_name, value in uni_record.items()}
+            record.update(uni_record)
+        except:
+            log_func.fatal(u'Error update the record for column link')
+        return record

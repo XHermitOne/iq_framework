@@ -5,6 +5,7 @@
 Reference data object manager.
 """
 
+import sys
 import copy
 import operator
 import sqlalchemy.sql
@@ -20,7 +21,9 @@ from ...dialog import dlg_func
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 5, 2)
+from ..data_model import data_object
+
+__version__ = (0, 0, 6, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -818,3 +821,28 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         except:
             log_func.fatal(u'Error select favorites ref-objects <%s>' % self.getName())
         return None
+
+    def updateLinkRecordByColumn(self, record, column_name):
+        """
+        Update the record for column link.
+
+        :param record: Record dictionary.
+        :param column_name: Link column name.
+        :return: Record dictionary with link data.
+        """
+        if not isinstance(record, dict):
+            log_func.warning(u'Error record type. Method <%s> in <%s> class' % (sys._getframe().f_code.co_name,
+                                                                                self.__class__.__name__))
+            return record
+        if column_name not in record:
+            log_func.warning(u'Not find link column <%s> in record %s' % (column_name, str(record)))
+            return record
+
+        try:
+            cod = record[column_name]
+            ref_record = self.getRecByCod(cod=cod)
+            ref_record = {column_name + data_object.DATA_NAME_DELIMETER + col_name: value for col_name, value in ref_record.items()}
+            record.update(ref_record)
+        except:
+            log_func.fatal(u'Error update the record for column link')
+        return record

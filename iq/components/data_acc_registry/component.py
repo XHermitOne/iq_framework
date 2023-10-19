@@ -107,7 +107,7 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         """
         return self.getAttribute('result_table')
 
-    def _updateLinkDataDataset(self, dataset, columns=None):
+    def updateLinkDataDataset(self, dataset, columns=None):
         """
         Update dataset by link object data
 
@@ -117,9 +117,9 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         """
         if columns is None:
             columns = self.getChildren()
-        return acc_registry.iqAccRegistry._updateLinkDataDataset(self, dataset=dataset, columns=columns)
+        return acc_registry.iqAccRegistry.updateLinkDataDataset(self, dataset=dataset, columns=columns)
 
-    def _updateLinkDataRecord(self, record, columns=None):
+    def updateLinkDataRecord(self, record, columns=None):
         """
         Update record by link object data
 
@@ -129,7 +129,7 @@ class iqDataAccumulateRegistry(acc_registry.iqAccRegistry, object.iqObject):
         """
         if columns is None:
             columns = self.getChildren()
-        return acc_registry.iqAccRegistry._updateLinkDataRecord(self, record=record, columns=columns)
+        return acc_registry.iqAccRegistry.updateLinkDataRecord(self, record=record, columns=columns)
 
 
 COMPONENT = iqDataAccumulateRegistry

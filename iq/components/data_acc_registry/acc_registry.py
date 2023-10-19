@@ -163,7 +163,7 @@ class iqAccRegistry(data_object.iqDataObject):
                 query = result_table.select()
             dataset = query.execute()
             dataset = [dict(record) for record in dataset]
-            dataset = self._updateLinkDataDataset(dataset)
+            dataset = self.updateLinkDataDataset(dataset)
             return dataset
         except:
             log_func.fatal(u'Error get result table dataset')

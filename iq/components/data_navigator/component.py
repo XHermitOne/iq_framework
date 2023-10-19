@@ -93,7 +93,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         model_obj = self.getKernel().getObject(psp=model_psp)
         return model_obj
 
-    def _updateLinkDataDataset(self, dataset, columns=None):
+    def updateLinkDataDataset(self, dataset, columns=None):
         """
         Update dataset by link object data
 
@@ -103,9 +103,9 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         """
         if columns is None:
             columns = self.getModelObj().getChildren()
-        return model_navigator.iqModelNavigatorManager._updateLinkDataDataset(self, dataset=dataset, columns=columns)
+        return model_navigator.iqModelNavigatorManager.updateLinkDataDataset(self, dataset=dataset, columns=columns)
 
-    def _updateLinkDataRecord(self, record, columns=None):
+    def updateLinkDataRecord(self, record, columns=None):
         """
         Update record by link object data
 
@@ -115,7 +115,7 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         """
         if columns is None:
             columns = self.getModelObj().getChildren()
-        return model_navigator.iqModelNavigatorManager._updateLinkDataRecord(self, record=record, columns=columns)
+        return model_navigator.iqModelNavigatorManager.updateLinkDataRecord(self, record=record, columns=columns)
 
 
 COMPONENT = iqDataNavigator

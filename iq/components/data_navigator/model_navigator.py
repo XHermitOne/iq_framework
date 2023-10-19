@@ -268,7 +268,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         self.__dataset__ = self.filterRecs(*filter_args, **filter_kwargs)
 
         # Update dataset by link object data
-        self.__dataset__ = self._updateLinkDataDataset(self.__dataset__)
+        self.__dataset__ = self.updateLinkDataDataset(self.__dataset__)
         return self.__dataset__
 
     def getFirstDatasetRec(self):

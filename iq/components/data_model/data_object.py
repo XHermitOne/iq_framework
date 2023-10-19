@@ -11,7 +11,7 @@ from ...util import global_func
 from ..data_column import COMPONENT as column_component
 from . import component
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 3, 1)
 
 DATA_NAME_DELIMETER = '.'
 
@@ -80,7 +80,7 @@ class iqDataObject(iqDataObjectProto):
         log_func.warning(u'Not define method <getDataObjectRec> in <%s>' % self.__class__.__name__)
         return None
 
-    def _updateLinkDataDataset(self, dataset, columns=None):
+    def updateLinkDataDataset(self, dataset, columns=None):
         """
         Update dataset by link object data
 
@@ -109,8 +109,8 @@ class iqDataObject(iqDataObjectProto):
                 elif issubclass(column.__class__, component.iqDataModel):
                     for i, record in enumerate(dataset):
                         cascade_name = column.getName()
-                        dataset[i][cascade_name] = self._updateLinkDataDataset(dataset=record.get(cascade_name, list()),
-                                                                               columns=column.getChildren())
+                        dataset[i][cascade_name] = self.updateLinkDataDataset(dataset=record.get(cascade_name, list()),
+                                                                              columns=column.getChildren())
                 else:
                     log_func.warning(u'Unsupported column type <%s : %s>' % (column.getName(),
                                                                              column.__class__.__name__))
@@ -118,7 +118,7 @@ class iqDataObject(iqDataObjectProto):
             log_func.fatal(u'Error update dataset by link object data')
         return dataset
 
-    def _updateLinkDataRecord(self, record, columns=None):
+    def updateLinkDataRecord(self, record, columns=None):
         """
         Update record by link object data
 
@@ -147,8 +147,8 @@ class iqDataObject(iqDataObjectProto):
                 elif issubclass(column.__class__, component.iqDataModel):
                     cascade_name = column.getName()
                     # log_func.debug(u'Cascade <%s>' % cascade_name)
-                    record[cascade_name] = self._updateLinkDataDataset(dataset=record.get(cascade_name, list()),
-                                                                       columns=column.getChildren())
+                    record[cascade_name] = self.updateLinkDataDataset(dataset=record.get(cascade_name, list()),
+                                                                      columns=column.getChildren())
                 else:
                     log_func.warning(u'Unsupported column type <%s : %s>' % (column.getName(),
                                                                              column.__class__.__name__))
