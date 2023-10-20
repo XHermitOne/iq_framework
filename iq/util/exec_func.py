@@ -19,7 +19,7 @@ from . import file_func
 from . import global_func
 from . import txtfile_func
 
-__version__ = (0, 0, 1, 4)
+__version__ = (0, 0, 1, 5)
 
 
 def execSystemCommand(cmd=''):
@@ -41,7 +41,7 @@ def execSystemCommand(cmd=''):
     return False
 
 
-def getLinesExecutedCommand(cmd='', console_encoding=None):
+def getLinesExecutedCommand(cmd='', console_encoding=None, echo=False):
     """
     Execute command and get output lines.
 
@@ -66,6 +66,8 @@ def getLinesExecutedCommand(cmd='', console_encoding=None):
             for i, b_line in enumerate(b_lines):
                 try:
                     line = b_line.decode(console_encoding).strip()
+                    if echo:
+                        log_func.info(line)
                     lines.append(line)
                 except UnicodeDecodeError:
                     log_func.fatal(u'Error decode line [%d]' % i)

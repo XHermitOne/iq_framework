@@ -12,8 +12,12 @@ from . import sys_func
 from . import zip_func
 from . import nfs_func
 from . import lang_func
+from . import dt_func
+from . import file_func
+from . import exec_func
+from . import global_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -88,3 +92,74 @@ def backupFileZipNfs(src_filename, backup_url, zip_filename=None, dst_path=None,
         log_func.fatal(u'Error backup file <%s> to NFS network resource <%s>' % (src_filename, backup_url))
 
     return result
+
+
+PG_DUMP_LINUX_CMD_FMT = 'pg_dump --host=%s --port=%s --dbname=%s --username=%s --file=%s'
+
+
+def backupPostgreSQLDBFileLinux(db_host, db_port, db_name, db_username, db_password=None,
+                                filename=None, filename_fmt=None):
+    """
+    Create PostgreSQL database backup file for Linux. Create by pg_dump tool.
+
+    :param db_host: Database host.
+    :param db_port: Database port.
+    :param db_name: Database name.
+    :param db_username: Database user name.
+    :param db_password: Database user password. If None then no password.
+    :param filename: Result file name. If None then get file name by format.
+    :param filename_fmt: Result file name format.
+    :return: Created result file name or None if error.
+    """
+    if not filename and filename_fmt:
+        filename = dt_func.datetime2str(dt_func.getNow(), filename_fmt)
+    elif not filename and not filename_fmt:
+        filename = file_func.getTempFilename()
+
+    try:
+        cmd = PG_DUMP_LINUX_CMD_FMT % (db_host, db_port, db_name, db_username, filename)
+        if not db_password:
+            cmd += ' --no-password'
+        else:
+            cmd = 'PGPASSWORD=\"%s\" ' % db_password + cmd
+        exec_func.execSystemCommand(cmd=cmd)
+
+        if os.path.exists(filename):
+            return filename
+        else:
+            log_func.warning(u'Error create PostgreSQL postgresql://%s:%s/%s backup file <%s>' % (db_host, db_port,
+                                                                                                  db_name, filename))
+    except:
+        log_func.fatal(u'Error create PostgreSQL postgresql://%s:%s/%s backup file <%s>' % (db_host, db_port,
+                                                                                            db_name, filename))
+    return None
+
+
+def backupPostgreSQLDB(db_host, db_port, db_name, db_username, db_password=None,
+                       backup_url=None, *args, **kwargs):
+    """
+    Create PostgreSQL database backup file for Linux. Create by pg_dump tool.
+
+    :param db_host: Database host.
+    :param db_port: Database port.
+    :param db_name: Database name.
+    :param db_username: Database user name.
+    :param db_password: Database user password. If None then no password.
+    :param backup_url: Backup network URL.
+    :param dst_path: Destination network backup folder.
+    :param parent_win: Parent window for dialogs.
+    :return: True/False.
+    """
+    if sys_func.isLinuxPlatform():
+        src_base_filename_fmt = db_name+'_'+sys_func.getComputerName()+'_'+global_func.getUsername()+'_%Y_%m_%d_%H_%M_%S.sql'
+        src_filename_fmt = os.path.join(file_func.getTempDirname(auto_create=True), src_base_filename_fmt)
+        src_filename = backupPostgreSQLDBFileLinux(db_host=db_host, db_port=db_port, db_name=db_name,
+                                                   db_username=db_username, db_password=db_password,
+                                                   filename_fmt=src_filename_fmt)
+    else:
+        log_func.warning(u'Not supported OS for backup network NFS resource')
+        src_filename = None
+
+    if src_filename:
+        return backupFileZip(src_filename=src_filename, backup_url=backup_url, *args, **kwargs)
+    return False

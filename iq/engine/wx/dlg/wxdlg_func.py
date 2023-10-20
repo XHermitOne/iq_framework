@@ -20,7 +20,7 @@ from .. import wxbitmap_func
 from . import login_dialog_proto
 from ... import stored_manager
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 4, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -690,6 +690,9 @@ def getLoginDlg(parent=None, title='', default_username=None, reg_users=None, us
     app = global_func.getApplication()
     if app is None:
         app = global_func.createApplication()
+
+    if parent is None:
+        parent = app.GetTopWindow()
 
     dlg = None
     result = None

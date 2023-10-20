@@ -25,7 +25,7 @@ from . import file_func
 from . import exec_func
 from . import net_func
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 0, 2, 3)
 
 NFS_URL_TYPE = 'nfs://'
 DEFAULT_WORKGROUP = 'WORKGROUP'
@@ -118,9 +118,13 @@ def mountNfsResourceLinux(url, dst_path=None, options=None, root_password=None):
 
         nfs_path = getNfsPathFromUrl(url)
         mount_cmd = LINUX_NFS_MOUNT_CMD_FMT % (root_password, options, nfs_host, nfs_path, dst_path)
-        result = exec_func.execSystemCommand(mount_cmd)
+        # lines = exec_func.getLinesExecutedCommand(cmd=mount_cmd, echo=True)
+        # result = not any(['Protocol not supported' in line for line in lines]) if lines else True
+        result = exec_func.execSystemCommand(cmd=mount_cmd)
         if result:
             log_func.info(u'NFS resource <%s> mounted to <%s>' % (url, dst_path))
+        else:
+            log_func.warning(u'Error mount NFS resource <%s> to <%s>' % (url, dst_path))
         return result
     except:
         log_func.fatal(u'Error mount NFS resource <%s>' % url)
@@ -347,5 +351,8 @@ def uploadNfsFile(upload_url=None, filename=None, dst_path=None, rewrite=True, m
             log_func.warning(u'NFS resource mount path <%s> not found' % mnt_path)
 
     if mounted:
+        # Options only for mount
+        if 'options' in kwargs:
+            del kwargs['options']
         umountNfsResource(mnt=mnt_path, auto_delete=True, *args, **kwargs)
     return result
