@@ -47,7 +47,7 @@
             <property name="minimum_size"></property>
             <property name="name">iqChoiceListDlgProto</property>
             <property name="pos"></property>
-            <property name="size">698,421</property>
+            <property name="size">843,421</property>
             <property name="style">wxDEFAULT_DIALOG_STYLE</property>
             <property name="subclass"></property>
             <property name="title"></property>
@@ -122,11 +122,11 @@
                         <property name="wrap">-1</property>
                     </object>
                 </object>
-                <object class="sizeritem" expanded="0">
+                <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">0</property>
-                    <object class="wxToolBar" expanded="0">
+                    <object class="wxToolBar" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
                         <property name="RightDockable">1</property>
