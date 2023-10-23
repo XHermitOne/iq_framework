@@ -30,7 +30,7 @@ except ImportError:
     ObjectListView = None
     log_func.error(u'Import error ObjectListView. Install: pip3 install objectlistview')
 
-__version__ = (0, 0, 6, 1)
+__version__ = (0, 0, 6, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -1281,7 +1281,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
 
         try:
             sort_column = objectlistview.GetSortColumn()
-            sort_column = sort_column.valueGetter if isinstance(sort_column.valueGetter, str) else objectlistview.sortColumnIndex
+            sort_column = sort_column.valueGetter if sort_column and isinstance(sort_column.valueGetter, str) else objectlistview.sortColumnIndex
             return sort_column
         except:
             log_func.fatal(u'Error get sort column for ObjectListView control')
