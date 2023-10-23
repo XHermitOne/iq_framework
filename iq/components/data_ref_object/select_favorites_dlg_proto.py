@@ -54,12 +54,12 @@ class iqSelectFavoritesDialogProto ( wx.Dialog ):
 		bSizer41 = wx.BoxSizer( wx.HORIZONTAL )
 
 		self.from_ref_obj_comboctrl = refobjmultiplecheckcomboctrl.iqRefObjMultipleCheckComboCtrlProto(parent=self)
-		bSizer41.Add( self.from_ref_obj_comboctrl, 1, wx.ALL|wx.EXPAND, 5 )
+		bSizer41.Add( self.from_ref_obj_comboctrl, 1, wx.ALL, 5 )
 
 		self.clear_bpButton = wx.BitmapButton( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW|0 )
 
 		self.clear_bpButton.SetBitmap( wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) )
-		bSizer41.Add( self.clear_bpButton, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+		bSizer41.Add( self.clear_bpButton, 0, wx.ALL, 5 )
 
 
 		bSizer1.Add( bSizer41, 1, wx.EXPAND, 5 )

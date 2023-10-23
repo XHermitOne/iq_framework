@@ -27,7 +27,7 @@ from ...engine.wx import treelistctrl_manager
 
 from . import wx_editdlg
 
-__version__ = (0, 0, 1, 5)
+__version__ = (0, 0, 1, 6)
 
 _ = lang_func.getTranslation().gettext
 
@@ -321,14 +321,14 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         level_data = self.ref_obj.getLevelRecsByCod(parent_cod=code)
         # Sort
         if sort_column is not None:
-            log_func.debug(u'Set sort column <%s>' % sort_column)
+            # log_func.debug(u'Set sort column <%s>' % sort_column)
             level_data = self.sortRefObjRecordset(level_data, sort_column=sort_column)
 
         if level_data is None:
             log_func.warning(u'No data')
             return
 
-        log_func.debug(u'Ref object level data %s' % str(level_data))
+        # log_func.debug(u'Ref object level data %s' % str(level_data))
         title = self.ref_obj.getDescription() if self.ref_obj.getDescription() else self.ref_obj.getName()
         label = _(u'Open ref object') + ' <%s>' % title
         len_level_data = len(level_data) if isinstance(level_data, list) else 0
@@ -520,7 +520,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
                     value = u''
                 elif not isinstance(value, str):
                     value = str(value)
-                log_func.debug(u'Value <%s>. Index %s' % (value, i))
+                # log_func.debug(u'Value <%s>. Index %s' % (value, i))
                 self.refobj_treeListCtrl.SetItemText(item, value, i + 1)
         
             if self.ref_obj.isChildrenCodes(code):
