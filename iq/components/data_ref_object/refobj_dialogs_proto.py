@@ -25,7 +25,7 @@ _ = lang_func.getTranslation().gettext
 class iqChoiceListDlgProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 843,421 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 843,421 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -76,6 +76,7 @@ class iqChoiceListDlgProto ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.Bind( wx.EVT_CLOSE, self.onClose )
 		self.Bind( wx.EVT_TOOL, self.onReturnToolClick, id = self.return_tool.GetId() )
 		self.Bind( wx.EVT_TOOL, self.onSearchToolClick, id = self.search_tool.GetId() )
 		self.refobj_list_ctrl.Bind( wx.EVT_LIST_ITEM_ACTIVATED, self.onRefObjListItemActive )
@@ -88,6 +89,9 @@ class iqChoiceListDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
+	def onClose(self, event):
+		event.Skip()
+
 	def onReturnToolClick(self, event):
 		event.Skip()
 
@@ -114,7 +118,7 @@ class iqChoiceListDlgProto ( wx.Dialog ):
 class iqEditDlgProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Edit"), pos = wx.DefaultPosition, size = wx.Size( 1646,723 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Edit"), pos = wx.DefaultPosition, size = wx.Size( 1646,723 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -199,6 +203,7 @@ class iqEditDlgProto ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.Bind( wx.EVT_CLOSE, self.onClose )
 		self.search_textCtrl.Bind( wx.EVT_TEXT, self.onSearchText )
 		self.Bind( wx.EVT_TOOL, self.onSearchToolClicked, id = self.search_tool.GetId() )
 		self.refobj_treeCtrl.Bind( wx.EVT_TREE_ITEM_COLLAPSED, self.onRefObjTreeItemCollapsed )
@@ -215,6 +220,9 @@ class iqEditDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
+	def onClose(self, event):
+		event.Skip()
+
 	def onSearchText(self, event):
 		event.Skip()
 
@@ -257,7 +265,7 @@ class iqEditDlgProto ( wx.Dialog ):
 class iqRecEditDlgProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Record edit"), pos = wx.DefaultPosition, size = wx.Size( 886,467 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Record edit"), pos = wx.DefaultPosition, size = wx.Size( 886,467 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -296,6 +304,7 @@ class iqRecEditDlgProto ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.Bind( wx.EVT_CLOSE, self.onClose )
 		self.activate_checkBox.Bind( wx.EVT_CHECKBOX, self.onActivateCheckBox )
 		self.cancel_button.Bind( wx.EVT_BUTTON, self.onCancelButtonClick )
 		self.ok_button.Bind( wx.EVT_BUTTON, self.onOkButtonClick )
@@ -305,6 +314,9 @@ class iqRecEditDlgProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
+	def onClose(self, event):
+		event.Skip()
+
 	def onActivateCheckBox(self, event):
 		event.Skip()
 

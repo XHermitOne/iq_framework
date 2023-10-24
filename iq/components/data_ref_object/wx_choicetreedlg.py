@@ -27,7 +27,7 @@ from ...engine.wx import treelistctrl_manager
 
 from . import wx_editdlg
 
-__version__ = (0, 0, 1, 6)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -41,7 +41,7 @@ SORT_REVERSE_SIGN = '-'
 
 
 class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
-                            form_manager.iqFormManager,
+                            form_manager.iqDialogManager,
                             stored_wx_form_manager.iqStoredWxFormsManager,
                             treelistctrl_manager.iqTreeListCtrlManager):
     """
@@ -56,6 +56,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         :param default_selected_code: Selected default code.
         """
         refobj_dialogs_proto.iqChoiceTreeDlgProto.__init__(self, *args, **kwargs)
+        self.loadPosAndSize()
 
         # Set labels
         self.edit_button.SetLabel(_('Edit...'))
@@ -131,6 +132,7 @@ class iqRefObjChoiceTreeDlg(refobj_dialogs_proto.iqChoiceTreeDlgProto,
         Close dialog box.
         """
         self.hidePopupInfo()
+        self.savePosAndSize()
         event.Skip()
 
     def init(self, fields, search_fields):

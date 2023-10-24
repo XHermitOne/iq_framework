@@ -29,7 +29,7 @@
         <property name="use_array_enum">0</property>
         <property name="use_enum">0</property>
         <property name="use_microsoft_bom">0</property>
-        <object class="Dialog" expanded="1">
+        <object class="Dialog" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -48,7 +48,7 @@
             <property name="name">iqChoiceListDlgProto</property>
             <property name="pos"></property>
             <property name="size">843,421</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</property>
             <property name="subclass"></property>
             <property name="title"></property>
             <property name="tooltip"></property>
@@ -56,7 +56,8 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
-            <object class="wxBoxSizer" expanded="1">
+            <event name="OnClose">onClose</event>
+            <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer1</property>
                 <property name="orient">wxVERTICAL</property>
@@ -122,11 +123,11 @@
                         <property name="wrap">-1</property>
                     </object>
                 </object>
-                <object class="sizeritem" expanded="1">
+                <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">0</property>
-                    <object class="wxToolBar" expanded="1">
+                    <object class="wxToolBar" expanded="0">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
                         <property name="RightDockable">1</property>
@@ -390,11 +391,11 @@
                         <event name="OnListItemSelected">onRefObjListItemSelect</event>
                     </object>
                 </object>
-                <object class="sizeritem" expanded="1">
+                <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxALIGN_RIGHT</property>
                     <property name="proportion">0</property>
-                    <object class="wxBoxSizer" expanded="1">
+                    <object class="wxBoxSizer" expanded="0">
                         <property name="minimum_size"></property>
                         <property name="name">bSizer2</property>
                         <property name="orient">wxHORIZONTAL</property>
@@ -551,7 +552,7 @@
                 </object>
             </object>
         </object>
-        <object class="Dialog" expanded="1">
+        <object class="Dialog" expanded="0">
             <property name="aui_managed">0</property>
             <property name="aui_manager_style">wxAUI_MGR_DEFAULT</property>
             <property name="bg"></property>
@@ -570,7 +571,7 @@
             <property name="name">iqEditDlgProto</property>
             <property name="pos"></property>
             <property name="size">1646,723</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</property>
             <property name="subclass"></property>
             <property name="title">Edit</property>
             <property name="tooltip"></property>
@@ -578,6 +579,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onClose</event>
             <object class="wxBoxSizer" expanded="0">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer3</property>
@@ -1416,7 +1418,7 @@
             <property name="name">iqRecEditDlgProto</property>
             <property name="pos"></property>
             <property name="size">886,467</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</property>
             <property name="subclass"></property>
             <property name="title">Record edit</property>
             <property name="tooltip"></property>
@@ -1424,6 +1426,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onClose</event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer6</property>

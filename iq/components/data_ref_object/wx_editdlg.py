@@ -30,7 +30,7 @@ from . import wx_editlinkproperty
 
 from ...components.data_column import column_types
 
-__version__ = (0, 0, 1, 4)
+__version__ = (0, 0, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -405,7 +405,7 @@ class iqRefObjRecCreateDlg(iqRefObjRecEditDlg):
 
 
 class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
-                      form_manager.iqFormManager,
+                      form_manager.iqDialogManager,
                       treectrl_manager.iqTreeCtrlManager,
                       listctrl_manager.iqListCtrlManager,
                       toolbar_manager.iqToolBarManager):
@@ -419,6 +419,7 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         :param ref_obj: Reference data object.
         """
         refobj_dialogs_proto.iqEditDlgProto.__init__(self, *args, **kwargs)
+        self.loadPosAndSize()
 
         self.root = None
         self.ref_obj = ref_obj
@@ -439,7 +440,14 @@ class iqRefObjEditDlg(refobj_dialogs_proto.iqEditDlgProto,
         
         self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.onRefObjTreeItemExpanded)
         self.Bind(wx.EVT_TREE_ITEM_COLLAPSED, self.onRefObjTreeItemCollapsed)
-        
+
+    def onClose(self, event):
+        """
+        Close dialog handler.
+        """
+        self.savePosAndSize()
+        event.Skip()
+
     def init(self):
         """
         Dialog initialization function.

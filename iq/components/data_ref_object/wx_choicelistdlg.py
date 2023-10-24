@@ -18,12 +18,15 @@ from ...util import log_func
 from ...util import lang_func
 from ... import passport
 
-__version__ = (0, 0, 0, 1)
+from ...engine.wx import form_manager
+
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
 
-class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
+class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto,
+                               form_manager.iqDialogManager):
     """
     Dialog box for selecting an item by level in a list form.
     """
@@ -32,6 +35,7 @@ class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
         Конструктор.
         """
         refobj_dialogs_proto.iqChoiceListDlgProto.__init__(self, *args, **kwargs)
+        self.loadPosAndSize()
 
         self._ref_object = None
         self._selected_cod = None
@@ -48,6 +52,13 @@ class iqRefObjChoiceListDialog(refobj_dialogs_proto.iqChoiceListDlgProto):
         self.refobj_list_ctrl.InsertColumn(1, _(u'Name'))
         self.refobj_list_ctrl.SetColumnWidth(0, wx.LIST_AUTOSIZE)
         self.refobj_list_ctrl.SetColumnWidth(1, wx.LIST_AUTOSIZE)
+
+    def onClose(self, event):
+        """
+        Close dialog.
+        """
+        self.savePosAndSize()
+        event.Skip()
 
     def _getStrCode(self, code=None):
         """
