@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 3, 4)
+__version__ = (0, 0, 3, 5)
 
 # Report cell tags:
 # query table field values
@@ -1044,6 +1044,9 @@ class iqReportGenerator(object):
         :param data_list: Format data.
         :return: A string that matches the format.
         """
+        # Take into account the % symbol in the format
+        fmt = fmt.replace('% ', '%% ')
+
         # Set format
         if data_list is []:
             if fmt:
