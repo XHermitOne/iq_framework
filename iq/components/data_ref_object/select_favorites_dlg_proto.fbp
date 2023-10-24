@@ -48,7 +48,7 @@
             <property name="name">iqSelectFavoritesDialogProto</property>
             <property name="pos"></property>
             <property name="size">1144,237</property>
-            <property name="style">wxDEFAULT_DIALOG_STYLE</property>
+            <property name="style">wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</property>
             <property name="subclass">; ; forward_declare</property>
             <property name="title">FAVORITES</property>
             <property name="tooltip"></property>
@@ -56,6 +56,7 @@
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style"></property>
+            <event name="OnClose">onClose</event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
                 <property name="name">bSizer1</property>

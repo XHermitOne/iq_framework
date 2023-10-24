@@ -20,7 +20,8 @@ from iq.engine.wx import form_manager
 __version__ = (0, 0, 2, 1)
 
 
-class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialogProto, form_manager.iqFormManager):
+class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialogProto,
+                              form_manager.iqDialogManager):
     """
     Dialog.
     """
@@ -30,7 +31,15 @@ class iqSelectFavoritesDialog(select_favorites_dlg_proto.iqSelectFavoritesDialog
         """
         select_favorites_dlg_proto.iqSelectFavoritesDialogProto.__init__(self, *args, **kwargs)
 
+        self.loadPosAndSize()
         self.to_refobj = None
+
+    def onClose(self, event):
+        """
+        Dialog close handler.
+        """
+        self.savePosAndSize()
+        event.Skip()
 
     def init(self, fields, search_fields):
         """

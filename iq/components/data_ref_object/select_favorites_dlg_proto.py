@@ -23,7 +23,7 @@ _ = lang_func.getTranslation().gettext
 class iqSelectFavoritesDialogProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"FAVORITES"), pos = wx.DefaultPosition, size = wx.Size( 1144,237 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"FAVORITES"), pos = wx.DefaultPosition, size = wx.Size( 1144,237 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -85,6 +85,7 @@ class iqSelectFavoritesDialogProto ( wx.Dialog ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.Bind( wx.EVT_CLOSE, self.onClose )
 		self.clear_bpButton.Bind( wx.EVT_BUTTON, self.onClearButtonClick )
 		self.cancel_button.Bind( wx.EVT_BUTTON, self.onCancelButtonClick )
 		self.add_button.Bind( wx.EVT_BUTTON, self.onAddButtonClick )
@@ -94,6 +95,9 @@ class iqSelectFavoritesDialogProto ( wx.Dialog ):
 
 
 	# Virtual event handlers, override them in your derived class
+	def onClose(self, event):
+		event.Skip()
+
 	def onClearButtonClick(self, event):
 		event.Skip()
 

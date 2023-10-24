@@ -7,17 +7,19 @@ Frame and Dialog manager.
 
 import os
 import os.path
+import wx
 
 from ...util import file_func
 from ...util import global_func
 from ...util import res_func
+from ...util import log_func
 
 from . import panel_manager
 from .. import stored_manager
 
 from . import wxcolour_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 class iqFormManager(stored_manager.iqStoredManager):
@@ -68,6 +70,45 @@ class iqFormManager(stored_manager.iqStoredManager):
         :return: True/False.
         """
         return wxcolour_func.isDarkSysTheme()
+
+    def loadPosAndSize(self):
+        """
+        Load form position and size.
+        :return: True/False.
+        """
+        try:
+            login_data = self.loadCustomData()
+            if login_data:
+                size = login_data.get('size', None)
+                if size:
+                    self.SetSize(wx.Size(*size))
+                position = login_data.get('pos', None)
+                if position:
+                    self.SetPosition(wx.Point(*position))
+                return True
+        except:
+            log_func.fatal(u'Error load and set form position and size')
+        return False
+
+    def savePosAndSize(self, ext_save_data=None):
+        """
+        Save for position and size.
+
+        :param ext_save_data: Additional data for save as dictionary.
+        :return: True/False.
+        """
+        try:
+            data = dict(size=tuple(self.GetSize()),
+                        pos=tuple(self.GetPosition()))
+            if ext_save_data:
+                if isinstance(ext_save_data, dict):
+                    data.update(ext_save_data)
+                else:
+                    log_func.warning(u'Type error additional data for save <%s>' % type(ext_save_data).__class__.__name__)
+            return self.saveCustomData(save_data=data)
+        except:
+            log_func.fatal(u'Error save form position and size')
+        return False
 
 
 class iqDialogManager(panel_manager.iqPanelManager,
