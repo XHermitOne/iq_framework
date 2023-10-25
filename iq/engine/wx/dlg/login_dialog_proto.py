@@ -22,7 +22,7 @@ _ = lang_func.getTranslation().gettext
 class iqLoginDialogProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"LOGIN"), pos = wx.DefaultPosition, size = wx.Size( 500,180 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"LOGIN"), pos = wx.DefaultPosition, size = wx.Size( 500,192 ), style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -40,7 +40,7 @@ class iqLoginDialogProto ( wx.Dialog ):
 		bSizer2.Add( self.username_comboBox, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
-		bSizer1.Add( bSizer2, 1, wx.EXPAND, 5 )
+		bSizer1.Add( bSizer2, 0, wx.EXPAND, 5 )
 
 		bSizer3 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -53,7 +53,10 @@ class iqLoginDialogProto ( wx.Dialog ):
 		bSizer3.Add( self.password_textCtrl, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
-		bSizer1.Add( bSizer3, 1, wx.EXPAND, 5 )
+		bSizer1.Add( bSizer3, 0, wx.EXPAND, 5 )
+
+
+		bSizer1.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
 
