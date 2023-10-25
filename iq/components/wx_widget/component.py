@@ -9,7 +9,9 @@ from ... import object
 
 from . import spc
 
-__version__ = (0, 0, 0, 1)
+from ...util import log_func
+
+__version__ = (0, 0, 1, 1)
 
 
 class iqWxWidget(object.iqObject):
@@ -56,6 +58,28 @@ class iqWxWidget(object.iqObject):
         Panel background colour.
         """
         return self.getAttribute('background_colour')
+
+    def findCtrlInParentsByName(self, ctrl_name, parent=None):
+        """
+        Find control in parents by name.
+
+        :param ctrl_name: Control name.
+        :param parent: Current parent control.
+        :return: Control or None if control not found.
+        """
+        if parent is None:
+            parent = self
+
+        try:
+            if hasattr(parent, ctrl_name):
+                return getattr(parent, ctrl_name)
+            else:
+                parent = parent.GetParent() if hasattr(parent, 'GetParent') else None
+                if parent:
+                    return self.findCtrlInParentsByName(ctrl_name=ctrl_name, parent=parent)
+        except:
+            log_func.fatal(u'Error find control <%s>' % ctrl_name)
+        return None
 
 
 COMPONENT = iqWxWidget
