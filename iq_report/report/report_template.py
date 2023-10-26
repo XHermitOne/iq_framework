@@ -21,7 +21,7 @@ from . import report_glob_data
 
 from iq.components.virtual_spreadsheet import v_spreadsheet
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 2)
 
 # Report template tags
 DESCRIPTION_TAG = '[description]'   # Description band
@@ -153,7 +153,6 @@ class iqReportTemplate(object):
         """
         try:
             new_row = list()
-            # print('>>>', self._rep_template['sheet'][row])
             for cell in self._rep_template['sheet'][row]:
                 new_cell = copy.deepcopy(cell)
                 new_cell['visible'] = False
@@ -1144,11 +1143,14 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             else:
                 cell_width = self._column_span_width    # Default 8.43
 
+            cell_visible = True
             # Row heights
             if not rows:
                 cell_height = self._default_row_height
-            elif len(rows) > row and 'Hidden' in rows[row] and rows[row]['Hidden'] == '1':
+            elif len(rows) > row and 'Hidden' in rows[row]:
+                log_func.debug(u'Row [%s] is hidden. Set cell invisible' % row)
                 cell_height = 0
+                cell_visible = False
             elif rows and len(rows) > row and 'Height' in rows[row]:
                 cell_height = float(rows[row]['Height'])
                 if 'Span' in rows[row]:
@@ -1176,7 +1178,7 @@ class iqlXMLSpreadSheetReportTemplate(iqReportTemplate):
             cell['width'] = cell_width
             cell['height'] = cell_height
             # Visible
-            cell['visible'] = True
+            cell['visible'] = cell_visible
             # Existing
             cell['exist'] = True
 

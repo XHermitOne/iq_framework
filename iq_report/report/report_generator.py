@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 3, 5)
+__version__ = (0, 0, 3, 6)
 
 # Report cell tags:
 # query table field values
@@ -460,9 +460,9 @@ class iqReportGenerator(object):
                 self._cur_top += cur_height
 
             self._report['header'] = {'row': max_row,
-                                   'col': header['col'],
-                                   'row_size': i_row,
-                                   'col_size': header['col_size'],
+                                      'col': header['col'],
+                                      'row_size': i_row,
+                                      'col_size': header['col_size'],
                                       }
             # Clear sums
             self._template_sheet = self._clearSum(self._template_sheet, 0, len(self._template_sheet))
@@ -498,9 +498,9 @@ class iqReportGenerator(object):
                 self._cur_top += cur_height
 
             self._report['footer'] = {'row': max_row,
-                                   'col': footer['col'],
-                                   'row_size': i_row,
-                                   'col_size': footer['col_size'],
+                                      'col': footer['col'],
+                                      'row_size': i_row,
+                                      'col_size': footer['col_size'],
                                       }
             return True
         except:
@@ -532,9 +532,9 @@ class iqReportGenerator(object):
 
             if self._report['detail'] == {}:
                 self._report['detail'] = {'row': max_row,
-                                       'col': detail['col'],
-                                       'row_size': i_row,
-                                       'col_size': detail['col_size'],
+                                          'col': detail['col'],
+                                          'row_size': i_row,
+                                          'col_size': detail['col_size'],
                                           }
             else:
                 self._report['detail']['row_size'] += i_row
