@@ -20,7 +20,7 @@ from iq.util import file_func
 from . import report_generator
 from . import report_glob_data
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 3, 2)
 
 SPC_XML_STYLE = {'style_id': '',  # Style ID
                  'align': {'align_txt': (0, 0), 'wrap_txt': False},  # Alignment
@@ -103,6 +103,7 @@ class iqXMLSpreadSheetReportFile(iqReportFile):
                 for i_col in range(len(rec_data['sheet'][i_row])):
                     cell = rec_data['sheet'][i_row][i_col]
                     xml_gen.saveCell(i_row+1, i_col+1, cell, rec_data['sheet'])
+                    # log_func.debug(u'Cell [%d : %d] value <%s>' % (i_row+1, i_col+1, rec_data['sheet']))
                 xml_gen.endRow()
             
             xml_gen.endSheet(rec_data)
@@ -787,6 +788,8 @@ class iqXMLSSGenerator(saxutils.XMLGenerator):
         """
         Get cell type.
         """
+        if isinstance(value, str) and value.startswith('0') and not value.startswith('0.'):
+            return 'String'
         try:
             # Number
             float(value)
