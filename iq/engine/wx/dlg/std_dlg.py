@@ -30,7 +30,7 @@ from . import wxdlg_func
 from .. import wxdatetime_func
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100):
@@ -119,21 +119,36 @@ def getYearDlg(parent=None, title=None, default_year=None):
     return selected_year
 
 
-def getMonthDlg(parent=None):
+def getMonthDlg(parent=None, title=None, default_year=None, default_month=None):
     """
     Select month in dialog.
 
     :param parent: Parent window.
         If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param default_year: Default year. If None then get current year.
+    :param default_month: Default month (1-12). If None then get current month.
     :return: Selected first month day (as datetime) or None if press <Cancel>.
     """
+    if default_year is None:
+        default_year = datetime.date.today().year
+    start_choice_year = datetime.date.today().year - month_dlg.DEFAULT_YEAR_RANGE
+    if default_month is None:
+        default_month = datetime.date.today().month
+
     selected_month = None
 
     if parent is None:
         parent = wx.GetApp().GetTopWindow()
 
     dlg = month_dlg.iqMonthDialog(parent)
+    if title:
+        dlg.SetTitle(title)
     dlg.Centre()
+
+    # Set default
+    dlg.year_choice.Select(default_year - start_choice_year)
+    dlg.month_choice.Select(default_month - 1)
 
     if dlg.ShowModal() == wx.ID_OK:
         selected_month = dlg.getSelectedMonthAsDatetime()

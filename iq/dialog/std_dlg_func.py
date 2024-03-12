@@ -8,7 +8,7 @@ Standart dialogs functions module.
 from ..util import global_func
 from ..util import log_func
 
-__version__ = (0, 0, 3, 2)
+__version__ = (0, 0, 4, 1)
 
 DIALOG_FUNCTION_MODULE = None
 
@@ -87,17 +87,20 @@ def getYearDlg(parent=None, title=None, default_year=None):
     return None
 
 
-def getMonthDlg(parent=None):
+def getMonthDlg(parent=None, title=None, default_year=None, default_month=None):
     """
     Select month in dialog.
 
     :param parent: Parent window.
         If None then get wx.GetApp().GetTopWindow()
+    :param title: Dialog title.
+    :param default_year: Default year. If None then get current year.
+    :param default_month: Default month (1-12). If None then get current month.
     :return: Selected first month day (as datetime) or None if press <Cancel>.
     """
     _std_dlg = _importDialogFunctions()
     if _std_dlg:
-        return _std_dlg.getMonthDlg(parent=parent)
+        return _std_dlg.getMonthDlg(parent=parent, title=title, default_year=default_year, default_month=default_month)
     return None
 
 

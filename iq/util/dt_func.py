@@ -16,7 +16,7 @@ from . import log_func
 from .. import global_data
 
 
-__version__ = (0, 1, 8, 1)
+__version__ = (0, 1, 9, 1)
 
 RU_MONTHS = (u'Январь', u'Февраль',
              u'Март', u'Апрель', u'Май',
@@ -491,6 +491,57 @@ def getPrevDayDT(day=None):
     :return: Prev day before current.
     """
     return date2datetime(getPrevDay(day))
+
+
+def getNextMonth(month_day=None):
+    """
+    Get first day next month as date.
+
+    :param month_day: Current day of month.
+         If None then get today.
+    :return: First day of next month.
+    """
+    return datetime2date(getNextMonthDT(month_day))
+
+
+def getNextMonthDT(month_day=None):
+    """
+    Get first day next month as datetime.
+
+    :param month_day: Current day of month.
+         If None then get today.
+    :return: First day of next month.
+    """
+    if month_day is None:
+        month_day = getToday()
+    stop_month_day = getStopMonthDT(month_day)
+    return stop_month_day + datetime.timedelta(days=1)
+
+
+def getPrevMonth(month_day=None):
+    """
+    Get first day of prev month as date.
+
+    :param month_day: Current day of month.
+         If None then get today.
+    :return: First day of prev month.
+    """
+    return datetime2date(getPrevMonthDT(month_day))
+
+
+def getPrevMonthDT(month_day=None):
+    """
+    Get first day of prev month as datetime.
+
+    :param month_day: Current day of month.
+         If None then get today.
+    :return: First day of prev month.
+    """
+    if month_day is None:
+        month_day = getToday()
+    start_month_day = getStartMonthDT(month_day)
+    stop_prev_month_day = start_month_day - datetime.timedelta(days=1)
+    return getStartMonthDT(stop_prev_month_day)
 
 
 def getYearAgoDT(day=None):
