@@ -9,7 +9,7 @@ import sqlalchemy
 
 from . import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 
 def dataframe2sql(dataframe, db_url, table_name, rewrite=True):
@@ -25,8 +25,9 @@ def dataframe2sql(dataframe, db_url, table_name, rewrite=True):
     """
     try:
         db_engine = sqlalchemy.create_engine(db_url, echo=False)
-        dataframe.to_sql(table_name, con=db_engine,
-                         if_exists='replace' if rewrite else 'append')
+        with db_engine.connect() as connection:
+            dataframe.to_sql(table_name, con=connection.connection,
+                             if_exists='replace' if rewrite else 'append')
         return True
     except:
         log_func.fatal(u'Error convert DataFrame to SQL table <%s : %s>' % (db_url, table_name))
