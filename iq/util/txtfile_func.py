@@ -15,7 +15,7 @@ from . import file_func
 from . import exec_func
 from . import sys_func
 
-__version__ = (0, 0, 5, 3)
+__version__ = (0, 0, 5, 4)
 
 DEFAULT_ENCODING = global_func.getDefaultEncoding()
 DEFAULT_REPLACEMENTS = {u'"': u'\''}
@@ -358,8 +358,9 @@ def loadCSVFile(csv_filename, delim=u',', encoding=DEFAULT_TXT_FILE_ENCODING):
             records = list()
             txt_lines = txt.split(u'\n')
             for txt_line in txt_lines:
-                record = [str_func.parseWiseTypeStr(field) for field in txt_line.split(delim)]
-                records.append(record)
+                if txt_line:
+                    record = [str_func.parseWiseTypeStr(field) for field in txt_line.split(delim)]
+                    records.append(record)
             return records
         except:
             log_func.fatal(u'Error convert CSV file <%s> to record list' % csv_filename)

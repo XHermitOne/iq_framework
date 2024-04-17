@@ -21,7 +21,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 0, 7, 3)
+__version__ = (0, 0, 7, 4)
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -649,15 +649,16 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                                                                                  self.__class__.__name__))
             return False
 
+        model = self.getModel()
         transaction = None
         try:
             rec_filter = self.getRecFilter()
-
             if not rec_filter:
                 # log_func.debug(u'Delete by where %s %s' % (str(where_args), str(where_kwargs)))
-                model = self.getModel()
                 transaction = self.startTransaction()
-                query = transaction.query(model).filter(*where_args, **where_kwargs).delete(synchronize_session=False)
+                del_objects = transaction.query(model).filter(*where_args, **where_kwargs).all()
+                for del_obj in del_objects:
+                    transaction.delete(del_obj)
                 transaction.commit()
                 self.stopTransaction(transaction)
             else:
@@ -667,7 +668,9 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                     select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
                                                                            table=table)
                     transaction = self.startTransaction()
-                    transaction.execute(select).delete(synchronize_session=False)
+                    del_objects = transaction.execute(select).fetchall()  # .delete(synchronize_session=False)
+                    for del_obj in del_objects:
+                        transaction.delete(del_obj)
                     transaction.commit()
                     self.stopTransaction(transaction)
                     return True
