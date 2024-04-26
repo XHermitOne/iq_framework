@@ -15,7 +15,7 @@ from . import log_func
 from . import file_func
 from . import sys_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 0, 4, 1)
 
 ZIP_EXT = '.zip'
 
@@ -93,7 +93,75 @@ def zipFile(src_filename, zip_filename=None, overwrite=True, to_console=True, op
         if sys_func.isLinuxPlatform():
             zip_cmd = 'zip %s %s %s' % (zip_options, zip_filename, src_filename)
         elif sys_func.isWindowsPlatform():
-            zip_cmd = 'powershell compress-archive %s %s %s' % (zip_options, src_filename, zip_filename)
+            zip_cmd = 'powershell compress-archive %s -Path %s -DestinationPath %s' % (zip_options, src_filename, zip_filename)
+        else:
+            log_func.warning(u'Unsupported zip for this platform')
+            return False
+
+        if to_console:
+            log_func.info(u'ZIP. Command <%s>' % zip_cmd)
+            os.system(zip_cmd)
+            return True
+        else:
+            process = subprocess.Popen(zip_cmd, stdout=subprocess.PIPE)
+            b_lines = process.stdout.readlines()
+            console_encoding = locale.getpreferredencoding()
+            lines = [line.decode(console_encoding).strip() for line in b_lines]
+            return lines
+    except:
+        log_func.fatal(u'Error zip <%s>' % zip_cmd)
+    return False
+
+
+def zipFilesByMask(src_filename_mask, zip_filename=None, overwrite=True, to_console=True, options=()):
+    """
+    Compress file to *.zip.
+
+    :param src_filename_mask: File mask. For example /home/user/tmp/*.xml.
+    :param zip_filename: Zip filename.
+    :param overwrite: Overwrite existing files without prompting?
+    :param to_console: Console output?
+    :param options: Zip options.
+    :return: True/False or lines if not console output.
+    """
+    src_filenames = file_func.getFilesByMask(filename_mask=src_filename_mask)
+    if src_filenames:
+        return zipFiles(src_filenames=src_filenames,
+                        zip_filename=zip_filename,
+                        overwrite=overwrite,
+                        to_console=to_console,
+                        options=options)
+    return False
+
+
+def zipFiles(src_filenames, zip_filename=None, overwrite=True, to_console=True, options=()):
+    """
+    Compress file to *.zip.
+
+    :param src_filenames: File names.
+    :param zip_filename: Zip filename.
+    :param overwrite: Overwrite existing files without prompting?
+    :param to_console: Console output?
+    :param options: Zip options.
+    :return: True/False or lines if not console output.
+    """
+    if not all([os.path.exists(src_filename) for src_filename in src_filenames]):
+        log_func.warning(u'Compressed files %s to ZIP not found' % ['%s : %s' % (src_filename, 'exists' if os.path.exists(src_filename) else 'NOT EXISTS') for src_filename in src_filenames])
+        return False
+
+    if zip_filename is None:
+        zip_filename = os.path.splitext(src_filenames)[0] + ZIP_EXT
+
+    zip_cmd = ''
+    try:
+        if overwrite and os.path.exists(zip_filename):
+            file_func.removeFile(zip_filename)
+
+        zip_options = ' '.join(options)
+        if sys_func.isLinuxPlatform():
+            zip_cmd = 'zip %s %s %s' % (zip_options, zip_filename, ' '.join(src_filenames))
+        elif sys_func.isWindowsPlatform():
+            zip_cmd = 'powershell compress-archive %s -Path %s -DestinationPath %s' % (zip_options, ', '.join(src_filenames), zip_filename)
         else:
             log_func.warning(u'Unsupported zip for this platform')
             return False

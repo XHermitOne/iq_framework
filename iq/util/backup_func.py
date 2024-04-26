@@ -17,7 +17,7 @@ from . import file_func
 from . import exec_func
 from . import global_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -31,65 +31,125 @@ def backupFileZip(src_filename, backup_url, zip_filename=None, dst_path=None, pa
     :param zip_filename: Backup ZIP file name.
     :param dst_path: Destination network backup folder.
     :param parent_win: Parent window for dialogs.
-    :param mnt_path: Mount path in the case of an already NFS resource is mounted.
-    :param options: Additional mount options.
-    :param rewrite: Overwrite a file if it already exists?
     :return: True/False.
     """
     if isinstance(backup_url, str) and backup_url.startswith(nfs_func.NFS_URL_TYPE):
-        return backupFileZipNfs(src_filename=src_filename,
-                                backup_url=backup_url,
-                                zip_filename=zip_filename,
-                                dst_path=dst_path,
-                                parent_win=parent_win,
-                                *args, **kwargs)
+        do_zip = os.path.splitext(src_filename)[1] != zip_func.ZIP_EXT
+
+        return backupFilesZipNfs(src_filenames=src_filename,
+                                 backup_url=backup_url,
+                                 zip_filename=zip_filename,
+                                 dst_path=dst_path,
+                                 parent_win=parent_win,
+                                 do_zip=do_zip,
+                                 *args, **kwargs)
     else:
         log_func.warning(u'Not supported backup network resource')
     return False
 
 
-def backupFileZipNfs(src_filename, backup_url, zip_filename=None, dst_path=None, parent_win=None, *args, **kwargs):
+def backupFilesZip(src_filenames, backup_url, zip_filename=None, dst_path=None, parent_win=None, *args, **kwargs):
     """
-    Backup file to NFS network resource by URL. Only for Linux platforms.
+    Backup files to network resource by URL.
 
-    :param src_filename: Source backup file name.
+    :param src_filenames: Source backup file names.
     :param backup_url: Backup network URL.
     :param zip_filename: Backup ZIP file name.
     :param dst_path: Destination network backup folder.
     :param parent_win: Parent window for dialogs.
-    :param mnt_path: Mount path in the case of an already NFS resource is mounted.
-    :param options: Additional mount options.
-    :param rewrite: Overwrite a file if it already exists?
+    :return: True/False.
+    """
+    if isinstance(backup_url, str) and backup_url.startswith(nfs_func.NFS_URL_TYPE):
+        do_zip = not all([os.path.splitext(src_filename)[1] == zip_func.ZIP_EXT for src_filename in src_filenames])
+        return backupFilesZipNfs(src_filenames=src_filenames,
+                                 backup_url=backup_url,
+                                 zip_filename=zip_filename,
+                                 dst_path=dst_path,
+                                 parent_win=parent_win,
+                                 do_zip=do_zip,
+                                 *args, **kwargs)
+    else:
+        log_func.warning(u'Not supported backup network resource')
+    return False
+
+
+def backupFilesZipByMask(src_filenames_mask, backup_url, zip_filename=None, dst_path=None, parent_win=None, *args, **kwargs):
+    """
+    Backup files by mask to network resource by URL.
+
+    :param src_filenames_mask: Source backup file names mask.
+    :param backup_url: Backup network URL.
+    :param zip_filename: Backup ZIP file name.
+    :param dst_path: Destination network backup folder.
+    :param parent_win: Parent window for dialogs.
+    :return: True/False.
+    """
+    src_filenames = file_func.getFilesByMask(filename_mask=src_filenames_mask)
+    if not src_filenames:
+        log_func.warning(u'Not found files for backup')
+        return False
+
+    if isinstance(backup_url, str) and backup_url.startswith(nfs_func.NFS_URL_TYPE):
+        do_zip = not all([os.path.splitext(src_filename)[1] == zip_func.ZIP_EXT for src_filename in src_filenames])
+        return backupFilesZipNfs(src_filenames=src_filenames,
+                                 backup_url=backup_url,
+                                 zip_filename=zip_filename,
+                                 dst_path=dst_path,
+                                 parent_win=parent_win,
+                                 do_zip=do_zip,
+                                 *args, **kwargs)
+    else:
+        log_func.warning(u'Not supported backup network resource')
+    return False
+
+
+def backupFilesZipNfs(src_filenames, backup_url, zip_filename=None, dst_path=None, parent_win=None, do_zip=True, *args, **kwargs):
+    """
+    Backup file to NFS network resource by URL. Only for Linux platforms.
+
+    :param src_filenames: Source backup filenames.
+    :param backup_url: Backup network URL.
+    :param zip_filename: Backup ZIP file name.
+    :param dst_path: Destination network backup folder.
+    :param parent_win: Parent window for dialogs.
+    :param do_zip: Make ZIP archive for backup.
     :return: True/False.
     """
     result = False
-    if not os.path.exists(src_filename):
-        log_func.warning(u'Backup file <%s> not found' % src_filename)
+    if isinstance(src_filenames, str):
+        src_filenames = [src_filenames]
+    if not all([os.path.exists(src_filename) for src_filename in src_filenames]):
+        log_func.warning(u'Backup files %s not all found' % str(src_filenames))
         return False
 
-    do_zip = os.path.splitext(src_filename)[1] != zip_func.ZIP_EXT
-
-    if zip_filename is None:
-        zip_filename = os.path.splitext(src_filename)[0] + zip_func.ZIP_EXT
-
     try:
-        zip_result = True
+        # Get Root password
+        root_password = sys_func.getSysRootPassword(parent_win=parent_win) if sys_func.isLinuxPlatform() else None
+
         if do_zip:
-            zip_result = zip_func.zipFile(src_filename=src_filename, zip_filename=zip_filename)
+            if zip_filename is None:
+                zip_filename = os.path.splitext(src_filenames[0])[0] + zip_func.ZIP_EXT
+            zip_result = zip_func.zipFiles(src_filenames=src_filenames, zip_filename=zip_filename)
 
-        if zip_result:
-            # Get Root password
-            root_password = sys_func.getSysRootPassword(parent_win=parent_win) if sys_func.isLinuxPlatform() else None
-
-            result = nfs_func.uploadNfsFile(upload_url=backup_url,
-                                            filename=zip_filename,
-                                            dst_path=dst_path,
-                                            rewrite=kwargs.get('rewrite', True),
-                                            mnt_path=kwargs.get('mnt_path', None),
-                                            options=kwargs.get('options', None),
-                                            root_password=root_password)
+            if zip_result:
+                result = nfs_func.uploadNfsFile(upload_url=backup_url,
+                                                filename=zip_filename,
+                                                dst_path=dst_path,
+                                                rewrite=kwargs.get('rewrite', True),
+                                                mnt_path=kwargs.get('mnt_path', None),
+                                                options=kwargs.get('options', None),
+                                                root_password=root_password)
+        else:
+            for src_filename in src_filenames:
+                result = nfs_func.uploadNfsFile(upload_url=backup_url,
+                                                filename=src_filename,
+                                                dst_path=dst_path,
+                                                rewrite=kwargs.get('rewrite', True),
+                                                mnt_path=kwargs.get('mnt_path', None),
+                                                options=kwargs.get('options', None),
+                                                root_password=root_password)
     except:
-        log_func.fatal(u'Error backup file <%s> to NFS network resource <%s>' % (src_filename, backup_url))
+        log_func.fatal(u'Error backup file <%s> to NFS network resource <%s>' % (src_filenames, backup_url))
 
     return result
 

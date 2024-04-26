@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 8, 2)
+__version__ = (0, 0, 9, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -710,3 +710,17 @@ def setChmod(filename, mode=None):
         except:
             log_func.fatal(u'Error set chmod as 777 file <%s>' % filename)
     return False
+
+
+def getFileSize(filename):
+    """
+    Get file size
+
+    :param filename: File name.
+    :return: File size.
+    """
+    if os.path.exists(filename):
+        return os.path.getsize(filename)
+    else:
+        log_func.warning(u'File <%s> not found for get size' % filename)
+    return 0
