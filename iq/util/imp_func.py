@@ -12,7 +12,7 @@ import importlib.util
 from . import log_func
 from . import py_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 
 def importPyModule(import_name, import_filename, reimport=False):
@@ -44,7 +44,7 @@ def importPyModule(import_name, import_filename, reimport=False):
         module_spec.loader.exec_module(module)
         sys.modules[import_name] = module
     except ImportError:
-        log_func.fatal(u'Error import module <%s> by path <%s>' % (import_name, path))
+        log_func.fatal(u'Error import module <%s> by path <%s>' % (import_name, import_filename))
 
     return module
 

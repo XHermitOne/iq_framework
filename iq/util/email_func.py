@@ -14,7 +14,7 @@ import tempfile
 
 from . import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 2)
 
 EMAIL_ADR_DELIMETER = u';'
 DEFAULT_ENCODING = 'utf-8'
@@ -242,7 +242,7 @@ class iqEMailSender(object):
                 msg.add_attachment(file_data,
                                    maintype=maintype,
                                    subtype=subtype,
-                                   filename=filename)
+                                   filename=os.path.basename(filename))
 
                 file_size = os.stat(filename).st_size
                 log_func.info(u'File <%s> (%s) attached' % (filename, file_size))

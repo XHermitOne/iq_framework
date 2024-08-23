@@ -23,7 +23,7 @@ except ImportError:
     log_func.error(u'Import error urllib3')
 
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 0, 1, 4)
 
 
 def dict2JSON(data_dict):
@@ -125,4 +125,6 @@ def getJSONAsDictByURL3(url, headers=None, *args, **kwargs):
         if json_content:
             log_func.error(u'JSON content:')
             log_func.error(json_content)
+        else:
+            log_func.error(u'JSON content: <%s>' % str(json_content))
     return None
