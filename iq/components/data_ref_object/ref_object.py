@@ -23,7 +23,7 @@ from ...components.data_column import column_types
 
 from ..data_model import data_object
 
-__version__ = (0, 0, 6, 1)
+__version__ = (0, 0, 7, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -846,3 +846,25 @@ class iqRefObjectManager(model_navigator.iqModelNavigatorManager):
         except:
             log_func.fatal(u'Error update the record for column link')
         return record
+
+    def getIdentColumnName(self):
+        """
+        Get identification column name.
+        """
+        return self.getCodColumnName()
+
+    def findIdentsByColumnValue(self, column_name, column_value, *args, **kwargs):
+        """
+        Find identifications by column value. Search by part of the text.
+
+        :param column_name: Find column name.
+        :param column_value: Find value.
+        :return: Identification column value list.
+        """
+        ident_column = self.getIdentColumnName()
+        if ident_column:
+            records = self.searchRecsByColContent(column_name=column_name,
+                                                  search_text=column_value,
+                                                  *args, **kwargs)
+            return [record.get(ident_column, None) for record in records]
+        return list()

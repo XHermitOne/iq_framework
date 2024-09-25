@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from ..data_model import data_object
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 5, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -329,3 +329,31 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         except:
             log_func.fatal(u'Error update the record for column link')
         return record
+
+    def getIdentColumnName(self):
+        """
+        Get identification column name.
+        """
+        return self.getGuidColumnName()
+
+    def findIdentsByColumnValue(self, column_name, column_value, *args, **kwargs):
+        """
+        Find identifications by column value. Search by part of the text.
+
+        :param column_name: Find column name.
+        :param column_value: Find column value.
+        :return: Identification column value list.
+        """
+        ident_column = self.getIdentColumnName()
+        if ident_column:
+            try:
+                model = self.getModel()
+                dataset = self.searchRecs(getattr(model, column_name).ilike(u'%' + column_value + u'%'))
+                find_idents = [record.get(ident_column, None) for record in dataset]
+                log_func.debug(u'Find identificators %s' % str(find_idents))
+                return find_idents
+            except:
+                log_func.fatal(u'Error find value <%s> identifications by column <%s> in <%s>' % (column_value,
+                                                                                                  column_name,
+                                                                                                  self.getName()))
+        return list()

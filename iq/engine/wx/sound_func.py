@@ -13,10 +13,19 @@ import wx.adv
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 # Sound object
 SOUND = None
+# Current filename
+CUR_SOUND_FILENAME = None
+
+# Play without waiting for the end
+SOUND_ASYNC = wx.adv.SOUND_ASYNC
+# Pending playback
+SOUND_SYNC = wx.adv.SOUND_SYNC
+# Loop play
+SOUND_LOOP = wx.adv.SOUND_LOOP
 
 
 def _playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
@@ -44,7 +53,9 @@ def _playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
 
     app = wx.GetApp()
     if app is not None:
-        SOUND = wx.adv.Sound(wav_filename)
+        if SOUND is None:
+            SOUND = wx.adv.Sound(wav_filename)
+
         if SOUND.IsOk():
             log_func.info(u'Play <%s> WAV file' % wav_filename)
             return SOUND.Play(play_mode)
@@ -109,3 +120,12 @@ def stopSound():
     except:
         log_func.fatal(u'Error stop sound')
     return False
+
+
+def getPlayedStatus():
+    """
+    Get played status.
+
+    :return: True/False.
+    """
+    return SOUND is not None

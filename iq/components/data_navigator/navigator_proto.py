@@ -11,7 +11,7 @@ from ...util import log_func
 
 from ..data_model import data_object
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 0, 3, 1)
 
 
 class iqNavigatorManagerProto(data_object.iqDataObject):
@@ -460,3 +460,19 @@ class iqNavigatorManagerProto(data_object.iqDataObject):
         """
         log_func.error(u'Not define <%s> method in <%s>' % (sys._getframe().f_code.co_name, self.__class__.__name__))
         return None
+
+    def getIdentColumnName(self):
+        """
+        Get identification column name.
+        """
+        return None
+
+    def findIdentsByColumnValue(self, column_name, column_value, *args, **kwargs):
+        """
+        Find identifications by column value. Search by part of the text.
+
+        :param column_name: Find column name.
+        :param column_value: Find value.
+        :return: Identification column value list.
+        """
+        return list()
