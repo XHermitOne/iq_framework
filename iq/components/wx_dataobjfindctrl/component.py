@@ -25,7 +25,7 @@ from . import find_ctrl
 from ..wx_widget import component
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -108,11 +108,12 @@ class iqWxDataObjFindCtrl(find_ctrl.iqDataObjFindCtrlProto,
         if self._columns is None:
             self._columns = list()
             if self._data_obj:
-                columns = self.getAttribute('columns')
-                if columns:
+                column_names = self.getAttribute('columns')
+                if column_names:
                     model_obj = self._data_obj.getModelObj()
-                    for column_name in columns:
-                        column = model_obj.getChild(column_name)
+                    for column_name in column_names:
+                        parent_column_name = column_name.split('.')[0]
+                        column = model_obj.getChild(parent_column_name)
                         if column:
                             self._columns.append(column)
                         else:
@@ -145,10 +146,10 @@ class iqWxDataObjFindCtrl(find_ctrl.iqDataObjFindCtrlProto,
             if self.find_idents is None:
                 # Get all find identificators
                 if self._data_obj is not None:
-                    columns = self.getColumns()
+                    column_names = self.getAttribute('columns')
                     column_idx = self.find_choice.GetSelection()
-                    if columns:
-                        column_name = columns[column_idx].getName()
+                    if column_names:
+                        column_name = column_names[column_idx]
                         if find_value:
                             self.find_idents = self._data_obj.findIdentsByColumnValue(column_name=column_name,
                                                                                       column_value=find_value)

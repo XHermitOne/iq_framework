@@ -348,8 +348,8 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         if ident_column:
             try:
                 model = self.getModel()
-                dataset = self.searchRecs(getattr(model, column_name).ilike(u'%' + column_value + u'%'))
-                find_idents = [record.get(ident_column, None) for record in dataset]
+                dataset = self.getDataset()
+                find_idents = [record.get(ident_column, None) for record in dataset if column_value.casefold() in record.get(column_name, '').casefold()]
                 log_func.debug(u'Find identificators %s' % str(find_idents))
                 return find_idents
             except:
