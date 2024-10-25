@@ -7,18 +7,22 @@ Sound functions.
 
 import os
 import os.path
+import time
 
 import wx
 import wx.adv
 
 from ...util import log_func
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 1, 2)
 
 # Sound object
 SOUND = None
 # Current filename
 CUR_SOUND_FILENAME = None
+
+#
+DELAY = 1
 
 # Play without waiting for the end
 SOUND_ASYNC = wx.adv.SOUND_ASYNC
@@ -58,6 +62,8 @@ def _playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
 
         if SOUND.IsOk():
             log_func.info(u'Play <%s> WAV file' % wav_filename)
+            global CUR_SOUND_FILENAME
+            CUR_SOUND_FILENAME = wav_filename
             return SOUND.Play(play_mode)
         else:
             log_func.warning(u'Incorrect sound object. File <%s>' % wav_filename)
@@ -100,8 +106,11 @@ def _stopSound():
         log_func.warning(u'WX application not created. It is not possible to stop playing audio files', is_force_print=True)
         return False
 
-    if SOUND and SOUND.IsOk():
+    if SOUND is not None and SOUND.IsOk():
+        global CUR_SOUND_FILENAME
+        log_func.info(u'Stop play sound %s' % CUR_SOUND_FILENAME)
         result = SOUND.Stop()
+        time.sleep(DELAY)
         SOUND = None
         return result
     else:
