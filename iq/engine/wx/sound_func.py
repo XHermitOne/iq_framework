@@ -12,14 +12,18 @@ import time
 import wx
 import wx.adv
 
+import multiprocessing
+
 from ...util import log_func
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 1, 2, 1)
 
 # Sound object
 SOUND = None
 # Current filename
 CUR_SOUND_FILENAME = None
+
+SOUND_THREAD = None
 
 #
 DELAY = 1
@@ -64,7 +68,11 @@ def _playWAV(wav_filename, play_mode=wx.adv.SOUND_ASYNC):
             log_func.info(u'Play <%s> WAV file' % wav_filename)
             global CUR_SOUND_FILENAME
             CUR_SOUND_FILENAME = wav_filename
-            return SOUND.Play(play_mode)
+
+            global SOUND_THREAD
+            SOUND_THREAD = multiprocessing.Process(target=SOUND.Play, args=(play_mode,))
+            SOUND_THREAD.start()
+            return True
         else:
             log_func.warning(u'Incorrect sound object. File <%s>' % wav_filename)
     else:
@@ -108,11 +116,17 @@ def _stopSound():
 
     if SOUND is not None and SOUND.IsOk():
         global CUR_SOUND_FILENAME
-        log_func.info(u'Stop play sound %s' % CUR_SOUND_FILENAME)
-        result = SOUND.Stop()
+        log_func.info(u'Stop play sound <%s>' % CUR_SOUND_FILENAME)
+
+        global SOUND_THREAD
+        if SOUND_THREAD is not None and SOUND_THREAD.is_alive():
+            SOUND_THREAD.terminate()
+            SOUND_THREAD = None
+
+        # log_func.debug(u'Stop play sound ... OK')
         time.sleep(DELAY)
         SOUND = None
-        return result
+        return True
     else:
         log_func.warning(u'Sound object not detected when stopped')
     return False
