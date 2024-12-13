@@ -15,6 +15,8 @@ lpoptions -p WorkCentre-5325 -l
 
 To work with CUPS-PDF virtual printer, a package is required cups-pdf:
 sudo apt install cups-pdf
+or
+sudo apt install printer-driver-cups-pdf
 """
 
 import os

@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 0, 9, 1)
+__version__ = (0, 2, 1, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -316,7 +316,7 @@ def copyFile(src_filename, dst_filename, rewrite=True):
 
         dst_dirname = os.path.dirname(dst_filename)
         try:
-            if not os.path.exists(dst_dirname):
+            if dst_dirname and not os.path.exists(dst_dirname):
                 os.makedirs(dst_dirname)
                 log_func.info(u'Create folder <%s>' % dst_dirname)
         except OSError:

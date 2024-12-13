@@ -136,6 +136,8 @@ sudo apt install --assume-yes python3-xlwt
 sudo apt install --assume-yes python3-openpyxl
 sudo apt install --assume-yes pdf2svg
 pip3 install pygal
+pip3 install PyMuPDF
+pip3 install img2pdf
 
 pip3 install mtranslate
 
