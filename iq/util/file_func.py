@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 2, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -495,6 +495,22 @@ def removeFile(filename):
     return False
 
 
+def removeDir(folder):
+    """
+    Delete directory.
+
+    :param folder: Removed folder.
+    :return: True/False.
+    """
+    try:
+        shutil.rmtree(folder, ignore_errors=True)
+        log_func.info(u'Remove directory <%s>' % folder)
+        return True
+    except:
+        log_func.fatal(u'Error remove directory <%s>' % folder)
+    return False
+
+
 def getFileModifyDatetime(filename):
     """
     Date-time of file modification.
@@ -724,3 +740,26 @@ def getFileSize(filename):
     else:
         log_func.warning(u'File <%s> not found for get size' % filename)
     return 0
+
+
+def getMyDocumentsFolder():
+    """
+    Get MyDocuments folder.
+
+    :return: MyDocument folder path.
+    """
+    try:
+        if os.name == 'nt':
+            return os.path.join(os.path.join(os.environ['USERPROFILE']), 'Documents')
+        else:
+            en_dirname = os.path.join(getHomePath(), 'Documents')
+            ru_dirname = os.path.join(getHomePath(), u'Документы')
+            if os.path.exists(ru_dirname):
+                return ru_dirname
+            elif os.path.exists(en_dirname):
+                return en_dirname
+            else:
+                log_func.warning(u'Not found MyDocuments system folder')
+    except:
+        log_func.fatal(u'Error get MeDocuments folder')
+    return ''
