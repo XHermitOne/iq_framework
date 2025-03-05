@@ -50,6 +50,7 @@ C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install x
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install xlwt
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install openpyxl
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install pygal
+C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install XlsxWriter
 
 C:\Users\user\AppData\Local\Programs\Python\Python310\Scripts\pip3.exe install mtranslate
 
