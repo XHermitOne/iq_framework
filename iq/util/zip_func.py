@@ -15,9 +15,12 @@ from . import log_func
 from . import file_func
 from . import sys_func
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 0, 5, 1)
 
 ZIP_EXT = '.zip'
+
+APP_7ZIPFM_EXE_NAME = '7zfm.exe'
+APP_7Z_EXE_NAME = '7z.exe'
 
 
 def unzipToDir(zip_filename, dst_dir=None, overwrite=True, to_console=True, options=()):
@@ -46,7 +49,7 @@ def unzipToDir(zip_filename, dst_dir=None, overwrite=True, to_console=True, opti
             unzip_cmd = 'unzip %s %s %s -d %s' % (overwrite, unzip_options, zip_filename, dst_dir)
         elif sys_func.isWindowsPlatform():
             unzip_options = ' '.join(options)
-            unzip_cmd = 'powershell expand-archive %s %s %s' % (unzip_options, zip_filename, dst_dir)
+            unzip_cmd = 'powershell expand-archive -Path %s -DestinationPath %s %s' % (zip_filename, dst_dir, unzip_options)
         else:
             log_func.warning(u'Unsupported unzip for this platform')
             return False
@@ -93,7 +96,7 @@ def zipFile(src_filename, zip_filename=None, overwrite=True, to_console=True, op
         if sys_func.isLinuxPlatform():
             zip_cmd = 'zip %s %s %s' % (zip_options, zip_filename, src_filename)
         elif sys_func.isWindowsPlatform():
-            zip_cmd = 'powershell compress-archive %s -Path %s -DestinationPath %s' % (zip_options, src_filename, zip_filename)
+            zip_cmd = 'powershell compress-archive -Path %s -DestinationPath %s %s' % (src_filename, zip_filename, zip_options)
         else:
             log_func.warning(u'Unsupported zip for this platform')
             return False
@@ -240,4 +243,59 @@ def openZipFile(zip_filename):
         return True
     except:
         log_func.fatal(u'Error open zip file <%s> in archive manager' % zip_filename)
+    return False
+
+
+def unzipToDirBy7Zip(zip_filename, dst_dir=None, overwrite=True, to_console=True, options=()):
+    """
+    Extract *.zip file to directory by 7zip tool.
+
+    :param zip_filename: Zip filename.
+    :param dst_dir: Destination directory.
+        If not specified, then it is unzipped in the same folder
+        where is the archive.
+    :param overwrite: Overwrite existing files without prompting?
+    :param to_console: Console output?
+    :param options: Unzip options.
+    :return: True/False or lines if not console output.
+    """
+    if dst_dir is None:
+        dst_dir = os.path.dirname(zip_filename)
+
+    unzip_cmd = ''
+    try:
+        if sys_func.isLinuxPlatform():
+            log_func.warning(u'Unsupported unzip for this platform')
+            return False
+        elif sys_func.isWindowsPlatform():
+            from . import win_func
+
+            app_paths = win_func.getExeAppPaths()
+            if APP_7ZIPFM_EXE_NAME in app_paths:
+                exe_7z_path = os.path.join(os.path.dirname(app_paths[APP_7ZIPFM_EXE_NAME]), APP_7Z_EXE_NAME)
+                if os.path.exists(exe_7z_path):
+                    unzip_options = ' '.join(options)
+                    unzip_cmd = '%s x -tzip -y %s -o%s %s' % (exe_7z_path, zip_filename, dst_dir, unzip_options)
+                else:
+                    log_func.warning(u'Not found console 7Zip tool <%s>' % exe_7z_path)
+                    return False
+            else:
+                log_func.warning(u'Not installed 7Zip tool')
+                return False
+        else:
+            log_func.warning(u'Unsupported unzip for this platform')
+            return False
+
+        if to_console:
+            log_func.info(u'7Zip. Unzip command <%s>' % unzip_cmd)
+            os.system(unzip_cmd)
+            return True
+        else:
+            process = subprocess.Popen(unzip_cmd, stdout=subprocess.PIPE)
+            b_lines = process.stdout.readlines()
+            console_encoding = locale.getpreferredencoding()
+            lines = [line.decode(console_encoding).strip() for line in b_lines]
+            return lines
+    except:
+        log_func.fatal(u'Error unzip <%s> by 7Zip tool' % unzip_cmd)
     return False
