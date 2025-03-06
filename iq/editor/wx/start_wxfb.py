@@ -22,7 +22,7 @@ from . import wxfb_manager
 
 from ...engine.wx import stored_wx_form_manager
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 
 class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditorDialogProto,
@@ -57,6 +57,9 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
         """
         bmp = wxbitmap_func.createIconBitmap('fatcow/script_go')
         self.migrate_bitmap.SetBitmap(bmp)
+
+        bmp = wxbitmap_func.createIconBitmap('fatcow/translation_tool_tip')
+        self.translate_bitmap.SetBitmap(bmp)
 
     def onExitButtonClick(self, event):
         """
@@ -99,6 +102,21 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
         else:
             dlg_func.openWarningBox(title=u'EDITOR',
                                     prompt_text=u'Migration wxFormBuilder project file <%s> ended unsuccessfully' % self.fbp_filename)
+            self.EndModal(wx.ID_CANCEL)
+        event.Skip()
+
+    def onTranslateButtonClick(self, event):
+        """
+        Button click handler <Translate>.
+        """
+        result = wxfb_manager.translateWXFormBuilderProject(self.fbp_filename)
+        if result:
+            dlg_func.openMsgBox(title=u'EDITOR',
+                                prompt_text=u'Translation wxFormBuilder project file <%s> was successful' % self.fbp_filename)
+            self.EndModal(wx.ID_OK)
+        else:
+            dlg_func.openWarningBox(title=u'EDITOR',
+                                    prompt_text=u'Translation wxFormBuilder project file <%s> ended unsuccessfully' % self.fbp_filename)
             self.EndModal(wx.ID_CANCEL)
         event.Skip()
 

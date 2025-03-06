@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
+## Adapted Python code generated with wxFormBuilder (version 4.2.1-0-g80c4cb6)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -22,7 +22,7 @@ _ = lang_func.getTranslation().gettext
 class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"wxFormBuilder"), pos = wx.DefaultPosition, size = wx.Size( 483,214 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"wxFormBuilder"), pos = wx.DefaultPosition, size = wx.Size( 483,277 ), style = wx.DEFAULT_DIALOG_STYLE )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -52,14 +52,27 @@ class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 
 		bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.migrate_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-convert", wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.migrate_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_COPY, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer22.Add( self.migrate_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 		self.migrate_button = wx.Button( self, wx.ID_ANY, _(u"Migrate wxFormBuilder project"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.migrate_button.Enable( False )
+
 		bSizer22.Add( self.migrate_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
 		bSizer1.Add( bSizer22, 1, wx.EXPAND, 5 )
+
+		bSizer222 = wx.BoxSizer( wx.HORIZONTAL )
+
+		self.translate_bitmap = wx.StaticBitmap( self, wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_COPY, wx.ART_MENU ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer222.Add( self.translate_bitmap, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+		self.translate_button = wx.Button( self, wx.ID_ANY, _(u"Translate wxFormBuilder project"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer222.Add( self.translate_button, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
+
+
+		bSizer1.Add( bSizer222, 1, wx.EXPAND, 5 )
 
 		bSizer221 = wx.BoxSizer( wx.HORIZONTAL )
 
@@ -84,6 +97,7 @@ class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 		self.new_button.Bind( wx.EVT_BUTTON, self.onNewButtonClick )
 		self.open_button.Bind( wx.EVT_BUTTON, self.onOpenButtonClick )
 		self.migrate_button.Bind( wx.EVT_BUTTON, self.onMigrateButtonClick )
+		self.translate_button.Bind( wx.EVT_BUTTON, self.onTranslateButtonClick )
 		self.exit_button.Bind( wx.EVT_BUTTON, self.onExitButtonClick )
 
 	def __del__( self ):
@@ -98,6 +112,9 @@ class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 		event.Skip()
 
 	def onMigrateButtonClick(self, event):
+		event.Skip()
+
+	def onTranslateButtonClick(self, event):
 		event.Skip()
 
 	def onExitButtonClick(self, event):

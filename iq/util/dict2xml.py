@@ -9,7 +9,7 @@ import sys
 import time
 from xml.sax import saxutils
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 2)
 
 # Remove 'Cyr' from font names for Linux systems since on Linux all unicode fonts
 FONT_NAME_CYRILIC_DEL = not bool(sys.platform[:3].lower == 'win')
@@ -40,11 +40,11 @@ def dict2XmlssFile(data, xml_filename, encoding='utf-8'):
 
 class iqDICT2XMLWriter(saxutils.XMLGenerator):
     """
-    Конвертер из словаря в XML представление.
+    Converter from dictionary to XML.
     """
     def __init__(self, data, out=None, encoding='utf-8'):
         """
-        Конструктор.
+        Constructor.
         """
         self._data = data
         # self._encoding=encoding
@@ -85,6 +85,7 @@ class iqDICT2XMLWriter(saxutils.XMLGenerator):
     def startElementLevel(self, name, attrs=dict(), auto_close=False):
         """
         Start tag.
+
         :param name: Tag name.
         :param attrs: Tag attributes.
         """
@@ -100,6 +101,7 @@ class iqDICT2XMLWriter(saxutils.XMLGenerator):
     def endElementLevel(self, name, auto_close=False):
         """
         End tag.
+
         :param name: Tag name.
         """
         if self.break_line:
@@ -113,6 +115,7 @@ class iqDICT2XMLWriter(saxutils.XMLGenerator):
     def startElement(self, name, attrs={}, auto_close=False):
         """
         Start tag.
+
         :param name: Tag name.
         :param attrs: Tag attributes.
         """
@@ -127,6 +130,7 @@ class iqDICT2XMLWriter(saxutils.XMLGenerator):
     def endElement(self, name, auto_close=False):
         """
         End tag.
+
         :param name: Tag name.
         """
         self._endElement(name, auto_close)

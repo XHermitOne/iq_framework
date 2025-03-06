@@ -8,14 +8,20 @@ wxFormBuilder Form designer management manager.
 import os
 import os.path
 
+import mtranslate
+
 from ...util import log_func
 from ...util import exec_func
 from ...util import py_func
 from ...util import file_func
+from ...util import xml_func
+from ...util import lang_func
 
 from ...script import migrate_fbp
 
-__version__ = (0, 0, 0, 2)
+__version__ = (0, 1, 2, 1)
+
+from ...util.lang_func import RUSSIAN_LANGUAGE
 
 WXFB_PROJECT_FILE_EXT = '.fbp'
 
@@ -298,6 +304,29 @@ def migrateWXFormBuilderProject(fbp_filename):
     """
     try:
         return migrate_fbp.migrateFBP(fbp_filename=fbp_filename)
+    except:
+        log_func.fatal(u'Error make wxFormBuilder project module <%s> migration' % fbp_filename)
+    return False
+
+
+def translateWXFormBuilderProject(fbp_filename,
+                                  from_language=lang_func.RUSSIAN_LANGUAGE, to_language=lang_func.ENGLISH_LANGUAGE):
+    """
+    Make wxFormBuilder project module migration replacements.
+
+    :param fbp_filename: Python file path.
+    :return: True/False.
+    """
+    try:
+        def translate_walk_function(xml_element, tag_name, attributes, value):
+            if tag_name == 'property':
+                name = attributes.get('name', None)
+                if name in ('title', 'label', 'statusbar', 'tooltip') and lang_func.isNotEnglishText(value):
+                    new_value = mtranslate.translate(value, to_language=to_language, from_language=from_language)
+                    log_func.info(u'Translate <%s: %s> -> <%s: %s>' % (from_language, value, to_language, new_value))
+                    xml_element.text = new_value
+
+        return xml_func.runWalkXmlTree(xml_filename=fbp_filename, walk_function=translate_walk_function)
     except:
         log_func.fatal(u'Error make wxFormBuilder project module <%s> migration' % fbp_filename)
     return False

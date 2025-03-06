@@ -12,8 +12,9 @@ import os.path
 import mtranslate
 
 from ..util import log_func
+from ..util import lang_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 STARTSWITH_SIGNATURE = '..)'
@@ -35,17 +36,6 @@ DO_TRANSLATE = True
 
 DEFAULT_SRC_LANG = 'ru'
 DEFAULT_DST_LANG = 'en'
-
-
-def isNotEnglishText(text):
-    """
-    Is this not an English text?
-    """
-    if isinstance(text, str):
-        not_english = any([ord(c) > 128 for c in text])
-        return not_english
-    # Not string
-    return False
 
 
 def _replaceMigrateLine(line, replacement_src, replacement_dst):
@@ -114,7 +104,7 @@ def migrateTxtFile(txt_filename, do_translate=True,
     # Replaces
     for i, line in enumerate(lines):
         new_line = line
-        if do_translate and isNotEnglishText(new_line):
+        if do_translate and lang_func.isNotEnglishText(new_line):
             if prev_translate_replaces:
                 new_line = _replacesMigrateLine(new_line, prev_translate_replaces)
             new_line = mtranslate.translate(new_line, DEFAULT_DST_LANG, DEFAULT_SRC_LANG)

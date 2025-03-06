@@ -12,7 +12,7 @@ import os.path
 from . import log_func
 from . import sys_func
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 1, 2, 1)
 
 TEXT_DOMAIN = 'iq'
 DEFAULT_LOCALE_DIR = 'locale'
@@ -21,6 +21,9 @@ DEFAULT_LOCALE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirna
 
 DEFAULT_LOCALE = 'en_US'
 RUSSIAN_LOCALE = 'ru_RU'
+
+ENGLISH_LANGUAGE = 'en'
+RUSSIAN_LANGUAGE = 'ru'
 
 TRANSLATIONS = dict()
 
@@ -82,3 +85,14 @@ def getTranslation(language=None):
     else:
         log_func.warning(u'GETTEXT. Language <%s> not found' % language)
     return gettext
+
+
+def isNotEnglishText(text):
+    """
+    Is this not an English text?
+    """
+    if isinstance(text, str):
+        not_english = any([ord(c) > 128 for c in text])
+        return not_english
+    # Not string
+    return False
