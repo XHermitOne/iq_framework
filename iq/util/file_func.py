@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 2, 2, 1)
+__version__ = (0, 2, 3, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -740,26 +740,3 @@ def getFileSize(filename):
     else:
         log_func.warning(u'File <%s> not found for get size' % filename)
     return 0
-
-
-def getMyDocumentsFolder():
-    """
-    Get MyDocuments folder.
-
-    :return: MyDocument folder path.
-    """
-    try:
-        if os.name == 'nt':
-            return os.path.join(os.path.join(os.environ['USERPROFILE']), 'Documents')
-        else:
-            en_dirname = os.path.join(getHomePath(), 'Documents')
-            ru_dirname = os.path.join(getHomePath(), u'Документы')
-            if os.path.exists(ru_dirname):
-                return ru_dirname
-            elif os.path.exists(en_dirname):
-                return en_dirname
-            else:
-                log_func.warning(u'Not found MyDocuments system folder')
-    except:
-        log_func.fatal(u'Error get MeDocuments folder')
-    return ''
