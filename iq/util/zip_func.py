@@ -15,7 +15,7 @@ from . import log_func
 from . import file_func
 from . import sys_func
 
-__version__ = (0, 0, 5, 1)
+__version__ = (0, 0, 5, 2)
 
 ZIP_EXT = '.zip'
 
@@ -275,7 +275,10 @@ def unzipToDirBy7Zip(zip_filename, dst_dir=None, overwrite=True, to_console=True
                 exe_7z_path = os.path.join(os.path.dirname(app_paths[APP_7ZIPFM_EXE_NAME]), APP_7Z_EXE_NAME)
                 if os.path.exists(exe_7z_path):
                     unzip_options = ' '.join(options)
-                    unzip_cmd = '\"%s\" x -tzip -y "%s" -o"%s" %s' % (exe_7z_path, zip_filename, dst_dir, unzip_options)
+                    unzip_cmd = '\"%s\" x -tzip -y "%s" -o"%s" %s' % (exe_7z_path.replace(os.sep, os.sep+os.sep),
+                                                                      zip_filename.replace(os.sep, os.sep+os.sep),
+                                                                      dst_dir.replace(os.sep, os.sep+os.sep),
+                                                                      unzip_options)
                 else:
                     log_func.warning(u'Not found console 7Zip tool <%s>' % exe_7z_path)
                     return False

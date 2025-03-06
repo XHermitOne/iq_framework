@@ -12,7 +12,7 @@ try:
 except ImportError:
     log_func.error(u'Import error winreg. Not Microsoft Window OS', is_force_print=True)
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 1, 3)
 
 EXECUTABLE_APPLICATION_PATHS_CACHE = None
 
@@ -39,9 +39,13 @@ def getExeAppPaths(cached=True):
                 key_name = winreg.EnumKey(a_key, i)
                 a_subkey = winreg.OpenKey(a_key, key_name)
                 value = winreg.QueryValueEx(a_subkey, None)
-                app_paths[key_name.lower()] = value[0]
             except WindowsError:
                 continue
+
+            app_name = key_name.lower()
+            app_path = value[0]
+            app_paths[app_name] = app_path
+            log_func.info(u'Windows. Application <%s : %s>' % (app_name, app_path))
 
         if cached:
             EXECUTABLE_APPLICATION_PATHS_CACHE = app_paths
