@@ -12,7 +12,7 @@ try:
 except ImportError:
     log_func.error(u'Import error winreg. Not Microsoft Window OS', is_force_print=True)
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 1, 2)
 
 EXECUTABLE_APPLICATION_PATHS_CACHE = None
 
@@ -24,8 +24,8 @@ def getExeAppPaths(cached=True):
     :param cached: Cached?
     :return: {application_name: exe_application_path} dictionary.
     """
+    global EXECUTABLE_APPLICATION_PATHS_CACHE
     if cached:
-        global EXECUTABLE_APPLICATION_PATHS_CACHE
         if EXECUTABLE_APPLICATION_PATHS_CACHE:
             return EXECUTABLE_APPLICATION_PATHS_CACHE
 
@@ -44,7 +44,6 @@ def getExeAppPaths(cached=True):
                 continue
 
         if cached:
-            global EXECUTABLE_APPLICATION_PATHS_CACHE
             EXECUTABLE_APPLICATION_PATHS_CACHE = app_paths
 
         return app_paths
