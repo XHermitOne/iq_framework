@@ -17,6 +17,7 @@ except ImportError:
 from ...util import log_func
 from ...engine.wx import wxbitmap_func
 from ...dialog import dlg_func
+from ...engine.wx.dlg import select_language_dialog
 
 from . import wxfb_manager
 
@@ -109,15 +110,19 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
         """
         Button click handler <Translate>.
         """
-        result = wxfb_manager.translateWXFormBuilderProject(self.fbp_filename)
-        if result:
-            dlg_func.openMsgBox(title=u'EDITOR',
-                                prompt_text=u'Translation wxFormBuilder project file <%s> was successful' % self.fbp_filename)
-            self.EndModal(wx.ID_OK)
-        else:
-            dlg_func.openWarningBox(title=u'EDITOR',
-                                    prompt_text=u'Translation wxFormBuilder project file <%s> ended unsuccessfully' % self.fbp_filename)
-            self.EndModal(wx.ID_CANCEL)
+        from_language, to_language = select_language_dialog.selectTranslationLanguageDialog(parent=self)
+        if from_language and to_language:
+            result = wxfb_manager.translateWXFormBuilderProject(self.fbp_filename,
+                                                                from_language=from_language,
+                                                                to_language=to_language)
+            if result:
+                dlg_func.openMsgBox(title=u'EDITOR',
+                                    prompt_text=u'Translation wxFormBuilder project file <%s> was successful' % self.fbp_filename)
+                self.EndModal(wx.ID_OK)
+            else:
+                dlg_func.openWarningBox(title=u'EDITOR',
+                                        prompt_text=u'Translation wxFormBuilder project file <%s> ended unsuccessfully' % self.fbp_filename)
+                self.EndModal(wx.ID_CANCEL)
         event.Skip()
 
 
