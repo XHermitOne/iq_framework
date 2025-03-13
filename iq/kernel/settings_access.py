@@ -19,7 +19,7 @@ from iq.util import exec_func
 
 from iq.passport import passport
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 1, 2, 1)
 
 
 class iqSettingsDotUseProto(object):
@@ -36,6 +36,7 @@ class iqSettingsDotUseProto(object):
             1 - section name.
             2 - parameter name.
         """
+        # log_func.debug(u'Default settings: %s' % default_settings)
         if default_settings:
             self._cur_settings_list = default_settings
         else:
@@ -45,13 +46,14 @@ class iqSettingsDotUseProto(object):
         """
         Determine the full name of the settings file from the project name.
         """
-        prj_path = file_func.getProjectPath()
-        if prj_path:
-            ini_filename = os.path.join(prj_path, self._cur_settings_list[0] + '.ini')
+        prj_name = self._cur_settings_list[0]
+        root_path = file_func.getFrameworkPath()
+        # log_func.debug(u'Project path <%s>. Project name <%s>' % (prj_path, prj_name))
+        if root_path:
+            ini_filename = os.path.join(root_path, prj_name, prj_name + '.ini')
         else:
-            prj_name = self._cur_settings_list[0]
             ini_filename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-                                        prj_name, prj_name, '%s.ini' % prj_name)
+                                        prj_name, '%s.ini' % prj_name)
         return ini_filename
     
     def get(self):
@@ -92,11 +94,11 @@ class iqSettingsDotUse(iqSettingsDotUseProto):
             pass            
 
         prj = iqPrjDotUse(object.__getattribute__(self, '_cur_settings_list'))
-
+        # log_func.debug(u'Settings. Attribute name: %s. Current settings list %s' % (attribute_name, prj._cur_settings_list))
         if attribute_name == object.__getattribute__(self, 'THIS_PRJ'):
             prj._cur_settings_list[0] = global_func.getProjectName()
         else:
-            prj._cur_settings_list[-1] = attribute_name
+            prj._cur_settings_list[0] = attribute_name
             
         return prj
 
