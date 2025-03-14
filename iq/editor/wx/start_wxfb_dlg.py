@@ -22,7 +22,7 @@ _ = lang_func.getTranslation().gettext
 class iqStartWXFormBuilderEditorDialogProto ( wx.Dialog ):
 
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"wxFormBuilder"), pos = wx.DefaultPosition, size = wx.Size( 483,277 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"wxFormBuilder"), pos = wx.DefaultPosition, size = wx.Size( 483,315 ), style = wx.DEFAULT_DIALOG_STYLE )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 

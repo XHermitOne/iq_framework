@@ -50,7 +50,7 @@
       <property name="minimum_size"></property>
       <property name="name">iqStartWXFormBuilderEditorDialogProto</property>
       <property name="pos"></property>
-      <property name="size">483,277</property>
+      <property name="size">483,315</property>
       <property name="style">wxDEFAULT_DIALOG_STYLE</property>
       <property name="subclass"></property>
       <property name="title">wxFormBuilder</property>
