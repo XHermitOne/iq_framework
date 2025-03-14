@@ -13,13 +13,16 @@ import wx.lib.agw.aui
 from ...util import log_func
 from ...util import file_func
 from ...util import global_func
+from ...util import lang_func
 from ..wx.dlg import wxdlg_func
 from ..wx import wxbitmap_func
 
 from . import base_manager
 from . import imglib_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
+
+_ = lang_func.getTranslation().gettext
 
 DEFAULT_SPLASH_DELAY = 3
 
@@ -153,6 +156,32 @@ class iqMainFormManager(base_manager.iqBaseManager):
     """
     Main form manager.
     """
+    def addUsernameToTitle(self, main_form=None, username=None):
+        """
+        Append project username to main form title.
+
+        :param main_form: Main form object.
+        :param username: Project user name.
+        :return: True/False.
+        """
+        if main_form is None:
+            main_form = self
+
+        assert issubclass(main_form.__class__, wx.Frame) or issubclass(main_form.__class__, wx.Dialog), u'Main form manager type error'
+
+        if username is None:
+            user = global_func.getUser()
+            user_description = user.getDescription()
+            username = user_description if user_description else global_func.getUsername()
+
+        try:
+            title = main_form.GetTitle()
+            title += ' / ' + _('User name:') + ' ' + username
+            main_form.SetTitle(title)
+        except:
+            log_func.fatal(u'Error add project user name to main form title')
+        return False
+
     def showMainFormSplash(self, main_form=None, splash_filename=None, delay=DEFAULT_SPLASH_DELAY):
         """
         Show splash window.

@@ -14,7 +14,7 @@ from ....util import str_func
 from ....util import py_func
 from ....util import txtfile_func
 
-__version__ = (0, 0, 1, 3)
+__version__ = (0, 1, 1, 1)
 
 SHOW_MAINFORM_FUNC_BODY_FMT = u'''
 def show%s(parent=None):
@@ -86,6 +86,8 @@ class %s(%s.%s,
         Constructor.
         \"\"\"
         %s.%s.__init__(self, *args, **kwargs)
+
+        self.addUsernameToTitle(main_form=self)
 
         self.main_menubar = main_menubar.createMainMenubar()
         self.SetMenuBar(self.main_menubar)
