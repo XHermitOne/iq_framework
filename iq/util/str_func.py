@@ -5,13 +5,14 @@
 Strings and text manipulate functions.
 """
 
+import string
 import encodings.aliases
 
 from . import log_func
 
 from .. import global_data
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 1)
 
 
 def getEncodings():
@@ -574,4 +575,18 @@ def limitTextLen(text, length, filler=u' '):
         return text[:length]
     else:
         text += filler * (length - len(text))
+    return text
+
+
+def replaceUnprintableSymbol(text, replacement=string.whitespace[0]):
+    """
+    Replace all unprintable symbols in text.
+
+    :param text: Text.
+    :param replacement: Replacement symbol.
+    :return: Modified text.
+    """
+    for i, symbol in enumerate(text):
+        if symbol not in string.printable:
+            text = text[:i] + replacement + text[i + 1:]
     return text

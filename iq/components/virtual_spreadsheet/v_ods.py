@@ -13,7 +13,7 @@ import odf.table
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 2)
 
 DIMENSION_CORRECT = 35
 DEFAULT_STYLE_ID = 'Default'
@@ -148,6 +148,7 @@ class iqODS(object):
         font_size = data_dict.get('Size', '10')
         font_bold = 'bold' if data_dict.get('Bold', '0') in (True, '1') else None
         font_italic = 'italic' if data_dict.get('Italic', '0') in (True, '1') else None
+        font_color = data_dict.get('Color', None)
 
         through = 'solid' if data_dict.get('StrikeThrough', '0') in (True, '1') else None
         underline = 'solid' if data_dict.get('Underline', 'None') != 'None' else None
@@ -156,6 +157,7 @@ class iqODS(object):
         font['fontsize'] = font_size
         font['fontweight'] = font_bold
         font['fontstyle'] = font_italic
+        font['color'] = font_color
 
         if through:
             font['textlinethroughstyle'] = 'solid'
