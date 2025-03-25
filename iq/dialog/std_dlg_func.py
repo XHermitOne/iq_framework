@@ -8,7 +8,7 @@ Standart dialogs functions module.
 from ..util import global_func
 from ..util import log_func
 
-__version__ = (0, 0, 4, 1)
+__version__ = (0, 1, 1, 2)
 
 DIALOG_FUNCTION_MODULE = None
 
@@ -35,7 +35,7 @@ def _importDialogFunctions():
     return globals()['DIALOG_FUNCTION_MODULE']
 
 
-def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100):
+def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100, default_value=0):
     """
     Entry integer number in dialog.
 
@@ -45,13 +45,15 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
     :param label: Prompt text.
     :param min_value: Minimum value.
     :param max_value: Maximum value.
+    :param  default_value: Default value.
     :return: Entered value or None if press <Cancel>.
     """
     _std_dlg = _importDialogFunctions()
     if _std_dlg:
         return _std_dlg.getIntegerDlg(parent=parent, title=title,
                                       label=label, min_value=min_value,
-                                      max_value=max_value)
+                                      max_value=max_value,
+                                      default_value=default_value)
     return None
 
 

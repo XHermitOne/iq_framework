@@ -9,7 +9,7 @@ import wx
 
 from . import std_dialogs_proto
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 2)
 
 DEFAULT_MIN_VALUE = 0
 DEFAULT_MAX_VALUE = 500
@@ -31,7 +31,8 @@ class iqIntegerDialog(std_dialogs_proto.integerDialogProto):
         return self._integer_value
 
     def init(self, title=None, label=None,
-             min_value=DEFAULT_MIN_VALUE, max_value=DEFAULT_MAX_VALUE):
+             min_value=DEFAULT_MIN_VALUE, max_value=DEFAULT_MAX_VALUE,
+             default_value=DEFAULT_MIN_VALUE):
         """
         Init dialog.
 
@@ -39,6 +40,7 @@ class iqIntegerDialog(std_dialogs_proto.integerDialogProto):
         :param label: Prompt text.
         :param min_value: Minimum value.
         :param max_value: Maximum value.
+        :param default_value: Default value.
         """
         if title:
             self.SetTitle(title)
@@ -47,6 +49,7 @@ class iqIntegerDialog(std_dialogs_proto.integerDialogProto):
 
         self.value_spinCtrl.SetRange(min(min_value, max_value),
                                      max(min_value, max_value))
+        self.value_spinCtrl.SetValue(default_value)
 
     def onCancelButtonClick(self, event):
         self._integer_value = None

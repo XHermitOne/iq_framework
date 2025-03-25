@@ -30,10 +30,10 @@ from . import wxdlg_func
 from .. import wxdatetime_func
 
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 2)
 
 
-def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100):
+def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=100, default_value=0):
     """
     Entry integer number in dialog.
 
@@ -43,6 +43,7 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
     :param label: Prompt text.
     :param min_value: Minimum value.
     :param max_value: Maximum value.
+    :param default_value: Default value.
     :return: Entered value or None if press <Cancel>.
     """
     value = None
@@ -51,7 +52,7 @@ def getIntegerDlg(parent=None, title=None, label=None, min_value=0, max_value=10
         parent = wx.GetApp().GetTopWindow()
 
     dlg = integer_dlg.iqIntegerDialog(parent)
-    dlg.init(title=title, label=label, min_value=min_value, max_value=max_value)
+    dlg.init(title=title, label=label, min_value=min_value, max_value=max_value, default_value=default_value)
     dlg.Centre()
 
     if dlg.ShowModal() == wx.ID_OK:

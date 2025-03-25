@@ -526,7 +526,7 @@ class iqReportGeneratorSystem(object):
                 elif self._isQueryFunction(report['query']):
                     variables = kwargs.get('variables', None)
                     query = self._execQueryFunction(report['query'], vars=variables)
-                    log_func.debug(u'Execute query func <%s>' % str(query))
+                    # log_func.debug(u'Execute query func <%s>' % str(query))
 
                     if isinstance(query, dict):
                         if '__sql__' in query:

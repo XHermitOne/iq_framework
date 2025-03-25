@@ -14,7 +14,7 @@ from ..util import log_func
 from ..util import global_func
 from ..util import file_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 1)
 
 REPLACE_NAME_START = u'{{'
 REPLACE_NAME_END = u'}}'

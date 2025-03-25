@@ -7,12 +7,14 @@ Strings and text manipulate functions.
 
 import string
 import encodings.aliases
+import html
+
 
 from . import log_func
 
 from .. import global_data
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 1, 2)
 
 
 def getEncodings():
@@ -590,3 +592,24 @@ def replaceUnprintableSymbol(text, replacement=string.whitespace[0]):
         if symbol not in string.printable:
             text = text[:i] + replacement + text[i + 1:]
     return text
+
+
+def text2html(text, quote=True):
+    """
+    Convert text to HTML like.
+
+    :param text: Text.
+    :param quote: Quote convert.
+    :return: HTML text.
+    """
+    return html.escape(text, quote=quote)
+
+
+def html2text(html_text):
+    """
+    Convert HTML like to text.
+
+    :param html_text: HTML Text.
+    :return: Text.
+    """
+    return html.unescape(html_text)
