@@ -24,6 +24,7 @@ from ....util import file_func
 from ....util import exec_func
 from ....util import lang_func
 from ....util import id_func
+from ....util import webbrowser_func
 
 from ....engine.wx import wxbitmap_func
 from ....engine.wx import imglib_manager
@@ -39,7 +40,7 @@ from . import new_resource_dialog
 from ....engine.wx import stored_wx_form_manager
 from ....engine.wx import splitter_manager
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 1, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -566,7 +567,7 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
             # Document as HTML file
             doc_filename = os.path.join(file_func.getFrameworkPath(), doc)
             if os.path.exists(doc_filename):
-                exec_func.openHtmlBrowser(doc_filename)
+                webbrowser_func.openHtmlBrowser(doc_filename)
             else:
                 log_func.warning(u'Document filename <%s> not found' % doc_filename)
         elif isinstance(doc, dict):

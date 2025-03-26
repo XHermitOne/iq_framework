@@ -7,6 +7,7 @@ Pandas DataFrame object view functions.
 
 import os.path
 
+from iq.util import webbrowser_func
 from . import log_func
 from . import url_func
 from . import txtgen_func
@@ -37,7 +38,7 @@ def openDataFrameWebBrowser(dataframe):
             url = 'file://%s' % html_filename
             if isinstance(url, str):
                 log_func.info(u'Show DataFrame object in Web Browser. URL <%s>' % url)
-                return url_func.openWebBrowserURL(url)
+                return webbrowser_func.openWebBrowserURL(url)
             else:
                 log_func.warning(u'Not define URL for view DataFrame')
     except:

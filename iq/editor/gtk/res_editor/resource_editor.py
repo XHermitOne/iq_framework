@@ -25,6 +25,7 @@ from ....util import id_func
 from ....util import global_func
 from ....util import icon_func
 from ....util import exec_func
+from ....util import webbrowser_func
 
 from ....engine.gtk.dlg import gtk_dlg_func
 
@@ -42,7 +43,7 @@ from . import new_resource_dialog
 
 from . import property_editor_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -465,7 +466,7 @@ class iqResourceEditor(gtk_handler.iqGtkHandler,
             # Document as HTML file
             doc_filename = os.path.join(file_func.getFrameworkPath(), doc)
             if os.path.exists(doc_filename):
-                exec_func.openHtmlBrowser(doc_filename)
+                webbrowser_func.openHtmlBrowser(doc_filename)
             else:
                 log_func.warning(u'Document filename <%s> not found' % doc_filename)
         elif isinstance(doc, dict):

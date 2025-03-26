@@ -832,3 +832,46 @@ class iqLoginDialog(login_dialog_proto.iqLoginDialogProto,
         Get password hash as md5.
         """
         return hashlib.md5(self._password.encode()).hexdigest()
+
+
+def openRichMessageDlg(parent=None, title='', prompt_text='', check_box_label='', msg='',
+                       footer_text='', footer_icon=None, *args, **kwargs):
+    """
+    Open rich message dialog.
+    
+    :param parent: Parent form.
+    :param title: Dialog form title.
+    :param prompt_text: Dialog form prompt text.
+    :param check_box_label: Check box label.
+    :param msg: Detailed text.
+    :param footer_text: Shows or hides a footer text that is used
+        at the bottom of the dialog together with an optional icon.
+    :param footer_icon: Specify the footer icon set together with the footer text.
+        Valid values are ICON_INFORMATION , ICON_WARNING , ICON_AUTH_NEEDED and ICON_ERROR
+        (notice that ICON_QUESTION is not allowed here).
+    :return: Checked True/False or None if error.
+    """
+    dlg = None
+    try:
+        if parent is None:
+            parent = wx.GetApp().GetTopWindow()
+
+        dlg = wx.RichMessageDialog(parent, prompt_text, title, *args, **kwargs)
+        if msg:
+            dlg.ShowDetailedText(msg)
+        if check_box_label:
+            dlg.ShowCheckBox(check_box_label)
+        if footer_text:
+            dlg.SetFooterText(footer_text)
+        if footer_icon:
+            dlg.SetFooterIcon(footer_icon)
+
+        dlg.ShowModal()
+
+        result = dlg.IsCheckBoxChecked()
+        dlg.Destroy()
+        return result
+    except:
+        if dlg:
+            dlg.Destroy()
+    return None

@@ -8,7 +8,6 @@ Execute functions module.
 import os
 import os.path
 import stat
-import sys
 import uuid
 import subprocess
 import locale
@@ -19,7 +18,7 @@ from . import file_func
 from . import global_func
 from . import txtfile_func
 
-__version__ = (0, 0, 1, 5)
+__version__ = (0, 1, 1, 2)
 
 
 def execSystemCommand(cmd=''):
@@ -79,22 +78,6 @@ def getLinesExecutedCommand(cmd='', console_encoding=None, echo=False):
     else:
         log_func.warning(u'Not define command')
     return tuple()
-
-
-def openHtmlBrowser(html_filename=None):
-    """
-    Open default HTML browser.
-
-    :param html_filename: HTML filename.
-    :return: True/False
-    """
-    if html_filename:
-        cmd_fmt = 'open %s'
-        cmd = cmd_fmt % html_filename
-        return execSystemCommand(cmd)
-    else:
-        log_func.warning(u'Not define HTML file for view')
-    return False
 
 
 INDENTATION = u' ' * 4
