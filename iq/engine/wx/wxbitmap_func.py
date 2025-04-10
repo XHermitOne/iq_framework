@@ -11,7 +11,7 @@ import wx
 from ...util import log_func
 from ...util import icon_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 1, 2, 1)
 
 DEFAULT_ICON_WIDTH = 16
 DEFAULT_ICON_HEIGHT = 16
@@ -163,3 +163,24 @@ def createArtProviderBitmap(image_id=None, image_client_id=None, img_size=None):
     except:
         log_func.fatal(u'Error create bitmap object by wx art provider')
     return wx.ArtProvider.GetBitmap(wx.ART_MISSING_IMAGE, wx.ART_MENU)
+
+
+def scaleBitmap(bitmap, width, height):
+    """
+    Scale bitmap.
+
+    :param bitmap: wx.Bitmap object or image file name.
+    :param width: New bitmap width.
+    :param height: New bitmap height.
+    :return: New scaled wx.Bitmap object.
+    """
+    if not isinstance(bitmap, wx.Bitmap):
+        bitmap = createBitmap(bitmap)
+    try:
+        img = wx.ImageFromBitmap(bitmap)
+        img = img.Scale(width, height, wx.IMAGE_QUALITY_HIGH)
+        new_bmp = wx.BitmapFromImage(img)
+        return new_bmp
+    except:
+        log_func.fatal(u'Error scale bitmap')
+    return bitmap

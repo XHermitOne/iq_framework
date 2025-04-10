@@ -29,6 +29,9 @@ DEFAULT_SPLASH_DELAY = 3
 DEFAULT_SPLASH_IMG_FILE_EXT = '.png'
 DEFAULT_ICON_IMG_FILE_EXT = '.png'
 
+DEFAULT_WINDOWS_ICON_WIDTH = 32
+DEFAULT_WINDOWS_ICON_HEIGHT = 32
+
 MAINNOTEBOOK_ATTR_NAME = '__main_notebook'
 
 
@@ -238,7 +241,12 @@ class iqMainFormManager(base_manager.iqBaseManager):
             return False
 
         try:
-            icon = wx.Icon(icon_filename)
+            if wx.Platform == '__WXMSW__':
+                # Rescale bitmap for MsWin
+                bmp = wxbitmap_func.scaleBitmap(icon_filename, DEFAULT_WINDOWS_ICON_WIDTH, DEFAULT_WINDOWS_ICON_HEIGHT)
+                icon = wx.Icon(bmp)
+            else:
+                icon = wx.Icon(icon_filename)
             main_form.SetIcon(icon=icon)
             return True
         except:
