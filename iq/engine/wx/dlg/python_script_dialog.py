@@ -16,8 +16,9 @@ from iq.util import log_func
 from iq.util import global_func
 
 from iq.engine.wx import form_manager
+from iq.engine.wx import wxbitmap_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqPythonScriptDialog(py_script_edit_dlg_proto.iqPythonScriptDialogProto, form_manager.iqFormManager):
@@ -29,6 +30,7 @@ class iqPythonScriptDialog(py_script_edit_dlg_proto.iqPythonScriptDialogProto, f
         Constructor.
         """
         py_script_edit_dlg_proto.iqPythonScriptDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('python_script')))
 
         self.script = None
 

@@ -10,7 +10,9 @@ import wx
 
 from . import std_dialogs_proto
 
-__version__ = (0, 0, 0, 1)
+from .. import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 TODAY = datetime.date.today()
 
@@ -29,6 +31,7 @@ class iqMonthDialog(std_dialogs_proto.monthDialogProto):
         Constructor.
         """
         std_dialogs_proto.monthDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/calendar_view_month')))
 
         # Select current month
         self.month_choice.Select(TODAY.month - 1)

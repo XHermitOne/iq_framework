@@ -11,7 +11,9 @@ import wx
 
 from . import std_dialogs_proto
 
-__version__ = (0, 0, 0, 1)
+from .. import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 # Maximum items number
 MAX_ITEM_COUNT = 15
@@ -26,6 +28,7 @@ class iqRadioChoiceMaxiDialog(std_dialogs_proto.radioChoiceMaxiDialogProto):
         Constructor.
         """
         std_dialogs_proto.radioChoiceMaxiDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/radiobutton_group')))
 
         # Selected item index
         self._item_idx = None

@@ -9,7 +9,9 @@ import wx
 
 from . import std_dialogs_proto
 
-__version__ = (0, 1, 1, 2)
+from ....engine.wx import  wxbitmap_func
+
+__version__ = (0, 1, 2, 1)
 
 DEFAULT_MIN_VALUE = 0
 DEFAULT_MAX_VALUE = 500
@@ -24,6 +26,7 @@ class iqIntegerDialog(std_dialogs_proto.integerDialogProto):
         Constructor.
         """
         std_dialogs_proto.integerDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/numeric_stepper')))
 
         self._integer_value = None
 

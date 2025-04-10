@@ -10,8 +10,9 @@ Maximum 15 items.
 import wx
 
 from . import std_dialogs_proto
+from ....engine.wx import wxbitmap_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 MAX_ITEM_COUNT = 15
 
@@ -25,6 +26,7 @@ class iqCheckBoxMaxiDialog(std_dialogs_proto.checkBoxMaxiDialogProto):
         Constructor.
         """
         std_dialogs_proto.checkBoxMaxiDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/check_boxes_series')))
 
         # Checked items
         self._check_items = None

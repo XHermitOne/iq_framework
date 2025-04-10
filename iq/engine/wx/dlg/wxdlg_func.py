@@ -20,7 +20,7 @@ from .. import wxbitmap_func
 from . import login_dialog_proto
 from ... import stored_manager
 
-__version__ = (0, 0, 4, 2)
+__version__ = (0, 1, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -251,6 +251,8 @@ def getSingleChoiceDlg(parent=None, title='', prompt_text='', choices=(),
            parent = wx.GetApp().GetTopWindow()
 
         dlg = wx.SingleChoiceDialog(parent, prompt_text, title, choices, wx.CHOICEDLG_STYLE)
+        dlg.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/list')))
+
         if default_idx >= 0:
             dlg.SetSelection(default_idx)
         if dlg.ShowModal() == wx.ID_OK:
@@ -282,6 +284,8 @@ def getSingleChoiceIdxDlg(parent=None, title='', prompt_text='', choices=[],
 
         dlg = wx.SingleChoiceDialog(parent, prompt_text, title,
                                     choices, wx.CHOICEDLG_STYLE)
+        dlg.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/list')))
+
         if default_idx >= 0:
             dlg.SetSelection(default_idx)
 
@@ -313,6 +317,8 @@ def getMultiChoiceDlg(parent=None, title='', prompt_text='', choices=(), pos=Non
 
         choice_list = [row[1] for row in choices]
         dlg = wx.MultiChoiceDialog(parent, prompt_text, title, choice_list, pos=pos)
+        dlg.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/list_box')))
+
         selections = [i for i, row in enumerate(choices) if row[0]]
         dlg.SetSelections(selections)
         
@@ -558,6 +564,7 @@ class iqStrComboBoxDialog(wx.Dialog):
 
             wx.Dialog.__init__(self, parent, -1, title=title,
                                pos=wx.DefaultPosition, size=wx.Size(500, 150))
+            self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/combo_box_light_blue')))
 
             self._text = wx.StaticText(self, -1, prompt_text, wx.Point(10, 10), wx.Size(-1, -1))
 
@@ -639,6 +646,7 @@ class iqAboutDialog(wx.Dialog):
         try:
             wx.Dialog.__init__(self, parent, -1, title=title,
                                pos=wx.DefaultPosition, size=wx.Size(500, 500))
+            self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/information')))
 
             sizer = wx.BoxSizer(wx.VERTICAL)
             self._logo = None

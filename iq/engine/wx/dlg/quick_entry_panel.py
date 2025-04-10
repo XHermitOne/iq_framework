@@ -34,8 +34,9 @@ from iq.util import log_func
 from iq.util import lang_func
 
 from iq.engine.wx import form_manager
+from iq.engine.wx import wxbitmap_func
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -221,11 +222,11 @@ class icQuickEntryPanelDialog(wx.Dialog, form_manager.iqDialogManager):
         :param size: The size of the display of the quick input panel.
         :param quick_entry_panel_class: The class of the quick input panel.
         """
-
         wx.Dialog.__init__(self, parent, title=title,
                            pos=pos if pos else wx.DefaultPosition,
                            size=size if size else wx.DefaultSize,
                            style=wx.DEFAULT_FRAME_STYLE | wx.RESIZE_BORDER)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fugue/stickman-run-dash')))
 
         self.ctrl_panel = iqQuickEntryPanelCtrl(self, quick_entry_panel_class, *args, **kwargs)
         if self.ctrl_panel.quick_entry_panel:

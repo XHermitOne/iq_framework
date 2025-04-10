@@ -10,7 +10,9 @@ import wx
 
 from . import std_dialogs_proto
 
-__version__ = (0, 0, 0, 1)
+from .. import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 
 class iqMonthRangeDialog(std_dialogs_proto.monthRangeDialogProto):
@@ -22,6 +24,7 @@ class iqMonthRangeDialog(std_dialogs_proto.monthRangeDialogProto):
         Constructor.
         """
         std_dialogs_proto.monthRangeDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/calendar_view_month')))
 
         self._selected_range = None
 

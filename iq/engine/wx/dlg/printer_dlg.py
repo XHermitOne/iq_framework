@@ -13,9 +13,9 @@ from . import printer_dlg_proto
 from iq.util import log_func
 from iq.util import printer_func
 
-from iq.engine.wx import wxbitmap_func
+from .. import wxbitmap_func
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 2, 1)
 
 
 class iqChoicePrinterDlg(printer_dlg_proto.iqChoicePrinterDlgProto):
@@ -27,6 +27,7 @@ class iqChoicePrinterDlg(printer_dlg_proto.iqChoicePrinterDlgProto):
         Constructor.
         """
         printer_dlg_proto.iqChoicePrinterDlgProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/printer')))
 
         self.image_list = None
         self.printer_idx = None

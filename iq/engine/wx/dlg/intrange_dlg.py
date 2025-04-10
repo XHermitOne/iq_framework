@@ -9,7 +9,9 @@ import wx
 
 from . import std_dialogs_proto
 
-__version__ = (0, 0, 0, 1)
+from ....engine.wx import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 
 class iqIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
@@ -21,6 +23,7 @@ class iqIntRangeDialog(std_dialogs_proto.intRangeDialogProto):
         Constructor.
         """
         std_dialogs_proto.intRangeDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/sort_number_column')))
 
         self._begin_integer_value = None
         self._end_integer_value = None

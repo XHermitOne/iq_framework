@@ -17,8 +17,9 @@ from iq.util import global_func
 from iq.util import lang_func
 
 from iq.engine.wx import form_manager
+from iq.engine.wx import wxbitmap_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 SUPPORTED_LANGUAGES2WXLANGUAGES = {
     lang_func.ENGLISH_LANGUAGE: wx.LANGUAGE_ENGLISH,
@@ -39,6 +40,7 @@ class iqSelectLanguageDialog(language_dlg_proto.iqSelectLanguageDialogProto,
         """
         self.wx_languages = list(SUPPORTED_LANGUAGES2WXLANGUAGES.values())
         language_dlg_proto.iqSelectLanguageDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/language')))
 
     def init(self):
         """
@@ -85,6 +87,7 @@ class iqSelectTranslationLanguageDialog(language_dlg_proto.iqSelectTranslationLa
         """
         self.wx_languages = list(SUPPORTED_LANGUAGES2WXLANGUAGES.values())
         language_dlg_proto.iqSelectTranslationLanguageDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/locale')))
 
     def init(self):
         """

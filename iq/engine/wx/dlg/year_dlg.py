@@ -7,9 +7,12 @@ Select year dialog.
 
 import datetime
 import wx
+
 from . import std_dialogs_proto
 
-__version__ = (0, 0, 0, 1)
+from .. import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 MIN_YEAR = 1940
 MAX_YEAR = MIN_YEAR + 100
@@ -24,6 +27,7 @@ class iqYearDialog(std_dialogs_proto.yearDialogProto):
         Constructor.
         """
         std_dialogs_proto.yearDialogProto.__init__(self, *args, **kwargs)
+        wx.Icon(wxbitmap_func.createIconBitmap('fatcow/calendar_view_day'))
 
         self._selected_year = None
 

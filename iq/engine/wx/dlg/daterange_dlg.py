@@ -9,9 +9,11 @@ import wx
 from . import std_dialogs_proto
 
 from iq.util import log_func
-from ....engine.wx import wxdatetime_func
 
-__version__ = (0, 0, 0, 1)
+from ....engine.wx import wxdatetime_func
+from ....engine.wx import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 
 class iqDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
@@ -23,6 +25,7 @@ class iqDateRangeDialog(std_dialogs_proto.dateRangeDialogProto):
         Constructor.
         """
         std_dialogs_proto.dateRangeDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/calendar_group')))
 
         self._selected_range = None
 

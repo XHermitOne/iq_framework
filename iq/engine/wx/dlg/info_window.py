@@ -9,7 +9,7 @@ import wx
 
 from ....util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 DEFAULT_INFO_WINDOW_BACKGROUND_COLOUR_NAME = 'CADET BLUE'
 
@@ -20,6 +20,7 @@ class iqPopupInfoWindow(wx.PopupWindow):
     """
     def __init__(self, parent, style=wx.SIMPLE_BORDER, info_text=u''):
         wx.PopupWindow.__init__(self, parent, style)
+
         # popup_win = wx.PopupWindow(parent, wx.SIMPLE_BORDER)
         self.panel = wx.Panel(self)
         self.panel.SetBackgroundColour(DEFAULT_INFO_WINDOW_BACKGROUND_COLOUR_NAME)

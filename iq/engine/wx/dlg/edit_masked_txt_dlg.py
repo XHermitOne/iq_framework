@@ -12,7 +12,9 @@ from . import edit_masked_txt_dlg_proto
 from ....util import log_func
 from . import wxdlg_func
 
-__version__ = (0, 0, 0, 1)
+from ....engine.wx import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 _ = gettext.gettext
 
@@ -100,6 +102,8 @@ def editMaskedTextDlg(parent=None, title=u'', label=u'',
     dlg = None
     try:
         dlg = iqEditMaskedTextDlg(parent=parent, *args, **kwargs)
+        dlg.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/textfield_format')))
+
         dlg.init(title=title, label=label,
                  default_txt=default_txt, mask=mask, reg_exp=reg_exp)
         if dlg.ShowModal() == wx.ID_OK:

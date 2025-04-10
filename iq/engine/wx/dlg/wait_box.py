@@ -14,10 +14,12 @@ import time
 
 from iq.util import lang_func
 
+from .. import wxbitmap_func
+
 # Delay between frames
 FRAME_DELAY = 0.3
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -90,6 +92,7 @@ class iqWaitBox(wx.Dialog):
             style = wx.STAY_ON_TOP
             
         wx.Dialog.__init__(self, parent, -1, size=wx.Size(220, 34), style=style)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/hourglass')))
 
         self.msg = wx.StaticText(self, -1, message)
         self._lastTime = time.clock()

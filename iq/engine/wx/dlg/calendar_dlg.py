@@ -9,9 +9,10 @@ import datetime
 import wx
 from . import std_dialogs_proto
 
-from ....engine.wx import wxdatetime_func
+from .. import wxdatetime_func
+from .. import wxbitmap_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqCalendarDialog(std_dialogs_proto.calendarDialogProto):
@@ -23,6 +24,7 @@ class iqCalendarDialog(std_dialogs_proto.calendarDialogProto):
         Constructor.
         """
         std_dialogs_proto.calendarDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/calendar')))
 
         self._selected_date = None
 

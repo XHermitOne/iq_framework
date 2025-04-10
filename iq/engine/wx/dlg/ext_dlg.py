@@ -12,7 +12,9 @@ from . import multichoice_ext_dlg
 
 from iq.util import log_func
 
-__version__ = (0, 0, 0, 1)
+from ....engine.wx import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 
 def getMultiChoiceExtDlg(parent=None, title=None, label=None, choices=(), defaults=()):
@@ -33,6 +35,7 @@ def getMultiChoiceExtDlg(parent=None, title=None, label=None, choices=(), defaul
         parent = wx.GetApp().GetTopWindow()
 
     dlg = multichoice_ext_dlg.iqMultiChoiceExtDialog(parent)
+
     dlg_choices = [(True if isinstance(defaults, (list, tuple)) and choices[i] in defaults else False, choices[i]) for i in range(len(choices))] if choices else list()
     dlg.init(title=title, label=label, choices=dlg_choices)
     dlg.Centre()

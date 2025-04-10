@@ -12,7 +12,9 @@ import wx.lib.imagebrowser
 from ....util import icon_func
 from ....util import log_func
 
-__version__ = (0, 0, 0, 1)
+from .. import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 
 def getImageBrowserDlg(parent=None, img_dirname=None):
@@ -38,6 +40,7 @@ def getImageBrowserDlg(parent=None, img_dirname=None):
 
         # open the image browser dialog
         dlg = wx.lib.imagebrowser.ImageDialog(parent, initial_dir)
+        dlg.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/pictures')))
         dlg.Centre()
 
         if dlg.ShowModal() == wx.ID_OK:

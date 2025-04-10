@@ -27,8 +27,9 @@ from ....util import log_func
 from ....util import global_func
 from ....util import lang_func
 from .. import wxdatetime_func
+from .. import wxbitmap_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -385,6 +386,7 @@ class iqLogBrowserDlg(iqLogBrowserPanelManager,
         """
         log_browser_proto.iqLogBrowserDialogProto.__init__(self, *args, **kwargs)
         iqLogBrowserPanelManager.__init__(self, filter_panel=self.browser_panel)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/script_error')))
 
         self.browser_panel.refresh_bpButton.Bind(wx.EVT_BUTTON, self.onRefreshButtonClick)
         self.browser_panel.start_checkBox.Bind(wx.EVT_CHECKBOX, self.onStartCheckBox)

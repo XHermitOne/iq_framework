@@ -6,9 +6,12 @@ Multi choice extended dialog.
 """
 
 import wx
+
 from . import ext_dialogs_proto
 
-__version__ = (0, 0, 0, 1)
+from .. import wxbitmap_func
+
+__version__ = (0, 1, 1, 1)
 
 
 class iqMultiChoiceExtDialog(ext_dialogs_proto.MultiChoiceListBoxExtDialogProto):
@@ -20,6 +23,7 @@ class iqMultiChoiceExtDialog(ext_dialogs_proto.MultiChoiceListBoxExtDialogProto)
         Constructor.
         """
         ext_dialogs_proto.MultiChoiceListBoxExtDialogProto.__init__(self, *args, **kwargs)
+        self.SetIcon(icon=wx.Icon(wxbitmap_func.createIconBitmap('fatcow/check_box_list')))
 
         self._selected_items = None
 
