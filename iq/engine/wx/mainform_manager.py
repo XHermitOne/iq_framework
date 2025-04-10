@@ -20,13 +20,14 @@ from ..wx import wxbitmap_func
 from . import base_manager
 from . import imglib_manager
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
 DEFAULT_SPLASH_DELAY = 3
 
 DEFAULT_SPLASH_IMG_FILE_EXT = '.png'
+DEFAULT_ICON_IMG_FILE_EXT = '.png'
 
 MAINNOTEBOOK_ATTR_NAME = '__main_notebook'
 
@@ -214,6 +215,35 @@ class iqMainFormManager(base_manager.iqBaseManager):
                                      style=wx.SIMPLE_BORDER | wx.FRAME_NO_TASKBAR | wx.STAY_ON_TOP)
         splash.Show()
         return True
+
+    def setMainFormIcon(self, main_form=None, icon_filename=None):
+        """
+        Show splash window.
+
+        :param main_form: Main form object.
+        :param icon_filename: Icon image filename.
+        :return: True/False.
+        """
+        if main_form is None:
+            main_form = self
+
+        assert issubclass(main_form.__class__, wx.Frame) or issubclass(main_form.__class__, wx.Dialog), u'Main form manager type error'
+
+        if not os.path.splitext(icon_filename)[1]:
+            icon_filename += DEFAULT_ICON_IMG_FILE_EXT
+        icon_filename = file_func.getAbsolutePath(icon_filename)
+
+        if not icon_filename or not os.path.exists(icon_filename):
+            log_func.warning(u'Icon image filename <%s> not found' % icon_filename)
+            return False
+
+        try:
+            icon = wx.Icon(icon_filename)
+            main_form.SetIcon(icon=icon)
+            return True
+        except:
+            log_func.fatal(u'Error set icon main form')
+        return False
 
     def getMainNotebook(self):
         """

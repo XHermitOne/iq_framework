@@ -7,6 +7,7 @@ HTTP send get/post request functions.
 
 import os
 import time
+import json
 
 from . import log_func
 from . import file_func
@@ -16,7 +17,7 @@ try:
 except ImportError:
     log_func.error(u'Import error urllib3')
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 1, 2, 2)
 
 
 def getHTTP3(url, headers=None, **kwargs):
@@ -103,8 +104,9 @@ def postHTTP3(url, headers=None, body=None, **kwargs):
         return None
 
     try:
+        encoded_body = json.dumps(body)
         http = urllib3.PoolManager()
-        response = http.request('POST', url, headers=headers, body=body, **kwargs)
+        response = http.request('POST', url, headers=headers, body=encoded_body, **kwargs)
         response_content = response.data.decode('utf-8')
         return response_content
     except:

@@ -14,7 +14,7 @@ from ....util import str_func
 from ....util import py_func
 from ....util import txtfile_func
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 SHOW_MAINFORM_FUNC_BODY_FMT = u'''
 def show%s(parent=None):
@@ -87,7 +87,8 @@ class %s(%s.%s,
         \"\"\"
         %s.%s.__init__(self, *args, **kwargs)
 
-        self.addUsernameToTitle(main_form=self)
+        # self.setMainFormIcon(icon_filename='%s/icon' % global_func.getProjectName())
+        self.addUsernameToTitle()
 
         self.main_menubar = main_menubar.createMainMenubar()
         self.SetMenuBar(self.main_menubar)
@@ -96,7 +97,7 @@ class %s(%s.%s,
         \"\"\"
         Init frame.
         \"\"\"
-        # self.showMainFormSplash(splash_filename='project_name/splash')
+        # self.showMainFormSplash(splash_filename='%s/splash' % global_func.getProjectName())
         
         self.initImages()
         self.initControls()
