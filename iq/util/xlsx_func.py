@@ -11,9 +11,9 @@ from . import log_func
 try:
     import xlsxwriter
 except ImportError:
-    log_func.error(u'Import error xlsxwriter. For install: pip3 install XlsxWriter', is_force_print=True)
+    log_func.error(u'Import error xlsxwriter. For install: pip3 install --break-system-packages --user XlsxWriter', is_force_print=True)
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 0, 2, 1)
 
 XLSX_EXT = '.xlsx'
 

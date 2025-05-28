@@ -16,7 +16,6 @@ import os.path
 import tempfile
 import fnmatch
 import shutil
-from smb.SMBConnection import SMBConnection
 import urllib.parse
 import urllib.request
 
@@ -26,7 +25,12 @@ from . import sys_func
 from . import net_func
 from . import dt_func
 
-__version__ = (0, 0, 1, 4)
+try:
+    from smb.SMBConnection import SMBConnection
+except ImportError:
+    log_func.error('Import error pysmb. For install: pip3 install --break-system-packages --user pysmb', is_force_print=True)
+
+__version__ = (0, 0, 2, 1)
 
 
 DEFAULT_WORKGROUP = 'WORKGROUP'

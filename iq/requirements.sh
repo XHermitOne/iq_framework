@@ -26,10 +26,11 @@ sudo apt install --assume-yes indicator-applet-complete
 sudo apt install --assume-yes ttf-mscorefonts-installer
 sudo apt install --assume-yes python3-apt
 sudo apt install --assume-yes smbclient
-pip3 install pysmb
+#pip3 install pysmb
+pip3 install --break-system-packages --user pysmb
 
 # Net
-pip3 install ping3
+pip3 install --break-system-packages --user ping3
 
 # Work with the console
 sudo apt install --assume-yes python3-dialog
@@ -39,7 +40,8 @@ sudo apt install --assume-yes curl
 # Color console
 sudo apt install --assume-yes python3-termcolor
 sudo apt install --assume-yes python3-colorama
-pip3 install rich
+pip3 install --break-system-packages --user rich
+pip3 install --break-system-packages --user rich-menu
 
 # wxPython
 
@@ -61,7 +63,7 @@ sudo apt install --assume-yes libwebkit2gtk-4.0-dev
 # pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython==4.1.1
 
 # For Ubuntu 22.04
-pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04 wxPython==4.2.0
+pip3 install --break-system-packages --user -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04 wxPython==4.2.3
 
 
 # Upgrade:
@@ -74,12 +76,12 @@ pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubunt
 # pip3 wheel -v wxPython-4.0.1.tar.gz  2>&1 | tee build.log
 # pip3 install wxPython-4.0.1-cp35-cp35m-linux_x86_64.whl
 
-pip3 install pysvg-py3
+pip3 install --break-system-packages --user pysvg-py3
 sudo apt install --assume-yes imagemagick
 sudo apt install --assume-yes inkscape
 
 # Additionally
-pip3 install objectlistview
+pip3 install --break-system-packages --user objectlistview
 sudo apt install --assume-yes python3-six
 sudo apt install --assume-yes python3-matplotlib
 # sudo apt install --assume-yes python3-wxmpl
