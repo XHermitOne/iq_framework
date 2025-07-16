@@ -19,7 +19,7 @@ from ..util import id_func
 
 from .. import passport
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 0, 2, 1)
 
 
 class iqObject(object):
@@ -258,9 +258,10 @@ class iqObject(object):
             kernel = self.getKernel()
             context = self.getContext()
 
+            # Create only activated children
             self._children = [kernel.createByResource(parent=self,
                                                       resource=res_child,
-                                                      context=context) for res_child in res_children]
+                                                      context=context) for res_child in res_children if res_child.get('activate', True)]
             return self._children
         except:
             log_func.fatal(u'Error create children obj object <%s : %s>' % (self.getName(), self.getType()))
