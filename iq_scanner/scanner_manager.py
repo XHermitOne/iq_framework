@@ -10,9 +10,9 @@ import os
 import os.path
 
 from . import config
-from ic.log import log
+from iq.util import log_func
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 3, 1, 1)
 
 
 # Scanner manager object
@@ -47,13 +47,13 @@ class iqScannerManager(object):
         if os.path.exists(self._scanner_exec_filename):
             cmd = '%s %s' % (sys.executable, self._scanner_exec_filename)
             try:
-                log.info(u'Exec scanner program <%s>' % cmd)
+                log_func.info(u'Exec scanner program <%s>' % cmd)
                 os.system(cmd)
                 return True
             except:
-                log.fatal(u'Error exec scanner program: <%s>' % cmd)
+                log_func.fatal(u'Error exec scanner program: <%s>' % cmd)
         else:
-            log.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
+            log_func.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
         return False
 
     def scanPreview(self):
@@ -65,13 +65,13 @@ class iqScannerManager(object):
         if os.path.exists(self._scanner_exec_filename):
             cmd = '%s %s --preview' % (sys.executable, self._scanner_exec_filename)
             try:
-                log.info(u'Exec scanner program <%s>' % cmd)
+                log_func.info(u'Exec scanner program <%s>' % cmd)
                 os.system(cmd)
                 return True
             except:
-                log.fatal(u'Error scanner program <%s> in preview mode' % cmd)
+                log_func.fatal(u'Error scanner program <%s> in preview mode' % cmd)
         else:
-            log.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
+            log_func.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
         return False
 
     def scanExport(self, scan_filename):
@@ -89,13 +89,13 @@ class iqScannerManager(object):
                                                                          self._scanner_exec_filename,
                                                                          scan_dir, file_name, file_type)
             try:
-                log.info(u'Exec scanner program <%s>' % cmd)
+                log_func.info(u'Exec scanner program <%s>' % cmd)
                 os.system(cmd)
                 return True
             except:
-                log.fatal(u'Error scanner program <%s> in export mode' % cmd)
+                log_func.fatal(u'Error scanner program <%s> in export mode' % cmd)
         else:
-            log.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
+            log_func.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
         return False
 
     def scanPack(self, *scan_filenames):
@@ -110,10 +110,10 @@ class iqScannerManager(object):
         :return: True/False.
         """
         if not scan_filenames:
-            log.warning(u'The list of scanned files is not defined during pack scanning')
+            log_func.warning(u'The list of scanned files is not defined during pack scanning')
             return False
         if not min([type(scan_option) in (list, tuple) for scan_option in scan_filenames]):
-            log.warning(u'Scan manager input parameter type error')
+            log_func.warning(u'Scan manager input parameter type error')
             return False        
 
         # Attention! Delete all previously scanned pages before launching
@@ -137,13 +137,13 @@ class iqScannerManager(object):
                                                                                                              filenames,
                                                                                                              n_pages)
             try:
-                log.info(u'Exec scanner program <%s>' % cmd)
+                log_func.info(u'Exec scanner program <%s>' % cmd)
                 os.system(cmd)
                 return True
             except:
-                log.fatal(u'Error exec scanner program <%s>' % cmd)
+                log_func.fatal(u'Error exec scanner program <%s>' % cmd)
         else:
-            log.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
+            log_func.warning(u'Scanner program module <%s> not found' % self._scanner_exec_filename)
         return False
 
     def deleteScanFiles(self, *scan_filenames):
@@ -156,9 +156,9 @@ class iqScannerManager(object):
             if os.path.exists(scan_filename):
                 try:
                     os.remove(scan_filename)
-                    log.info(u'File <%s> deleted' % scan_filename)
+                    log_func.info(u'File <%s> deleted' % scan_filename)
                 except OSError:
-                    log.fatal(u'Error delete file <%s>' % scan_filename)
+                    log_func.fatal(u'Error delete file <%s>' % scan_filename)
 
 
 def getScannerManager():

@@ -26,7 +26,6 @@ sudo apt-get install python-reportlab
 import traceback
 import os
 import os.path
-import sane
 import wx
 from reportlab.pdfgen import canvas
 
@@ -39,7 +38,13 @@ from . import config
 
 from . import ext_scan_dlg
 
-__version__ = (0, 0, 0, 1)
+try:
+    import sane
+except ImportError:
+    log_func.error('Import error sane. For install: sudo apt install --assume-yes python3-sane', is_force_print=True)
+
+
+__version__ = (0, 1, 1, 1)
 
 # Scan modes
 GREY_SCAN_MODE = 'Grey'

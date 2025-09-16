@@ -10,7 +10,8 @@ import os.path
 import wx
 
 from iq.util import log_func
-from iq.util import exec_func
+from iq.util import file_ext_func
+from iq.util import pdf_func
 from iq.dialog import dlg_func
 # from ic.std.utils import execfunc
 # from ic.std.utils import pdffunc
@@ -90,7 +91,8 @@ class iqVerifyScanDialog(scanner_dlg_proto.iqVerifyScanDlgProto):
         """
         Button handler <Preview ...>.
         """
-        execfunc.view_file_ext(self.verify_filename)
+        # execfunc.view_file_ext(self.verify_filename)
+        file_ext_func.openFileAppDefault(self.verify_filename)
         event.Skip()
 
     def onReScanButtonClick(self, event):
@@ -214,8 +216,9 @@ def scan_glue_mode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_t
     if not is_cancel:
         part_pdf_filenames = [scan_file_path + ('_part%03d' % i_part) + scan_file_ext for i_part in range(1, n_part)]
         log_func.debug(u'Merge %d parts of scan %s to PDF file% s' % (n_part-1, part_pdf_filenames, scan_filename))
-        glue_result = pdf_func.glue_pdf_files(scan_filename, *part_pdf_filenames)
-        
+        # glue_result = pdf_func.glue_pdf_files(scan_filename, *part_pdf_filenames)
+        glue_result = pdf_func.joinPDF(part_pdf_filenames, scan_filename)
+
         dlg_func.openMsgBox(u'SCAN',
                             u'Load documents in the scanner tray for later scanning')
         return glue_result

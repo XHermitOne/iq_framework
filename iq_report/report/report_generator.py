@@ -40,7 +40,7 @@ from iq.util import str_func
 from iq.util import exec_func
 from iq.util import dt_func
 
-__version__ = (0, 0, 3, 6)
+__version__ = (0, 0, 3, 7)
 
 # Report cell tags:
 # query table field values
@@ -301,6 +301,8 @@ class iqReportGenerator(object):
                 self._report_name = str(query_table['name'])
             elif 'name' in self._template:
                 self._report_name = self._template['name']
+
+            log_func.info(u'Start generate report <%s>' % self._report_name)
             
             # Init name space
             self._variables = name_space
