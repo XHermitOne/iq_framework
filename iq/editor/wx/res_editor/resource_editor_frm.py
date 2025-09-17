@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Adapted Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b)
+## Adapted Python code generated with wxFormBuilder (version 4.2.1-0-g80c4cb6)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO *NOT* EDIT THIS FILE!
@@ -12,7 +12,7 @@ import wx.adv
 import wx.lib.gizmos
 import wx.aui
 import wx.dataview
-import wx.propgrid as pg
+import wx.propgrid
 
 from iq.util import lang_func
 _ = lang_func.getTranslation().gettext
@@ -84,13 +84,13 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.property_panel = wx.Panel( self.editor_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer3 = wx.BoxSizer( wx.VERTICAL )
 
-		self.object_propertyGridManager = pg.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE|wx.propgrid.PG_TOOLBAR)
+		self.object_propertyGridManager = wx.propgrid.PropertyGridManager(self.property_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PGMAN_DEFAULT_STYLE|wx.propgrid.PG_TOOLBAR)
 
-		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Attributes"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) );
+		self.attributes_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Attributes"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) )
 
-		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Methods"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) );
+		self.methods_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Methods"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) )
 
-		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Events"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) );
+		self.events_propertyGridPage = self.object_propertyGridManager.AddPage( _(u"Events"), wx.ArtProvider.GetBitmap( wx.ART_MISSING_IMAGE, wx.ART_MENU ) )
 		bSizer3.Add( self.object_propertyGridManager, 1, wx.ALL|wx.EXPAND, 5 )
 
 
@@ -118,7 +118,7 @@ class iqResourceEditorFrameProto ( wx.Frame ):
 		self.Bind( wx.EVT_TOOL, self.onExpandToolClicked, id = self.expand_tool.GetId() )
 		self.resource_treeListCtrl.Bind( wx.EVT_TREE_ITEM_RIGHT_CLICK, self.onResTreelistItemContextMenu )
 		self.resource_treeListCtrl.Bind( wx.EVT_TREE_SEL_CHANGED, self.onResItemTreelistSelectionChanged )
-		self.object_propertyGridManager.Bind( pg.EVT_PG_CHANGED, self.onObjPropertyGridChanged )
+		self.object_propertyGridManager.Bind( wx.propgrid.EVT_PG_CHANGED, self.onObjPropertyGridChanged )
 
 	def __del__( self ):
 		pass

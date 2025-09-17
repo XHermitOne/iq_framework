@@ -16,7 +16,9 @@ from ...util import lang_func
 
 from ...role import component as role
 
-__version__ = (0, 0, 0, 1)
+from ..data_column import spc as data_column_spc
+
+__version__ = (0, 1, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -48,6 +50,22 @@ class iqDataUniObject(uni_object.iqUniObjectManager, data_navigator.COMPONENT):
         component_spc = kwargs['spc'] if 'spc' in kwargs else spc.SPC
         data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         uni_object.iqUniObjectManager.__init__(self, *args, **kwargs)
+
+    def searchRequisiteColumns(self, *column_names):
+        """
+        Search column objects as requisites by names.
+
+        :param column_names: Column names.
+        :return: List of columns objects
+        """
+        model_obj = self.getModelObj()
+
+        if model_obj is not None:
+            columns = [column for column in model_obj.getChildren() if column.getType() == data_column_spc.COMPONENT_TYPE]
+            return [column for column in columns if column.getName() in column_names]
+        else:
+            log_func.warning(u'Not define model object for <%s : %s>' % (self.getType(), self.getName()))
+        return list()
 
 
 COMPONENT = iqDataUniObject
