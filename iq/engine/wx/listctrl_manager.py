@@ -30,7 +30,7 @@ except ImportError:
     ObjectListView = None
     log_func.error(u'Import error ObjectListView. Install: pip3 install objectlistview')
 
-__version__ = (0, 0, 6, 2)
+__version__ = (0, 1, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -1028,6 +1028,10 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         :return: True/False.
         """
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
+
+        if not self.isInitImageLib():
+            self.initImageLib(assign_ctrl=listctrl)
+            listctrl.SetImageList(self.getImageLibImageList(), wx.IMAGE_LIST_SMALL)
 
         item_idx = -1
         if item is None:

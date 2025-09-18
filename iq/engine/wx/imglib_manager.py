@@ -12,7 +12,7 @@ from . import wxbitmap_func
 
 from . import base_manager
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqImageLibManager(base_manager.iqBaseManager):
@@ -50,8 +50,11 @@ class iqImageLibManager(base_manager.iqBaseManager):
         if assign_ctrl:
             try:
                 assign_ctrl.AssignImageList(self._imagelist, wx.IMAGE_LIST_NORMAL)
+                log_func.info('Image library manager initialized')
             except:
                 log_func.fatal(u'Error assign image list to <%s>' % str(assign_ctrl))
+        else:
+            log_func.warning(u'Not define assign control for image list')
 
         return self._imagelist
 
@@ -61,7 +64,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
 
         :return:
         """
-        if not hasattr(self, '_imagelist'):
+        if not self.isInitImageLib():
             self.initImageLib()
         return self._imagelist
 
@@ -89,7 +92,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param bmp: wx.Bitmap object.
         :return: wx.Bitmap object or None if error.
         """
-        if not hasattr(self, '_imagelist'):
+        if not self.isInitImageLib():
             self.initImageLib()
 
         # log_func.debug(u'Bitmap size %s' % str(bmp.GetSize()))
@@ -104,7 +107,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param img_name: Image as icon name.
         :return: Image index or None if error.
         """
-        if not hasattr(self, '_imagelist'):
+        if not self.isInitImageLib():
             self.initImageLib()
 
         if img_name not in self.__img_idx:
@@ -114,6 +117,14 @@ class iqImageLibManager(base_manager.iqBaseManager):
             return self.__img_idx[img_name]
         return None
 
+    def isInitImageLib(self):
+        """
+        Check if image library is initialized.
+
+        :return: True/False.
+        """
+        return hasattr(self, '_imagelist')
+
     def getImageLibImageBmp(self, img_name):
         """
         Get image bitmap in imagelist.
@@ -121,7 +132,7 @@ class iqImageLibManager(base_manager.iqBaseManager):
         :param img_name: Image as icon name.
         :return: Image bitmap or None if error.
         """
-        if not hasattr(self, '_imagelist'):
+        if not self.isInitImageLib():
             self.initImageLib()
 
         if img_name not in self.__img_idx:
