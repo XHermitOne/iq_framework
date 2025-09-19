@@ -9,12 +9,12 @@ import sys
 import os.path
 import wx
 
-
 from ...util import log_func
 from ...util import file_func
 from ...util import res_func
 from ...util import lang_func
 from ...util import sys_func
+from ...util import list_func
 
 from . import wxcolour_func
 from . import base_manager
@@ -30,7 +30,7 @@ except ImportError:
     ObjectListView = None
     log_func.error(u'Import error ObjectListView. Install: pip3 install objectlistview')
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -652,7 +652,9 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         assert issubclass(listctrl.__class__, wx.ListCtrl), u'ListCtrl manager type error'
 
         try:
-            rows = [[str(record.get(column, '')) for column in columns] for record in records]
+            # Convert records to rows
+            rows = list_func.dataset2rows(dataset=records, columns=columns)
+
             result = self.setListCtrlRows(listctrl=listctrl, rows=rows,
                                           even_background_colour=even_background_colour,
                                           odd_background_colour=odd_background_colour,

@@ -11,7 +11,7 @@ from ...util import global_func
 from ..data_column import COMPONENT as column_component
 from . import component
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 1, 1, 1)
 
 DATA_NAME_DELIMETER = '.'
 
@@ -103,7 +103,7 @@ class iqDataObject(iqDataObjectProto):
                                     update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
                                     dataset[i].update(update_rec)
                                 else:
-                                    log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
+                                    log_func.warning(u'Update link dataset. Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
                                                                                                                 link_obj.getType(),
                                                                                                                 link_obj.getName()))
                 elif issubclass(column.__class__, component.iqDataModel):
@@ -133,7 +133,6 @@ class iqDataObject(iqDataObjectProto):
                         psp = column.getAttribute('link')
                         link_obj = global_func.getKernel().getObject(psp=psp)
                         if link_obj:
-                            # for i, record in enumerate(dataset):
                             column_name = column.getName()
                             value = record.get(column_name, None)
                             link_rec = link_obj.getDataObjectRec(value)
@@ -141,7 +140,7 @@ class iqDataObject(iqDataObjectProto):
                                 update_rec = {DATA_NAME_DELIMETER.join([column_name, name]): value for name, value in link_rec.items()}
                                 record.update(update_rec)
                             else:
-                                log_func.warning(u'Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
+                                log_func.warning(u'Update link record. Not valid type <%s> object additional data <%s : %s>' % (link_rec.__class__.__name__,
                                                                                                             link_obj.getType(),
                                                                                                             link_obj.getName()))
                 elif issubclass(column.__class__, component.iqDataModel):

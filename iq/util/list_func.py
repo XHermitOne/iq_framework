@@ -9,8 +9,11 @@ import copy
 import operator
 import functools
 import itertools
+import types
 
-__version__ = (0, 0, 2, 1)
+from . import log_func
+
+__version__ = (0, 1, 1, 1)
 
 
 def sortMultiKey(items, keys):
@@ -256,3 +259,47 @@ def minGroupKey(items, group_key, value_key):
 
     new_items = [{group_key: grp_name, value_key: min([item[value_key] for item in grp])} for grp_name, grp in itertools.groupby(copy_items, lambda item: item[group_key])]
     return new_items
+
+
+def dataset2rows(dataset, columns, to_tuple=False):
+    """
+    Convert records to rows.
+
+    :param dataset: List of dictionaries.
+    :param columns: List of column names.
+    :param to_tuple: If true, convert to tuple.
+    :return: List of rows.
+    """
+    rows = list()
+    try:
+        for i, record in enumerate(dataset):
+            # Validate record structure
+            if not i:
+                for column in columns:
+                    rec_columns = record.keys()
+                    if isinstance(column, str) and column not in rec_columns:
+                        log_func.warning(u'Column <%s> not found in record columns %s' % (column, str(rec_columns)))
+
+            row = list()
+            for column in columns:
+                if isinstance(column, str):
+                    row.append(str(record.get(column, '')))
+                elif isinstance(column, types.FunctionType) or isinstance(column, types.BuiltinFunctionType):
+                    # Column as function
+                    try:
+                        value = column(record)
+                    except:
+                        log_func.fatal(u'Error calculate value of column <%s>' % str(column))
+                        value = ''
+                    row.append(value)
+                else:
+                    row.append(str(column))
+            if to_tuple:
+                row = tuple(row)
+            rows.append(row)
+    except:
+        log_func.fatal(u'Error convert dataset/records to rows (list of list)')
+
+    if to_tuple:
+        rows = tuple(rows)
+    return rows
