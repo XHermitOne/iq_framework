@@ -30,7 +30,7 @@ except ImportError:
     ObjectListView = None
     log_func.error(u'Import error ObjectListView. Install: pip3 install objectlistview')
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 1, 3, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -441,10 +441,10 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
         if keep_pos:
             cursor_pos = listctrl.GetFirstSelected()
 
-        for i, item in enumerate(row):
-            item_str = str(item)
+        for i, label in enumerate(row):
+            label = str(label)
 
-            listctrl.SetItem(item, i, item_str)
+            listctrl.SetItem(item, i, label)
             if even_background_colour and not (item & 1):
                 colour = wxcolour_func.getDefaultEvenRowsBGColour() if wxcolour_func.isDefaultColour(even_background_colour) else even_background_colour
                 listctrl.SetItemBackgroundColour(item, colour)

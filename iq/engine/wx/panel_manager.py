@@ -27,7 +27,7 @@ from . import key_combins
 from . import wxobj_func
 from . import wxdatetime_func
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 1, 1, 1)
 
 SKIP_ACCORD_NAMES = ('Handle', 'EventHandler', 'Parent', 'GrandParent')
 SKIP_FUNCTION_TYPES = (types.FunctionType, types.MethodType, types.BuiltinFunctionType, types.BuiltinMethodType)
@@ -248,6 +248,10 @@ class iqPanelManager(validate_manager.iqValidateManager):
         :param ctrl_data: Panel control values dictionary.
         :return: True/False.
         """
+        if not ctrl_data:
+            log_func.warning(u'Panel manager. Not defined control data')
+            return False
+
         dlg_data = ctrl_data.get('self', dict())
         size = dlg_data.get('size', (-1, -1))
         self.SetSize(*size)
@@ -401,8 +405,10 @@ class iqPanelManager(validate_manager.iqValidateManager):
         used_key_connections = [(combine_key['mode'],
                                  combine_key['key'],
                                  key_combine_connections[name]) for name, combine_key in used_key_combins]
+        print(used_key_connections)
         win._accelerator_table = wx.AcceleratorTable(used_key_connections)
         win.SetAcceleratorTable(win._accelerator_table)
+        return True
 
     def getPanelWindowAcceleratorTable(self, win=None):
         """

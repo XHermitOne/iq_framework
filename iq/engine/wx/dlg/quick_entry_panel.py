@@ -36,7 +36,7 @@ from iq.util import lang_func
 from iq.engine.wx import form_manager
 from iq.engine.wx import wxbitmap_func
 
-__version__ = (0, 2, 2, 1)
+__version__ = (0, 3, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -69,7 +69,7 @@ class iqQuickEntryPanelCtrl(quick_entry_panel_ctrl_proto.iqQuickEntryPanelCtrlPr
             panel_sizer.Add(self.quick_entry_panel, 0, wx.EXPAND, 5)
             self.Layout()
         else:
-            log_func.warning(u'Не определен класс панели быстрого ввода')
+            log_func.warning(u'The class of the quick input panel is not defined')
 
         # Sign of confirmation of the input
         self.entry_check = None
@@ -203,10 +203,10 @@ class iqQuickEntryPanelCtrl(quick_entry_panel_ctrl_proto.iqQuickEntryPanelCtrlPr
             hot_key_connections['BACKSPACE'] = self.default_tool.GetId()
         if help_tool:
             hot_key_connections['F1'] = self.help_tool.GetId()
-        self.GetParent().setAcceleratorTable_win(win=self, **hot_key_connections)
+        self.GetParent().setPanelWindowAcceleratorTable(win=self, **hot_key_connections)
 
 
-class icQuickEntryPanelDialog(wx.Dialog, form_manager.iqDialogManager):
+class iqQuickEntryPanelDialog(wx.Dialog, form_manager.iqDialogManager):
     """
     The background of the quick input panel.
     It is made in the form of a dialog box, because the dialog box provides
@@ -239,10 +239,10 @@ class icQuickEntryPanelDialog(wx.Dialog, form_manager.iqDialogManager):
         self.defaults = None
 
         ext_data = self.loadFormData(self.getExtDataName())
-        if pos is None:
+        if pos is None and ext_data:
             new_pos = ext_data.get('pos', wx.DefaultPosition)
             self.SetPosition(new_pos)
-        if size is None:
+        if size is None and ext_data:
             new_size = ext_data.get('size', wx.DefaultSize)
             self.SetSize(new_size)
 
@@ -306,7 +306,7 @@ def openQuickEntryCtrl(parent, title=u'', pos=None, size=None,
     result = None
     try:
         # Creating a substrate
-        dlg = icQuickEntryPanelDialog(parent=parent, title=title, pos=pos, size=size,
+        dlg = iqQuickEntryPanelDialog(parent=parent, title=title, pos=pos, size=size,
                                       quick_entry_panel_class=quick_entry_panel_class,
                                       *args, **kwargs)
         # Disable unnecessary tools
@@ -320,7 +320,7 @@ def openQuickEntryCtrl(parent, title=u'', pos=None, size=None,
         if defaults:
             dlg.setDefaults(defaults)
         dlg.ShowModal()
-        result = (dlg.ctrl_panel.entry_check, dlg.get_panel_data(dlg.ctrl_panel.quick_entry_panel))
+        result = (dlg.ctrl_panel.entry_check, dlg.getPanelCtrlData(panel=dlg.ctrl_panel.quick_entry_panel))
         dlg.Destroy()
     except:
         if dlg:

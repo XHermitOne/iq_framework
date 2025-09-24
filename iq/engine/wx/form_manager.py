@@ -19,10 +19,11 @@ from .. import stored_manager
 
 from . import wxcolour_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 1)
 
 
-class iqFormManager(stored_manager.iqStoredManager):
+class iqFormManager(panel_manager.iqPanelManager,
+                    stored_manager.iqStoredManager):
     """
     Frame and dialog manager.
     """
@@ -43,7 +44,7 @@ class iqFormManager(stored_manager.iqStoredManager):
                                     global_func.getProjectName(),
                                     name)
         if data is None:
-            data = self._getCtrlData()
+            data = self._getPanelCtrlData()
         return res_func.saveResourcePickle(res_filename, data)
 
     def loadFormData(self, name=None):
@@ -55,13 +56,13 @@ class iqFormManager(stored_manager.iqStoredManager):
         :return: Saved data dictionary.
         """
         if name is None:
-            name = self.__class__.__name__
-
-        res_filename = os.path.join(file_func.getProfilePath(),
-                                    global_func.getProjectName(),
-                                    name)
+            res_filename = self.genCustomDataFilename()
+        else:
+            res_filename = os.path.join(file_func.getProjectProfilePath(),
+                                        name + res_func.PICKLE_RESOURCE_FILE_EXT)
         data = res_func.loadResourcePickle(res_filename)
-        return self._setCtrlData(data)
+        self._setPanelCtrlData(data)
+        return data
 
     def isDarkSysTheme(self):
         """
@@ -111,8 +112,7 @@ class iqFormManager(stored_manager.iqStoredManager):
         return False
 
 
-class iqDialogManager(panel_manager.iqPanelManager,
-                      iqFormManager):
+class iqDialogManager(iqFormManager):
     """
     Dialog form manager class.
     """
