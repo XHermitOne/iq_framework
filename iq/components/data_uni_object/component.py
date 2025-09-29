@@ -18,7 +18,7 @@ from ...role import component as role
 
 from ..data_column import spc as data_column_spc
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -51,7 +51,7 @@ class iqDataUniObject(uni_object.iqUniObjectManager, data_navigator.COMPONENT):
         data_navigator.COMPONENT.__init__(self, parent=parent, resource=resource, spc=component_spc, context=context)
         uni_object.iqUniObjectManager.__init__(self, *args, **kwargs)
 
-    def searchRequisiteColumns(self, *column_names):
+    def searchColumns(self, *column_names):
         """
         Search column objects as requisites by names.
 

@@ -10,7 +10,7 @@ lpr -o fit-to-page -P "PrinterName" /.nixprint/print.pdf
 
 Additional printing options for each printer can be found using the utility lpoptions.
 For example:
-lpoptions -p <Имя принтера> -l
+lpoptions -p <Printer name> -l
 lpoptions -p WorkCentre-5325 -l
 
 To work with CUPS-PDF virtual printer, a package is required cups-pdf:
@@ -30,7 +30,7 @@ from . import log_func
 from . import file_func
 from . import str_func
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 1, 2)
 
 NO_DEFAULT_PRINTER_MSG = 'no system default destination'
 PDF_EXT = '.pdf'
@@ -95,6 +95,9 @@ def getDefaultPrinter():
     if (not lines) or noDefaultPrinter(lines[0]):
         return None
     else:
+        if ':' not in lines[0]:
+            log_func.warning(u'No default printer. Message <%s>' % lines[0])
+            return None
         result = lines[0].split(': ')[1].strip()
         return result
 

@@ -12,7 +12,7 @@ from . import column
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqDataColumn(column.iqColumnManager, object.iqObject):
@@ -44,6 +44,14 @@ class iqDataColumn(column.iqColumnManager, object.iqObject):
         Get link data object passport.
         """
         return self.getAttribute('link')
+
+    def isLinked(self):
+        """
+        Check if link data object is linked.
+
+        :return: True/False.
+        """
+        return self.getAttribute('link') is not None
 
     def getLinkDataObj(self):
         """

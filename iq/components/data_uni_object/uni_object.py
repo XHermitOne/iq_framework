@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from ..data_model import data_object
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 2, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -42,6 +42,97 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
         # Current filter data
         self._filter = None
+
+        # Current object GUID
+        self.guid = None
+        # Currect object record
+        self.obj_record = None
+
+    def getUniObjGuid(self):
+        """
+        Get current object GUID.
+
+        :return: GUID.
+        """
+        return self.guid
+
+    def getUniObjRec(self):
+        """
+        Get current object record.
+
+        :return: Unic object record as dictionary.
+        """
+        return self.obj_record
+
+    def loadUniObj(self, guid):
+        """
+        Load unic object by GUID.
+
+        :param guid: Object GUID.
+        :return: True/False.
+        """
+        try:
+            self.guid = guid
+            self.obj_record = self.getRecByGuid(guid=self.guid)
+            return True
+        except:
+            log_func.fatal(u'Error load object <%s : %s>' % (self.getName(), guid))
+        return False
+
+    def getUniObjAttr(self, attr_name):
+        """
+        Get unic object attribute.
+
+        :param attr_name: Attribute name.
+        :return: Attribute value or None.
+        """
+        if self.guid is None:
+            log_func.error(u'Not define unic object GUID for get attribute <%s>' % attr_name)
+            return False
+        if self.obj_record is None:
+            log_func.error(u'Not define unic object record for get attribute <%s>' % attr_name)
+            return False
+
+        if attr_name not in self.obj_record:
+            log_func.warning(u'Not found attribute <%s> in unic object record %s' % (attr_name, list(self.obj_record.keys())))
+        return self.obj_record.get(attr_name, None)
+
+    def setUniObjAttr(self, attr_name, attr_value):
+        """
+        Set unic object attribute.
+
+        :param attr_name: Attribute name.
+        :param attr_value: Attribute value.
+        :return: True/False.
+        """
+        if self.guid is None:
+            log_func.error(u'Not define unic object GUID for set attribute <%s>' % attr_name)
+            return False
+        if self.obj_record is None:
+            log_func.error(u'Not define unic object record for set attribute <%s>' % attr_name)
+            return False
+
+        if attr_name not in self.obj_record:
+            log_func.warning(u'No attribute <%s> in unic object record' % attr_name)
+        self.obj_record[attr_name] = attr_value
+        return False
+
+    def saveUniObj(self, guid=None):
+        """
+        Save unic object.
+
+        :param guid: GUID.
+        :return: True/False.
+        """
+        if guid is None:
+            guid = self.guid
+        if guid is None:
+            log_func.error(u'Not define unic object GUID for save')
+            return False
+        if self.obj_record is None:
+            log_func.error(u'Not define unic object record for save')
+            return False
+        return self.save(guid=guid, save_record=self.obj_record)
 
     def setFilter(self, filter_data=None):
         """
