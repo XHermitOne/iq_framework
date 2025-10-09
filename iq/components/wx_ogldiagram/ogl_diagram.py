@@ -12,7 +12,7 @@ from . import divided_shape
 
 from ...util import id_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 DEFAULT_MAX_WIDTH = 1500
 DEFAULT_MAX_HEIGHT = 1500
@@ -86,7 +86,7 @@ class iqOGLDiagramViewerProto(wx.lib.ogl.ShapeCanvas):
 
         wx.lib.ogl.ShapeCanvas.__init__(self, parent, id=wx.NewId(), style=wx.NO_BORDER)
 
-        self.SetScrollbars(20, 20, DEFAULT_MAX_WIDTH/20, DEFAULT_MAX_HEIGHT/20)
+        self.SetScrollbars(20, 20, round(DEFAULT_MAX_WIDTH / 20), round(DEFAULT_MAX_HEIGHT / 20))
 
         self.diagram = None
         # Shapes
@@ -311,7 +311,7 @@ class iqOGLDiagramViewerProto(wx.lib.ogl.ShapeCanvas):
 
             if is_divided_shape:
                 shape.SetRegionSizes()
-                shape.ReformatRegions(self)
+                shape.reformatRegions(self)
 
         return shape
 

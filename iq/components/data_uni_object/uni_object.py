@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from ..data_model import data_object
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -81,7 +81,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
     def getUniObjAttr(self, attr_name):
         """
-        Get unic object attribute.
+        Get unic object attribute value.
 
         :param attr_name: Attribute name.
         :return: Attribute value or None.
