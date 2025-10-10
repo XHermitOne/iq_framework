@@ -25,7 +25,7 @@ DEFAULT_OGL_SHAPE_HEIGHT = 70
 DEFAULT_AUTOLAYOUT_SPACER_X = 50
 DEFAULT_AUTOLAYOUT_SPACER_Y = 50
 
-# Перья
+# Pens
 BLACK_DASHED_PEN = wx.BLACK_DASHED_PEN
 BLACK_PEN = wx.BLACK_PEN
 CYAN_PEN = wx.CYAN_PEN
@@ -94,7 +94,7 @@ class iqOGLDiagramViewerProto(wx.lib.ogl.ShapeCanvas):
         # Lines
         self.lines = dict()
 
-        # Данные диаграммы
+        # Diagramm data
         self.diagram_res = None
 
         # Init
