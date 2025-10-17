@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 2, 3, 1)
+__version__ = (0, 2, 4, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -740,3 +740,13 @@ def getFileSize(filename):
     else:
         log_func.warning(u'File <%s> not found for get size' % filename)
     return 0
+
+
+def getBaseName(filename):
+    """
+    os.path.basename function alter name.
+
+    :param filename: File name.
+    :return: Base file name.
+    """
+    return os.path.basename(filename)

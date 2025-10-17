@@ -114,7 +114,7 @@ def scan(scanner=None, source=None, mode=None, depth=None,
         locale = wx.Locale()
         locale.Init(wx.LANGUAGE_RUSSIAN)
 
-        scanner_dlg.do_scan_dlg(options=cmd_options, 
+        scanner_dlg.openScanDlg(options=cmd_options,
                                 title=u'iqScanner ' + txt_version)
         app.MainLoop()
     else:

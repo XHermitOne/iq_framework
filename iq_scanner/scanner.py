@@ -63,12 +63,12 @@ from iq.util import global_func
 from iq.util import log_func
 from iq.util import lang_func
 
-from .scanner import config
-from .scanner import scanner_dlg
-from .scanner import scan_manager
+from iq_scanner.scanner import config
+from iq_scanner.scanner import scanner_dlg
+from iq_scanner.scanner import scan_manager
 
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -162,7 +162,7 @@ def main(argv):
         locale = wx.Locale()
         locale.Init(wx.LANGUAGE_RUSSIAN)
 
-        scanner_dlg.do_scan_dlg(options=cmd_options, 
+        scanner_dlg.openScanDlg(options=cmd_options,
                                 title=_(u'Scanner ') + txt_version)
         app.MainLoop()
     else:

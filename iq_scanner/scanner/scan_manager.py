@@ -10,7 +10,7 @@ python-sane - Scanner Management Library.
 
 Install:
 ************************************
-sudo apt-get install python-sane
+sudo apt-get install python3-sane
 ************************************
 
 reportlab - Library for generating PDF files.
@@ -19,7 +19,7 @@ multiple sheets in one document.
 
 Install:
 ***************************************
-sudo apt-get install python-reportlab
+sudo apt-get install python3-reportlab
 ***************************************
 """
 
@@ -34,9 +34,9 @@ from iq.util import file_func
 from iq.util import global_func
 from iq.dialog import dlg_func
 
-from . import config
+from iq_scanner.scanner import config
 
-from . import ext_scan_dlg
+from iq_scanner.scanner import ext_scan_dlg
 
 try:
     import sane
@@ -44,7 +44,7 @@ except ImportError:
     log_func.error('Import error sane. For install: sudo apt install --assume-yes python3-sane', is_force_print=True)
 
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 2, 1, 1)
 
 # Scan modes
 GREY_SCAN_MODE = 'Grey'
@@ -55,8 +55,9 @@ SCAN_MODES = (LINEART_SCAN_MODE, HALFTONE_SCAN_MODE,
               GREY_SCAN_MODE, COLOR_SCAN_MODE)
 
 # Default PDF file name for multi-page scanning
+PRJ_NAME = global_func.getProjectName()
 DEFAULT_PDF_SCAN_FILENAME = os.path.join(file_func.getHomePath(),
-                                         global_func.getProjectName(),
+                                         PRJ_NAME if PRJ_NAME else 'iq_scanner',
                                          'scan.pdf')
 
 # Seurces
@@ -85,8 +86,8 @@ SCAN_FILE_TYPES = (PDF_FILE_TYPE, JPEG_FILE_TYPE, JPG_FILE_TYPE,
 # Default depth
 DEFAULT_DEPTH = 8
 
-MULTISCAN_PAGE_FILENAME = os.path.join(file_func.getHomePath(),
-                                       global_func.getProjectName(),
+MULTISCAN_PAGE_FILENAME = os.path.join(file_func.getProfilePath(),
+                                       PRJ_NAME if PRJ_NAME else 'iq_scanner',
                                        'page%d.jpg')
 
 # How to set scan options
@@ -112,8 +113,10 @@ class iqScanManager(object):
         """
         Initialization.
         """
+        log_func.info(u'Init scan manager')
         self.sane_ver = sane.init()
-        self.devices = sane.get_devices()
+        log_func.info(u'Get local scan devices')
+        self.devices = sane.get_devices(localOnly=True)
 
         # Задублированные опции сканирования
         self.options = dict()
@@ -173,6 +176,7 @@ class iqScanManager(object):
         :return: Scan device object.
         """
         try:
+            log_func.info(u'Open scan device <%s>' % device_name)
             self.scan_device_obj = sane.open(device_name)
             self.initOptionsOrder()
         except:
@@ -202,6 +206,7 @@ class iqScanManager(object):
         :return: Scan options.
         """
         try:
+            log_func.info(u'Get scan device options')
             return self.scan_device_obj.get_options()
         except AttributeError:
             log_func.fatal(u'Scanning device is not open.')
@@ -251,6 +256,7 @@ class iqScanManager(object):
         :return: Scan Settings
         """
         try:
+            log_func.info(u'Get scan device parameters')
             return self.scan_device_obj.get_parameters()
         except AttributeError:
             log_func.fatal(u'Scanning device is not open')
@@ -262,7 +268,7 @@ class iqScanManager(object):
 
         :return: The maximum number of sheets placed in the scanner tray.
         """
-        return config.get_glob_var('DEFAULT_SCANNER_MAX_SHEETS')
+        return config.getConfigParam('DEFAULT_SCANNER_MAX_SHEETS')
 
     def isDuplexOption(self):
         """
@@ -304,10 +310,11 @@ class iqScanManager(object):
         :return: True/False.
         """
         try:
+            log_func.info(u'Start scan')
             self.scan_device_obj.start()
             return True
         except:
-            log_func.fatal(u'Scan Start Error')
+            log_func.fatal(u'Scan start error')
         return False
 
     def scan(self, scan_filename=None):
@@ -372,8 +379,7 @@ class iqScanManager(object):
         :return: True/False.
         """
         if image:
-            img_filename = os.path.join(file_func.getHomePath(),
-                                        MULTISCAN_PAGE_FILENAME % n)
+            img_filename = MULTISCAN_PAGE_FILENAME % n
             width, height = page_size
             image = image.resize((int(width), int(height)))
             image.save(img_filename)
@@ -417,7 +423,7 @@ class iqScanManager(object):
                 while not is_stop_scan:
                     image = None
                     try:
-                        image = scan.next()
+                        image = scan.next() if hasattr(scan, 'next') else next(scan)
                     except StopIteration:
                         is_stop_scan = True
                         continue
@@ -432,7 +438,7 @@ class iqScanManager(object):
                 for i_page in range(n_page):
                     image = None
                     try:
-                        image = scan.next()
+                        image = scan.next() if hasattr(scan, 'next') else next(scan)
                     except StopIteration:
                         continue
                     result = self._imageDrawCanvas(image, scan_canvas, i_page)
@@ -509,7 +515,7 @@ class iqScanManager(object):
                     locale.Init(wx.LANGUAGE_RUSSIAN)
 
                 # If the tray runs out of paper, you need to start the process of gluing the last document
-                glue_result = self.scanGlue(scan_filename, n_pages, is_duplex)
+                glue_result = self.scanJoin(scan_filename, n_pages, is_duplex)
                 result.append(scan_filename if glue_result and os.path.exists(scan_filename) else None)
 
                 # ATTENTION! After a successfully scanned large document,
@@ -545,7 +551,7 @@ class iqScanManager(object):
             log_func.warning(u'Invalid page count <%s> batch scan' % n_pages)
         return False
 
-    def scanGlue(self, scan_filename, n_pages, is_duplex):
+    def scanJoin(self, scan_filename, n_pages, is_duplex):
         """
         Starting the document gluing mode from parts.
 
@@ -557,29 +563,5 @@ class iqScanManager(object):
         # On/off. 2-sided scanning
         self.setDuplexOption(is_duplex)
         n_sheets = n_pages/2 if is_duplex else n_pages
-        return ext_scan_dlg.scan_glue_mode(self, scan_filename, n_sheets, is_duplex,
-                                           self.getMaxSheets())
-
-
-def test():
-    """
-    Test function.
-    """
-    scan_manager = iqScanManager()
-    scan_manager.init()
-    devices = scan_manager.getDeviceNames()
-    print(devices)
-
-    scan_manager.open(devices[0])
-    scan_manager.startScan()
-    scan_manager.scan()
-    scan_manager.close()
-
-    scan_manager.open(devices[0])
-    scan_manager.startScan()
-    scan_manager.scanMulti('test.pdf')
-    scan_manager.close()
-
-
-if __name__ == '__main__':
-    test()
+        return ext_scan_dlg.scanJoinMode(self, scan_filename, n_sheets, is_duplex,
+                                         self.getMaxSheets())

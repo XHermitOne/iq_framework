@@ -142,6 +142,7 @@ class iqAutoCompleteManager(stored_manager.iqStoredManager):
 
         :type word: C{string}
         :param word: The search word
+        :return: Autocomplete phrase or None if not found.
         """
         autocompletes = self.getAutoCompletes()
 

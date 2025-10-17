@@ -13,12 +13,10 @@ from iq.util import log_func
 from iq.util import file_ext_func
 from iq.util import pdf_func
 from iq.dialog import dlg_func
-# from ic.std.utils import execfunc
-# from ic.std.utils import pdffunc
 from . import scanner_dlg_proto
 
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 2, 1, 1)
 
 
 class iqLoadSheetsDialog(scanner_dlg_proto.iqLoadSheetsDlgProto):
@@ -117,7 +115,7 @@ class iqVerifyScanDialog(scanner_dlg_proto.iqVerifyScanDlgProto):
         event.Skip()
 
 
-def scan_glue_load_sheets(parent=None, max_sheets=60):
+def scanJoinLoadSheets(parent=None, max_sheets=60):
     """
     Determine the number of sheets to scan parts.
 
@@ -134,7 +132,7 @@ def scan_glue_load_sheets(parent=None, max_sheets=60):
     return -1
 
 
-def scan_glue_verify(parent=None, verify_filename=None):
+def scanJoinVerify(parent=None, verify_filename=None):
     """
     Procedure for checking part scan results.
 
@@ -154,7 +152,7 @@ def scan_glue_verify(parent=None, verify_filename=None):
     return False
 
 
-def scan_glue_mode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_tray_sheets=60):
+def scanJoinMode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_tray_sheets=60):
     """
     Starting the document gluing mode in parts.
 
@@ -170,7 +168,7 @@ def scan_glue_mode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_t
     scan_file_path, scan_file_ext = os.path.splitext(scan_filename)
     part_suffix = '_part%03d' % n_part
     new_scan_filename = scan_file_path + part_suffix + scan_file_ext
-    sheets = scan_glue_load_sheets(None, min(max_tray_sheets, n_sheets))
+    sheets = scanJoinLoadSheets(None, min(max_tray_sheets, n_sheets))
     scan_sheet_count = sheets
     is_cancel = scan_sheet_count <= 0
 
@@ -181,7 +179,7 @@ def scan_glue_mode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_t
         # Starting the scanning process
         scan_result = scan_manager.scanMulti(new_scan_filename, scan_n_pages)
         if scan_result and os.path.exists(new_scan_filename):
-            verify_result = scan_glue_verify(None, new_scan_filename)
+            verify_result = scanJoinVerify(None, new_scan_filename)
             if verify_result:
                 n_part += 1
                 part_suffix = '_part%03d' % n_part
@@ -190,7 +188,7 @@ def scan_glue_mode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_t
                 if do_scan_sheet_count <= 0:
                     # All sheets are scanned.
                     break
-                sheets = scan_glue_load_sheets(None, do_scan_sheet_count)
+                sheets = scanJoinLoadSheets(None, do_scan_sheet_count)
                 if sheets <= 0:
                     # Clicked <Cancel>
                     is_cancel = True
@@ -198,7 +196,7 @@ def scan_glue_mode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_t
                 scan_sheet_count += sheets
             elif verify_result is None:
                 scan_sheet_count -= sheets
-                sheets = scan_glue_load_sheets(None, min(max_tray_sheets, n_sheets))
+                sheets = scanJoinLoadSheets(None, min(max_tray_sheets, n_sheets))
                 if sheets <= 0:
                     # Clicked <Cancel>
                     is_cancel = True

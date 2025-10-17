@@ -5,7 +5,6 @@
 Configuration file.
 """
 
-import os
 import os.path
 
 __version__ = (0, 2, 1, 1)

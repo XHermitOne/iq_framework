@@ -51,7 +51,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.scanner_comboBox = wx.adv.BitmapComboBox( self.option_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, [], wx.CB_READONLY )
         self.scanner_comboBox.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer9.Add( self.scanner_comboBox, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+        bSizer9.Add( self.scanner_comboBox, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer4.Add( bSizer9, 0, wx.EXPAND, 5 )
@@ -69,7 +69,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.source_comboBox.SetSelection( 0 )
         self.source_comboBox.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer5.Add( self.source_comboBox, 1, wx.ALL|wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 5 )
+        bSizer5.Add( self.source_comboBox, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer4.Add( bSizer5, 0, wx.EXPAND, 5 )
@@ -86,7 +86,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.mode_comboBox = wx.adv.BitmapComboBox( self.option_panel, wx.ID_ANY, _(u"Combo!"), wx.DefaultPosition, wx.DefaultSize, [], wx.CB_READONLY )
         self.mode_comboBox.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer17.Add( self.mode_comboBox, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+        bSizer17.Add( self.mode_comboBox, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer4.Add( bSizer17, 0, wx.EXPAND, 5 )
@@ -215,7 +215,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.scan_dirPicker = wx.DirPickerCtrl( self.extend_panel, wx.ID_ANY, u"/home/xhermit", _(u"Select a folder"), wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
         self.scan_dirPicker.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer15.Add( self.scan_dirPicker, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+        bSizer15.Add( self.scan_dirPicker, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer14.Add( bSizer15, 0, wx.EXPAND, 5 )
@@ -232,7 +232,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.filename_textCtrl = wx.TextCtrl( self.extend_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.filename_textCtrl.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer16.Add( self.filename_textCtrl, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+        bSizer16.Add( self.filename_textCtrl, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer14.Add( bSizer16, 0, wx.EXPAND, 5 )
@@ -250,7 +250,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.fileext_comboBox.SetSelection( 0 )
         self.fileext_comboBox.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer6.Add( self.fileext_comboBox, 0, wx.ALL|wx.EXPAND, 5 )
+        bSizer6.Add( self.fileext_comboBox, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer14.Add( bSizer6, 0, wx.EXPAND, 5 )
@@ -267,7 +267,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.depth_spinCtrl = wx.SpinCtrl( self.extend_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 10, 0 )
         self.depth_spinCtrl.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer19.Add( self.depth_spinCtrl, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+        bSizer19.Add( self.depth_spinCtrl, 0, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer14.Add( bSizer19, 0, wx.EXPAND, 5 )
@@ -284,7 +284,7 @@ class iqScannerDlgProto ( wx.Dialog ):
         self.extern_cmd_textCtrl = wx.TextCtrl( self.extend_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.extern_cmd_textCtrl.SetFont( wx.Font( 14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
 
-        bSizer20.Add( self.extern_cmd_textCtrl, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 5 )
+        bSizer20.Add( self.extern_cmd_textCtrl, 1, wx.ALL|wx.ALIGN_CENTER_VERTICAL, 5 )
 
 
         bSizer14.Add( bSizer20, 0, wx.EXPAND, 5 )

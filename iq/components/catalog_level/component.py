@@ -12,6 +12,7 @@ from . import catalog_level
 
 from ...util import log_func
 from ...util import exec_func
+from ...util import file_func
 
 __version__ = (0, 0, 0, 1)
 
@@ -36,7 +37,7 @@ class iqCatalogLevel(catalog_level.iqCatalogLevelProto, object.iqObject):
         if self.isGetFolderNameFunc():
             self._get_folder_name_func = self.getFolderNameFunc
         else:
-            log_func.warning(u'Not defined  function to determine the directory level folder name <%s>' % self.getName())
+            log_func.warning(u'Not defined function to determine the directory level folder name <%s>' % self.getName())
             self._get_folder_name_func = None
 
     def isGetFolderNameFunc(self):
@@ -56,6 +57,7 @@ class iqCatalogLevel(catalog_level.iqCatalogLevelProto, object.iqObject):
         """
         context = self.getContext()
         context['OBJ'] = obj
+        context['file_func'] = file_func
         function_body = self.getAttribute('get_folder_name')
         result = exec_func.execTxtFunction(function=function_body, context=context)
         if result:

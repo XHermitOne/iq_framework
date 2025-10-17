@@ -13,15 +13,17 @@ import wx
 from iq.util import log_func
 from iq.util import ini_func
 from iq.util import file_func
-from iq.util import exec_func
+from iq.util import file_ext_func
 from iq.util import global_func
 from iq.dialog import dlg_func
+
+from iq.engine.wx import wxbitmap_func
 
 from . import config
 from . import scanner_dlg_proto
 from . import scan_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 2, 1, 1)
 
 
 class iqScanOptions:
@@ -219,8 +221,8 @@ class iqScanAdministrator(iqScanOptions):
         self.scan_manager.setScanOptions(**options)
 
         # Defining a scan file name
-        scan_filename = os.path.join(file_func.getHomePath(),
-                                     global_func.getProjectName(),
+        scan_filename = os.path.join(file_func.getProfilePath(),
+                                     config.PRJ_NAME if config.PRJ_NAME else 'iq_scanner',
                                      self.scan_filename + '.' + self.scan_filetype) if self.scan_filename else config.DEFAULT_SCAN_FILENAME
         if os.path.exists(scan_filename):
             # Delete old scan file
@@ -229,7 +231,7 @@ class iqScanAdministrator(iqScanOptions):
                 log_func.info(u'Delete file <%s>' % scan_filename)
             except OSError:
                 log_func.fatal(u'Error delete file <%s>' % scan_filename)
-        log_func.debug(u'Scan to file <%s>' % scan_filename)
+        log_func.info(u'Scan to file <%s>' % scan_filename)
 
         try:
             if not self.is_multi_scan:
@@ -422,7 +424,7 @@ class iqScanAdministrator(iqScanOptions):
             scan_filename = os.path.join(self.scan_dir if self.scan_dir else config.PROFILE_PATH,
                                          os.path.basename(scan_filename))
 
-        return exec_func.view_file_ext(scan_filename)
+        return file_ext_func.openFileAppDefault(scan_filename)
 
 
 class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
@@ -437,7 +439,7 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
         scanner_dlg_proto.iqScannerDlgProto.__init__(self, *args, **kwargs)
         iqScanAdministrator.__init__(self)
 
-        self.init_ctrl()
+        self.initCtrl()
         self.showOptions()
 
     def onInitDlg(self, event):
@@ -446,7 +448,7 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
         """
         event.Skip()
 
-    def init_ctrl(self):
+    def initCtrl(self):
         """
         Initialization of controls.
         """
@@ -454,48 +456,48 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
             self.initComboBoxScanners()
 
         # Sources list
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'scanner--arrow.png'))
-        self.source_comboBox.Append(u'Планшет', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'document--arrow.png'))
-        self.source_comboBox.Append(u'Фронтальная сторона', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'arrow-continue-180-top.png'))
-        self.source_comboBox.Append(u'Обратная сторона', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'documents.png'))
-        self.source_comboBox.Append(u'Дуплекс/Двустороннее сканирование', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
+        bmp = wxbitmap_func.createIconBitmap('fugue/scanner--arrow')
+        self.source_comboBox.Append(u'Планшет', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fugue/document--arrow')
+        self.source_comboBox.Append(u'Фронтальная сторона', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fugue/arrow-continue-180-top')
+        self.source_comboBox.Append(u'Обратная сторона', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fugue/documents')
+        self.source_comboBox.Append(u'Дуплекс/Двустороннее сканирование', bmp)
         self.source_comboBox.SetSelection(0)
 
         # Page Size List
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'document-number-4.png'))
-        self.pagesize_comboBox.Append(u'A4', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'document-number-3.png'))
-        self.pagesize_comboBox.Append(u'A3', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
+        bmp = wxbitmap_func.createIconBitmap('fugue/document-number-4')
+        self.pagesize_comboBox.Append(u'A4', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fugue/document-number-3')
+        self.pagesize_comboBox.Append(u'A3', bmp)
         self.pagesize_comboBox.SetSelection(0)
 
         # List of scan file formats
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'file_extension_pdf.png'))
-        self.fileext_comboBox.Append(u'PDF', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'file_extension_jpeg.png'))
-        self.fileext_comboBox.Append(u'JPEG', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'file_extension_jpg.png'))
-        self.fileext_comboBox.Append(u'JPG', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'file_extension_tif.png'))
-        self.fileext_comboBox.Append(u'TIF', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'file_extension_bmp.png'))
-        self.fileext_comboBox.Append(u'BMP', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
+        bmp = wxbitmap_func.createIconBitmap('fatcow/file_extension_pdf')
+        self.fileext_comboBox.Append(u'PDF', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/file_extension_jpeg')
+        self.fileext_comboBox.Append(u'JPEG', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/file_extension_jpg')
+        self.fileext_comboBox.Append(u'JPG', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/file_extension_tif')
+        self.fileext_comboBox.Append(u'TIF', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fatcow/file_extension_bmp')
+        self.fileext_comboBox.Append(u'BMP', bmp)
         self.fileext_comboBox.SetSelection(0)
 
         # Mode list
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'border-weight.png'))
-        self.mode_comboBox.Append(u'Штриховой', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'contrast.png'))
-        self.mode_comboBox.Append(u'Полутоновой', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'gradient.png'))
-        self.mode_comboBox.Append(u'Черно-белый', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'color.png'))
-        self.mode_comboBox.Append(u'Цветной', wx.Image.ConvertToBitmap(wx.Image(img_filename)))
+        bmp = wxbitmap_func.createIconBitmap('fugue/border-weight')
+        self.mode_comboBox.Append(u'Штриховой', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fugue/contrast')
+        self.mode_comboBox.Append(u'Полутоновой', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fugue/gradient')
+        self.mode_comboBox.Append(u'Черно-белый', bmp)
+        bmp = wxbitmap_func.createIconBitmap('fugue/color')
+        self.mode_comboBox.Append(u'Цветной', bmp)
         self.mode_comboBox.SetSelection(2)
 
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'page.png'))
+        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), 'page.png'))
         bitmap = wx.Bitmap(img_filename, wx.BITMAP_TYPE_ANY)
         self.m_bitmap1.SetBitmap(bitmap)
 
@@ -504,22 +506,19 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
         option_notebookImages = wx.ImageList(option_notebookImageSize.GetWidth(), option_notebookImageSize.GetHeight())
         self.option_notebook.AssignImageList(option_notebookImages)
 
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'scanner.png'))
-        option_notebookBitmap = wx.Bitmap(img_filename, wx.BITMAP_TYPE_ANY)
+        option_notebookBitmap = wxbitmap_func.createIconBitmap('fugue/scanner')
         if option_notebookBitmap.IsOk():
             option_notebookImages.Add(option_notebookBitmap)
             self.option_notebook.SetPageImage(option_notebookIndex, option_notebookIndex)
             option_notebookIndex += 1
 
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'document_spacing.png'))
-        option_notebookBitmap = wx.Bitmap(img_filename, wx.BITMAP_TYPE_ANY)
+        option_notebookBitmap = wxbitmap_func.createIconBitmap('fatcow/document_spacing')
         if option_notebookBitmap.IsOk():
             option_notebookImages.Add(option_notebookBitmap)
             self.option_notebook.SetPageImage(option_notebookIndex, option_notebookIndex)
             option_notebookIndex += 1
 
-        img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'property-blue.png'))
-        option_notebookBitmap = wx.Bitmap(img_filename, wx.BITMAP_TYPE_ANY)
+        option_notebookBitmap = wxbitmap_func.createIconBitmap('fugue/property-blue')
         if option_notebookBitmap.IsOk():
             option_notebookImages.Add(option_notebookBitmap)
             self.option_notebook.SetPageImage(option_notebookIndex, option_notebookIndex)
@@ -680,11 +679,11 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
             i = 0
             for scanner_name in scanner_devices:
 
-                img_filename = os.path.normpath(os.path.join(os.path.dirname(__file__), u'img', u'scanner.png'))
                 if scanner_name == select_scanner:
                     default_select = i
 
-                self.scanner_comboBox.Append(scanner_name, wx.Image.ConvertToBitmap(wx.Image(img_filename)))
+                bmp = wxbitmap_func.createIconBitmap('fugue/scanner')
+                self.scanner_comboBox.Append(scanner_name, bmp)
                 i += 1
 
             self.scanner_comboBox.Select(default_select)
@@ -719,7 +718,7 @@ class iqScannerDlg(scanner_dlg_proto.iqScannerDlgProto,
         event.Skip()
 
 
-def do_scan_dlg(parent=None, options=None, title=None):
+def openScanDlg(parent=None, options=None, title=None):
     """
     Calling the dialogue form of scanning.
 

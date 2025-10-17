@@ -106,11 +106,11 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         if self.guid is None:
-            log_func.error(u'Not define unic object GUID for set attribute <%s>' % attr_name)
-            return False
+            log_func.warning(u'Generate new unic object GUID for set attribute <%s>' % attr_name)
+            self.guid = id_func.genGUID()
         if self.obj_record is None:
-            log_func.error(u'Not define unic object record for set attribute <%s>' % attr_name)
-            return False
+            log_func.warning(u'Create empty unic object record for set attribute <%s>' % attr_name)
+            self.obj_record = {self.getGuidColumnName(): self.guid}
 
         if attr_name not in self.obj_record:
             log_func.warning(u'No attribute <%s> in unic object record' % attr_name)
@@ -323,9 +323,9 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param auto_commit: Automatic commit?
         :return: True/False.
         """
-        if not record.get(DEFAULT_GUID_COL_NAME, None):
-            record[DEFAULT_GUID_COL_NAME] = id_func.genGUID()
-        log_func.debug(u'Add unic object <%s>' % record[DEFAULT_GUID_COL_NAME])
+        if not record.get(self.getGuidColumnName(), None):
+            record[self.getGuidColumnName()] = id_func.genGUID()
+        log_func.debug(u'Add unic object <%s>' % record[self.getGuidColumnName()])
         return self.addRec(record=record, auto_commit=auto_commit)
 
     def save(self, guid=None, save_record=None):
@@ -336,9 +336,14 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param save_record: Save record dictionary.
         :return: True/False.
         """
+        if save_record is None:
+            save_record = self.obj_record
+        if guid is None and bool(save_record):
+            guid = save_record.get(self.getGuidColumnName(), self.getUniObjGuid())
         if guid is None:
             log_func.warning(u'Not define unic object GUID for save')
             return False
+
         if not self.hasGuid(guid=guid):
             log_func.warning(u'Save unic object <%s> not found. Not saved. Use <update> method for add' % guid)
             return False
@@ -353,6 +358,10 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param record: Save record dictionary.
         :return: True/False.
         """
+        if record is None:
+            record = self.obj_record
+        if guid is None and bool(record):
+            guid = record.get(self.getGuidColumnName(), self.getUniObjGuid())
         if guid is None:
             log_func.warning(u'Not define unic object GUID for update')
             return False
@@ -360,7 +369,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         if self.hasGuid(guid=guid):
             return self.save(guid=guid, save_record=record)
         else:
-            record[DEFAULT_GUID_COL_NAME] = guid
+            record[self.getGuidColumnName()] = guid
             return self.add(record)
 
     def delete(self, guid=None, ask=True):
