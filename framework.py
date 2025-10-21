@@ -40,7 +40,7 @@ from iq.util import sys_func
 from iq import editor
 import iq
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 1, 1, 1)
 
 
 def main(*argv):
@@ -132,7 +132,6 @@ def main(*argv):
         elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
             editor.openFrameworkEditor()
         elif mode == iq.EDITOR_MODE_STATE:
-            # kernel = iq.createKernel()
             editor.openResourceEditor(res_filename=res_filename)
         else:
             log_func.warning(u'Engine type <%s : %s> not support' % (engine, mode))

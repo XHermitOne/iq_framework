@@ -1,0 +1,8 @@
+// Поместите настраиваемые сочетания клавиш в этот файл, чтобы переопределить сочетания клавиш по умолчанию.
+[
+    {
+        "key": "alt+e",
+        "command": "workbench.action.terminal.sendSequence",
+        "args": { "text": "/home/xhermit/dev/prj/work/iq_framework/editor.sh '${workspaceFolder}${pathSeparator}${relativeFileDirname}${pathSeparator}${fileBasename}'\u000D" }
+    }    
+]

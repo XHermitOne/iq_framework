@@ -20,7 +20,7 @@ from ..editor.gtk import glade_manager
 from ..editor.jasper_report import jasperreport_manager
 from ..editor.lime_report import limereport_manager
 
-__version__ = (0, 0, 2, 2)
+__version__ = (0, 1, 1, 1)
 
 
 def openFrameworkEditor():
@@ -48,6 +48,11 @@ def _openResourceEditor(res_filename):
         Resource file may be *.res or *.py file.
     :return: True/False.
     """
+    # __init__.py file edit as package folder
+    init_py_deleted = os.path.sep + py_func.INIT_PY_FILENAME
+    res_filename = res_filename.replace(init_py_deleted, '')
+    # log_func.debug(u'Resource file name <%s : %s>' % (res_filename, init_py_deleted))
+
     if global_func.isWXEngine():
         if os.path.isdir(res_filename) and res_filename == file_func.getFrameworkPath():
             log_func.info(u'Main editor <%s>' % res_filename)
