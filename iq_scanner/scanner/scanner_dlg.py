@@ -23,7 +23,7 @@ from . import config
 from . import scanner_dlg_proto
 from . import scan_manager
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 1, 2)
 
 
 class iqScanOptions:
@@ -316,13 +316,13 @@ class iqScanAdministrator(iqScanOptions):
             
         self.scan_manager.setScanOptions(**options)
 
-        scans = [(os.path.join(file_func.getHomePath(),
-                               global_func.getProjectName(),
+        scans = [(os.path.join(file_func.getProfilePath(),
+                               config.PRJ_NAME if config.PRJ_NAME else 'iq_scanner',
                                scan_filename + '.' + self.scan_filetype) if scan_filename else config.DEFAULT_SCAN_FILENAME,
                   int(n_pages), bool(is_duplex)) for scan_filename, n_pages, is_duplex in scan_filenames]
         for scan_filename, n_pages, is_duplex in scans:
-            full_scan_filename = os.path.join(os.environ.get('HOME', '/home/user'),
-                                              global_func.getProjectName(),
+            full_scan_filename = os.path.join(file_func.getProfilePath(),
+                                              config.PRJ_NAME if config.PRJ_NAME else 'iq_scanner',
                                               scan_filename)
             if os.path.exists(full_scan_filename):
                 try:

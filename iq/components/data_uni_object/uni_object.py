@@ -134,6 +134,45 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
             return False
         return self.save(guid=guid, save_record=self.obj_record)
 
+    def moveUniObj(self, guid=None, dst_uniobj=None, attr_replaces=None, do_del=False):
+        """
+        Move unic object data by GUID to another unic object.
+
+        :param guid: Source unic object GUID.
+        :param dst_uniobj: Target unic object.
+        :param attr_replaces: Attr name replaces:
+            {'Destination attribute name': 'Source attribute name', ...}
+        :param do_del: Delete source unic object?
+        :return: True/False.
+        """
+        if guid is None:
+            guid = self.getUniObjGuid()
+        if guid is None:
+            log_func.error(u'Not defined unic object GUID for move')
+            return False
+        if dst_uniobj is None:
+            log_func.error(u'Not defined unic object for move')
+            return False
+        try:
+            self.loadUniObj(guid=guid)
+            src_record = self.getUniObjRec()
+            dst_record = dict()
+
+            revert_attr_replaces = {src_attr_name: dst_attr_name for dst_attr_name, src_attr_name in attr_replaces.items()}
+            for src_attr_name, src_attr_value in src_record.items():
+                if attr_replaces and src_attr_name in revert_attr_replaces.keys():
+                    dst_record[revert_attr_replaces[src_attr_name]] = src_attr_value
+                else:
+                    dst_record[src_attr_name] = src_attr_value
+            dst_uniobj.obj_record = dst_record
+            dst_uniobj.saveUniObj(guid=guid)
+            if do_del:
+                return self.deleteRec(guid, id_field=self.getGuidColumnName())
+            return True
+        except:
+            log_func.fatal(u'Error move unic object <%s> from <%s> to <%s>' % (guid, self.getName(), dst_uniobj.getName()))
+        return False
+
     def setFilter(self, filter_data=None):
         """
         Set current filter data.

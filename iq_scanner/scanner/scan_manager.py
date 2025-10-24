@@ -56,7 +56,7 @@ SCAN_MODES = (LINEART_SCAN_MODE, HALFTONE_SCAN_MODE,
 
 # Default PDF file name for multi-page scanning
 PRJ_NAME = global_func.getProjectName()
-DEFAULT_PDF_SCAN_FILENAME = os.path.join(file_func.getHomePath(),
+DEFAULT_PDF_SCAN_FILENAME = os.path.join(file_func.getProfilePath(),
                                          PRJ_NAME if PRJ_NAME else 'iq_scanner',
                                          'scan.pdf')
 
