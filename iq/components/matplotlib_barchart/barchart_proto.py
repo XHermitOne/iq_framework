@@ -219,7 +219,7 @@ class iqMatplotlibBarChartProto(object):
                                                        legend=self.getShowLegend(),
                                                        figsize=(size[0]/DEFAULT_DPI, size[1]/DEFAULT_DPI) if size else None,
                                                        y=self.getY(),
-                                                       backend='wxAgg')
+                                                       backend='matplotlib')
 
             title = self.getTitle()
             if title:
