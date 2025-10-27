@@ -8,6 +8,7 @@ MatPlotLib bar chart component prototype class.
 import os
 import os.path
 import numpy
+import matplotlib
 import matplotlib.pyplot
 import pandas.plotting._matplotlib
 
@@ -15,6 +16,8 @@ from ...util import log_func
 from ...util import file_func
 
 __version__ = (0, 0, 0, 1)
+
+matplotlib.use('WXAgg')
 
 DEFAULT_BAR_WIDTH = 0.35
 
