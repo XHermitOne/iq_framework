@@ -17,6 +17,7 @@ from ...util import file_func
 
 __version__ = (0, 0, 0, 1)
 
+# Use WX backend
 matplotlib.use('WXAgg')
 
 DEFAULT_BAR_WIDTH = 0.35
