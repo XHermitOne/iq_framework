@@ -12,7 +12,7 @@ from ..data_ref_object import spc as data_ref_object_spc
 
 from ...util import global_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 def getSortColumns(resource=None, *args, **kwargs):

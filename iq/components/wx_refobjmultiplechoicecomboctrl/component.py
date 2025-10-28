@@ -16,7 +16,7 @@ from ...util import exec_func
 
 from . import refobjmultiplechoicecomboctrl
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqWxRefObjMultipleChoiceComboCtrl(refobjmultiplechoicecomboctrl.iqRefObjMultipleChoiceComboCtrlProto,
@@ -43,7 +43,8 @@ class iqWxRefObjMultipleChoiceComboCtrl(refobjmultiplechoicecomboctrl.iqRefObjMu
 
         # Set ref object
         ref_obj_psp = self.getRefObjPsp()
-        ref_obj = self.getKernel().createByPsp(psp=ref_obj_psp) if ref_obj_psp else None
+        # Get from cache
+        ref_obj = self.getKernel().getObject(psp=ref_obj_psp) if ref_obj_psp else None
         self.setRefObj(ref_obj)
 
         self.setViewFieldnames(self.getViewFieldnames())

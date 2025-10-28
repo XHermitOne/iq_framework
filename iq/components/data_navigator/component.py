@@ -89,7 +89,6 @@ class iqDataNavigator(model_navigator.iqModelNavigatorManager, object.iqObject):
         if not model_psp:
             log_func.warning(u'Not define model in <%s : %s>' % (self.getName(), self.getType()))
             return None
-        # model_obj = self.getKernel().createByPsp(psp=model_psp)
         model_obj = self.getKernel().getObject(psp=model_psp)
         return model_obj
 

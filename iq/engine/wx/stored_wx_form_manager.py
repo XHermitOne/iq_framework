@@ -9,7 +9,9 @@ import wx
 
 from .. import stored_manager
 
-__version__ = (0, 0, 1, 2)
+from ...util import log_func
+
+__version__ = (0, 1, 1, 1)
 
 
 class iqStoredWxFormsManager(stored_manager.iqStoredManager):
@@ -24,6 +26,8 @@ class iqStoredWxFormsManager(stored_manager.iqStoredManager):
         :return: True/False.
         """
         var_data = self.loadCustomData(save_filename=save_filename)
+        # log_func.debug(u'Load custom properties %s' % str(var_data))
+
         if var_data:
             width = var_data.get('width', -1)
             height = var_data.get('height', -1)
@@ -56,4 +60,5 @@ class iqStoredWxFormsManager(stored_manager.iqStoredManager):
         res = dict(width=width, height=height,
                    x=pos.x, y=pos.y)
 
+        # log_func.debug(u'Save custom properties %s' % str(res))
         return self.saveCustomData(save_filename=save_filename, save_data=res)

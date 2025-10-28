@@ -16,7 +16,7 @@ from ...util import exec_func
 
 from . import refobjmultiplecheckcomboctrl
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqWxRefObjMultipleCheckComboCtrl(refobjmultiplecheckcomboctrl.iqRefObjMultipleCheckComboCtrlProto,
@@ -43,7 +43,7 @@ class iqWxRefObjMultipleCheckComboCtrl(refobjmultiplecheckcomboctrl.iqRefObjMult
 
         # Set ref object
         ref_obj_psp = self.getRefObjPsp()
-        ref_obj = self.getKernel().createByPsp(psp=ref_obj_psp) if ref_obj_psp else None
+        ref_obj = self.getKernel().getObject(psp=ref_obj_psp) if ref_obj_psp else None
         self.setRefObj(ref_obj)
 
         self.setViewFieldnames(self.getViewFieldnames())

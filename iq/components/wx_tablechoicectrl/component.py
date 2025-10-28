@@ -16,7 +16,7 @@ from ...util import exec_func
 
 from . import tablechoicectrl
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqWxTableChoiceCtrl(tablechoicectrl.iqTableChoiceCtrlProto,
@@ -73,7 +73,7 @@ class iqWxTableChoiceCtrl(tablechoicectrl.iqTableChoiceCtrlProto,
         """
         if table_psp is None:
             table_psp = self.getTablePsp()
-        table = self.getKernel().createByPsp(psp=table_psp) if table_psp else None
+        table = self.getKernel().getObject(psp=table_psp) if table_psp else None
         # log_func.debug(u'Table object <%s> : %s' % (str(table_psp), str(table)))
         self.setTableDataSource(table, **kwargs)
         return table

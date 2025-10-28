@@ -11,7 +11,7 @@ import iq
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqRefObjItemDataSourceBase(object):
@@ -273,7 +273,8 @@ class iqRefObjTreeDataSource(iqRefObjItemDataSourceBase):
         """
         kernel = iq.getKernel()
         if kernel:
-            return kernel.createByPsp(psp=refobj_psp)
+            # Get from cache
+            return kernel.getObject(psp=refobj_psp)
         return None
     
     def _loadChildren(self, cod=None):
