@@ -92,6 +92,7 @@ class iqHelpEditorDialog(help_editor_dlg.iqHelpEditorDialogProto,
         if help_filename:
             log_func.info(u'Open help file name <%s : %s>' % (help_name, help_filename))
             file_ext_func.openFileAppDefault(filename=help_filename)
+        self.EndModal(wx.ID_OK)
         event.Skip()
 
 
