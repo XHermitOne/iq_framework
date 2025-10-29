@@ -59,7 +59,7 @@ TRANSFORMDATASOURCE_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/table_lightning',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.transform_datasource.html',
     '__content__': (),
     '__test__': testComponent,
     '__edit__': {

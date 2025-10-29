@@ -30,7 +30,7 @@ TRENDPEN_SPC = {
     '__package__': u'SCADA',
     '__icon__': 'fatcow/chart_line_edit',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.trend_pen.html',
     '__content__': (),
     '__edit__': {
         'colour': property_editor_id.COLOUR_EDITOR,

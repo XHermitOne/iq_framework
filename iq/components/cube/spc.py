@@ -27,7 +27,7 @@ CUBE_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fatcow/soil_layers',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cube.html',
     '__content__': ('iqCubeDimension', 'iqCubeMeasure', 'iqCubeAggregate'),
     '__edit__': {
         'table_name': property_editor_id.STRING_EDITOR,

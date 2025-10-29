@@ -46,7 +46,7 @@ CUBEAGGREGATE_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fatcow/sum',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cube_aggregate.html',
     '__content__': (),
     '__edit__': {
         'function': {

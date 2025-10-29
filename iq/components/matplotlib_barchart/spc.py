@@ -36,7 +36,7 @@ MATPLOTLIBBARCHART_SPC = {
     '__package__': u'Special',
     '__icon__': 'fatcow/chart_bar',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.matplotlib_barchart.html',
     '__content__': (),
     '__edit__': {
         'kind': {

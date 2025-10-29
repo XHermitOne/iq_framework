@@ -33,7 +33,7 @@ PLOTLYEXPRESSCHART_SPC = {
     '__package__': u'Special',
     '__icon__': 'fatcow/chart_pie_title',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.plotly_express_chart.html',
     '__content__': (),
     '__edit__': {
         'chart_type': {

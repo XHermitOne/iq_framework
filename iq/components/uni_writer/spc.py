@@ -31,7 +31,7 @@ UNIWRITERCONTROLLER_SPC = {
     '__package__': u'SCADA',
     '__icon__': 'fatcow/server_edit',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.uni_writer.html',
     '__content__': (),
     '__edit__': {
         'host': property_editor_id.STRING_EDITOR,

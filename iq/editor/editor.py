@@ -20,7 +20,7 @@ from ..editor.gtk import glade_manager
 from ..editor.jasper_report import jasperreport_manager
 from ..editor.lime_report import limereport_manager
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 
 def openFrameworkEditor():
@@ -183,6 +183,13 @@ def openResourceEditor(res_filename, create_kernel=True):
     :param create_kernel: Create kernel?
     :return: True/False.
     """
+    if not res_filename:
+        log_func.warning(u'Not defined resource for edit')
+        return False
+    # if not os.path.exists(res_filename):
+    #     log_func.warning(u'Not found resource <%s> for edit' % res_filename)
+    #     return False
+
     try:
         if create_kernel:
             # Create KERNEL object
@@ -196,4 +203,18 @@ def openResourceEditor(res_filename, create_kernel=True):
         return _openResourceEditor(res_filename)
     except:
         log_func.fatal(u'Error open resource editor form')
+    return False
+
+
+def openFrameworkHelpEditor():
+    """
+    Open help editor form.
+
+    :return: True/False.
+    """
+    if global_func.isWXEngine():
+        from .wx import help_editor
+        return help_editor.helpEditor()
+    else:
+        log_func.warning(u'Not supported engine as help')
     return False

@@ -68,7 +68,7 @@ WXCHARTPANEL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/piechart',
     '__parent__': wx_panel.SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_chartpanel.html',
     '__content__': (),
     '__edit__': {
         'chart': {

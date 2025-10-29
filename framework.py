@@ -40,7 +40,7 @@ from iq.util import sys_func
 from iq import editor
 import iq
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 
 def main(*argv):
@@ -68,8 +68,9 @@ def main(*argv):
     username = None
     password = None
     res_filename = None
+    show_editor_help = False
 
-    if any([arg in ('-h', '--help', '-?') for arg in args]):
+    if any([arg in ('-h', '--help', '-?') for arg in args]) and len(args) > 1:
         log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
         log_func.printColourText(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(0)
@@ -89,6 +90,9 @@ def main(*argv):
             log_func.printColourText('\tLog: ON', color=log_func.CYAN_COLOR_TEXT)
             global_func.setLogMode()
             log_func.init()
+        elif option in ('-h', '--help', '-?'):
+            log_func.printColourText('\tShow help: ON', color=log_func.CYAN_COLOR_TEXT)
+            show_editor_help = True
         elif option in ('--os',):
             sys_func.printOSFetchInfo()
         elif option in ('--mode',):
@@ -129,7 +133,9 @@ def main(*argv):
             kernel = iq.createKernel()
             kernel.start(mode=mode, project_name=project, username=username, password=password)
             kernel.stop()
-        elif mode == iq.EDITOR_MODE_STATE and os.path.basename(__file__) == os.path.basename(res_filename):
+        elif mode == iq.EDITOR_MODE_STATE and show_editor_help:
+            editor.openFrameworkHelpEditor()
+        elif mode == iq.EDITOR_MODE_STATE and (res_filename is not None and os.path.basename(__file__) == os.path.basename(res_filename)):
             editor.openFrameworkEditor()
         elif mode == iq.EDITOR_MODE_STATE:
             editor.openResourceEditor(res_filename=res_filename)

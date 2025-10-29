@@ -43,7 +43,7 @@ WXREFOBJCHOICECOMBOCTRL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/address_bar',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_refobjchoicecomboctrl.html',
     '__content__': (),
     '__edit__': {
         'style': {

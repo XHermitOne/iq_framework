@@ -42,7 +42,7 @@ WXSVGRENDERIMAGE_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/page_white_vector',
     '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_svgrenderimage.html',
     '__content__': (),
     '__design__': designComponent,
     '__edit__': {

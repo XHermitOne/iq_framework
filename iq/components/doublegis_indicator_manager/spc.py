@@ -27,7 +27,7 @@ DOUBLEGISMAPINDICATORMANAGER_SPC = {
     '__package__': u'GIS',
     '__icon__': 'fugue/map-pin',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.doublegis_indicator_manager.html',
     '__content__': (),
     '__edit__': {
     },

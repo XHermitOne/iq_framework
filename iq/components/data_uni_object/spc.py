@@ -46,7 +46,7 @@ DATAUNIOBJECT_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/brick',
     '__parent__': data_navigator.SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_uni_object.html',
     '__content__': (),
     '__edit__': {
         'model': {

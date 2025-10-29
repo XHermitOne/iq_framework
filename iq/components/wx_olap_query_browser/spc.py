@@ -28,7 +28,7 @@ WXOLAPQUERYBROWSER_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fatcow/table_analysis',
     '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_olap_query_browser.html',
     '__content__': (),
     '__edit__': {
         'olap_server': {

@@ -44,7 +44,7 @@ DATAQUERY_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/database_lightning',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_query.html',
     '__content__': (),
     '__test__': testComponent,
     '__edit__': {

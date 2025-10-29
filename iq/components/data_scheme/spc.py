@@ -33,7 +33,7 @@ DATASCHEME_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/chart_organisation',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_scheme.html',
     '__content__': ('iqDataModel', 'iqDataRefObjModel', 'iqDataUniObjModel'),
     '__edit__': {
         'db_engine': {

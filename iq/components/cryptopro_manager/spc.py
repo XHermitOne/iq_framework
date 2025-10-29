@@ -25,7 +25,7 @@ CRYPTOPROMANAGER_SPC = {
     '__package__': u'Special',
     '__icon__': 'csp',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cryptopro_manager.html',
     '__content__': (),
     '__edit__': {
         'find_paths': property_editor_id.STRINGLIST_EDITOR,

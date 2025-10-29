@@ -34,7 +34,7 @@ DATAACCUMULATEREGISTRY_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/table_sum',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_acc_registry.html',
     '__content__': ('iqDataColumn', ),
     '__edit__': {
         'db_engine': {

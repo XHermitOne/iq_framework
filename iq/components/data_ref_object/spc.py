@@ -75,7 +75,7 @@ DATAREFOBJECT_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/book_addresses',
     '__parent__': data_navigator.SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_ref_object.html',
     '__content__': (),
     '__test__': testComponent,
     '__edit__': {

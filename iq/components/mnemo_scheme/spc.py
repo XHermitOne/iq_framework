@@ -28,7 +28,7 @@ MNEMOSCHEME_SPC = {
     '__package__': u'SCADA',
     '__icon__': 'fatcow/smartart_organization_chart_stand',
     '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
-    '__doc__': None,
+    '__doc__': 'iq.components.mnemo_scheme.html',
     '__content__': ('iqMnemoAnchor', 'iqWxPlateButton'),
     '__edit__': {
         'svg_background': property_editor_id.FILE_EDITOR,

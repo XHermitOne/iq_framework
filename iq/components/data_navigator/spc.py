@@ -45,7 +45,7 @@ DATANAVIGATOR_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/compass',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_navigator.html',
     '__content__': (),
 
     '__edit__': {

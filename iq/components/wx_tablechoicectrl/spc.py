@@ -63,7 +63,7 @@ WXTABLECHOICECTRL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/combo_box_light_blue',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_tablechoicectrl.html',
     '__content__': (),
     '__edit__': {
         'table': {

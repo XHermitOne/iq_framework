@@ -43,7 +43,7 @@ class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto,
 
         self.py_filename = None
 
-        self.loadCustomProperties()
+        # self.loadCustomProperties()
 
     def init(self):
         """

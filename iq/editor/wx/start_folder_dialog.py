@@ -55,7 +55,7 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
 
         self.folder_path = None
 
-        self.loadCustomProperties()
+        # self.loadCustomProperties()
 
     def init(self):
         """

@@ -53,7 +53,7 @@ class iqStartLimeReportEditorDialog(start_limereport_dlg.iqStartLimeReportEditor
 
         self.limereport_manager = limereport_manager.iqLimeReportManager()
 
-        self.loadCustomProperties()
+        # self.loadCustomProperties()
 
     def init(self):
         """

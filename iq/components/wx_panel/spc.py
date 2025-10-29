@@ -50,7 +50,7 @@ WXPANEL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/panel_blank',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_panel.html',
     '__content__': (),
     '__edit__': {
         'style': {

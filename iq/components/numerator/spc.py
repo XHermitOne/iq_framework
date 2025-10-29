@@ -35,7 +35,7 @@ NUMERATOR_SPC = {
     '__package__': u'Special',
     '__icon__': 'fatcow/paginator',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.numerator.html',
     '__content__': (),
     '__edit__': {
         'db_engine': {

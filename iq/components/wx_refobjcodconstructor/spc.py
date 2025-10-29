@@ -34,7 +34,7 @@ WXREFOBJCODCONSTRUCTOR_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/text_functions',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_refobjcodconstructor.html',
     '__content__': (),
     '__edit__': {
         'ref_obj': {

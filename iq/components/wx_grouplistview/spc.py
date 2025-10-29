@@ -65,7 +65,7 @@ WXGROUPLISTVIEW_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/table_heatmap',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_grouplistview.html',
     '__content__': ('iqWxColumn', ),
     '__edit__': {
         'style': {

@@ -77,7 +77,7 @@ DATACOLUMN_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/table_select_column',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_column.html',
     '__content__': (),
     '__edit__': {
         'field_type': {

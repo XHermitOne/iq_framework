@@ -124,7 +124,7 @@ DATAENGINE_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/database_gear',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_engine.html',
     '__content__': (),
     '__test__': testComponent,
     '__edit__': {

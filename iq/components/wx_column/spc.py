@@ -35,7 +35,7 @@ WXCOLUMN_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/table_select_column',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_column.html',
     '__content__': (),
     '__edit__': {
         'label': property_editor_id.STRING_EDITOR,

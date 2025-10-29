@@ -19,7 +19,7 @@ from . import log_func
 from . import global_func
 from .. import global_data
 
-__version__ = (0, 2, 4, 1)
+__version__ = (0, 2, 5, 1)
 
 HIDDEN_DIRNAMES = ('.svn', '.git', '.idea', '__pycache__')
 
@@ -140,6 +140,22 @@ def getFrameworkPath():
         return path
     else:
         log_func.warning(u'Error get framework path')
+    return None
+
+
+def getFrameworkHelpPath():
+    """
+    Get framework help path.
+
+    :return: Full framework help path or None if error.
+    """
+    framework_path = getFrameworkPath()
+    if framework_path is not None:
+        framework_help_path = os.path.join(framework_path, 'ide', 'help')
+        if not os.path.exists(framework_help_path):
+            createDir(framework_help_path)
+        if os.path.exists(framework_help_path):
+            return framework_help_path
     return None
 
 
@@ -750,3 +766,32 @@ def getBaseName(filename):
     :return: Base file name.
     """
     return os.path.basename(filename)
+
+
+def searchPathByMask(find_mask, root_path=None):
+    """
+    Search all the file/directory path recursively.
+
+    :param find_mask: File/directory mask name.
+    :param root_path: Root find directory.
+    :return: Full path to file/directory list or empty list if not found.
+    """
+    find_paths = glob.glob(pathname=os.path.join('**', find_mask), root_dir=root_path, recursive=True)
+    if not root_path:
+        return find_paths
+    else:
+        return [os.path.join(root_path, find_path) for find_path in find_paths]
+
+
+def findPathByMask(find_mask, root_path=None):
+    """
+    Find the file/directory path recursively.
+
+    :param find_mask: File/directory mask name.
+    :param root_path: Root find directory.
+    :return: Full path to file/directory or None if not found.
+    """
+    find_paths = searchPathByMask(find_mask=find_mask, root_path=root_path)
+    if find_paths:
+        return find_paths[0]
+    return None

@@ -26,7 +26,7 @@ CUBEMEASURE_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fatcow/measure',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cube_measure.html',
     '__content__': (),
     '__edit__': {
         'field_name': property_editor_id.STRING_EDITOR,

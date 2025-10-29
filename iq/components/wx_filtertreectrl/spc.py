@@ -53,7 +53,7 @@ WXFILTERTREECTRL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/table_filter',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_filtertreectrl.html',
     '__content__': (),
     '__edit__': {
         'save_filename': property_editor_id.FILE_EDITOR,

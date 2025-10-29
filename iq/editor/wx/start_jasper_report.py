@@ -51,7 +51,7 @@ class iqStartJasperReportEditorDialog(start_jasperreport_dlg.iqStartJasperReport
 
         self.jasperreport_manager = jasperreport_manager.iqJasperReportManager()
 
-        self.loadCustomProperties()
+        # self.loadCustomProperties()
 
     def init(self):
         """

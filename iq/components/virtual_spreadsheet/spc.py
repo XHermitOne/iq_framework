@@ -23,7 +23,7 @@ VIRTUALSPREADSHEET_SPC = {
     '__package__': u'Special',
     '__icon__': 'fatcow/page_excel',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.virtual_spreadsheet.html',
     '__content__': (),
     '__edit__': {
     },

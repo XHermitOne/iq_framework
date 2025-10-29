@@ -70,7 +70,7 @@ REF_OBJ_DATAMODEL_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/table',
     '__parent__': spc.DATAMODEL_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_refobj_model.html',
     '__content__': ('iqDataColumn', ),
     '__edit__': {
     },

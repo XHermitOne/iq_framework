@@ -55,7 +55,7 @@ WXOLAPQUERYTREECTRL_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fatcow/table_heatmap_cell',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_olap_query_treectrl.html',
     '__content__': (),
     '__edit__': {
         'save_filename': property_editor_id.FILE_EDITOR,

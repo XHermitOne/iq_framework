@@ -29,7 +29,7 @@ WXXLSGRID_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/table_excel',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_xlsgrid.html',
     '__content__': (),
     '__edit__': {
         'xls_filename': property_editor_id.FILE_EDITOR,

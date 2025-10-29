@@ -55,7 +55,7 @@ WXREFOBJLEVELCHOICECTRL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/combo_boxes',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_refobjlevelchoicectrl.html',
     '__content__': (),
     '__edit__': {
         'ref_obj': {

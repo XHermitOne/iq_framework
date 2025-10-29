@@ -44,7 +44,7 @@ class iqStartGladeEditorDialog(start_glade_dlg.iqStartGladeEditorDialogProto,
 
         self.glade_manager = glade_manager.iqGladeManager()
 
-        self.loadCustomProperties()
+        # self.loadCustomProperties()
 
     def init(self):
         """

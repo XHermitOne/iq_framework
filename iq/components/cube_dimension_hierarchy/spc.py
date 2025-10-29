@@ -40,7 +40,7 @@ CUBEDIMENSIONHIERARCHY_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fugue/node-select-all',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cube_dimension_hierarchy.html',
     '__content__': (),
     '__edit__': {
         'levels': {

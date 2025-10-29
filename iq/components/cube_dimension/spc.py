@@ -30,7 +30,7 @@ CUBEDIMENSION_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'proportion',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cube_dimension.html',
     '__content__': ('iqCubeDimensionLevel', 'iqCubeDimensionHierarchy'),
     '__edit__': {
         'field_name': property_editor_id.STRING_EDITOR,

@@ -40,7 +40,7 @@ from . import new_resource_dialog
 from ....engine.wx import stored_wx_form_manager
 from ....engine.wx import splitter_manager
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 1, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -565,11 +565,11 @@ class iqResourceEditor(resource_editor_frm.iqResourceEditorFrameProto,
         doc = item_resource.get(spc_func.DOC_ATTR_NAME, None)
         if isinstance(doc, str):
             # Document as HTML file
-            doc_filename = os.path.join(file_func.getFrameworkPath(), doc)
-            if os.path.exists(doc_filename):
+            doc_filename = file_func.findPathByMask(find_mask=doc, root_path=file_func.getFrameworkHelpPath())
+            if doc_filename and os.path.exists(doc_filename):
                 webbrowser_func.openHtmlBrowser(doc_filename)
             else:
-                log_func.warning(u'Document filename <%s> not found' % doc_filename)
+                log_func.warning(u'Help document filename <%s> not found' % doc_filename)
         elif isinstance(doc, dict):
             # Document as open command
             open_doc_command = doc.get(sys.platform, None)

@@ -40,7 +40,7 @@ WXPLATEBUTTON_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/button',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_platebutton.html',
     '__content__': (),
     '__edit__': {
         'label': property_editor_id.STRING_EDITOR,

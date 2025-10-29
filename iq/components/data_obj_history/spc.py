@@ -34,7 +34,7 @@ DATAOBJECTHISTORY_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/clock_history_frame',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_obj_history.html',
     '__content__': ('iqDataColumn', ),
     '__edit__': {
         'db_engine': {

@@ -30,7 +30,7 @@ CATALOGER_SPC = {
     '__package__': u'Special',
     '__icon__': 'fatcow/folders_explorer',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cataloger.html',
     '__content__': ('iqCatalogLevel', ),
     '__edit__': {
         'folder': property_editor_id.DIR_EDITOR,

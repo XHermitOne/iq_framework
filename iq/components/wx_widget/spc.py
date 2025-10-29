@@ -33,7 +33,7 @@ WXWIDGET_SPC = {
     '__package__': None,
     '__icon__': 'fatcow/panel_blank',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_widget.html',
     '__content__': (),
     '__edit__': {
         'position': property_editor_id.POINT_EDITOR,

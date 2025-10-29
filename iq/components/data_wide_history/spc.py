@@ -67,7 +67,7 @@ DATAWIDEHISTORY_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/clock_history_frame',
     '__parent__': data_navigator.SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.data_wide_history.html',
     '__content__': (),
     '__edit__': {
         'model': {

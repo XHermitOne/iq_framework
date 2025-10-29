@@ -35,7 +35,7 @@ GNUPLOTTREND_SPC = {
     '__package__': u'SCADA',
     '__icon__': 'fatcow/chart_line',
     '__parent__': wx_panel.SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.gnuplot_trend.html',
     '__content__': ('iqTrendPen', ),
     '__edit__': {
         'adapt_scene': property_editor_id.CHECKBOX_EDITOR,

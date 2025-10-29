@@ -47,7 +47,7 @@ CUBEDIMENSIONLEVEL_SPC = {
     '__package__': u'OLAP',
     '__icon__': 'fugue/node-select-child',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.cube_dimension_level.html',
     '__content__': (),
     '__edit__': {
         'attributes': property_editor_id.STRINGLIST_EDITOR,

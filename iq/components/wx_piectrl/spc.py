@@ -59,7 +59,7 @@ WXPIECTRL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/chart_pie_title',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_piectrl.html',
     '__content__': (),
     '__edit__': {
         'angle': property_editor_id.FLOAT_EDITOR,

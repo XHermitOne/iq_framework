@@ -40,7 +40,7 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
 
         self._project_manager = prj.iqProjectManager()
 
-        self.loadCustomProperties()
+        # self.loadCustomProperties()
 
     def init(self):
         """

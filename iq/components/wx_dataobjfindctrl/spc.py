@@ -52,7 +52,7 @@ WXDATAOBJFINDCTRL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/table_tab_search',
     '__parent__': wx_widget_spc,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_dataobjfindctrl.html',
     '__content__': (),
     '__edit__': {
         'data_obj': {

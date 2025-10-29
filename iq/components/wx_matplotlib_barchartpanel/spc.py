@@ -33,7 +33,7 @@ WXMATPLOTLIBBARCHARTPANEL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/barchart',
     '__parent__': wx_panel.SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_matplotlib_barchartpanel.html',
     '__content__': (),
     '__edit__': {
         'kind': {

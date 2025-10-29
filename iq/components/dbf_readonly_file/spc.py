@@ -26,7 +26,7 @@ DBFREADONLYFILE_SPC = {
     '__package__': u'Data',
     '__icon__': 'fatcow/database_table',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.dbf_readonly_file.html',
     '__content__': (),
     '__edit__': {
         'dbf_filename': property_editor_id.FILE_EDITOR,

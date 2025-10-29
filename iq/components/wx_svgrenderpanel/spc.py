@@ -70,7 +70,7 @@ WXSVGRENDERPANEL_SPC = {
     '__package__': u'wxPython',
     '__icon__': 'fatcow/application_view_gallery',
     '__parent__': wx_panel.SPC if hasattr(wx_panel, 'SPC') else dict(),
-    '__doc__': None,
+    '__doc__': 'iq.components.wx_svgrenderpanel.html',
     '__content__': ('iqWxSVGRenderImage', ),
     '__design__': designComponent,
     '__test__': testComponent,

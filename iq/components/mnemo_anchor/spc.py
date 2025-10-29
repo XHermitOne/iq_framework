@@ -45,7 +45,7 @@ MNEMOANCHOR_SPC = {
     '__package__': u'SCADA',
     '__icon__': 'fatcow/anchor',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'mnemo_anchor',
     '__content__': (),
     '__edit__': {
         'svg_pos': property_editor_id.POINT_EDITOR,

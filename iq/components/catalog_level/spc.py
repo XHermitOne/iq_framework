@@ -25,7 +25,7 @@ CATALOGLEVEL_SPC = {
     '__package__': u'Special',
     '__icon__': 'fatcow/folder_brick',
     '__parent__': object_spc.OBJECT_SPC,
-    '__doc__': None,
+    '__doc__': 'iq.components.catalog_level.html',
     '__content__': (),
     '__edit__': {
         'get_folder_name': property_editor_id.SCRIPT_EDITOR,
