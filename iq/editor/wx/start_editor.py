@@ -21,7 +21,9 @@ from ...project import prj
 from ...project import prj_func
 from ...engine.wx import stored_wx_form_manager
 
-__version__ = (0, 0, 0, 1)
+from . import help_editor
+
+__version__ = (0, 1, 1, 1)
 
 
 class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
@@ -125,6 +127,7 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
         Button click handler <Help>.
         """
         self.EndModal(wx.ID_OK)
+        help_editor.openHelpEditorDlg(parent=self.GetParent())
         event.Skip()
 
 
