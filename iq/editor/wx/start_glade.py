@@ -23,7 +23,7 @@ from iq.editor.gtk.code_generator import gui_generator
 
 from iq.engine.wx import stored_wx_form_manager
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 1, 2, 1)
 
 
 class iqStartGladeEditorDialog(start_glade_dlg.iqStartGladeEditorDialogProto,
@@ -44,7 +44,7 @@ class iqStartGladeEditorDialog(start_glade_dlg.iqStartGladeEditorDialogProto,
 
         self.glade_manager = glade_manager.iqGladeManager()
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

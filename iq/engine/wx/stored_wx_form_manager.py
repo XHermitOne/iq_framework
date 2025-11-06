@@ -10,8 +10,9 @@ import wx
 from .. import stored_manager
 
 from ...util import log_func
+from ...util import global_func
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 
 class iqStoredWxFormsManager(stored_manager.iqStoredManager):
@@ -25,6 +26,10 @@ class iqStoredWxFormsManager(stored_manager.iqStoredManager):
         :param save_filename: Stored file name.
         :return: True/False.
         """
+        if not global_func.isRestoreFormGeometryMode():
+            self.Centre()
+            return True
+
         var_data = self.loadCustomData(save_filename=save_filename)
         # log_func.debug(u'Load custom properties %s' % str(var_data))
 
@@ -52,6 +57,9 @@ class iqStoredWxFormsManager(stored_manager.iqStoredManager):
         :param save_filename: Stored file name.
         :return: True/False.
         """
+        if not global_func.isRestoreFormGeometryMode():
+            return True
+
         size = self.GetSize()
         width = size.GetWidth()
         height = size.GetHeight()

@@ -33,7 +33,7 @@ from ...engine.wx import stored_wx_form_manager
 
 from ...project import prj
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -55,7 +55,7 @@ class iqStartFolderDialog(start_folder_dlg.iqStartFolderDialogProto,
 
         self.folder_path = None
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

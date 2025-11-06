@@ -20,7 +20,7 @@ from .. import wxbitmap_func
 from . import login_dialog_proto
 from ... import stored_manager
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 1, 2, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -747,12 +747,13 @@ class iqLoginDialog(login_dialog_proto.iqLoginDialogProto,
         try:
             login_data = self.loadCustomData()
             if login_data:
-                size = login_data.get('size', None)
-                if size:
-                    self.SetSize(wx.Size(*size))
-                position = login_data.get('pos', None)
-                if position:
-                    self.SetPosition(wx.Point(*position))
+                if global_func.isRestoreFormGeometryMode():
+                    size = login_data.get('size', None)
+                    if size:
+                        self.SetSize(wx.Size(*size))
+                    position = login_data.get('pos', None)
+                    if position:
+                        self.SetPosition(wx.Point(*position))
 
             if reg_users is None:
                 reg_users = list()

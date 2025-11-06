@@ -24,7 +24,7 @@ from .code_generator import gui_generator
 
 from ...engine.wx import stored_wx_form_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 2, 1)
 
 
 class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto,
@@ -43,7 +43,7 @@ class iqStartPythonEditorDialog(start_py_dlg.iqStartPythonEditorDialogProto,
 
         self.py_filename = None
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

@@ -29,7 +29,7 @@ from ...engine.wx import stored_wx_form_manager
 
 from ..lime_report import limereport_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -53,7 +53,7 @@ class iqStartLimeReportEditorDialog(start_limereport_dlg.iqStartLimeReportEditor
 
         self.limereport_manager = limereport_manager.iqLimeReportManager()
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

@@ -87,6 +87,9 @@ DEFAULT_STR_TIME_FMT = '%H:%M:%S'
 # System root/administrator password
 SYS_ROOT_PASSWORD = None
 
+# Dialog/Forms load/save geometry mode
+RESTORE_FORM_GEOMETRY_MODE = False
+
 
 def getGlobal(name):
     """

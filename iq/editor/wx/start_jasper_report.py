@@ -27,7 +27,7 @@ from ...engine.wx import stored_wx_form_manager
 
 from ..jasper_report import jasperreport_manager
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -51,7 +51,7 @@ class iqStartJasperReportEditorDialog(start_jasperreport_dlg.iqStartJasperReport
 
         self.jasperreport_manager = jasperreport_manager.iqJasperReportManager()
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

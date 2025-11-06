@@ -23,7 +23,7 @@ from ...engine.wx import stored_wx_form_manager
 
 from . import help_editor
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 
 class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
@@ -42,7 +42,7 @@ class iqStartEditorDialog(start_editor_dlg.iqStartEditorDialogProto,
 
         self._project_manager = prj.iqProjectManager()
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

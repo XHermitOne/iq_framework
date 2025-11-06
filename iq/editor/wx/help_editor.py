@@ -41,7 +41,7 @@ class iqHelpEditorDialog(help_editor_dlg.iqHelpEditorDialogProto,
 
         self.help_name2path = dict()
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

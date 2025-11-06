@@ -44,7 +44,7 @@ class iqStartWXFormBuilderEditorDialog(start_wxfb_dlg.iqStartWXFormBuilderEditor
 
         self.wxformbuilder_manager = wxfb_manager.iqWXFormBuilderManager()
 
-        # self.loadCustomProperties()
+        self.loadCustomProperties()
 
     def init(self):
         """

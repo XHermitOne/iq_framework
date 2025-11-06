@@ -7,7 +7,7 @@ Global functions module.
 
 from .. import global_data
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 1, 1, 1)
 
 
 def isRuntimeMode():
@@ -314,3 +314,10 @@ def getSysRootPassword():
     Get system root/administrator password.
     """
     return global_data.getGlobal('SYS_ROOT_PASSWORD')
+
+
+def isRestoreFormGeometryMode():
+    """
+    Is restore dialog/form geometry mode?
+    """
+    return global_data.getGlobal('RESTORE_FORM_GEOMETRY_MODE')
