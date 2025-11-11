@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from ..data_model import data_object
 
-__version__ = (0, 2, 1, 2)
+__version__ = (0, 3, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -44,7 +44,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         self._filter = None
 
         # Current object GUID
-        self.guid = None
+        self.obj_guid = None
         # Currect object record
         self.obj_record = None
 
@@ -54,7 +54,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
         :return: GUID.
         """
-        return self.guid
+        return self.obj_guid
 
     def getUniObjRec(self):
         """
@@ -72,8 +72,8 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         try:
-            self.guid = guid
-            self.obj_record = self.getRecByGuid(guid=self.guid)
+            self.obj_guid = guid
+            self.obj_record = self.getRecByGuid(guid=self.obj_guid)
             return True
         except:
             log_func.fatal(u'Error load object <%s : %s>' % (self.getName(), guid))
@@ -86,7 +86,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param attr_name: Attribute name.
         :return: Attribute value or None.
         """
-        if self.guid is None:
+        if self.obj_guid is None:
             log_func.error(u'Not define unic object GUID for get attribute <%s>' % attr_name)
             return False
         if self.obj_record is None:
@@ -105,12 +105,12 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :param attr_value: Attribute value.
         :return: True/False.
         """
-        if self.guid is None:
+        if self.obj_guid is None:
             log_func.warning(u'Generate new unic object GUID for set attribute <%s>' % attr_name)
-            self.guid = id_func.genGUID()
+            self.obj_guid = id_func.genGUID()
         if self.obj_record is None:
             log_func.warning(u'Create empty unic object record for set attribute <%s>' % attr_name)
-            self.obj_record = {self.getGuidColumnName(): self.guid}
+            self.obj_record = {self.getGuidColumnName(): self.obj_guid}
 
         if attr_name not in self.obj_record:
             log_func.warning(u'No attribute <%s> in unic object record' % attr_name)
@@ -125,7 +125,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         :return: True/False.
         """
         if guid is None:
-            guid = self.guid
+            guid = self.obj_guid
         if guid is None:
             log_func.error(u'Not define unic object GUID for save')
             return False
