@@ -913,3 +913,16 @@ def calcDateAndTime(dt_date, dt_time):
     result = dt_date.replace(hour=dt_time.hour, minute=dt_time.minute,
                              second=dt_time.second, microsecond=dt_time.microsecond)
     return result
+
+
+def printFuncTimeDecorator(func):
+    """
+    Decorator. Function execution time.
+    """
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        log_func.info(u'Function <%s>. Execution time: %f seconds' % (func.__name__, round(end_time - start_time, 2)))
+        return result
+    return wrapper
