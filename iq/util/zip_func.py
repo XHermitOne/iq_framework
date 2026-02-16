@@ -38,6 +38,12 @@ def unzipToDir(zip_filename, dst_dir=None, overwrite=True, to_console=True, opti
     """
     if dst_dir is None:
         dst_dir = os.path.dirname(zip_filename)
+    if not os.path.exists(dst_dir):
+        try:
+            os.makedirs(dst_dir)
+        except:
+            fatal(u'Error make directory <%s>' % dst_dir)
+            return False
 
     unzip_cmd = ''
     try:
