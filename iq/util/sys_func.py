@@ -24,7 +24,7 @@ from . import global_func
 
 import iq
 
-__version__ = (0, 0, 6, 1)
+__version__ = (0, 0, 7, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -459,3 +459,21 @@ def getWindowsOEMEncoding():
         except:
             log_func.fatal(u'Error get windows OEM code page')
     return None
+
+
+def getSysAdminUsernamesLinux():
+    """
+    Get system administrator usernames for Linux.
+    :return: User name list.
+    """
+    usernames = list()
+    try:
+        if os.path.exists('/etc/group'):
+            out_txt = get_procesess_module.getoutput('cat /etc/group | grep sudo')
+            out_lines = out_txt.strip().split('\n')
+            usernames = [line.split(':')[-1] for line in out_lines]
+        else:
+            log_func.warning(u'Not found /etc/group file')
+    except:
+        log_func.fatal(u'Error get system administartor usernames for Linux')
+    return usernames
