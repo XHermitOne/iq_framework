@@ -7,7 +7,7 @@ Global functions module.
 
 from .. import global_data
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 
 def isRuntimeMode():
@@ -219,9 +219,12 @@ def createApplication():
         if isWXEngine():
             import wx
             from iq.util import log_func
+            from iq.engine.wx import wxapp_func
             log_func.info(u'Create WX application')
             log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
             app = wx.App()
+            wxapp_func.setSystemLocaleApplication(app=app)
+
         elif isQTEngine():
             app = None
         elif isGTKEngine():

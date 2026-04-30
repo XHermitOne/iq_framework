@@ -9,7 +9,9 @@ import wx
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+from . import wxapp_func
+
+__version__ = (0, 1, 2, 1)
 
 
 def runApplication(main_form_class=None):
@@ -24,6 +26,9 @@ def runApplication(main_form_class=None):
         return False
 
     app = wx.App()
+
+    wxapp_func.setSystemLocaleApplication(app=app)
+
     main_form = None
     if issubclass(main_form_class, wx.Frame):
         main_form = main_form_class(parent=None)
