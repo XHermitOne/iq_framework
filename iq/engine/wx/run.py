@@ -27,7 +27,7 @@ def runApplication(main_form_class=None):
 
     app = wx.App()
 
-    wxapp_func.setSystemLocaleApplication(app=app)
+    wxapp_func.setSystemLocaleApplicationLinux(app=app)
 
     main_form = None
     if issubclass(main_form_class, wx.Frame):

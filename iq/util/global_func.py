@@ -223,7 +223,7 @@ def createApplication():
             log_func.info(u'Create WX application')
             log_func.info(u'wxPython version: %s' % wx.VERSION_STRING)
             app = wx.App()
-            wxapp_func.setSystemLocaleApplication(app=app)
+            wxapp_func.setSystemLocaleApplicationLinux(app=app)
 
         elif isQTEngine():
             app = None
