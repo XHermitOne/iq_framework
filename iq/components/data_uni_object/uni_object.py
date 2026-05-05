@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from ..data_model import data_object
 
-__version__ = (0, 3, 1, 1)
+__version__ = (0, 3, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -165,7 +165,12 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
                 else:
                     dst_record[src_attr_name] = src_attr_value
             dst_uniobj.obj_record = dst_record
-            dst_uniobj.saveUniObj(guid=guid)
+            if dst_uniobj.hasGuid(guid=guid):
+                # Dest uni object exists
+                dst_uniobj.saveUniObj(guid=guid)
+            else:
+                # Add new uni object
+                dst_uniobj.update(guid=guid, record=dst_uniobj.obj_record)
             if do_del:
                 return self.deleteRec(guid, id_field=self.getGuidColumnName())
             return True
