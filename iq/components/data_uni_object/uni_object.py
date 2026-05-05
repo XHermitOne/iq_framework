@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from ..data_model import data_object
 
-__version__ = (0, 3, 1, 2)
+__version__ = (0, 3, 1, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -160,6 +160,9 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
 
             revert_attr_replaces = {src_attr_name: dst_attr_name for dst_attr_name, src_attr_name in attr_replaces.items()}
             for src_attr_name, src_attr_value in src_record.items():
+                if src_attr_name.startswith('_') or src_attr_name == model_navigator.DEFAULT_ID_COL_NAME:
+                    # Exclude danger attributes
+                    continue
                 if attr_replaces and src_attr_name in revert_attr_replaces.keys():
                     dst_record[revert_attr_replaces[src_attr_name]] = src_attr_value
                 else:
@@ -170,7 +173,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
                 dst_uniobj.saveUniObj(guid=guid)
             else:
                 # Add new uni object
-                dst_uniobj.update(guid=guid, record=dst_uniobj.obj_record)
+                dst_uniobj.update(guid=guid)
             if do_del:
                 return self.deleteRec(guid, id_field=self.getGuidColumnName())
             return True

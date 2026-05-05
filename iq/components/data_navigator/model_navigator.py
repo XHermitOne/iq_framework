@@ -21,7 +21,9 @@ from ..wx_filterchoicectrl import filter_convert
 
 from . import navigator_proto
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
+
+DEFAULT_ID_COL_NAME = 'id'
 
 
 class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
@@ -537,7 +539,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             return False
 
         if id_field is None:
-            id_field = 'id'
+            id_field = DEFAULT_ID_COL_NAME
 
         model = self.getModel()
         transaction = self.startTransaction()
@@ -614,7 +616,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             return False
 
         if id_field is None:
-            id_field = 'id'
+            id_field = DEFAULT_ID_COL_NAME
 
         model = self.getModel()
         transaction = self.startTransaction()
@@ -800,7 +802,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         :return: Record dictionary or None if error.
         """
         if id_field is None:
-            id_field = 'id'
+            id_field = DEFAULT_ID_COL_NAME
 
         model = self.getModel()
         transaction = self.startTransaction()
@@ -888,7 +890,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                 log_func.fatal(u'Generate filter environment error')
         return self.__filter_environment__
 
-    def _genFilterEnv(self, unused_columns=('id', )):
+    def _genFilterEnv(self, unused_columns=(DEFAULT_ID_COL_NAME, )):
         """
         Generate filter environment.
         
