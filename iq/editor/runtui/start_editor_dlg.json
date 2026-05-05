@@ -1,0 +1,103 @@
+{
+  "$schema": "runtui-rad-v1",
+  "app": {
+    "theme": "nord",
+    "title": "iqFramework"
+  },
+  "windows": [
+    {
+      "id": "main_window",
+      "title": "iqFramework",
+      "x": 5,
+      "y": 2,
+      "width": 46,
+      "height": 16,
+      "widgets": [
+        {
+          "type": "Button",
+          "id": "new_project_button",
+          "props": {
+            "x": 3,
+            "y": 2,
+            "width": 40,
+            "height": 1,
+            "text": "New project"
+          },
+          "events": {
+            "on_click": "onNewButtonClick"
+          }
+        },
+        {
+          "type": "Button",
+          "id": "run_project_button",
+          "props": {
+            "x": 3,
+            "y": 4,
+            "width": 40,
+            "height": 1,
+            "text": "Run project"
+          },
+          "events": {
+            "on_click": "onRunButtonClick"
+          }
+        },
+        {
+          "type": "Button",
+          "id": "debug_project_button",
+          "props": {
+            "x": 3,
+            "y": 6,
+            "width": 40,
+            "height": 1,
+            "text": "Debug project"
+          },
+          "events": {
+            "on_click": "onDebugButtonClick"
+          }
+        },
+        {
+          "type": "Button",
+          "id": "external_tools_button",
+          "props": {
+            "x": 3,
+            "y": 8,
+            "width": 40,
+            "height": 1,
+            "text": "External tools"
+          },
+          "events": {
+            "on_click": "onExternalToolsButtonClick"
+          }
+        },
+        {
+          "type": "Button",
+          "id": "help_button",
+          "props": {
+            "x": 3,
+            "y": 10,
+            "width": 40,
+            "height": 1,
+            "text": "Help"
+          },
+          "events": {
+            "on_click": "onHelpButtonClick"
+          }
+        },
+        {
+          "type": "Button",
+          "id": "exit_button",
+          "props": {
+            "x": 3,
+            "y": 12,
+            "width": 40,
+            "height": 1,
+            "text": "Exit"
+          },
+          "events": {
+            "on_click": "onExitButtonClick"
+          }
+        }
+      ]
+    }
+  ]
+}

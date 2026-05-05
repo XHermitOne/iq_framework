@@ -7,7 +7,7 @@ Global functions module.
 
 from .. import global_data
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 1, 3, 1)
 
 
 def isRuntimeMode():
@@ -150,6 +150,15 @@ def isCUIEngine():
     :return: True/False.
     """
     return global_data.getGlobal('ENGINE_TYPE') == global_data.CUI_ENGINE_TYPE
+
+
+def isRUNTUIEngine():
+    """
+    Set engine as RUNTUI.
+
+    :return: True/False.
+    """
+    return global_data.getGlobal('ENGINE_TYPE') == global_data.RUNTUI_ENGINE_TYPE
 
 
 def getProject():

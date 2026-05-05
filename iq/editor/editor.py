@@ -20,7 +20,7 @@ from ..editor.gtk import glade_manager
 from ..editor.jasper_report import jasperreport_manager
 from ..editor.lime_report import limereport_manager
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 1, 3, 1)
 
 
 def openFrameworkEditor():
@@ -35,8 +35,11 @@ def openFrameworkEditor():
     elif global_func.isGTKEngine():
         from .gtk import start_editor_window
         return start_editor_window.startEditor()
+    elif global_func.isRUNTUIEngine():
+        from .runtui import start_editor
+        return start_editor.startEditor()
     else:
-        log_func.warning(u'Not supported engine as editor')
+        log_func.warning(u'Not supported engine <%s> as editor' % global_func.getEngineType())
     return False
 
 
@@ -169,8 +172,18 @@ def _openResourceEditor(res_filename):
 
         else:
             log_func.warning(u'Not support editing file <%s>' % res_filename)
+    elif global_func.isRUNTUIEngine():
+        if os.path.isdir(res_filename) and res_filename == file_func.getFrameworkPath():
+            log_func.info(u'Main editor <%s>' % res_filename)
+            return openFrameworkEditor()
+        elif wxfb_manager.isWXFormBuilderProjectFile(res_filename):
+            log_func.info(u'Edit JSON RunTUI form project <%s>' % res_filename)
+            from .gtk import start_wxfb_window
+            return start_wxfb_window.startWxFormBuilderEditor(fbp_filename=res_filename)
+        else:
+            log_func.warning(u'Not support editing file <%s>' % res_filename)
     else:
-        log_func.warning(u'Not supported engine as editor')
+        log_func.warning(u'Not supported engine <%s> as editor' % global_func.getEngineType())
     return False
 
 

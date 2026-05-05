@@ -12,7 +12,7 @@ import socket
 
 from . import log_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 1, 2, 1)
 
 
 def validPingHost(host_name):
@@ -34,6 +34,7 @@ def validPingHost(host_name):
 def doPing(host):
     """
     Check connect with host by ping3 library.
+    Run with root privilege.
     Install: pip3 install ping3.
 
     :param host: Host name/ip address.
@@ -57,6 +58,7 @@ def doPing(host):
 def allSeriesPing(host, count, delay=0):
     """
     Check connect with host by series ping3.
+    Run with root privilege.
 
     :param host: Host name/ip address.
     :param count: Number of pings.
@@ -86,6 +88,7 @@ def allSeriesPing(host, count, delay=0):
 def anySeriesPing(host, count, delay=0):
     """
     Check connect with host by series ping3.
+    Run with root privilege.
 
     :param host: Host name/ip address.
     :param count: Number of pings.
