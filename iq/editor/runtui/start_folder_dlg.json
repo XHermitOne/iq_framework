@@ -1,0 +1,61 @@
+{
+  "$schema": "runtui-rad-v1",
+  "app": {
+    "theme": "nord",
+    "title": "My Application"
+  },
+  "windows": [
+    {
+      "id": "main_window",
+      "title": "Main Window",
+      "x": 5,
+      "y": 2,
+      "width": 46,
+      "height": 10,
+      "widgets": [
+        {
+          "type": "Button",
+          "id": "new_button",
+          "props": {
+            "x": 3,
+            "y": 2,
+            "width": 40,
+            "height": 1,
+            "text": "New"
+          },
+          "events": {
+            "on_click": "onNewButtonClick"
+          }
+        },
+        {
+          "type": "Button",
+          "id": "run_prj_button",
+          "props": {
+            "x": 3,
+            "y": 4,
+            "width": 40,
+            "height": 1,
+            "text": "Run project"
+          },
+          "events": {
+            "on_click": "onRunProjectButtonClick"
+          }
+        },
+        {
+          "type": "Button",
+          "id": "exit_button",
+          "props": {
+            "x": 3,
+            "y": 6,
+            "width": 40,
+            "height": 1,
+            "text": "Exit"
+          },
+          "events": {
+            "on_click": "onExitButtonClick"
+          }
+        }
+      ]
+    }
+  ]
+}

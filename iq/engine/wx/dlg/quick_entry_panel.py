@@ -36,7 +36,7 @@ from iq.util import lang_func
 from iq.engine.wx import form_manager
 from iq.engine.wx import wxbitmap_func
 
-__version__ = (0, 3, 1, 1)
+__version__ = (0, 3, 1, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -245,6 +245,8 @@ class iqQuickEntryPanelDialog(wx.Dialog, form_manager.iqDialogManager):
         if size is None and ext_data:
             new_size = ext_data.get('size', wx.DefaultSize)
             self.SetSize(new_size)
+
+        self.Fit()
 
     def getExtDataName(self):
         """
