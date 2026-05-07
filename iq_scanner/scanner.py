@@ -59,7 +59,7 @@ import sys
 import getopt
 import wx
 
-from iq.util import global_func
+from iq.util import global_func, file_func
 from iq.util import log_func
 from iq.util import lang_func
 
@@ -68,7 +68,7 @@ from iq_scanner.scanner import scanner_dlg
 from iq_scanner.scanner import scan_manager
 
 
-__version__ = (0, 2, 1, 2)
+__version__ = (0, 2, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -152,6 +152,10 @@ def main(argv):
         else:
             log_func.warning(u'An unprocessed command line parameter <%s>' % option)
 
+    # Delete all files by mask
+    if 'scan_dir' in cmd_options:
+        scan_file_masks = ['*.%s' % ext for ext in scan_manager.SCAN_FILE_TYPES]
+        file_func.delFilesByMask(cmd_options['scan_dir'], *scan_file_masks)
     # By default, pack mode is disabled---+
     #                                     v
     if not cmd_options.get('pack_mode', False):
