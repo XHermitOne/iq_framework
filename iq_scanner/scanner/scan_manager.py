@@ -415,6 +415,7 @@ class iqScanManager(object):
             scan = self.scan_device_obj.multi_scan()
 
             scan_canvas = canvas.Canvas(scan_filename, pagesize=DEFAULT_IMAGE_PAGE_SIZE)
+            scan_result = True
 
             if n_page < 0:
                 # Scan all possible pages
@@ -426,10 +427,12 @@ class iqScanManager(object):
                         image = scan.next() if hasattr(scan, 'next') else next(scan)
                     except StopIteration:
                         is_stop_scan = True
+                        scan_result = False
                         continue
 
                     result = self._imageDrawCanvas(image, scan_canvas, i_page)
                     if not result:
+                        scan_result = False
                         continue
 
                     i_page += 1
@@ -440,13 +443,16 @@ class iqScanManager(object):
                     try:
                         image = scan.next() if hasattr(scan, 'next') else next(scan)
                     except StopIteration:
+                        scan_result = False
                         continue
                     result = self._imageDrawCanvas(image, scan_canvas, i_page)
                     if not result:
+                        scan_result = False
                         continue
             # Save PDF Canvas
-            scan_canvas.save()
-            return True
+            if scan_result:
+                scan_canvas.save()
+                return True
         except:
             log_func.fatal(u'Multipage Scan Error')
 
