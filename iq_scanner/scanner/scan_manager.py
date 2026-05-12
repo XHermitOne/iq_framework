@@ -44,7 +44,7 @@ except ImportError:
     log_func.error('Import error sane. For install: sudo apt install --assume-yes python3-sane', is_force_print=True)
 
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 1, 2)
 
 # Scan modes
 GREY_SCAN_MODE = 'Grey'
@@ -378,7 +378,7 @@ class iqScanManager(object):
              to which all scanned pages will be brought.
         :return: True/False.
         """
-        if image:
+        if image is not None and image.getbbox() is not None:
             img_filename = MULTISCAN_PAGE_FILENAME % n
             width, height = page_size
             image = image.resize((int(width), int(height)))
