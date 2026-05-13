@@ -68,7 +68,7 @@ from iq_scanner.scanner import scanner_dlg
 from iq_scanner.scanner import scan_manager
 
 
-__version__ = (0, 2, 2, 1)
+__version__ = (0, 2, 2, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -167,7 +167,7 @@ def main(argv):
         locale.Init(wx.LANGUAGE_RUSSIAN)
 
         scanner_dlg.openScanDlg(options=cmd_options,
-                                title=_(u'Scanner ') + txt_version)
+                                title=_(u'iqScanner ') + txt_version)
         app.MainLoop()
     else:
         # In pack mode, we do not use the dialog box

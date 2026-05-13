@@ -44,7 +44,7 @@ except ImportError:
     log_func.error('Import error sane. For install: sudo apt install --assume-yes python3-sane', is_force_print=True)
 
 
-__version__ = (0, 2, 1, 2)
+__version__ = (0, 2, 1, 3)
 
 # Scan modes
 GREY_SCAN_MODE = 'Grey'
@@ -412,10 +412,14 @@ class iqScanManager(object):
             return False
 
         try:
+            if self.scan_device_obj is None:
+                log_func.error(u'Not define scan device')
+                return False
+
             scan = self.scan_device_obj.multi_scan()
 
             scan_canvas = canvas.Canvas(scan_filename, pagesize=DEFAULT_IMAGE_PAGE_SIZE)
-            scan_result = True
+            #scan_result = True
 
             if n_page < 0:
                 # Scan all possible pages
@@ -427,12 +431,12 @@ class iqScanManager(object):
                         image = scan.next() if hasattr(scan, 'next') else next(scan)
                     except StopIteration:
                         is_stop_scan = True
-                        scan_result = False
+                        #scan_result = False
                         continue
 
                     result = self._imageDrawCanvas(image, scan_canvas, i_page)
                     if not result:
-                        scan_result = False
+                        #scan_result = False
                         continue
 
                     i_page += 1
@@ -443,16 +447,16 @@ class iqScanManager(object):
                     try:
                         image = scan.next() if hasattr(scan, 'next') else next(scan)
                     except StopIteration:
-                        scan_result = False
+                        #scan_result = False
                         continue
                     result = self._imageDrawCanvas(image, scan_canvas, i_page)
                     if not result:
-                        scan_result = False
+                        #scan_result = False
                         continue
             # Save PDF Canvas
-            if scan_result:
-                scan_canvas.save()
-                return True
+            #if scan_result:
+            scan_canvas.save()
+            return True
         except:
             log_func.fatal(u'Multipage Scan Error')
 
