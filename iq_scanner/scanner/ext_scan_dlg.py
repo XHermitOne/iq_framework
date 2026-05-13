@@ -16,7 +16,7 @@ from iq.dialog import dlg_func
 from . import scanner_dlg_proto
 
 
-__version__ = (0, 2, 1, 1)
+__version__ = (0, 2, 1, 2)
 
 
 class iqLoadSheetsDialog(scanner_dlg_proto.iqLoadSheetsDlgProto):
@@ -37,6 +37,9 @@ class iqLoadSheetsDialog(scanner_dlg_proto.iqLoadSheetsDlgProto):
 
         :param max_sheets: The maximum number of sheets to scan.
         """
+        if not isinstance(max_sheets, int):
+            log_func.warning(u'Not integer maximum number of sheets to scan [%s]' % str(max_sheets))
+            max_sheets = int(max_sheets)
         self.sheets_spinCtrl.SetRange(1, max_sheets)
         self.sheets_spinCtrl.SetValue(max_sheets)
 
