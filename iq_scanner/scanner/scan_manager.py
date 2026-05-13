@@ -44,7 +44,7 @@ except ImportError:
     log_func.error('Import error sane. For install: sudo apt install --assume-yes python3-sane', is_force_print=True)
 
 
-__version__ = (0, 2, 1, 3)
+__version__ = (0, 2, 1, 4)
 
 # Scan modes
 GREY_SCAN_MODE = 'Grey'
@@ -310,9 +310,12 @@ class iqScanManager(object):
         :return: True/False.
         """
         try:
-            log_func.info(u'Start scan')
-            self.scan_device_obj.start()
-            return True
+            if self.scan_device_obj is None:
+                log_func.error(u'Not define scan device')
+            else:
+                log_func.info(u'Start scan')
+                self.scan_device_obj.start()
+                return True
         except:
             log_func.fatal(u'Scan start error')
         return False
@@ -328,6 +331,10 @@ class iqScanManager(object):
             None - in case of an error.
         """
         try:
+            if self.scan_device_obj is None:
+                log_func.error(u'Not define scan device')
+                return None
+
             image = self.scan_device_obj.snap()
 
             if scan_filename:
