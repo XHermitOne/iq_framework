@@ -16,7 +16,7 @@ from iq.dialog import dlg_func
 from . import scanner_dlg_proto
 
 
-__version__ = (0, 2, 1, 2)
+__version__ = (0, 2, 1, 3)
 
 
 class iqLoadSheetsDialog(scanner_dlg_proto.iqLoadSheetsDlgProto):
@@ -176,7 +176,12 @@ def scanJoinMode(scan_manager, scan_filename, n_sheets, is_duplex=False, max_tra
     is_cancel = scan_sheet_count <= 0
 
     while (0 < scan_sheet_count <= n_sheets) or is_cancel:
-        log_func.debug(u'Scan File <%s> Scan Sheets [%d]' % (new_scan_filename, sheets))
+        if sheets < 0:
+            log_func.warning(u'Scan File <%s> Scan Sheets [%d] < Canceled' % (new_scan_filename, sheets))
+            is_cancel = True
+        else:
+            log_func.debug(u'Scan File <%s> Scan Sheets [%d]' % (new_scan_filename, sheets))
+
         # If duplex is used, then it is necessary to increase the number of pages
         scan_n_pages = sheets * 2 if is_duplex else sheets
         # Starting the scanning process
