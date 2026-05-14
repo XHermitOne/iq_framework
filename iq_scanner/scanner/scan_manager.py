@@ -40,12 +40,12 @@ from iq_scanner.scanner import ext_scan_dlg
 
 try:
     import sane
-    # import _sane
+    import _sane
 except ImportError:
     log_func.error('Import error sane. For install: sudo apt install --assume-yes python3-sane', is_force_print=True)
 
 
-__version__ = (0, 2, 1, 4)
+__version__ = (0, 2, 1, 5)
 
 # Scan modes
 GREY_SCAN_MODE = 'Grey'
@@ -439,6 +439,8 @@ class iqScanManager(object):
                     except StopIteration:
                         is_stop_scan = True
                         continue
+                    except _sane.error:
+                        raise
 
                     result = self._imageDrawCanvas(image, scan_canvas, i_page)
                     if not result:
@@ -453,6 +455,9 @@ class iqScanManager(object):
                         image = scan.next() if hasattr(scan, 'next') else next(scan)
                     except StopIteration:
                         continue
+                    except _sane.error:
+                        raise
+
                     result = self._imageDrawCanvas(image, scan_canvas, i_page)
                     if not result:
                         continue
@@ -463,8 +468,9 @@ class iqScanManager(object):
             log_func.fatal(u'Multipage Scan Error')
 
             trace_txt = traceback.format_exc()
-            if DOC_FEEDER_JAMMED_ERR in trace_txt:
-                self.showScanErrorMsg(u'Document misfeed in the paper feed tray')
+            # if DOC_FEEDER_JAMMED_ERR in trace_txt:
+            self.showScanErrorMsg(trace_txt)
+            raise
 
         return False
 
