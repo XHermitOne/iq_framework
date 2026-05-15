@@ -2,7 +2,7 @@
   "$schema": "runtui-rad-v1",
   "app": {
     "theme": "nord",
-    "title": "My Application"
+    "title": "iqFramework"
   },
   "windows": [
     {
@@ -11,20 +11,20 @@
       "x": 5,
       "y": 2,
       "width": 46,
-      "height": 10,
+      "height": 9,
       "widgets": [
         {
           "type": "Button",
-          "id": "new_button",
+          "id": "new_form_button",
           "props": {
             "x": 3,
             "y": 2,
             "width": 40,
             "height": 1,
-            "text": "New"
+            "text": "New form ..."
           },
           "events": {
-            "on_click": "onNewButtonClick"
+            "on_click": "onNewFormButtonClick"
           }
         },
         {

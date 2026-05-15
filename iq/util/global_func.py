@@ -7,7 +7,7 @@ Global functions module.
 
 from .. import global_data
 
-__version__ = (0, 1, 3, 1)
+__version__ = (0, 2, 1, 1)
 
 
 def isRuntimeMode():
@@ -246,8 +246,19 @@ def createApplication():
         elif isCUIEngine():
             app = None
 
+        elif isRUNTUIEngine():
+            app = None
+            try:
+                import runtui
+                from iq.util import log_func
+                log_func.info(u'Create RUNTUI application')
+                log_func.info(u'RunTUI version: %s' % str(runtui.__version__))
+                app = runtui.App(theme='nord')
+            except:
+                raise
+
         if app:
-            global_data.setGlobal('APPLICATION', app)
+            setApplication(app)
     return app
 
 
@@ -257,6 +268,15 @@ def getApplication():
     """
     app = global_data.getGlobal('APPLICATION')
     return app
+
+
+def setApplication(app=None):
+    """
+    Set application object.
+
+    :param app: Application object or None
+    """
+    global_data.setGlobal('APPLICATION', app)
 
 
 def closeAppForce():

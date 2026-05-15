@@ -9,7 +9,7 @@ from ..util import global_func
 from ..util import log_func
 from ..util import lang_func
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 2, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -35,6 +35,9 @@ def _importDialogFunctions():
         elif global_func.isCUIEngine():
             log_func.info(u'Dialog functions. Use CUI engine')
             from ..engine.cui.dlg import cui_dlg_func as _dlg_func
+        elif global_func.isRUNTUIEngine():
+            # log_func.info(u'Dialog functions. Use RUNTUI engine')
+            from ..engine.runtui.dlg import runtui_dlg_func as _dlg_func
         globals()['DIALOG_FUNCTION_MODULE'] = _dlg_func
     return globals()['DIALOG_FUNCTION_MODULE']
 

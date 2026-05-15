@@ -16,7 +16,7 @@ except ImportError:
 from ...util import file_func
 from ...util import exec_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 0, 1, 1)
 
 JSON_PROJECT_FILE_EXT = '.json'
 
@@ -47,14 +47,8 @@ def runRunTUIRadDesigner(filename=None):
         If not specified, then nothing opens.
     :return: True/False
     """
-    cmd = ''
-    cmd_args = filename if filename is not None else ''
-
-    rad_designer_exec = getRunTUIRadDesignerExecutable()
-    if rad_designer_exec:
-        cmd = '%s %s' % (rad_designer_exec, cmd_args) if cmd_args else rad_designer_exec
-        return exec_func.execSystemCommand(cmd)
-    return False
+    cmd = 'python3 -m runtui.rad_designer'
+    return exec_func.execSystemCommand(cmd)
 
 
 class iqRunTUIRadDesignerManager(object):
