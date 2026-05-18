@@ -18,7 +18,7 @@ from ..wx_filterchoicectrl import filter_convert
 
 from ..data_model import data_object
 
-__version__ = (0, 3, 1, 3)
+__version__ = (0, 3, 2, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -56,13 +56,17 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         """
         return self.obj_guid
 
-    def getUniObjRec(self):
+    def getUniObjRec(self, do_refresh=False):
         """
         Get current object record.
 
+        :param do_refresh: Refresh record from DB.
         :return: Unic object record as dictionary.
         """
+        if do_refresh and self.obj_guid:
+            self.obj_record = self.getRecByGuid(self.obj_guid)
         return self.obj_record
+
 
     def loadUniObj(self, guid):
         """
