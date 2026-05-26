@@ -6,6 +6,7 @@ RunTUI. Start folder dialog.
 """
 
 import os.path
+import time
 
 from ...util import log_func
 from ...util import res_func

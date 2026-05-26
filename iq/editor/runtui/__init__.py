@@ -3,7 +3,8 @@
 
 """
 RunTUI editors.
-RunTUI library HomePage: https://github.com/Erickrus/runtui
+Original RunTUI library HomePage: https://github.com/Erickrus/runtui
+Used fork RunTUI library HomePage: https://github.com/XHermitOne/runtui
 """
 
 __version__ = (0, 0, 0, 1)

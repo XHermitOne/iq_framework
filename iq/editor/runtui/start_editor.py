@@ -73,12 +73,14 @@ class iqStartEditorApp(start_editor_app.StartEditorApp):
         """
         <New project> button click handler.
         """
+        self.quit()
         self._project_manager.create()
 
     def onRunButtonClick(self):
         """
         <Run project> button click handler.
         """
+        self.quit()
         prj_descriptions = prj_func.getProjectDescriptions()
 
         prj_data = list(prj_descriptions.items())

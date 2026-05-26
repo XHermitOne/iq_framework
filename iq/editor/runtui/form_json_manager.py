@@ -16,7 +16,7 @@ except ImportError:
 from ...util import file_func
 from ...util import exec_func
 
-__version__ = (0, 0, 1, 1)
+__version__ = (0, 1, 1, 1)
 
 JSON_PROJECT_FILE_EXT = '.json'
 
@@ -39,15 +39,20 @@ def getRunTUIRadDesignerExecutable():
     return os.path.join(runtui_path, 'rad_designer.py')
 
 
-def runRunTUIRadDesigner(filename=None):
+def runRunTUIRadDesigner(filename=None, do_generate=False, *args, **kwargs):
     """
     Run RunTUI RAD designer.
 
     :param filename: File opened in RAD designer.
         If not specified, then nothing opens.
+    :param do_generate: Generate the resulting resource / project module.
     :return: True/False
     """
-    cmd = 'python3 -m runtui.rad_designer'
+    cmd = 'python3 -m runtui.rad_designer --theme=nord'
+    if filename and os.path.exists(filename):
+        cmd += ' --open=%s' % filename
+        if do_generate:
+            cmd += ' --gen_app'
     return exec_func.execSystemCommand(cmd)
 
 
@@ -77,8 +82,22 @@ class iqRunTUIRadDesignerManager(object):
         :return: True/False.
         """
         try:
-            runRunTUIRadDesigner(default_prj_filename)
+            runRunTUIRadDesigner()
             return True
         except:
             log_func.fatal(u'Error creating RunTUI RAD designer project file <%s>' % default_prj_filename)
+        return False
+
+    def generate(self, prj_filename, *args, **kwargs):
+        """
+        Additional project generation.
+
+        :param prj_filename: The full name of the project file.
+        :return: True/False.
+        """
+        try:
+            runRunTUIRadDesigner(prj_filename, do_generate=True, *args, **kwargs)
+            return True
+        except:
+            log_func.fatal(u'Error generating application module RunTUI RAD designer project file <%s>' % prj_filename)
         return False
