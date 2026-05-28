@@ -27,7 +27,7 @@ if sys.platform.startswith('win'):
 
 from . import global_func
 
-__version__ = (0, 0, 2, 3)
+__version__ = (0, 1, 1, 1)
 
 # Shell text colors
 RED_COLOR_TEXT = 'red'
@@ -155,7 +155,7 @@ def info(message=u'', is_force_print=False, is_force_log=False):
         logging.info(message)
 
 
-def error(message=u'', is_force_print=False, is_force_log=False):
+def error(message=u'', is_force_print=True, is_force_log=False):
     """
     Print error message.
 
@@ -189,7 +189,7 @@ def warning(message=u'', is_force_print=False, is_force_log=False):
         logging.warning(message)
 
 
-def fatal(message=u'', is_force_print=False, is_force_log=False):
+def fatal(message=u'', is_force_print=True, is_force_log=False):
     """
     Print critical error message.
 

@@ -15,7 +15,7 @@ except ImportError:
 
 from . import global_func
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 2, 1)
 
 
 CONSOLE = rich.console.Console()
@@ -77,7 +77,7 @@ def warning(message=u'', is_force_print=False):
         printStyledText(message, style='yellow')
 
 
-def error(message=u'', is_force_print=False):
+def error(message=u'', is_force_print=True):
     """
     Print error message.
 
@@ -91,7 +91,7 @@ def error(message=u'', is_force_print=False):
         printStyledText(message, style='red')
 
 
-def fatal(message=u'', is_force_print=False):
+def fatal(message=u'', is_force_print=True):
     """
     Print exception.
 
