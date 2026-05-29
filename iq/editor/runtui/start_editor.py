@@ -4,6 +4,7 @@
 """
 RunTUI. Start editor dialog.
 """
+import datetime
 
 from ...util import log_func
 from ... import global_func
@@ -20,7 +21,7 @@ from ...dialog import dlg_func
 from ...project import prj
 from ...project import prj_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqStartEditorApp(start_editor_app.StartEditorApp):
@@ -73,8 +74,10 @@ class iqStartEditorApp(start_editor_app.StartEditorApp):
         """
         <New project> button click handler.
         """
-        self.quit()
         self._project_manager.create()
+        # log_func.debug(u'Next create at %s' % datetime.datetime.now())
+        # self.end_modal()
+        self.quit()
 
     def onRunButtonClick(self):
         """

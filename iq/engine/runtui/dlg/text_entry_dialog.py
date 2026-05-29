@@ -16,7 +16,7 @@ try:
 except ImportError:
     log_func.error(u'Import error runtui. For install: pip3 install runtui', is_force_print=True)
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 _ = lang_func.getTranslation().gettext
 
@@ -38,17 +38,17 @@ class iqTextEntryDialog(runtui.Dialog):
         """
         super().__init__(title=title, width=width, height=height)
 
-        self._prompt_text = prompt_text
+        self._result_text = None
         try:
             # Widgets
-            self.prompt_label = runtui.Label(text=_(self._prompt_text), x = 1, y = 1, width = width - 4)
-            self.text_input = runtui.TextInput(x = 1, y=2, width = width - 4)
+            self.prompt_label = runtui.Label(text=_(prompt_text), x = 1, y = 1, width = width - 4)
+            self.text_input = runtui.TextInput(x = 1, y=2, width = width - 4, text=default_text)
 
             self.add_child(self.prompt_label)
             self.add_child(self.text_input)
 
-            self.cancel_button = runtui.Button(text=_('Cancel'), x = 1, y = 5, width = 10)
-            self.ok_button = runtui.Button(text=_('OK'), x = 11, y = 5, width = 10)
+            self.cancel_button = runtui.Button(text=_('Cancel'), x = 1, y = 5, width = 10, on_click=self.onCancelButtonClick)
+            self.ok_button = runtui.Button(text=_('OK'), x = 11, y = 5, width = 10, on_click=self.onOkButtonClick)
 
             self.add_child(self.cancel_button)
             self.add_child(self.ok_button)
@@ -69,16 +69,32 @@ class iqTextEntryDialog(runtui.Dialog):
         bg = self.theme_color('dialog.bg', runtui.core.types.Color.BRIGHT_BLACK)
         fg = self.theme_color('dialog.fg', runtui.core.types.Color.BLACK)
 
-        painter.put_str(lx + self.prompt_label.x, ly + self.prompt_label.y, self._prompt_text, fg=fg, bg=bg, max_width=content_w)
+        painter.put_str(lx + self.prompt_label.x, ly + self.prompt_label.y, self.prompt_label.text, fg=fg, bg=bg, max_width=content_w)
 
         self.text_input._screen_rect = runtui.Rect(sr.x + self.text_input.x, sr.y + self.text_input.y, sr.width - 2, 1)
         self.text_input.paint(painter)
 
         btn_y = sr.y + sr.height - 2
-        self.cancel_button._screen_rect = runtui.Rect(sr.x + sr.width - 24, btn_y, self.ok_button.width, self.ok_button.height)
+        self.cancel_button._screen_rect = runtui.Rect(sr.x + sr.width - 24, btn_y, self.cancel_button.width, self.cancel_button.height)
         self.cancel_button.paint(painter)
         self.ok_button._screen_rect = runtui.Rect(sr.x + sr.width - 13, btn_y, self.ok_button.width, self.ok_button.height)
         self.ok_button.paint(painter)
+
+    def onCancelButtonClick(self):
+        """
+        Cancel button click handler.
+        """
+        self._result_text = None
+        app = global_func.getApplication()
+        app.end_modal(self)
+
+    def onOkButtonClick(self):
+        """
+        Cancel button click handler.
+        """
+        self._result_text = self.text_input.text
+        app = global_func.getApplication()
+        app.end_modal(self)
 
 
 def getTextEntryDlg(title='', prompt_text='', default_value='', *args, **kwargs):
@@ -99,8 +115,11 @@ def getTextEntryDlg(title='', prompt_text='', default_value='', *args, **kwargs)
         dlg.center_on_screen(app._screen.width if app._screen else 80,
                              app._screen.height if app._screen else 24)
 
-        app.root.add_child(dlg)
-        dlg.invalidate()
+        app.show_modal(dlg)
+
+        result = dlg._result_text
+        # log_func.debug(u'Result dialog <%s>' % str(result))
+        return result
     except:
         log_func.fatal(u'Open login dialog error')
     return None

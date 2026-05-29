@@ -27,7 +27,7 @@ from .. import global_data
 
 from . import spc
 
-__version__ = (0, 0, 3, 2)
+__version__ = (0, 0, 3, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -73,6 +73,7 @@ class iqProjectManager(object):
                                             title=_(u'PROJECT NAME'),
                                             prompt_text=_(u'Enter the name of the project:'), default_value='new_name')
         if name:
+            # log_func.debug(u'Create <%s> project' % name)
             prj_path = self.getPath(name)
             self.createPath(prj_path)
             self.createDefaultResources(parent=parent, prj_path=prj_path,
@@ -109,7 +110,7 @@ class iqProjectManager(object):
                                                            prompt_text=_(u'Select engine type of the project:'),
                                                            choices=choices,
                                                            default_idx=0)
-        if 0 <= select_engine_idx < len(global_data.ENGINE_TYPES):
+        if (select_engine_idx is not None) and (0 <= select_engine_idx < len(global_data.ENGINE_TYPES)):
             selected_engine = global_data.ENGINE_TYPES[select_engine_idx]
             save_ok = self.saveDefaultPrjResource(prj_path=prj_path, prj_name=prj_name, default_engine=selected_engine)
             return all([save_ok,
