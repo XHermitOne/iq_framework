@@ -27,9 +27,9 @@ import sysconfig
 import glob
 import tempfile
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 
 ROOT_USERNAME = None
 ROOT_PASSWORD = None
@@ -71,7 +71,7 @@ CONSOLE = None
 
 HOME_PATH = os.environ['HOME'] if 'HOME' in os.environ else (os.environ.get('HOMEDRIVE',
                                                                             '') + os.environ.get('HOMEPATH', ''))
-TITLE = 'iqFramework installer'
+TITLE = 'iqFramework application installer for Ubuntu Linux'
 
 DEFAULT_MENU_SELECTION_CHAR = '==>'
 
@@ -364,7 +364,7 @@ def installAptPackage(root_username=None, root_password=None, *package_names):
         root_password = ROOT_PASSWORD
 
     for package_name in package_names:
-        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin apt install --assume-yes {package_name}"'
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= apt install --assume-yes {package_name}"'
         os.system(cmd)
 
 def installPipPackage(root_username=None, root_password=None, *package_names):
@@ -383,7 +383,7 @@ def installPipPackage(root_username=None, root_password=None, *package_names):
         root_password = ROOT_PASSWORD
 
     for package_name in package_names:
-        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin pip3 install --break-system-packages {package_name}"'
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= pip3 install --break-system-packages {package_name}"'
         os.system(cmd)
 
 
@@ -629,28 +629,37 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, root_username=None,
         global ROOT_PASSWORD
         root_password = ROOT_PASSWORD
 
-    mnt_path = CONSOLE.input(f'[green]Input framework mount path:[/] (Default [bold cyan]{mnt_path}[/]): ')
-    server = CONSOLE.input(f'[green]Input server:[/] (Default [bold cyan]{DEFAULT_MNT_SERVER}[/]): ')
-    share_name = CONSOLE.input(f'[green]Input share:[/] (Default [bold cyan]{DEFAULT_NETWORK_RESOURCE_NAME}[/]): ')
+    mnt_path = CONSOLE.input(f'[green]Input framework mount path:[/] (Default [bold cyan]{mnt_path}[/]): ') or mnt_path
+    server = CONSOLE.input(f'[green]Input server:[/] (Default [bold cyan]{DEFAULT_MNT_SERVER}[/]): ') or DEFAULT_MNT_SERVER
+    share_name = CONSOLE.input(f'[green]Input share:[/] (Default [bold cyan]{DEFAULT_NETWORK_RESOURCE_NAME}[/]): ') or DEFAULT_NETWORK_RESOURCE_NAME
 
     if not os.path.exists(mnt_path):
-        os.makedirs(mnt_path)
-        os.chmod(mnt_path, 0o777)
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= mkdir {mnt_path}"'
+        os.system(cmd)
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt=  chmod 777 {mnt_path}"'
+        os.system(cmd)
+        info(f'Make directory <{mnt_path}>')
 
     if os.path.exists(mnt_path) and (not os.listdir(mnt_path)):
         mount_cmd = MOUNT_CMD_FMT % (server, share_name, mnt_path)
 
-        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin {mount_cmd}"'
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= {mount_cmd}"'
         os.system(cmd)
         info(f'Mount network resource <{mnt_path} : {mount_cmd}>')
 
     if not os.path.exists(RC_LOCAL_FILENAME):
-        saveTextFile(txt_filename=RC_LOCAL_FILENAME, txt=DEFAULT_RC_LOCAL_CONTENT)
+        tmp_rc_local_filename = os.path.join(tempfile.gettempdir(), os.path.basename(RC_LOCAL_FILENAME))
+        saveTextFile(txt_filename=tmp_rc_local_filename, txt=DEFAULT_RC_LOCAL_CONTENT)
+        # Copy rc.local file
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= cp {tmp_rc_local_filename} {RC_LOCAL_FILENAME}"'
+        os.system(cmd)
         if os.path.exists(RC_LOCAL_FILENAME):
-            os.chmod(RC_LOCAL_FILENAME, 0o755)
+            # Set permissions
+            cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= chmod 777 {RC_LOCAL_FILENAME}"'
+            os.system(cmd)
         info(f'Create <{RC_LOCAL_FILENAME}> file')
 
-    mount_cmd_enabled = WAIT_MOUNT_CMD_FMT % (WAIT_NETWORK_UP, server, share_name, mnt_path)
+    mount_cmd_enabled = WAIT_MOUNT_CMD_FMT % (WAIT_NETWORK_UP % server, server, share_name, mnt_path)
 
     mount_cmd_disabled = '# ' + mount_cmd_enabled
     mount_cmd_disabled2 = '#' + mount_cmd_enabled
@@ -667,7 +676,7 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, root_username=None,
         replaceTextFile(RC_LOCAL_FILENAME, RC_LOCAL_EXIT_CMD, commands)
         info(f'Automatic resource mounting is enabled <{mount_cmd_enabled}>')
 
-    if os.path.exists(mnt_path):
+    if os.path.exists(mnt_path) and os.path.exists(RC_LOCAL_FILENAME):
         return mnt_path
     return None
 
@@ -683,8 +692,10 @@ def saveIqPthFile(mnt_path, root_username, root_password):
         return False
     iq_framework_path = os.path.join(mnt_path, IQ_FRAMEWORK_FOLDER_NAME)
     if os.path.exists(iq_framework_path):
+        tmp_iq_pth_filename = os.path.join(tempfile.gettempdir(), 'iq.pth')
+        saveTextFile(txt_filename=tmp_iq_pth_filename, txt=iq_framework_path)
         iq_pth_filename = os.path.join(sysconfig.get_paths()['purelib'], 'iq.pth')
-        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {iq_framework_path} >> {iq_pth_filename}"'
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= cp {tmp_iq_pth_filename} {iq_pth_filename}"'
         os.system(cmd)
         # Test iq import
         try:
@@ -837,22 +848,30 @@ def run():
         initConsole()
         clearScreen()
         printTitle()
-        # 5. Mount network resource
-        mnt_path = mountFrameworkNetworkResource()
-        # 6. Save PTH file
-        saveIqPthFile(mnt_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
-        # 7. Install packages for iq
-        iq_framework_path = os.path.join(mnt_path, IQ_FRAMEWORK_FOLDER_NAME)
-        iq_requirements_filename = os.path.join(iq_framework_path, IQ_FOLDER_NAME, REQUIREMENTS_FILENAME)
-        installRequirementsSH(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
-        # 8. Select application for install
-        app_path = selectApplication(iq_framework_path)
-        # 9. Install packages for application
-        if app_path is not None:
-            app_requirements_filename = os.path.join(app_path, REQUIREMENTS_FILENAME)
+        try:
+            # 5. Mount network resource
+            mnt_path = mountFrameworkNetworkResource()
+            if mnt_path is None:
+                error('Error mount network resource')
+                return
+            # 6. Save PTH file
+            if not saveIqPthFile(mnt_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD):
+                error('Error save iq.pth file for import')
+                return
+            # 7. Install packages for iq
+            iq_framework_path = os.path.join(mnt_path, IQ_FRAMEWORK_FOLDER_NAME)
+            iq_requirements_filename = os.path.join(iq_framework_path, IQ_FOLDER_NAME, REQUIREMENTS_FILENAME)
             installRequirementsSH(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
-            # 10. Get DESKTOP file
-            installDesktop(app_path=app_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+            # 8. Select application for install
+            app_path = selectApplication(iq_framework_path)
+            # 9. Install packages for application
+            if app_path is not None:
+                app_requirements_filename = os.path.join(app_path, REQUIREMENTS_FILENAME)
+                installRequirementsSH(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+                # 10. Get DESKTOP file
+                installDesktop(app_path=app_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+        except:
+            fatal('Error installation')
 
 
 if __name__ == '__main__':

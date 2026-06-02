@@ -8,8 +8,6 @@ wxFormBuilder Form designer management manager.
 import os
 import os.path
 
-import mtranslate
-
 from ...util import log_func
 from ...util import exec_func
 from ...util import py_func
@@ -17,7 +15,13 @@ from ...util import file_func
 from ...util import xml_func
 from ...util import lang_func
 
+try:
+    import mtranslate
+except ImportError:
+    log_func.error('Import error mtranslate package. For install: pip3 install --break-system-packages mtranslate')
+
 from ...script import migrate_fbp
+
 
 __version__ = (0, 1, 2, 1)
 
