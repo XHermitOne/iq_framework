@@ -15,15 +15,15 @@ umask 000
 # sudo apt install --assume-yes python3-pip
 
 # Code analyzers
-sudo apt install --assume-yes pylint3
+# sudo apt install --assume-yes pylint3
 sudo apt install --assume-yes python3-pep8
 
 # Operating system
 # sudo apt install --assume-yes smbfs-utils
 # sudo apt install --assume-yes cifs-utils
 sudo apt install --assume-yes nfs-common
-sudo apt install --assume-yes indicator-applet-complete
-sudo apt install --assume-yes ttf-mscorefonts-installer
+# sudo apt install --assume-yes indicator-applet-complete
+# sudo apt install --assume-yes ttf-mscorefonts-installer
 sudo apt install --assume-yes python3-apt
 sudo apt install --assume-yes smbclient
 # pip3 install pysmb
@@ -136,7 +136,7 @@ sudo pip3 install --break-system-packages xmltodict
 sudo apt install --assume-yes unoconv
 sudo apt install --assume-yes python3-sane
 sudo apt install --assume-yes python3-reportlab
-sudo apt install --assume-yes python3-pypdf2
+# sudo apt install --assume-yes python3-pypdf2
 sudo apt install --assume-yes python3-odf python-odf-doc
 sudo apt install --assume-yes libreoffice-java-common
 sudo apt install --assume-yes python3-xlrd
@@ -199,10 +199,3 @@ sudo apt install --assume-yes fastfetch
 sudo fastfetch
 {% endif %}
 
-echo
-echo " _     _____                                 _"
-echo "|_|___|   __|___ ___ _____ ___ _ _ _ ___ ___| |_"
-echo "| | . |   __|  _| .'|     | -_| | | | . |  _| '_|"
-echo "|_|_  |__|  |_| |__,|_|_|_|___|_____|___|_| |_,_|"
-echo "    |_|"
-echo

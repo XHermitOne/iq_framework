@@ -104,6 +104,14 @@ NOT_APPLICATION_FOLDER_NAMES = ('iq', 'ide',
                                 'iq_report','iq_scanner',
                                 'locale', '.git', '.idea', '__pycache__')
 
+IQ_FRAMEWORK_LOGO = '''
+ _     _____                                 _
+|_|___|   __|___ ___ _____ ___ _ _ _ ___ ___| |_
+| | . |   __|  _| .'|     | -_| | | | . |  _| '_|
+|_|_  |__|  |_| |__,|_|_|_|___|_____|___|_| |_,_|
+    |_|
+'''
+
 
 def printStyledText(text, style=None):
     """
@@ -634,20 +642,20 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, root_username=None,
     share_name = CONSOLE.input(f'[green]Input share:[/] (Default [bold cyan]{DEFAULT_NETWORK_RESOURCE_NAME}[/]): ') or DEFAULT_NETWORK_RESOURCE_NAME
 
     if not os.path.exists(mnt_path):
+        info(f'Make directory <{mnt_path}>')
         cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= mkdir {mnt_path}"'
         os.system(cmd)
         cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt=  chmod 777 {mnt_path}"'
         os.system(cmd)
-        info(f'Make directory <{mnt_path}>')
 
     if os.path.exists(mnt_path) and (not os.listdir(mnt_path)):
         mount_cmd = MOUNT_CMD_FMT % (server, share_name, mnt_path)
-
+        info(f'Mount network resource <{mnt_path} : {mount_cmd}>')
         cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= {mount_cmd}"'
         os.system(cmd)
-        info(f'Mount network resource <{mnt_path} : {mount_cmd}>')
 
     if not os.path.exists(RC_LOCAL_FILENAME):
+        info(f'Create <{RC_LOCAL_FILENAME}> file')
         tmp_rc_local_filename = os.path.join(tempfile.gettempdir(), os.path.basename(RC_LOCAL_FILENAME))
         saveTextFile(txt_filename=tmp_rc_local_filename, txt=DEFAULT_RC_LOCAL_CONTENT)
         # Copy rc.local file
@@ -657,7 +665,6 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, root_username=None,
             # Set permissions
             cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= chmod 777 {RC_LOCAL_FILENAME}"'
             os.system(cmd)
-        info(f'Create <{RC_LOCAL_FILENAME}> file')
 
     mount_cmd_enabled = WAIT_MOUNT_CMD_FMT % (WAIT_NETWORK_UP % server, server, share_name, mnt_path)
 
@@ -738,12 +745,12 @@ def installRequirementsSH(sh_filename, root_username=None, root_password=None):
         if not cmd or cmd.startswith('#'):
             continue
         elif not cmd.startswith('sudo '):
-            os.system(cmd)
             info(f'Execute command <{cmd}>')
+            os.system(cmd)
         elif cmd.startswith('sudo '):
+            info(f'Execute command <{cmd}>')
             new_cmd = f'echo {root_password} | su {root_username} --login --session-command "{cmd}"'
             os.system(new_cmd)
-            info(f'Execute command <{cmd}>')
 
 
 def selectApplication(iq_framework_path):
@@ -755,16 +762,21 @@ def selectApplication(iq_framework_path):
     if not os.path.exists(iq_framework_path):
         error(f'Not found iqFramework path <{iq_framework_path}>')
         return None
-    app_paths = [os.path.join(iq_framework_path, folder_name) for folder_name in os.listdir(iq_framework_path) if folder_name not in NOT_APPLICATION_FOLDER_NAMES]
+    app_paths = [os.path.join(iq_framework_path, folder_name) for folder_name in os.listdir(iq_framework_path)]
+    app_paths = [folder_path for folder_path in app_paths if os.path.isdir(folder_path) and folder_path not in NOT_APPLICATION_FOLDER_NAMES]
 
     import rich_menu
     import importlib.util
 
-    menuitems = ['%s : %s' % (os.path.basename(app_path),
-                              importlib.util.module_from_spec(importlib.util.spec_from_file_location('iq_app',
-                                                                                                     os.path.join(app_path,
-                                                                                                                  '__init__.py'))).__doc__.strip().split(os.linesep)[0]) for app_path in app_paths]
+    menuitems = list()
+    for app_path in app_paths:
+        name = os.path.basename(app_path)
+        init_filename = os.path.join(app_path, '__init__.py')
+        package = importlib.util.module_from_spec(importlib.util.spec_from_file_location('iq_app', init_filename))
+        description = package.__doc__.strip().split(os.linesep)[0] if package.__doc__ else ''
+        menuitems.append(f'{name} : {description}')
     menuitems.append('Exit')
+
     menu = rich_menu.Menu(*menuitems,
                           color='green',
                           title=u'iqFramework applications',
@@ -870,6 +882,8 @@ def run():
                 installRequirementsSH(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
                 # 10. Get DESKTOP file
                 installDesktop(app_path=app_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+
+            info(IQ_FRAMEWORK_LOGO)
         except:
             fatal('Error installation')
 
