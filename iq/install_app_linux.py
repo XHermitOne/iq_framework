@@ -762,8 +762,8 @@ def selectApplication(iq_framework_path):
     if not os.path.exists(iq_framework_path):
         error(f'Not found iqFramework path <{iq_framework_path}>')
         return None
-    app_paths = [os.path.join(iq_framework_path, folder_name) for folder_name in os.listdir(iq_framework_path)]
-    app_paths = [folder_path for folder_path in app_paths if os.path.isdir(folder_path) and folder_path not in NOT_APPLICATION_FOLDER_NAMES]
+    app_paths = [os.path.join(iq_framework_path, folder_name) for folder_name in os.listdir(iq_framework_path) if folder_name not in NOT_APPLICATION_FOLDER_NAMES]
+    app_paths = [folder_path for folder_path in app_paths if os.path.isdir(folder_path)]
 
     import rich_menu
     import importlib.util
@@ -772,7 +772,11 @@ def selectApplication(iq_framework_path):
     for app_path in app_paths:
         name = os.path.basename(app_path)
         init_filename = os.path.join(app_path, '__init__.py')
-        package = importlib.util.module_from_spec(importlib.util.spec_from_file_location('iq_app', init_filename))
+        spec = importlib.util.spec_from_file_location('iq_app', init_filename)
+        package = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(package)
+        # debug(f'Package {package}:')
+        # debug(f'{package.__doc__}')
         description = package.__doc__.strip().split(os.linesep)[0] if package.__doc__ else ''
         menuitems.append(f'{name} : {description}')
     menuitems.append('Exit')
