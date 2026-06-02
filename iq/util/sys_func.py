@@ -24,7 +24,7 @@ from . import global_func
 
 import iq
 
-__version__ = (0, 0, 7, 1)
+__version__ = (0, 1, 1, 1)
 
 # System line separator
 UNIX_LINESEP = '\n'
@@ -461,10 +461,10 @@ def getWindowsOEMEncoding():
     return None
 
 
-def getSysAdminUsernamesLinux():
+def getRootUsernamesLinux():
     """
     Get system administrator usernames for Linux.
-    :return: User name list.
+    :return: Username list.
     """
     usernames = list()
     try:
@@ -476,4 +476,22 @@ def getSysAdminUsernamesLinux():
             log_func.warning(u'Not found /etc/group file')
     except:
         log_func.fatal(u'Error get system administartor usernames for Linux')
+    return usernames
+
+
+def getUsernamesLinux():
+    """
+    Get usernames for Linux.
+    :return: Username list.
+    """
+    usernames = list()
+    try:
+        if os.path.exists('/etc/passwd'):
+            records = [line.split(':') for line in open('/etc/passwd').readlines()]
+            # UID-------------------------------------------------V
+            usernames = [record[0] for record in records if int(record[2]) >= 1000]
+        else:
+            log_func.warning(u'Not found /etc/passwd file')
+    except:
+        log_func.fatal(u'Error get usernames for Linux')
     return usernames

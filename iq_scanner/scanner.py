@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-icScanner - The program for starting document scanning.
+iqScanner - The program for starting document scanning.
             Batch processing of scanned documents.
 
 Command line options:
     
-    python icscanner.py <Launch parameters>
+    python iqscanner.py <Launch parameters>
     
 Launch parameters:
 
@@ -59,7 +59,8 @@ import sys
 import getopt
 import wx
 
-from iq.util import global_func, file_func
+from iq.util import global_func
+from iq.util import file_func
 from iq.util import log_func
 from iq.util import lang_func
 
@@ -68,7 +69,7 @@ from iq_scanner.scanner import scanner_dlg
 from iq_scanner.scanner import scan_manager
 
 
-__version__ = (0, 2, 2, 2)
+__version__ = (0, 2, 2, 3)
 
 _ = lang_func.getTranslation().gettext
 
@@ -101,10 +102,10 @@ def main(argv):
     cmd_options = dict()
     for option, arg in options:
         if option in ('-h', '--help', '-?'):
-            print(__doc__)
+            log_func.info(__doc__, is_force_print=True)
             sys.exit(0)   
         elif option in ('-v', '--version'):
-            print('icScanner version: %s' % txt_version)
+            log_func.info('iqScanner version: %s' % txt_version, is_force_print=True)
             sys.exit(0)
         elif option in ('-d', '--debug'):
             global_func.setDebugMode(True)
