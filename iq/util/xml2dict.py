@@ -7,7 +7,6 @@ Convert XML -> python dictionary functions.
 
 import os
 import os.path
-import xmltodict
 from xml.sax import xmlreader
 import xml.sax.handler
 
@@ -16,7 +15,12 @@ from . import str_func
 from . import txtfile_func
 from . import spc_func
 
-__version__ = (0, 0, 2, 1)
+try:
+    import xmltodict
+except ImportError:
+    log_func.error('Import error xmltodict package. For install: pip3 install --break-system-packages xmltodict')
+
+__version__ = (0, 1, 1, 2)
 
 DEFAULT_XML_TAG = 'Excel'
 
