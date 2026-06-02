@@ -9,12 +9,15 @@ import sys
 import os
 import os.path
 
-import mtranslate
-
 from ..util import log_func
 from ..util import lang_func
 
-__version__ = (0, 1, 1, 1)
+try:
+    import mtranslate
+except ImportError:
+    log_func.error('Import error mtranslate package. For install: pip3 install --break-system-packages mtranslate')
+
+__version__ = (0, 1, 1, 2)
 
 
 STARTSWITH_SIGNATURE = '..)'

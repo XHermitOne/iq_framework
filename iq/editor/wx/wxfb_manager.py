@@ -23,7 +23,7 @@ except ImportError:
 from ...script import migrate_fbp
 
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 1, 2, 2)
 
 from ...util.lang_func import RUSSIAN_LANGUAGE
 
