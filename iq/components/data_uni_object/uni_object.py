@@ -216,6 +216,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         try:
             if self._filter:
                 model = self.getModel()
+                print('!')
                 transaction = self.startTransaction()
                 log_func.debug(u'Convert filter to Sqlalchemy guery')
                 sql_filter = filter_convert.convertFilter2SQLAlchemyQuery(filter_data=self._filter,
