@@ -15,7 +15,7 @@ import sqlalchemy.orm
 
 from ...util import log_func
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 1, 1, 1)
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -139,7 +139,7 @@ class iqDBEngineManager(object):
         log_func.info(u'\tPort: %s' % self.getPort())
         log_func.info(u'\tDB name: %s' % self.getDBName())
         log_func.info(u'\tUsername: %s' % self.getUsername())
-        log_func.debug(u'\tPassword: %s' % self.getPassword())
+        # log_func.debug(u'\tPassword: %s' % self.getPassword())
 
         query = None
         charset = self.getCharset()
@@ -156,7 +156,7 @@ class iqDBEngineManager(object):
                                         port=self.getPort(),
                                         database=self.getDBName(),
                                         query=query)
-        db_url = str(url)
+        db_url = url
         return db_url
 
     def getDBUrl(self):
@@ -209,7 +209,7 @@ class iqDBEngineManager(object):
             log_func.fatal(u'Error set DB engine application name in <%s>' % self.__class__.__name__)
 
         engine = sqlalchemy.create_engine(db_url, *args, **kwargs)
-        log_func.info(u'Create sqlalchemy DB engine <%s>' % db_url)
+        log_func.info(u'Create sqlalchemy DB engine <%s>' % str(db_url))
         return engine
 
     def getEngine(self, *args, **kwargs):

@@ -126,7 +126,7 @@ def getNotValidDBConnectODBCErrTxt(db_url=None):
 
             result = cursor.execute('SELECT 1').fetchall()
             if not result:
-                error_txt = u'Not valid test query result\nDatabase <%s>' % db_url
+                error_txt = u'Not valid test query result\nDatabase <%s>' % str(db_url)
             cursor.close()
         except:
             if cursor:
@@ -134,7 +134,7 @@ def getNotValidDBConnectODBCErrTxt(db_url=None):
             error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
         connection.close()
     else:
-        error_txt = u'Not define connection object\nDatabase <%s>' % db_url
+        error_txt = u'Not define connection object\nDatabase <%s>' % str(db_url)
 
     return error_txt
 
@@ -242,7 +242,7 @@ def getNotValidDBConnectJDBCErrTxt(db_url=None, jdbc_type=None):
             cursor.execute('SELECT 1')
             result = cursor.fetchall()
             if not result:
-                error_txt = u'Not valid test query result\nDatabase <%s>' % db_url
+                error_txt = u'Not valid test query result\nDatabase <%s>' % str(db_url)
             cursor.close()
         except:
             if cursor:
@@ -250,7 +250,7 @@ def getNotValidDBConnectJDBCErrTxt(db_url=None, jdbc_type=None):
             error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
         connection.close()
     else:
-        error_txt = u'Not define connection object\nDatabase <%s>' % db_url
+        error_txt = u'Not define connection object\nDatabase <%s>' % str(db_url)
 
     return error_txt
 
@@ -314,14 +314,14 @@ def getNotValidDBConnectSQLAlchemyErrTxt(db_url=None):
 
             result = connection.execute('SELECT 1').scalar()
             if not result:
-                error_txt = u'Not valid test query result\nDatabase <%s>' % db_url
+                error_txt = u'Not valid test query result\nDatabase <%s>' % str(db_url)
         except:
             error_txt = u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc())
 
         if connection is not None:
             connection.close()
     else:
-        error_txt = u'Not define connection object\nDatabase <%s>' % db_url
+        error_txt = u'Not define connection object\nDatabase <%s>' % str(db_url)
 
     engine.dispose()
     return error_txt
@@ -359,14 +359,14 @@ def executeSQL(db_url=None, sql=None, echo=False):
 
             result = connection.execute(sql).fetchall()
             if not result:
-                print(u'Empty query result\nDatabase <%s>' % db_url)
+                print(u'Empty query result\nDatabase <%s>' % str(db_url))
         except:
             print(u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc()))
 
         if connection is not None:
             connection.close()
     else:
-        print(u'Not define connection object\nDatabase <%s>' % db_url)
+        print(u'Not define connection object\nDatabase <%s>' % str(db_url))
 
     engine.dispose()
 
@@ -409,14 +409,14 @@ def existsSQL(db_url=None, sql=None, echo=False):
             rowcount = connection.execute(sql).rowcount
             result = rowcount > 0
             if not result:
-                print(u'Result not exists\nDatabase <%s>' % db_url)
+                print(u'Result not exists\nDatabase <%s>' % str(db_url))
         except:
             print(u'Error execute test query\nDatabase <%s>\n%s' % (db_url, traceback.format_exc()))
 
         if connection is not None:
             connection.close()
     else:
-        print(u'Not define connection object\nDatabase <%s>' % db_url)
+        print(u'Not define connection object\nDatabase <%s>' % str(db_url))
 
     engine.dispose()
 

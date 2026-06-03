@@ -427,7 +427,7 @@ class iqReportGeneratorSystem(object):
                 # DB is set using standard DB URL
                 db_url = data_source[4:].lower().strip()
 
-            log_func.info(u'DB URL <%s>' % db_url)
+            log_func.info(u'DB URL <%s>' % str(db_url))
 
             db_connection = sqlalchemy.create_engine(db_url)
             log_func.info(u'SQL <%s>' % str_func.toUnicode(sql, 'utf-8'))

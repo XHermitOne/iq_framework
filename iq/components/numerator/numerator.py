@@ -104,7 +104,7 @@ class iqNumeratorProto(object):
             self.disconnect()
 
         self._connection = sqlalchemy.create_engine(db_url, echo=False)
-        log_func.info(u'Connect to database <%s>' % db_url)
+        log_func.info(u'Connect to database <%s>' % str(db_url))
         return self._connection
 
     def disconnect(self):
