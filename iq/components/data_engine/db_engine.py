@@ -336,8 +336,8 @@ class iqDBEngineManager(object):
                 return None
 
             engine = self.create(db_url)
-            # base.metadata.create_all(engine, checkfirst=True)
-            sqlalchemy.MetaData().create_all(bind=engine, checkfirst=True)
+            base.metadata.create_all(biind=engine, checkfirst=True)
+            # sqlalchemy.MetaData().create_all(bind=engine, checkfirst=True)
 
             # creating a Session class configuration
             session_class = sqlalchemy.orm.sessionmaker(bind=engine, *args, **kwargs)
