@@ -267,7 +267,10 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         :param filter_kwargs: Filter options.
         :return: Dataset.
         """
+        print('11')
         self.__dataset__ = self.filterRecs(*filter_args, **filter_kwargs)
+        print('22')
+
 
         # Update dataset by link object data
         self.__dataset__ = self.updateLinkDataDataset(self.__dataset__)

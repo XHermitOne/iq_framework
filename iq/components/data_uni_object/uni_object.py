@@ -216,9 +216,8 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
         try:
             if self._filter:
                 model = self.getModel()
-                print('!')
                 transaction = self.startTransaction()
-                log_func.debug(u'Convert filter to Sqlalchemy guery')
+                # log_func.debug(u'Convert filter to Sqlalchemy guery')
                 sql_filter = filter_convert.convertFilter2SQLAlchemyQuery(filter_data=self._filter,
                                                                           model=model,
                                                                           query=transaction.query(model),
@@ -226,7 +225,7 @@ class iqUniObjectManager(model_navigator.iqModelNavigatorManager):
                                                                           order_by=sort_columns)
                 # Execute SQL
                 try:
-                    log_func.debug(u'Start Sqlalchemy query/filter')
+                    # log_func.debug(u'Start Sqlalchemy query/filter')
                     records = sql_filter.all()
                     log_func.debug(u'Filter uni object <%s>:\n%s\nRecord count [%d]' % (self.getName(),
                                                                                         str(sql_filter),
