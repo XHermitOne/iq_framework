@@ -488,8 +488,8 @@ def getUsernamesLinux():
     try:
         if os.path.exists('/etc/passwd'):
             records = [line.split(':') for line in open('/etc/passwd').readlines()]
-            # UID-------------------------------------------------V
-            usernames = [record[0] for record in records if int(record[2]) >= 1000]
+            # UID--------------------------------------------------------V
+            usernames = [record[0] for record in records if 1000 <= int(record[2]) < 65534]
         else:
             log_func.warning(u'Not found /etc/passwd file')
     except:

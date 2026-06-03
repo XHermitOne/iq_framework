@@ -26,6 +26,7 @@ import datetime
 import sysconfig
 import glob
 import tempfile
+import time
 
 __version__ = (0, 1, 1, 1)
 
@@ -347,8 +348,8 @@ def getUsernamesLinux():
     try:
         if os.path.exists('/etc/passwd'):
             records = [line.split(':') for line in open('/etc/passwd').readlines()]
-            # UID-------------------------------------------------V
-            usernames = [record[0] for record in records if int(record[2]) >= 1000]
+            # UID--------------------------------------------------------V
+            usernames = [record[0] for record in records if 1000 <= int(record[2]) < 65534]
         else:
             warning('Not found /etc/passwd file')
     except:
@@ -786,8 +787,7 @@ def selectApplication(iq_framework_path):
                           title=u'iqFramework applications',
                           align='left',
                           selection_char=DEFAULT_MENU_SELECTION_CHAR,
-                          highlight_color='bold green'
-                          )
+                          highlight_color='bold green')
     menu.ask(screen=False)
     if menu.index == (len(menuitems) - 1):
         # Select EXIT
@@ -828,18 +828,22 @@ def installDesktop(app_path, root_username=None, root_password=None):
 
         # Save desktop file
         for username in getUsernamesLinux():
+            info(f'Install application <{os.path.basename(app_path)}> for user <{username}>')
             tmp_desktop_filename = os.path.join(tempfile.gettempdir(),
                                                 os.path.basename(desktop_filename))
-            dst_desktop_filename = os.path.join('/home', username,
-                                                '.local', 'share', 'applications',
+            dst_applications_path =os.path.join('/home', username,
+                                                '.local', 'share', 'applications')
+            dst_desktop_filename = os.path.join(dst_applications_path,
                                                 os.path.basename(desktop_filename))
 
             saveTextFile(txt_filename=tmp_desktop_filename, txt=desktop_content)
             # Copy desktop file
-            cmd = f'echo {root_password} | su {root_username} --login --session-command "cp {tmp_desktop_filename} {dst_desktop_filename}"'
+            info(f'Copy desktop file <{tmp_desktop_filename}> - > <{dst_desktop_filename}>')
+            cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= cp {tmp_desktop_filename} {dst_applications_path}"'
             os.system(cmd)
             # Set permissions
-            cmd = f'echo {root_password} | su {root_username} --login --session-command "chmod +rx {dst_desktop_filename}"'
+            info(f'Set permission desktop file <{dst_desktop_filename}>')
+            cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= chmod +rx {dst_desktop_filename}"'
             os.system(cmd)
     return True
 
@@ -879,11 +883,14 @@ def run():
             iq_requirements_filename = os.path.join(iq_framework_path, IQ_FOLDER_NAME, REQUIREMENTS_FILENAME)
             installRequirementsSH(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
             # 8. Select application for install
+            # time.sleep(1)
+            clearScreen()
+            printTitle()
             app_path = selectApplication(iq_framework_path)
             # 9. Install packages for application
             if app_path is not None:
                 app_requirements_filename = os.path.join(app_path, REQUIREMENTS_FILENAME)
-                installRequirementsSH(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+                installRequirementsSH(app_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
                 # 10. Get DESKTOP file
                 installDesktop(app_path=app_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
 

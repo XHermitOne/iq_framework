@@ -16,9 +16,9 @@ from ... import passport
 
 from ...util import log_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
-SQLALCHEMY_FIELD_TYPES = copy.deepcopy(sqlalchemy.types.__all__)
+SQLALCHEMY_FIELD_TYPES = copy.deepcopy(sqlalchemy.types.__all__) if hasattr(sqlalchemy.types, '__all__') else [name for name in dir(sqlalchemy.types) if not name.startswith('_')]
 SQLALCHEMY_FIELD_TYPES.sort()
 
 
