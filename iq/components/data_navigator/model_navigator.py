@@ -303,6 +303,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
 
         :return: Record dictionary or None if dataset is empty.
         """
+        print(self.__dataset__)
         if self.__dataset__:
             self.__rec_no__ = max(0, self.__rec_no__ - 1)
             return self.__dataset__[self.__rec_no__]
