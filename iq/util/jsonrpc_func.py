@@ -78,6 +78,8 @@ def validJSONRPCServerConnection(url):
         log_func.warning(u'Check JSON RPC server <%s> connection [-]' % url)
     except OSError:
         log_func.fatal(u'Check JSON RPC server <%s> connection [-]' % url)
+    except:
+        log_func.fatal(u'Error check connection with JSON RCP server <%s>' % url)
     return False
 
 
