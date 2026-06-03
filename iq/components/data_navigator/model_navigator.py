@@ -121,6 +121,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         :return: Record as dictionary with cascade data.
         """
         result = vars(record)
+        print(result, record, dir(record))
 
         cascade_attr_names = [attr_name for attr_name in dir(record) if not attr_name.startswith('_') and isinstance(getattr(record, attr_name), list)]
         for cascade_attr_name in cascade_attr_names:
