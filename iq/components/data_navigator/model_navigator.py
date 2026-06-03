@@ -123,6 +123,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         result = vars(record)
 
         cascade_attr_names = [attr_name for attr_name in dir(record) if not attr_name.startswith('_') and isinstance(getattr(record, attr_name), list)]
+        print(cascade_attr_names)
         for cascade_attr_name in cascade_attr_names:
             result[cascade_attr_name] = [self.getQueryResultRecordAsDict(rec) for rec in getattr(record, cascade_attr_name)]
         return result
