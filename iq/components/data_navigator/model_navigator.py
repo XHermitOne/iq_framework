@@ -267,9 +267,7 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
         :param filter_kwargs: Filter options.
         :return: Dataset.
         """
-        print('11')
         self.__dataset__ = self.filterRecs(*filter_args, **filter_kwargs)
-        print('22')
 
 
         # Update dataset by link object data
@@ -360,9 +358,12 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
             limit = self.getLimit()
             order_by = self.getOrderBy()
 
+            print(1)
             if not rec_filter:
                 model = self.getModel()
+                print(2)
                 transaction = self.startTransaction()
+                print(3)
                 query = transaction.query(model).filter(*search_args, **search_kwargs)
                 if limit >= 0:
                     query = query.limit(limit)
@@ -371,20 +372,28 @@ class iqModelNavigatorManager(navigator_proto.iqNavigatorManagerProto):
                         order_by = (order_by,)
                     order_by_columns = [getattr(model, fld_name) for fld_name in order_by]
                     query = query.order_by(*order_by_columns)
+                print(4)
                 records = [self.getQueryResultRecordAsDict(record) for record in query]
+                print(5)
                 self.stopTransaction(transaction)
                 return records
             else:
+                print(6)
                 table = self.getTable()
                 if table is not None:
                     select = filter_convert.convertFilter2SQLAlchemySelect(filter_data=rec_filter,
                                                                            table=table,
                                                                            limit=limit if limit >= 0 else None,
                                                                            order_by=order_by)
+                    print(7)
                     transaction = self.startTransaction()
+                    print(8)
                     result = transaction.execute(select)
+                    print(9)
                     records = [dict(record) for record in result.fetchall()]
+                    print(10)
                     self.stopTransaction(transaction)
+                    print(11)
                     return records
                 else:
                     log_func.error(u'<%s> method. <%s> object. <%s> class. Not define table object' % (sys._getframe().f_code.co_name,
