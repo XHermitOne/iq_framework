@@ -108,7 +108,7 @@ class iqSchemeManager(object):
             engine = db_engine.create(db_url)
             # log_func.debug(str(engine))
             # base.metadata.create_all(engine, checkfirst=True)
-            sqlalchemy.MetaData().create_all(bind=engine, checkfirst=True)
+            sqlalchemy.MetaData().create_all(bind=engine)
 
             # creating a Session class configuration
             session_class = sqlalchemy.orm.sessionmaker(bind=engine, *args, **kwargs)
