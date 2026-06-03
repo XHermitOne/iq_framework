@@ -9,7 +9,7 @@ import copy
 
 from iq.util import log_func
 
-__version__ = (0, 0, 2, 1)
+__version__ = (0, 1, 1, 1)
 
 
 def getSD(var, val):
@@ -304,7 +304,7 @@ def parseRTF(data, rep, replace_dict=None, idx_loop=None, idx_key=None):
                 v = var
                 
             if v in replace_dict.keys():
-                replTxt = str(replace_dict[v]).replace('\n', '\line ')
+                replTxt = str(replace_dict[v]).replace('\n', '\\line ')
                 rep = rep[:p1] + replTxt + rep[p2+1:]
                 p2 = p1 + len(str(replace_dict[v])) + 1
             else:

@@ -14,7 +14,7 @@ from ...engine.wx.dlg import edit_masked_txt_dlg
 
 _ = lang_func.getTranslation().gettext
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 DEFAULT_ENCODE = 'utf-8'
 
@@ -66,7 +66,7 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
             C       Allow any letter, upper or lower
             X       Allow string.letters, string.punctuation, string.digits
             &       Allow string.punctuation only (doesn't include all unicode symbols)
-            \*      Allow any visible character
+            \\*     Allow any visible character
             |       explicit field boundary (takes no space in the control; allows mix
                     of adjacent mask characters to be treated as separate fields,
                     eg: '&|###' means "field 0 = '&', field 1 = '###'", but there's
@@ -89,7 +89,7 @@ class iqEditCodeProperty(wx.propgrid.StringProperty):
     def _getRegExp(self, ref_obj, code):
         """
         Define a regular expression of control by code.
-        <\W+?> - Added to regex to support punctuation in codes.
+        <\\W+?> - Added to regex to support punctuation in codes.
         
         :param ref_obj: Ref object.
         :param code: Ref object record code.

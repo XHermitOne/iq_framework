@@ -87,7 +87,7 @@ sudo apt install --assume-yes inkscape
 
 # Additionally
 sudo pip3 install --break-system-packages objectlistview
-# sudo apt install --assume-yes python3-six
+sudo apt install --assume-yes python3-six
 # sudo apt install --assume-yes python3-matplotlib
 sudo apt install --assume-yes python3-wxmplot
 sudo apt install --assume-yes python3-wxutils
