@@ -105,6 +105,7 @@ class iqSchemeManager(object):
                 log_func.warning(u'Not define base model class in data scheme <%s>' % self.getName())
                 return None
 
+            log_func.debug(u'Session class. DB URL <%s>' % db_url)
             engine = db_engine.create(db_url)
             base.metadata.create_all(engine, checkfirst=True)
 
