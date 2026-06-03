@@ -6,14 +6,14 @@ Wx SVGRenderPanel prototype class.
 """
 
 import os.path
-import six
+# import six
 import wx.svg
 from ..wx_svgrenderimage import svg_file
 
 from ...util import log_func
 from ...util import file_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 
 class iqSVGRenderPanel(svg_file.iqSVGFile):

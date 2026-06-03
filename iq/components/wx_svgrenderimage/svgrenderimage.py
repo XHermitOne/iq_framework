@@ -6,7 +6,7 @@ Wx SVGRenderImage prototype class.
 """
 
 import os.path
-import six
+# import six
 import wx.svg
 from . import svg_file
 
@@ -18,7 +18,7 @@ from ...engine.wx import wxbitmap_func
 
 import iq
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 # Conversion start command format SVG -> PNG
 UNIX_SVG2PNG_CONVERT_CMD_FMT = 'convert -background %s -resize %dx%d -extent %dx%d -gravity center %s %s'

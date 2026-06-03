@@ -6,13 +6,17 @@ JSON RPC client functions.
 """
 
 import datetime
-import jsonrpclib
 import hashlib
 
 from . import log_func
 from . import dt_func
 
-__version__ = (0, 0, 0, 2)
+try:
+    import jsonrpclib
+except ImportError:
+    log_func.error(u'Import error jsonrpclib package. For install: pip3 install --break-system-packages jsonrpclib-pelix')
+
+__version__ = (0, 1, 1, 1)
 
 HTTP_URL_FMT = 'http://%s:%s'
 # Error message signature
