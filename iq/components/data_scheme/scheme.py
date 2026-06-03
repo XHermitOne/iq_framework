@@ -135,7 +135,9 @@ class iqSchemeManager(object):
         # create Session object
         session = None
         if session_class is not None:
+            print('-1')
             session = session_class()
+            print('-2')
         return session
 
     def closeSession(self, session=None):
