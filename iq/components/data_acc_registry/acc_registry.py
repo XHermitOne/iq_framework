@@ -191,7 +191,7 @@ class iqAccRegistry(data_object.iqDataObject):
             self.disconnect()
 
         self._connection = sqlalchemy.create_engine(db_url, echo=False)
-        log_func.info(u'Connect to DB <%s>' % str(db_url))
+        log_func.info(u'Connect to DB <%s>' % db_url)
         return self._connection
 
     def disconnect(self):

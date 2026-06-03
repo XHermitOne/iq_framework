@@ -124,7 +124,7 @@ class iqDBEngineManager(object):
 
         url = sqlalchemy.engine.url.URL(drivername=self.getDialectDriver(),
                                         database=self.getDBFilename())
-        db_url = str(url)
+        db_url = url.render_as_string(hide_password=False)
         return db_url
 
     def _getDBUrl(self):
@@ -156,7 +156,7 @@ class iqDBEngineManager(object):
                                         port=self.getPort(),
                                         database=self.getDBName(),
                                         query=query)
-        db_url = url
+        db_url = url.render_as_string(hide_password=False)
         return db_url
 
     def getDBUrl(self):
@@ -209,7 +209,7 @@ class iqDBEngineManager(object):
             log_func.fatal(u'Error set DB engine application name in <%s>' % self.__class__.__name__)
 
         engine = sqlalchemy.create_engine(db_url, *args, **kwargs)
-        log_func.info(u'Create sqlalchemy DB engine <%s>' % str(db_url))
+        log_func.info(u'Create sqlalchemy DB engine <%s>' % db_url)
         return engine
 
     def getEngine(self, *args, **kwargs):
