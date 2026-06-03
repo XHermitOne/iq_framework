@@ -139,6 +139,7 @@ class iqDBEngineManager(object):
         log_func.info(u'\tPort: %s' % self.getPort())
         log_func.info(u'\tDB name: %s' % self.getDBName())
         log_func.info(u'\tUsername: %s' % self.getUsername())
+        log_func.debug(u'\tPassword: %s' % self.getPassword())
 
         query = None
         charset = self.getCharset()
@@ -336,7 +337,7 @@ class iqDBEngineManager(object):
 
             engine = self.create(db_url)
             # base.metadata.create_all(engine, checkfirst=True)
-            sqlalchemy.MetaData().create_all(bind=engine)
+            sqlalchemy.MetaData().create_all(bind=engine, checkfirst=True)
 
             # creating a Session class configuration
             session_class = sqlalchemy.orm.sessionmaker(bind=engine, *args, **kwargs)
