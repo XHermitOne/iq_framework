@@ -14,7 +14,7 @@ from ...util import imp_func
 
 from . import scheme_module_generator
 
-__version__ = (0, 0, 1, 2)
+__version__ = (0, 1, 1, 1)
 
 DEFAULT_MODULE_ATTR_NAME = '__module'
 DEFAULT_SESSION_CLASS_ATTR_NAME = '__session_class'
@@ -135,9 +135,7 @@ class iqSchemeManager(object):
         # create Session object
         session = None
         if session_class is not None:
-            print('-1')
             session = session_class()
-            print('-2')
         return session
 
     def closeSession(self, session=None):
