@@ -299,7 +299,7 @@ class iqDBEngineManager(object):
                         records = [result.fetchone()]
                     else:
                         records = result.fetchall()
-                    recordset = [{name: float(value) if isinstance(value, decimal.Decimal) else value for name, value in dict(rec).items()} for rec in records]
+                    recordset = [{name: float(value) if isinstance(value, decimal.Decimal) else value for name, value in vars(rec).items()} for rec in records]
                 else:
                     log_func.info(u'Query <%s> not return recordset' % sql_query)
                 transaction.commit()
