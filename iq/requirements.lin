@@ -1,0 +1,77 @@
+# !/bin/sh
+
+# Git
+sudo apt install --assume-yes git
+# [NOTE] For create files by git with access 777:
+umask 000
+
+# Operating system
+sudo apt install --assume-yes nfs-common
+sudo apt install --assume-yes python3-apt
+sudo apt install --assume-yes smbclient
+sudo pip3 install --break-system-packages pysmb
+
+# Work with the console
+sudo apt install --assume-yes python3-dialog
+sudo apt install --assume-yes curl
+
+# Color console
+sudo apt install --assume-yes python3-termcolor
+
+# wxPython
+{% if DISTRO_ID == 'ubuntu' and DISTRO_VERSION == '26.04' %}
+sudo apt install --assume-yes python3-wxgtk4.0
+sudo apt install --assume-yes python3-wxgtk-media4.0
+sudo apt install --assume-yes python3-wxgtk-webview4.0
+
+# Additionally
+sudo pip3 install --break-system-packages objectlistview
+sudo apt install --assume-yes python3-six
+sudo apt install --assume-yes python3-wxmplot
+sudo apt install --assume-yes python3-wxutils
+{% endif %}
+
+sudo pip3 install --break-system-packages pysvg-py3
+sudo apt install --assume-yes imagemagick
+sudo apt install --assume-yes inkscape
+
+# Database
+sudo apt install --assume-yes python3-psycopg2
+sudo apt install --assume-yes python3-sqlalchemy
+
+# DBase
+sudo pip3 install --break-system-packages dbfread
+sudo pip3 install  --break-system-packages dbfpy3
+
+# xmltodict
+sudo pip3 install --break-system-packages xmltodict
+
+# Office
+sudo apt install --assume-yes unoconv
+sudo apt install --assume-yes python3-sane
+sudo apt install --assume-yes python3-reportlab
+sudo apt install --assume-yes python3-odf python-odf-doc
+sudo apt install --assume-yes libreoffice-java-common
+sudo apt install --assume-yes python3-xlrd
+sudo apt install --assume-yes python3-xlwt
+sudo apt install --assume-yes python3-xlsxwriter
+sudo apt install --assume-yes python3-openpyxl
+sudo apt install --assume-yes pdf2svg
+
+sudo pip3 install --break-system-packages pygal
+sudo pip3 install --break-system-packages PyMuPDF
+sudo pip3 install --break-system-packages img2pdf
+
+sudo pip3 install --break-system-packages mtranslate
+
+# Data tables
+sudo pip3 install --break-system-packages pandas
+sudo pip3 install --break-system-packages plotly_express
+
+#
+sudo apt --fix-broken install --assume-yes
+
+{% if DISTRO_ID == 'ubuntu' and DISTRO_VERSION == '26.04' %}
+sudo apt install --assume-yes fastfetch
+sudo fastfetch
+{% endif %}

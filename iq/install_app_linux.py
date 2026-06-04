@@ -26,6 +26,7 @@ import datetime
 import sysconfig
 import glob
 import tempfile
+import platform
 import time
 
 __version__ = (0, 1, 1, 1)
@@ -65,7 +66,7 @@ exit 0
 
 IQ_FRAMEWORK_FOLDER_NAME = 'iq_framework'
 IQ_FOLDER_NAME = 'iq'
-REQUIREMENTS_FILENAME = 'requirements.sh'
+REQUIREMENTS_FILENAME = 'requirements.lin' if platform.system() == 'Linux' else 'requirements.win'
 
 
 CONSOLE = None
@@ -623,7 +624,8 @@ def generateTextFile(txt_template_filename, txt_output_filename, context=None, o
     return False
 
 
-def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, root_username=None, root_password=None):
+def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, server=DEFAULT_MNT_SERVER, share_name=DEFAULT_NETWORK_RESOURCE_NAME,
+                                  root_username=None, root_password=None):
     """
     Mount framework network resource.
     :return: Mount path.
@@ -639,8 +641,8 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, root_username=None,
         root_password = ROOT_PASSWORD
 
     mnt_path = CONSOLE.input(f'[green]Input framework mount path:[/] (Default [bold cyan]{mnt_path}[/]): ') or mnt_path
-    server = CONSOLE.input(f'[green]Input server:[/] (Default [bold cyan]{DEFAULT_MNT_SERVER}[/]): ') or DEFAULT_MNT_SERVER
-    share_name = CONSOLE.input(f'[green]Input share:[/] (Default [bold cyan]{DEFAULT_NETWORK_RESOURCE_NAME}[/]): ') or DEFAULT_NETWORK_RESOURCE_NAME
+    server = CONSOLE.input(f'[green]Input server:[/] (Default [bold cyan]{DEFAULT_MNT_SERVER}[/]): ') or server
+    share_name = CONSOLE.input(f'[green]Input share:[/] (Default [bold cyan]{DEFAULT_NETWORK_RESOURCE_NAME}[/]): ') or share_name
 
     if not os.path.exists(mnt_path):
         info(f'Make directory <{mnt_path}>')
@@ -714,14 +716,14 @@ def saveIqPthFile(mnt_path, root_username, root_password):
             error('Import error <iq>')
     return False
 
-def installRequirementsSH(sh_filename, root_username=None, root_password=None):
+def installRequirements(cmd_filename, root_username=None, root_password=None, **kwargs):
     """
-    Install requirements.sh file.
-    :param sh_filename: Shell template filename.
+    Install requirements file.
+    :param cmd_filename: Command template filename.
     :return: True/False.
     """
-    if not os.path.exists(sh_filename):
-        error(f'File <{sh_filename}> not found')
+    if not os.path.exists(cmd_filename):
+        error(f'File <{cmd_filename}> not found')
         return False
 
     if root_username is None:
@@ -735,9 +737,11 @@ def installRequirementsSH(sh_filename, root_username=None, root_password=None):
     import jinja2
     import distro
 
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(sh_filename)))
-    template = env.get_template(os.path.basename(sh_filename))
-    variables = dict(DISTRO_ID=distro.id(), DISTRO_VERSION=distro.version())
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(cmd_filename)))
+    template = env.get_template(os.path.basename(cmd_filename))
+    variables = dict(DISTRO_ID=distro.id(), DISTRO_VERSION=distro.version(),
+                     HOME_PATH=HOME_PATH)
+    variables.update(kwargs)
     script = template.render(**variables)
 
     # Execute script
@@ -752,6 +756,13 @@ def installRequirementsSH(sh_filename, root_username=None, root_password=None):
             info(f'Execute command <{cmd}>')
             new_cmd = f'echo {root_password} | su {root_username} --login --session-command "{cmd}"'
             os.system(new_cmd)
+        elif cmd.startswith('func:'):
+            info(f'Execute function <{cmd}>')
+            exec_func = cmd.replace('func:', '').strip()
+            try:
+                exec(exec_func, globals(), locals())
+            except:
+                fatal(f'Error execute function <{exec_func}>')
 
 
 def selectApplication(iq_framework_path):
@@ -795,7 +806,7 @@ def selectApplication(iq_framework_path):
     return app_paths[menu.index]
 
 
-def installDesktop(app_path, root_username=None, root_password=None):
+def installDesktop(app_path, root_username=None, root_password=None, **kwargs):
     """
     Install *.desktop files for all users.
     :param app_path: Application path.
@@ -819,7 +830,9 @@ def installDesktop(app_path, root_username=None, root_password=None):
     import jinja2
     import distro
 
-    variables = dict(DISTRO_ID=distro.id(), DISTRO_VERSION=distro.version(), APP_PATH=app_path)
+    variables = dict(DISTRO_ID=distro.id(), DISTRO_VERSION=distro.version(),
+                     APP_PATH=app_path, HOME_PATH=HOME_PATH)
+    variables.update(kwargs)
 
     for desktop_filename in desktop_filenames:
         env = jinja2.Environment(loader=jinja2.FileSystemLoader(app_path))
@@ -881,7 +894,8 @@ def run():
             # 7. Install packages for iq
             iq_framework_path = os.path.join(mnt_path, IQ_FRAMEWORK_FOLDER_NAME)
             iq_requirements_filename = os.path.join(iq_framework_path, IQ_FOLDER_NAME, REQUIREMENTS_FILENAME)
-            installRequirementsSH(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+            installRequirements(iq_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD,
+                                IQ_FRAMEWORK_PATH=iq_framework_path)
             # 8. Select application for install
             # time.sleep(1)
             clearScreen()
@@ -890,9 +904,11 @@ def run():
             # 9. Install packages for application
             if app_path is not None:
                 app_requirements_filename = os.path.join(app_path, REQUIREMENTS_FILENAME)
-                installRequirementsSH(app_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+                installRequirements(app_requirements_filename, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD,
+                                    APP_PATH=app_path, IQ_FRAMEWORK_PATH=iq_framework_path)
                 # 10. Get DESKTOP file
-                installDesktop(app_path=app_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD)
+                installDesktop(app_path=app_path, root_username=ROOT_USERNAME, root_password=ROOT_PASSWORD,
+                               IQ_FRAMEWORK_PATH=iq_framework_path)
 
             info(IQ_FRAMEWORK_LOGO)
         except:
