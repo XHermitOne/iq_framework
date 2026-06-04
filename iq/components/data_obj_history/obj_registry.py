@@ -469,8 +469,8 @@ class iqObjRegistry(object):
                 # Record new state
                 obj_requisites[STATE_OBJ_FIELD] = new_state
                 obj_requisites[DTSTATE_OBJ_FIELD] = dt_now
-                sql = obj_table.insert().values(**obj_requisites)
-                transaction.execute(sql)
+                query = obj_table.insert().values(**obj_requisites)
+                transaction.execute(query)
             else:
                 find_obj = find.first()
                 # Determine the current state of the object
@@ -485,8 +485,8 @@ class iqObjRegistry(object):
                 obj_requisites = {name: requisite_values.get(name, None) for name in obj_requisite_names}
                 obj_requisites[STATE_OBJ_FIELD] = new_state
                 obj_requisites[DTSTATE_OBJ_FIELD] = dt_now
-                sql = obj_table.update().where(sqlalchemy.and_(*where)).values(**obj_requisites)
-                transaction.execute(sql)
+                query = obj_table.update().where(sqlalchemy.and_(*where)).values(**obj_requisites)
+                transaction.execute(query)
 
             # Record motion operation
             if obj_state != new_state:
@@ -499,8 +499,8 @@ class iqObjRegistry(object):
                 operation_requisite_values[PREV_OPERATION_FIELD] = obj_state
                 operation_requisite_values[POST_OPERATION_FIELD] = new_state
 
-                sql = operation_table.insert().values(**operation_requisite_values)
-                transaction.execute(sql)
+                query = operation_table.insert().values(**operation_requisite_values)
+                transaction.execute(query)
             else:
                 # Changing details without movement operation
                 operation_requisite_values = self._getOperationRequisiteValues(**requisite_values)
@@ -511,8 +511,8 @@ class iqObjRegistry(object):
                 where = [getattr(operation_table.c, GUID_OBJ_OPERATION_FIELD) == guid_obj,
                          getattr(operation_table.c, OBJ_OPERATION_FIELD) == n_obj,
                          getattr(operation_table.c, POST_OPERATION_FIELD) == new_state]
-                sql = operation_table.update().where(sqlalchemy.and_(*where)).values(**operation_requisite_values)
-                transaction.execute(sql)
+                query = operation_table.update().where(sqlalchemy.and_(*where)).values(**operation_requisite_values)
+                transaction.execute(query)
 
             if result:
                 # Commit transaction
@@ -556,10 +556,10 @@ class iqObjRegistry(object):
                 # Records are in the table of movements
                 if find.rowcount == 1:
                     # If this is the last entry in the movement table, then delete
-                    sql = operation_table.delete().where(sqlalchemy.and_(*oper_where))
-                    transaction.execute(sql)
-                    sql = obj_table.delete().where(sqlalchemy.and_(*obj_where))
-                    transaction.execute(sql)
+                    query = operation_table.delete().where(sqlalchemy.and_(*oper_where))
+                    transaction.execute(query)
+                    query = obj_table.delete().where(sqlalchemy.and_(*obj_where))
+                    transaction.execute(query)
                 else:
                     find_state = find.fetchone()
                     prev_state = find.fetchone()
@@ -573,13 +573,13 @@ class iqObjRegistry(object):
                         obj_requisites[requisite_name] = prev_state[requisite_name]
                     requisite_values.update(obj_requisites)
 
-                    sql = obj_table.update().where(sqlalchemy.and_(*obj_where)).values(**requisite_values)
-                    transaction.execute(sql)
+                    query = obj_table.update().where(sqlalchemy.and_(*obj_where)).values(**requisite_values)
+                    transaction.execute(query)
 
                     # Delete last state record
                     # Check is made for a complete match record
-                    sql = operation_table.delete().where(sqlalchemy.and_(*oper_where))
-                    transaction.execute(sql)
+                    query = operation_table.delete().where(sqlalchemy.and_(*oper_where))
+                    transaction.execute(query)
             else:
                 # If there are no entries in the motion log,
                 # then it is not possible to determine the previous state
@@ -611,11 +611,11 @@ class iqObjRegistry(object):
         transaction = session()
 
         try:
-            sql = operation_table.delete()
-            transaction.execute(sql)
+            query = operation_table.delete()
+            transaction.execute(query)
 
-            sql = obj_table.delete()
-            transaction.execute(sql)
+            query = obj_table.delete()
+            transaction.execute(query)
 
             # Commit transaction
             transaction.commit()

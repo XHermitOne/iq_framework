@@ -15,7 +15,7 @@ import sqlalchemy.orm
 
 from ...util import log_func
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 1, 2, 1)
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -293,7 +293,7 @@ class iqDBEngineManager(object):
             recordset = list()
             transaction = connection.begin()
             try:
-                result = connection.execute(sql_query)
+                result = connection.execute(sqlalchemy.text(sql_query))
                 if result and result.returns_rows:
                     if first_record:
                         records = [result.fetchone()]

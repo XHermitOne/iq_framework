@@ -236,7 +236,7 @@ class iqAccRegistry(data_object.iqDataObject):
             raise
 
         try:
-            result = connection.execute(sql_txt)
+            result = connection.execute(sqlalchemy.text(sql_txt))
         except:
             connection.execute(SQL_ROLLBACK)
             log_func.fatal(u'Error execute SQL expression: %s' % sql_txt)
@@ -507,9 +507,9 @@ class iqAccRegistry(data_object.iqDataObject):
             requisites.update(resource_requisites)
             requisites.update(extended_requisites)
 
-            sql = result_table.insert().values(**requisites)
+            query = result_table.insert().values(**requisites)
             log_func.debug(u'Accumulate registry <%s>. Create position %s' % (self.getName(), str(requisites)))
-            transaction.execute(sql)
+            transaction.execute(query)
 
         # Update values of resource details
         resource_requisite_names = self.getResourceRequisiteNames()
@@ -528,16 +528,16 @@ class iqAccRegistry(data_object.iqDataObject):
         requisites = dict()
         requisites.update(resource_requisites)
         requisites.update(extended_requisites)
-        sql = result_table.update().where(sqlalchemy.and_(*where)).values(**requisites)
+        query = result_table.update().where(sqlalchemy.and_(*where)).values(**requisites)
         log_func.debug(u'Accumulate registry <%s>. Update position %s' % (self.getName(), str(requisites)))
-        transaction.execute(sql)
+        transaction.execute(query)
 
         operation_requisite_values = self._getOperationRequisiteValues(**requisite_values)
         # After changing the values in the final table, add the operation to the motion table
         # Do not forget to add the date-time field of the motion operation
         operation_requisite_values[DT_OPERATION_FIELD] = datetime.datetime.now()
-        sql = operation_table.insert().values(**operation_requisite_values)
-        transaction.execute(sql)
+        query = operation_table.insert().values(**operation_requisite_values)
+        transaction.execute(query)
         return True
 
     def _getOperationRequisiteValues(self, **requisite_values):
@@ -659,9 +659,9 @@ class iqAccRegistry(data_object.iqDataObject):
                         # If the returned recordset is empty, then the function returns None.
                         # Need execute <execute()>. Get ResultProxy and call first()
                         if result_table.select().where(sqlalchemy.and_(*where)).execute().first() is not None:
-                            sql = result_table.update().where(sqlalchemy.and_(*where)).values(**resource_requisites)
+                            query = result_table.update().where(sqlalchemy.and_(*where)).values(**resource_requisites)
                             log_func.debug(u'Undo operation. Update position in result table %s' % str(resource_requisites))
-                            transaction.execute(sql)
+                            transaction.execute(query)
                         else:
                             try:
                                 requisites = dict()
@@ -671,11 +671,11 @@ class iqAccRegistry(data_object.iqDataObject):
                                 extended_requisites = {name: value for name, value in operation_values.items() if name in extended_requisite_names}
                                 requisites.update(extended_requisites)
                                 log_func.debug(u'Undo operation. Add position in result table %s' % requisites)
-                                sql = result_table.insert().values(**requisites)
-                                transaction.execute(sql)
+                                query = result_table.insert().values(**requisites)
+                                transaction.execute(query)
                             except:
                                 log_func.fatal(u'Error add undo position')
-                                sql = None
+                                query = None
                     else:
                         log_func.warning(u'Error records identification in result table for update [%s]' % dimension_requisites)
 
@@ -683,8 +683,8 @@ class iqAccRegistry(data_object.iqDataObject):
 
                 # Delete operation
                 where = [getattr(operation_table.c, name) == value for name, value in operation_requisite_values.items()]
-                sql = operation_table.delete().where(sqlalchemy.and_(*where))
-                transaction.execute(sql)
+                query = operation_table.delete().where(sqlalchemy.and_(*where))
+                transaction.execute(query)
             else:
                 log_func.warning(u'Operation not found <%s> for undo' % requisite_values)
                 transaction.rollback()
