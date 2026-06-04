@@ -15,7 +15,6 @@ Launch parameters:
         --version|-v        Print version
         --debug|-d          Set debug mode
 """
-
 import sys
 import getopt
 import os
@@ -27,9 +26,8 @@ import sysconfig
 import glob
 import tempfile
 import platform
-import time
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 1, 2, 1)
 
 DEBUG_MODE = True
 
@@ -39,13 +37,19 @@ ROOT_PASSWORD = None
 DEFAULT_MNT_SERVER = '10.0.0.26'
 DEFAULT_NETWORK_RESOURCE_NAME = 'defis'
 DEFAULT_MNT_PATH = '/mnt/defis'
+DEFAULT_MNT_OPTIONS = 'vers=4'
 RC_LOCAL_FILENAME = '/etc/rc.local'
 
 REPLACE_WAIT_NETWORK_UP_SIGNATURE = '# By default this script does nothing.'
 WAIT_NETWORK_UP = 'until ping -nq -c3 %s; do sleep 1; done'
 RC_LOCAL_EXIT_CMD = os.linesep + 'exit 0'
-MOUNT_CMD_FMT = 'mount --types nfs --options vers=4 %s:/%s %s'
-WAIT_MOUNT_CMD_FMT = '((%s); mount --types nfs --options vers=4 %s:/%s %s)&'
+NFS_MOUNT_CMD_FMT = 'mount --types nfs %s %s:/%s %s'
+WAIT_NFS_MOUNT_CMD_FMT = '((%s); mount --types nfs %s %s:/%s %s)&'
+SMB_MOUNT_CMD_FMT = 'mount --types cifs %s //%s/%s %s'
+WAIT_SMB_MOUNT_CMD_FMT = '((%s); mount --types cifs %s //%s/%s %s)&'
+NFS_MOUNT_TYPE = 'nfs'
+SMB_MOUNT_TYPE = 'smb'
+MOUNT_TYPES = [NFS_MOUNT_TYPE, SMB_MOUNT_TYPE]
 
 DEFAULT_RC_LOCAL_CONTENT = '''#!/bin/sh -e
 #
@@ -624,8 +628,9 @@ def generateTextFile(txt_template_filename, txt_output_filename, context=None, o
     return False
 
 
-def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, server=DEFAULT_MNT_SERVER, share_name=DEFAULT_NETWORK_RESOURCE_NAME,
-                                  root_username=None, root_password=None):
+def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH,
+                                  server=DEFAULT_MNT_SERVER, share_name=DEFAULT_NETWORK_RESOURCE_NAME,
+                                  options=DEFAULT_MNT_OPTIONS, root_username=None, root_password=None):
     """
     Mount framework network resource.
     :return: Mount path.
@@ -640,9 +645,14 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, server=DEFAULT_MNT_
         global ROOT_PASSWORD
         root_password = ROOT_PASSWORD
 
+    import rich.prompt
+    mnt_type = rich.prompt.Prompt.ask(f'[green]Select mount type:[/]: ', choices=MOUNT_TYPES, default=NFS_MOUNT_TYPE)
+    mnt_cmd_fmt = NFS_MOUNT_CMD_FMT if mnt_type == NFS_MOUNT_TYPE else SMB_MOUNT_CMD_FMT
+    wait_mnt_cmd_fmt = WAIT_NFS_MOUNT_CMD_FMT if mnt_type == NFS_MOUNT_TYPE else WAIT_SMB_MOUNT_CMD_FMT
     mnt_path = CONSOLE.input(f'[green]Input framework mount path:[/] (Default [bold cyan]{mnt_path}[/]): ') or mnt_path
-    server = CONSOLE.input(f'[green]Input server:[/] (Default [bold cyan]{DEFAULT_MNT_SERVER}[/]): ') or server
-    share_name = CONSOLE.input(f'[green]Input share:[/] (Default [bold cyan]{DEFAULT_NETWORK_RESOURCE_NAME}[/]): ') or share_name
+    server = CONSOLE.input(f'[green]Input server:[/] (Default [bold cyan]{server}[/]): ') or server
+    share_name = CONSOLE.input(f'[green]Input share:[/] (Default [bold cyan]{share_name}[/]): ') or share_name
+    options = CONSOLE.input(f'[green]Input mount options:[/] (Default [bold cyan]{options}[/]): ') or options
 
     if not os.path.exists(mnt_path):
         info(f'Make directory <{mnt_path}>')
@@ -652,7 +662,7 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, server=DEFAULT_MNT_
         os.system(cmd)
 
     if os.path.exists(mnt_path) and (not os.listdir(mnt_path)):
-        mount_cmd = MOUNT_CMD_FMT % (server, share_name, mnt_path)
+        mount_cmd = mnt_cmd_fmt % (('--options %s' % options) if options else '', server, share_name, mnt_path)
         info(f'Mount network resource <{mnt_path} : {mount_cmd}>')
         cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= {mount_cmd}"'
         os.system(cmd)
@@ -669,7 +679,7 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH, server=DEFAULT_MNT_
             cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= chmod 777 {RC_LOCAL_FILENAME}"'
             os.system(cmd)
 
-    mount_cmd_enabled = WAIT_MOUNT_CMD_FMT % (WAIT_NETWORK_UP % server, server, share_name, mnt_path)
+    mount_cmd_enabled = wait_mnt_cmd_fmt % (WAIT_NETWORK_UP % server, ('--options %s' % options) if options else '', server, share_name, mnt_path)
 
     mount_cmd_disabled = '# ' + mount_cmd_enabled
     mount_cmd_disabled2 = '#' + mount_cmd_enabled
@@ -756,13 +766,13 @@ def installRequirements(cmd_filename, root_username=None, root_password=None, **
                 exec(exec_func, globals(), locals())
             except:
                 fatal(f'Error execute function <{exec_func}>')
-        elif not cmd.startswith('sudo '):
-            info(f'Execute command <{cmd}>')
-            os.system(cmd)
         elif cmd.startswith('sudo '):
             info(f'Execute command <{cmd}>')
             new_cmd = f'echo {root_password} | su {root_username} --login --session-command "{cmd}"'
             os.system(new_cmd)
+        else:
+            info(f'Execute command <{cmd}>')
+            os.system(cmd)
 
 
 def selectApplication(iq_framework_path):
