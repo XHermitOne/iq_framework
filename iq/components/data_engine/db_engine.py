@@ -15,7 +15,7 @@ import sqlalchemy.orm
 
 from ...util import log_func
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 1, 2)
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -261,7 +261,7 @@ class iqDBEngineManager(object):
             connection = None
             try:
                 connection = engine.connect()
-                result = connection.execute('SELECT 1').scalar()
+                result = connection.execute(sqlalchemy.text('SELECT 1')).scalar()
                 if result:
                     is_connect = True
             except:
