@@ -24,7 +24,7 @@ except:
     pass
 
 
-__version__ = (0, 0, 3, 1)
+__version__ = (0, 1, 1, 1)
 
 
 def createDBURL(db_type='postgresql', db_driver='',
@@ -277,7 +277,7 @@ def validDBConnectSQLAlchemy(db_url=None):
         connection = None
         try:
             connection = engine.connect()
-            result = connection.execute('SELECT 1').scalar()
+            result = connection.execute(sqlalchemy.text('SELECT 1')).scalar()
             if result:
                 is_connect = True
         except:
@@ -312,7 +312,7 @@ def getNotValidDBConnectSQLAlchemyErrTxt(db_url=None):
         try:
             connection = engine.connect()
 
-            result = connection.execute('SELECT 1').scalar()
+            result = connection.execute(sqlalchemy.text('SELECT 1')).scalar()
             if not result:
                 error_txt = u'Not valid test query result\nDatabase <%s>' % db_url
         except:
