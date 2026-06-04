@@ -29,7 +29,7 @@ import tempfile
 import platform
 import time
 
-__version__ = (0, 1, 1, 1)
+__version__ = (0, 1, 1, 2)
 
 DEBUG_MODE = True
 
@@ -749,6 +749,13 @@ def installRequirements(cmd_filename, root_username=None, root_password=None, **
         cmd = line.strip()
         if not cmd or cmd.startswith('#'):
             continue
+        elif cmd.startswith('func:'):
+            exec_func = cmd.replace('func:', '').strip()
+            info(f'Execute function <{exec_func}>')
+            try:
+                exec(exec_func, globals(), locals())
+            except:
+                fatal(f'Error execute function <{exec_func}>')
         elif not cmd.startswith('sudo '):
             info(f'Execute command <{cmd}>')
             os.system(cmd)
@@ -756,13 +763,6 @@ def installRequirements(cmd_filename, root_username=None, root_password=None, **
             info(f'Execute command <{cmd}>')
             new_cmd = f'echo {root_password} | su {root_username} --login --session-command "{cmd}"'
             os.system(new_cmd)
-        elif cmd.startswith('func:'):
-            info(f'Execute function <{cmd}>')
-            exec_func = cmd.replace('func:', '').strip()
-            try:
-                exec(exec_func, globals(), locals())
-            except:
-                fatal(f'Error execute function <{exec_func}>')
 
 
 def selectApplication(iq_framework_path):
