@@ -19,7 +19,7 @@ sudo apt install --assume-yes curl
 sudo apt install --assume-yes python3-termcolor
 
 # wxPython
-{% if DISTRO_ID == 'ubuntu' and DISTRO_VERSION == '26.04' %}
+{% if (DISTRO_ID == 'ubuntu') and (DISTRO_VERSION == '26.04' or DISTRO_VERSION == '24.04') %}
 sudo apt install --assume-yes python3-wxgtk4.0
 sudo apt install --assume-yes python3-wxgtk-media4.0
 sudo apt install --assume-yes python3-wxgtk-webview4.0
@@ -65,7 +65,7 @@ sudo pip3 install --break-system-packages img2pdf
 sudo pip3 install --break-system-packages mtranslate
 
 # Data tables
-sudo pip3 install --break-system-packages pandas
+sudo pip3 install --break-system-packages pandas==2.3.3
 sudo pip3 install --break-system-packages plotly_express
 
 #
@@ -74,4 +74,7 @@ sudo apt --fix-broken install --assume-yes
 {% if DISTRO_ID == 'ubuntu' and DISTRO_VERSION == '26.04' %}
 sudo apt install --assume-yes fastfetch
 sudo fastfetch
+{% else %}
+sudo apt install --assume-yes neofetch
+sudo neofetch
 {% endif %}
