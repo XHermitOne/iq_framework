@@ -286,7 +286,7 @@ def getSmbListdirFilenames(url=None, filename_pattern=None, smb=None):
     # At the end of the file name is added '                           N'
     # Here we are trying to level this error
     filenames = [filename.strip('                           N').strip() for filename in filenames]
-    # log.debug(u'SMB. Filenames %s' % str(filenames))
+    # log_func.debug(u'SMB. Filenames %s' % str(filenames))
     if filename_pattern:
         filenames = [filename for filename in filenames if fnmatch.fnmatch(filename, filename_pattern)]
         # log.debug(u'SMB. Filtered filenames %s' % str(filenames))
