@@ -70,12 +70,12 @@ def main(*argv):
     res_filename = None
     show_editor_help = False
 
-    if any([arg in ('-h', '--help', '-?') for arg in args]) and len(args) > 1:
+    if any([arg in ('-h', '--help', '-?') for arg in argv]):
         log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
         log_func.printColourText(__doc__, color=log_func.GREEN_COLOR_TEXT)
         sys.exit(0)
 
-    if any([arg in ('-v', '--version') for arg in args]):
+    if any([arg in ('-v', '--version') for arg in argv]):
         str_version = 'iqFramework %s' % '.'.join([str(sign) for sign in global_data.VERSION])
         log_func.printColourText(global_data.FRAMEWORK_LOGO_TXT, color=log_func.GREEN_COLOR_TEXT)
         log_func.printColourText(str_version, color=log_func.GREEN_COLOR_TEXT)
