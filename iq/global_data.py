@@ -12,7 +12,7 @@ import datetime
 
 VERSION = (0, 1, 2, 1)
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 LOG_MODE = False
 
 RUNTIME_MODE = False
