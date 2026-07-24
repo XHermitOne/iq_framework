@@ -20,7 +20,7 @@ try:
 except ImportError:
     log_func.error('Import error xmltodict package. For install: pip3 install --break-system-packages xmltodict')
 
-__version__ = (0, 1, 1, 2)
+__version__ = (0, 1, 2, 1)
 
 DEFAULT_XML_TAG = 'Excel'
 
@@ -196,13 +196,13 @@ def convertXmlFile2Dict(xml_filename, codepage='utf-8'):
 
     :param xml_filename: XML filename.
     :param codepage: XML code page.
-    :return: Vocabulary matching XML text.
+    :return: XML dictionary.
     """
     if not os.path.exists(xml_filename):
         log_func.warning(u'XML file <%s> not found' % xml_filename)
         return dict()
 
-    body_xml = txtfile_func.loadTextFile(xml_filename)
+    body_xml = txtfile_func.loadTextFile(xml_filename, encoding=codepage)
 
     # Recode text if necessary
     src_codepage = str_func.getCodepage(body_xml)

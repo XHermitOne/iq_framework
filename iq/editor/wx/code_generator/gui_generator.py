@@ -9,8 +9,10 @@ import os
 import os.path
 import inspect
 import wx
+import wx.adv
 
 from . import frame_generator
+from . import wizard_generator
 from . import dialog_generator
 from . import panel_generator
 from . import menubar_generator
@@ -23,7 +25,7 @@ from ....util import imp_func
 from ....util import txtfile_func
 from ....dialog import dlg_func
 
-__version__ = (0, 0, 0, 1)
+__version__ = (0, 1, 1, 1)
 
 DEFAULT_SRC_CLASS_NAME = u'iqUnknown'
 
@@ -115,6 +117,8 @@ def gen(src_filename=None, dst_filename=None, src_class_name=None, parent=None, 
                 py_txt = None
                 if issubclass(src_class, wx.Frame):
                     py_txt = frame_generator.genPythonFrame(fb_module, src_class_name)
+                elif issubclass(src_class, wx.adv.Wizard):
+                    py_txt = wizard_generator.genPythonWizard(fb_module, src_class_name)
                 elif issubclass(src_class, wx.Dialog):
                     py_txt = dialog_generator.genPythonDialog(fb_module, src_class_name)
                 elif issubclass(src_class, wx.Panel):

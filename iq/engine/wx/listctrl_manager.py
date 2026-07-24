@@ -30,7 +30,7 @@ except ImportError:
     ObjectListView = None
     log_func.error(u'Import error ObjectListView. Install: pip3 install objectlistview')
 
-__version__ = (0, 1, 3, 1)
+__version__ = (0, 1, 3, 2)
 
 _ = lang_func.getTranslation().gettext
 
@@ -932,7 +932,7 @@ class iqListCtrlManager(imglib_manager.iqImageLibManager,
             if records is None:
                 records = self.getListCtrlRecords(listctrl=listctrl)
 
-            check_records = [records[i] for i in range(listctrl.GetItemCount()) if listctrl.IsChecked(i)]
+            check_records = [records[i] for i in range(listctrl.GetItemCount()) if listctrl.IsItemChecked(i)]
 
             if not check_records and check_selected:
                 selected = self.getListCtrlSelectedRowIdx(listctrl)

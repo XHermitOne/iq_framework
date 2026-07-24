@@ -9,7 +9,14 @@ import sys
 import time
 from xml.sax import saxutils
 
-__version__ = (0, 1, 1, 2)
+from . import log_func, txtfile_func
+
+try:
+    import xmltodict
+except ImportError:
+    log_func.error('Import error xmltodict package. For install: pip3 install --break-system-packages xmltodict')
+
+__version__ = (0, 1, 2, 1)
 
 # Remove 'Cyr' from font names for Linux systems since on Linux all unicode fonts
 FONT_NAME_CYRILIC_DEL = not bool(sys.platform[:3].lower == 'win')
@@ -828,3 +835,30 @@ class iqDict2XmlssWriter(iqDICT2XMLWriter):
             self.characters(str(data['value']))
 
         self.endElement('NumberofCopies', not bool(data['value']))
+
+
+def convertDict2XmlText(xml_data, codepage='utf-8'):
+    """
+    Easily convert dictionary to XML text.
+
+    :param xml_data: XML data dictionary.
+    :param codepage: XML code page.
+    :return: Vocabulary matching XML text.
+    """
+    xml_text = xmltodict.unparse(xml_data, encoding=codepage, pretty=True)
+    return xml_text
+
+
+def convertDict2XmlFile(xml_data, xml_filename, codepage='utf-8'):
+    """
+    Simple conversion of dictionary to an XML file.
+
+    :param xml_data: XML data dictionary.
+    :param xml_filename: XML filename.
+    :param codepage: XML code page.
+    :return: True/False.
+    """
+    body_xml = convertDict2XmlText(xml_data=xml_data, codepage=codepage)
+    return txtfile_func.saveTextFile(txt_filename=xml_filename, txt=body_xml, rewrite=True, encoding=codepage)
+
+
