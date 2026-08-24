@@ -312,7 +312,7 @@ class iqScanManager(object):
         """
         try:
             if self.scan_device_obj is None:
-                log_func.error(u'Not define scan device')
+                log_func.error(u'Not define scan device', is_force_print=False)
             else:
                 log_func.info(u'Start scan')
                 self.scan_device_obj.start()
@@ -333,7 +333,7 @@ class iqScanManager(object):
         """
         try:
             if self.scan_device_obj is None:
-                log_func.error(u'Not define scan device')
+                log_func.error(u'Not define scan device', is_force_print=False)
                 return None
 
             image = self.scan_device_obj.snap()
@@ -421,7 +421,7 @@ class iqScanManager(object):
 
         try:
             if self.scan_device_obj is None:
-                log_func.error(u'Not define scan device')
+                log_func.error(u'Not define scan device', is_force_print=False)
                 return False
 
             scan = self.scan_device_obj.multi_scan()
