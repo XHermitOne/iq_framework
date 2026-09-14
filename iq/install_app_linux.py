@@ -723,7 +723,10 @@ def saveIqPthFile(mnt_path, root_username, root_password):
             info(f'Import iq: <{iq.__file__}>')
             return True
         except ImportError:
-            error('Import error <iq>')
+            if not os.path.exists(iq_pth_filename):
+                error('Import error <iq>')
+            else:
+                warning('Import error <iq>')
     return False
 
 def installRequirements(cmd_filename, root_username=None, root_password=None, **kwargs):
