@@ -27,7 +27,7 @@ import glob
 import tempfile
 import platform
 
-__version__ = (0, 1, 2, 1)
+__version__ = (0, 1, 2, 2)
 
 DEBUG_MODE = True
 
@@ -674,10 +674,10 @@ def mountFrameworkNetworkResource(mnt_path=DEFAULT_MNT_PATH,
         # Copy rc.local file
         cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= cp {tmp_rc_local_filename} {RC_LOCAL_FILENAME}"'
         os.system(cmd)
-        if os.path.exists(RC_LOCAL_FILENAME):
-            # Set permissions
-            cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= chmod 777 {RC_LOCAL_FILENAME}"'
-            os.system(cmd)
+    if os.path.exists(RC_LOCAL_FILENAME):
+        # Set permissions
+        cmd = f'echo {root_password} | su {root_username} --login --session-command "echo {root_password} | sudo --stdin --prompt= chmod 777 {RC_LOCAL_FILENAME}"'
+        os.system(cmd)
 
     mount_cmd_enabled = wait_mnt_cmd_fmt % (WAIT_NETWORK_UP % server, ('--options %s' % options) if options else '', server, share_name, mnt_path)
 
